@@ -1,0 +1,717 @@
+basePath: /api/v1
+definitions:
+  models.BadGatewayResponse:
+    properties:
+      error:
+        example: Unable to communicate with the database
+        type: string
+    type: object
+  models.BadRequestResponse:
+    properties:
+      error:
+        example: JSON parsing error
+        type: string
+    type: object
+  models.CreateResultDto:
+    properties:
+      matchEndDate:
+        example: "2025-06-01T00:40:00Z"
+        type: string
+      matchStartDate:
+        example: "2025-06-01T00:00:00Z"
+        type: string
+      opponentScore:
+        example: 14
+        type: integer
+      opponentTeamId:
+        example: 7
+        type: integer
+      score:
+        example: 16
+        type: integer
+    required:
+    - matchEndDate
+    - matchStartDate
+    - opponentTeamId
+    type: object
+  models.CreateSeasonDto:
+    properties:
+      endDate:
+        example: "2025-08-31T00:00:00Z"
+        type: string
+      name:
+        example: Summer 2025
+        maxLength: 100
+        minLength: 3
+        type: string
+      startDate:
+        example: "2025-06-01T00:00:00Z"
+        type: string
+    required:
+    - endDate
+    - name
+    - startDate
+    type: object
+  models.CreateTeamDto:
+    properties:
+      name:
+        example: BIG Clan
+        maxLength: 100
+        minLength: 3
+        type: string
+    required:
+    - name
+    type: object
+  models.NotFoundResponse:
+    properties:
+      error:
+        example: Resource was not found
+        type: string
+    type: object
+  models.ResultDto:
+    properties:
+      id:
+        example: 7
+        type: integer
+      matchEndDate:
+        example: "2025-06-01T00:40:00Z"
+        type: string
+      matchStartDate:
+        example: "2025-06-01T00:00:00Z"
+        type: string
+      opponentScore:
+        example: 14
+        type: integer
+      opponentTeam:
+        example: 7
+        type: integer
+      score:
+        example: 16
+        type: integer
+      team:
+        example: 6
+        type: integer
+    type: object
+  models.ResultResponse:
+    properties:
+      result:
+        $ref: '#/definitions/models.ResultDto'
+    type: object
+  models.ResultsResponse:
+    properties:
+      results:
+        items:
+          $ref: '#/definitions/models.ResultDto'
+        type: array
+    type: object
+  models.SeasonDto:
+    properties:
+      endDate:
+        example: "2025-08-31T00:00:00Z"
+        type: string
+      id:
+        example: 5
+        type: integer
+      name:
+        example: Summer 2025
+        type: string
+      startDate:
+        example: "2025-06-01T00:00:00Z"
+        type: string
+    type: object
+  models.SeasonResponse:
+    properties:
+      season:
+        $ref: '#/definitions/models.SeasonDto'
+    type: object
+  models.SeasonsResponse:
+    properties:
+      seasons:
+        items:
+          $ref: '#/definitions/models.SeasonDto'
+        type: array
+    type: object
+  models.TeamDto:
+    properties:
+      elo:
+        example: 1200
+        type: integer
+      id:
+        example: 6
+        type: integer
+      name:
+        example: BIG Clan
+        type: string
+    type: object
+  models.TeamResponse:
+    properties:
+      team:
+        $ref: '#/definitions/models.TeamDto'
+    type: object
+  models.TeamsResponse:
+    properties:
+      teams:
+        items:
+          $ref: '#/definitions/models.TeamDto'
+        type: array
+    type: object
+  models.UnprocessableEntityResponse:
+    properties:
+      error:
+        example: Validation error
+        type: string
+    type: object
+  models.UpdateResultDto:
+    properties:
+      matchEndDate:
+        example: "2025-06-01T00:40:00Z"
+        type: string
+      matchStartDate:
+        example: "2025-06-01T00:00:00Z"
+        type: string
+      opponentScore:
+        example: 14
+        type: integer
+      score:
+        example: 16
+        type: integer
+    required:
+    - matchEndDate
+    - matchStartDate
+    type: object
+  models.UpdateSeasonDto:
+    properties:
+      endDate:
+        example: "2025-08-31T00:00:00Z"
+        type: string
+      name:
+        example: Summer 2025
+        maxLength: 100
+        minLength: 3
+        type: string
+      startDate:
+        example: "2025-06-01T00:00:00Z"
+        type: string
+    required:
+    - endDate
+    - name
+    - startDate
+    type: object
+  models.UpdateTeamDto:
+    properties:
+      name:
+        example: BIG Clan
+        maxLength: 100
+        minLength: 3
+        type: string
+    required:
+    - name
+    type: object
+host: localhost:8000
+info:
+  contact: {}
+  description: This is an API for managing matchmaking seasons, teams, and results
+  title: MatchMania API
+  version: "1.0"
+paths:
+  /seasons:
+    get:
+      consumes:
+      - application/json
+      description: Get all seasons
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SeasonsResponse'
+        "502":
+          description: Bad Gateway
+          schema:
+            $ref: '#/definitions/models.BadGatewayResponse'
+      summary: Get all seasons
+      tags:
+      - seasons
+    post:
+      consumes:
+      - application/json
+      description: Create a season
+      parameters:
+      - description: Season object that needs to be created
+        in: body
+        name: season
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateSeasonDto'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.SeasonResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.BadRequestResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/models.UnprocessableEntityResponse'
+        "502":
+          description: Bad Gateway
+          schema:
+            $ref: '#/definitions/models.BadGatewayResponse'
+      summary: Create a season
+      tags:
+      - seasons
+  /seasons/{seasonId}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a season
+      parameters:
+      - description: Season ID
+        in: path
+        name: seasonId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.NotFoundResponse'
+        "502":
+          description: Bad Gateway
+          schema:
+            $ref: '#/definitions/models.BadGatewayResponse'
+      summary: Delete a season
+      tags:
+      - seasons
+    get:
+      consumes:
+      - application/json
+      description: Get a season
+      parameters:
+      - description: Season ID
+        in: path
+        name: seasonId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SeasonResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.NotFoundResponse'
+      summary: Get a season
+      tags:
+      - seasons
+    put:
+      consumes:
+      - application/json
+      description: Update a season
+      parameters:
+      - description: Season ID
+        in: path
+        name: seasonId
+        required: true
+        type: string
+      - description: Season object that needs to be updated
+        in: body
+        name: season
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateSeasonDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SeasonResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.BadRequestResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.NotFoundResponse'
+        "502":
+          description: Bad Gateway
+          schema:
+            $ref: '#/definitions/models.BadGatewayResponse'
+      summary: Update a season
+      tags:
+      - seasons
+  /seasons/{seasonId}/teams:
+    get:
+      consumes:
+      - application/json
+      description: Get all teams
+      parameters:
+      - description: Season ID
+        in: path
+        name: seasonId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.TeamsResponse'
+        "502":
+          description: Bad Gateway
+          schema:
+            $ref: '#/definitions/models.BadGatewayResponse'
+      summary: Get all teams
+      tags:
+      - teams
+    post:
+      consumes:
+      - application/json
+      description: Create a team
+      parameters:
+      - description: Season ID
+        in: path
+        name: seasonId
+        required: true
+        type: string
+      - description: Team object that needs to be created
+        in: body
+        name: team
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateTeamDto'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.TeamResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.BadRequestResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/models.UnprocessableEntityResponse'
+        "502":
+          description: Bad Gateway
+          schema:
+            $ref: '#/definitions/models.BadGatewayResponse'
+      summary: Create a team
+      tags:
+      - teams
+  /seasons/{seasonId}/teams/{teamId}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a team
+      parameters:
+      - description: Season ID
+        in: path
+        name: seasonId
+        required: true
+        type: string
+      - description: Team ID
+        in: path
+        name: teamId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.NotFoundResponse'
+        "502":
+          description: Bad Gateway
+          schema:
+            $ref: '#/definitions/models.BadGatewayResponse'
+      summary: Delete a team
+      tags:
+      - teams
+    get:
+      consumes:
+      - application/json
+      description: Get a team
+      parameters:
+      - description: Season ID
+        in: path
+        name: seasonId
+        required: true
+        type: string
+      - description: Team ID
+        in: path
+        name: teamId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.TeamResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.NotFoundResponse'
+      summary: Get a team
+      tags:
+      - teams
+    put:
+      consumes:
+      - application/json
+      description: Update a team
+      parameters:
+      - description: Season ID
+        in: path
+        name: seasonId
+        required: true
+        type: string
+      - description: Team ID
+        in: path
+        name: teamId
+        required: true
+        type: string
+      - description: Team object that needs to be updated
+        in: body
+        name: team
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateTeamDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.TeamResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.BadRequestResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.NotFoundResponse'
+        "502":
+          description: Bad Gateway
+          schema:
+            $ref: '#/definitions/models.BadGatewayResponse'
+      summary: Update a team
+      tags:
+      - teams
+  /seasons/{seasonId}/teams/{teamId}/results:
+    get:
+      consumes:
+      - application/json
+      description: Get all results
+      parameters:
+      - description: Season ID
+        in: path
+        name: seasonId
+        required: true
+        type: string
+      - description: Team ID
+        in: path
+        name: teamId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResultsResponse'
+        "502":
+          description: Bad Gateway
+          schema:
+            $ref: '#/definitions/models.BadGatewayResponse'
+      summary: Get all results
+      tags:
+      - results
+    post:
+      consumes:
+      - application/json
+      description: Create a result
+      parameters:
+      - description: Season ID
+        in: path
+        name: seasonId
+        required: true
+        type: string
+      - description: Team ID
+        in: path
+        name: teamId
+        required: true
+        type: string
+      - description: Result object that needs to be created
+        in: body
+        name: result
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateResultDto'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.ResultResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.BadRequestResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/models.UnprocessableEntityResponse'
+        "502":
+          description: Bad Gateway
+          schema:
+            $ref: '#/definitions/models.BadGatewayResponse'
+      summary: Create a result
+      tags:
+      - results
+  /seasons/{seasonId}/teams/{teamId}/results/{resultId}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a result
+      parameters:
+      - description: Season ID
+        in: path
+        name: seasonId
+        required: true
+        type: string
+      - description: Team ID
+        in: path
+        name: teamId
+        required: true
+        type: string
+      - description: Result ID
+        in: path
+        name: resultId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.NotFoundResponse'
+        "502":
+          description: Bad Gateway
+          schema:
+            $ref: '#/definitions/models.BadGatewayResponse'
+      summary: Delete a result
+      tags:
+      - results
+    get:
+      consumes:
+      - application/json
+      description: Get a result
+      parameters:
+      - description: Season ID
+        in: path
+        name: seasonId
+        required: true
+        type: string
+      - description: Team ID
+        in: path
+        name: teamId
+        required: true
+        type: string
+      - description: Result ID
+        in: path
+        name: resultId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResultResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.NotFoundResponse'
+      summary: Get a result
+      tags:
+      - results
+    put:
+      consumes:
+      - application/json
+      description: Update a result
+      parameters:
+      - description: Season ID
+        in: path
+        name: seasonId
+        required: true
+        type: string
+      - description: Team ID
+        in: path
+        name: teamId
+        required: true
+        type: string
+      - description: Result ID
+        in: path
+        name: resultId
+        required: true
+        type: string
+      - description: Result object that needs to be updated
+        in: body
+        name: result
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateResultDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResultResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.BadRequestResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.NotFoundResponse'
+        "502":
+          description: Bad Gateway
+          schema:
+            $ref: '#/definitions/models.BadGatewayResponse'
+      summary: Update a result
+      tags:
+      - results
+swagger: "2.0"

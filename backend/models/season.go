@@ -19,22 +19,22 @@ type Season struct {
 }
 
 type SeasonDto struct {
-	ID        uint      `json:"id"`
-	Name      string    `json:"name"`
-	StartDate time.Time `json:"startDate"`
-	EndDate   time.Time `json:"endDate"`
+	ID        uint      `json:"id" example:"5"`
+	Name      string    `json:"name" example:"Summer 2025"`
+	StartDate time.Time `json:"startDate" example:"2025-06-01T00:00:00Z"`
+	EndDate   time.Time `json:"endDate" example:"2025-08-31T00:00:00Z"`
 }
 
 type CreateSeasonDto struct {
-	Name      string    `json:"name" validate:"required,min=3,max=100"`
-	StartDate time.Time `json:"startDate" validate:"required,startDate"`
-	EndDate   time.Time `json:"endDate" validate:"required,endDate,dateDiff,gtfield=StartDate"`
+	Name      string    `json:"name" example:"Summer 2025" validate:"required,min=3,max=100"`
+	StartDate time.Time `json:"startDate" example:"2025-06-01T00:00:00Z" validate:"required,startDate"`
+	EndDate   time.Time `json:"endDate" example:"2025-08-31T00:00:00Z" validate:"required,endDate,dateDiff,gtfield=StartDate"`
 }
 
 type UpdateSeasonDto struct {
-	Name      string    `json:"name" validate:"required,min=3,max=100"`
-	StartDate time.Time `json:"startDate" validate:"required,startDate"`
-	EndDate   time.Time `json:"endDate" validate:"required,endDate,dateDiff,gtfield=StartDate"`
+	Name      string    `json:"name" example:"Summer 2025" validate:"required,min=3,max=100"`
+	StartDate time.Time `json:"startDate" example:"2025-06-01T00:00:00Z" validate:"required,startDate"`
+	EndDate   time.Time `json:"endDate" example:"2025-08-31T00:00:00Z" validate:"required,endDate,dateDiff,gtfield=StartDate"`
 }
 
 func (s *Season) ToDto() SeasonDto {

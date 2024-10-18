@@ -3,10 +3,16 @@ package routes
 import (
 	"MatchManiaAPI/controllers"
 
+	_ "MatchManiaAPI/docs"
+
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func ApplyRoutes(server *gin.Engine) {
+	server.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
 	v1 := server.Group("/api/v1")
 	{
 		v1.GET("/health-check", controllers.HealthCheck)

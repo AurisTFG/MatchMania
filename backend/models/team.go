@@ -21,17 +21,17 @@ type Team struct {
 }
 
 type TeamDto struct {
-	ID   uint   `json:"id"`
-	Name string `json:"name"`
-	Elo  uint   `json:"elo"`
+	ID   uint   `json:"id" example:"6"`
+	Name string `json:"name" example:"BIG Clan"`
+	Elo  uint   `json:"elo" example:"1200"`
 }
 
 type CreateTeamDto struct {
-	Name string `json:"name" validate:"required,min=3,max=100"`
+	Name string `json:"name" validate:"required,min=3,max=100" example:"BIG Clan"`
 }
 
 type UpdateTeamDto struct {
-	Name string `json:"name" validate:"required,min=3,max=100"`
+	Name string `json:"name" validate:"required,min=3,max=100" example:"BIG Clan"`
 }
 
 func (t *Team) ToDto() TeamDto {

@@ -15,6 +15,11 @@ func init() {
 	initializers.ConnectDB()
 }
 
+// @title MatchMania API
+// @version 1.0
+// @description This is an API for managing matchmaking seasons, teams, and results
+// @host localhost:8000
+// @BasePath /api/v1
 func main() {
 	gin.SetMode(gin.DebugMode)
 
@@ -34,6 +39,6 @@ func main() {
 
 	err := server.Run(":" + initializers.Cfg.ServerPort)
 	if err != nil {
-		log.Fatal("[Error] failed to start Gin server due to: " + err.Error())
+		log.Fatal("Failed to start Gin server.")
 	}
 }

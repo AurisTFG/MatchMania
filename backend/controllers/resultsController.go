@@ -10,23 +10,36 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @Summary Create a result
+// @Description Create a result
+// @Tags results
+// @Accept json
+// @Produce json
+// @Param seasonId path string true "Season ID"
+// @Param teamId path string true "Team ID"
+// @Param result body models.CreateResultDto true "Result object that needs to be created"
+// @Success 201 {object} models.ResultResponse
+// @Failure 400 {object} models.BadRequestResponse
+// @Failure 422 {object} models.UnprocessableEntityResponse
+// @Failure 502 {object} models.BadGatewayResponse
+// @Router /seasons/{seasonId}/teams/{teamId}/results [post]
 func CreateResult(c *gin.Context) {
 	seasonID := c.Param("seasonId")
 	teamID := c.Param("teamId")
 	var bodyDto models.CreateResultDto
 
 	if err := c.ShouldBindJSON(&bodyDto); err != nil {
-		r.BadRequest(c, err)
+		r.BadRequest(c, err.Error())
 		return
 	}
 
 	if err := bodyDto.Validate(); err != nil {
-		r.UnprocessableEntity(c, err)
+		r.UnprocessableEntity(c, err.Error())
 		return
 	}
 
 	if fmt.Sprint(bodyDto.OpponentTeamID) == teamID {
-		r.UnprocessableEntity(c, fmt.Errorf("opponent Team ID cannot be the same as Team ID"))
+		r.UnprocessableEntity(c, "Opponent Team ID cannot be the same as Team ID")
 		return
 	}
 
@@ -44,13 +57,27 @@ func CreateResult(c *gin.Context) {
 
 	newResult, err := services.CreateResult(&bodyDto, team.SeasonID, team.ID)
 	if err != nil {
-		r.BadGateway(c, err)
+		r.BadGateway(c, err.Error())
 		return
 	}
 
-	r.Created(c, "result", newResult.ToDto())
+	r.Created(c, models.ResultResponse{Result: newResult.ToDto()})
 }
 
+// @Summary Update a result
+// @Description Update a result
+// @Tags results
+// @Accept json
+// @Produce json
+// @Param seasonId path string true "Season ID"
+// @Param teamId path string true "Team ID"
+// @Param resultId path string true "Result ID"
+// @Param result body models.UpdateResultDto true "Result object that needs to be updated"
+// @Success 200 {object} models.ResultResponse
+// @Failure 400 {object} models.BadRequestResponse
+// @Failure 404 {object} models.NotFoundResponse
+// @Failure 502 {object} models.BadGatewayResponse
+// @Router /seasons/{seasonId}/teams/{teamId}/results/{resultId} [put]
 func UpdateResult(c *gin.Context) {
 	seasonID := c.Param("seasonId")
 	teamID := c.Param("teamId")
@@ -58,12 +85,12 @@ func UpdateResult(c *gin.Context) {
 	var bodyDto models.UpdateResultDto
 
 	if err := c.ShouldBindJSON(&bodyDto); err != nil {
-		r.BadRequest(c, err)
+		r.BadRequest(c, err.Error())
 		return
 	}
 
 	if err := bodyDto.Validate(); err != nil {
-		r.UnprocessableEntity(c, err)
+		r.UnprocessableEntity(c, err.Error())
 		return
 	}
 
@@ -75,13 +102,24 @@ func UpdateResult(c *gin.Context) {
 
 	updatedResult, err := services.UpdateResult(resultModel, &bodyDto)
 	if err != nil {
-		r.BadGateway(c, err)
+		r.BadGateway(c, err.Error())
 		return
 	}
 
-	r.OK(c, "result", updatedResult.ToDto())
+	r.OK(c, models.ResultResponse{Result: updatedResult.ToDto()})
 }
 
+// @Summary Get a result
+// @Description Get a result
+// @Tags results
+// @Accept json
+// @Produce json
+// @Param seasonId path string true "Season ID"
+// @Param teamId path string true "Team ID"
+// @Param resultId path string true "Result ID"
+// @Success 200 {object} models.ResultResponse
+// @Failure 404 {object} models.NotFoundResponse
+// @Router /seasons/{seasonId}/teams/{teamId}/results/{resultId} [get]
 func GetResult(c *gin.Context) {
 	seasonID := c.Param("seasonId")
 	teamID := c.Param("teamId")
@@ -93,22 +131,44 @@ func GetResult(c *gin.Context) {
 		return
 	}
 
-	r.OK(c, "result", resultModel.ToDto())
+	r.OK(c, models.ResultResponse{Result: resultModel.ToDto()})
 }
 
+// @Summary Get all results
+// @Description Get all results
+// @Tags results
+// @Accept json
+// @Produce json
+// @Param seasonId path string true "Season ID"
+// @Param teamId path string true "Team ID"
+// @Success 200 {object} models.ResultsResponse
+// @Failure 502 {object} models.BadGatewayResponse
+// @Router /seasons/{seasonId}/teams/{teamId}/results [get]
 func GetAllResults(c *gin.Context) {
 	seasonID := c.Param("seasonId")
 	teamID := c.Param("teamId")
 
 	resultModels, err := services.GetAllResults(seasonID, teamID)
 	if err != nil {
-		r.BadGateway(c, err)
+		r.BadGateway(c, err.Error())
 		return
 	}
 
-	r.OK(c, "results", models.ToResultDtos(resultModels))
+	r.OK(c, models.ResultsResponse{Results: models.ToResultDtos(resultModels)})
 }
 
+// @Summary Delete a result
+// @Description Delete a result
+// @Tags results
+// @Accept json
+// @Produce json
+// @Param seasonId path string true "Season ID"
+// @Param teamId path string true "Team ID"
+// @Param resultId path string true "Result ID"
+// @Success 204
+// @Failure 404 {object} models.NotFoundResponse
+// @Failure 502 {object} models.BadGatewayResponse
+// @Router /seasons/{seasonId}/teams/{teamId}/results/{resultId} [delete]
 func DeleteResult(c *gin.Context) {
 	seasonID := c.Param("seasonId")
 	teamID := c.Param("teamId")
@@ -122,7 +182,7 @@ func DeleteResult(c *gin.Context) {
 
 	err = services.DeleteResult(resultModel)
 	if err != nil {
-		r.BadGateway(c, err)
+		r.BadGateway(c, err.Error())
 		return
 	}
 
