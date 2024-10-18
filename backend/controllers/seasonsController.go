@@ -1,64 +1,100 @@
 package controllers
 
 import (
-	"MatchManiaAPI/initializers"
 	"MatchManiaAPI/models"
-	"time"
+	r "MatchManiaAPI/responses"
+	"MatchManiaAPI/services"
 
 	"github.com/gin-gonic/gin"
 )
 
 func CreateSeason(c *gin.Context) {
-	season := models.Season{Name: "2021-2022", StartDate: time.Now(), EndDate: time.Now().AddDate(1, 0, 0)}
+	var bodyDto models.CreateSeasonDto
 
-	result := initializers.DB.Create(&season)
-	if result.Error != nil {
-		c.Status(400)
+	if err := c.ShouldBindJSON(&bodyDto); err != nil {
+		r.BadRequest(c, err)
 		return
 	}
 
-	c.JSON(200, gin.H{
-		"season": season,
-	})
-}
+	if err := bodyDto.Validate(); err != nil {
+		r.UnprocessableEntity(c, err)
+		return
+	}
 
-func GetSeason(c *gin.Context) {
-	season := models.Season{}
-	initializers.DB.First(&season, c.Param("id"))
+	newSeason, err := services.CreateSeason(&bodyDto)
+	if err != nil {
+		r.BadGateway(c, err)
+		return
+	}
 
-	c.JSON(200, gin.H{
-		"season": season,
-	})
-}
-
-func GetAllSeasons(c *gin.Context) {
-	seasons := []models.Season{}
-	initializers.DB.Find(&seasons)
-
-	c.JSON(200, gin.H{
-		"seasons": seasons,
-	})
+	r.Created(c, "season", newSeason.ToDto())
 }
 
 func UpdateSeason(c *gin.Context) {
-	season := models.Season{}
-	initializers.DB.First(&season, c.Param("id"))
+	id := c.Param("seasonId")
+	var bodyDto models.UpdateSeasonDto
 
-	season.Name = "2022-2023"
-	initializers.DB.Save(&season)
+	if err := c.ShouldBindJSON(&bodyDto); err != nil {
+		r.BadRequest(c, err)
+		return
+	}
 
-	c.JSON(200, gin.H{
-		"season": season,
-	})
+	if err := bodyDto.Validate(); err != nil {
+		r.UnprocessableEntity(c, err)
+		return
+	}
+
+	season, err := services.GetSeasonByID(id)
+	if err != nil {
+		r.NotFound(c, "Season with id "+id+" not found")
+		return
+	}
+
+	updatedSeason, err := services.UpdateSeason(season, &bodyDto)
+	if err != nil {
+		r.BadGateway(c, err)
+		return
+	}
+
+	r.OK(c, "season", updatedSeason.ToDto())
+}
+
+func GetSeason(c *gin.Context) {
+	id := c.Param("seasonId")
+
+	season, err := services.GetSeasonByID(id)
+	if err != nil {
+		r.NotFound(c, "Season with id "+id+" not found")
+		return
+	}
+
+	r.OK(c, "season", season.ToDto())
+}
+
+func GetAllSeasons(c *gin.Context) {
+	seasons, err := services.GetAllSeasons()
+	if err != nil {
+		r.BadGateway(c, err)
+		return
+	}
+
+	r.OK(c, "seasons", models.ToSeasonDtos(seasons))
 }
 
 func DeleteSeason(c *gin.Context) {
-	season := models.Season{}
-	initializers.DB.First(&season, c.Param("id"))
+	id := c.Param("seasonId")
 
-	initializers.DB.Delete(&season)
+	season, err := services.GetSeasonByID(id)
+	if err != nil {
+		r.NotFound(c, "Season with id "+id+" not found")
+		return
+	}
 
-	c.JSON(200, gin.H{
-		"season": season,
-	})
+	err = services.DeleteSeason(season)
+	if err != nil {
+		r.BadGateway(c, err)
+		return
+	}
+
+	r.Deleted(c)
 }

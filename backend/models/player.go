@@ -1,7 +1,9 @@
 package models
 
+import "gorm.io/gorm"
+
 type Player struct {
-	ID       uint `gorm:"primaryKey"`
+	gorm.Model
 	Nickname string
 	Country  string
 

@@ -18,8 +18,6 @@ type Config struct {
 	DBName         string `mapstructure:"DB_NAME"`
 	DBPort         string `mapstructure:"DB_PORT"`
 	DBSSLMode      string `mapstructure:"DB_SSLMODE"`
-
-	GinMode string `mapstructure:"GIN_MODE"`
 }
 
 func LoadEnv() {

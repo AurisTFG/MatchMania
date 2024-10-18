@@ -16,8 +16,11 @@ func init() {
 }
 
 func main() {
+	gin.SetMode(gin.DebugMode)
+
 	server := gin.Default()
 
+	server.SetTrustedProxies(nil)
 	server.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{initializers.Cfg.ClientURL},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},

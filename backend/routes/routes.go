@@ -15,27 +15,27 @@ func ApplyRoutes(server *gin.Engine) {
 		{
 			seasons.GET("/", controllers.GetAllSeasons)
 			seasons.POST("/", controllers.CreateSeason)
-			seasons.GET("/:id", controllers.GetSeason)
-			seasons.PUT("/:id", controllers.UpdateSeason)
-			seasons.DELETE("/:id", controllers.DeleteSeason)
-		}
+			seasons.GET("/:seasonId", controllers.GetSeason)
+			seasons.PUT("/:seasonId", controllers.UpdateSeason)
+			seasons.DELETE("/:seasonId", controllers.DeleteSeason)
 
-		teams := v1.Group("/teams")
-		{
-			teams.GET("/", controllers.GetAllTeams)
-			teams.POST("/", controllers.CreateTeam)
-			teams.GET("/:id", controllers.GetTeam)
-			teams.PUT("/:id", controllers.UpdateTeam)
-			teams.DELETE("/:id", controllers.DeleteTeam)
-		}
+			teams := seasons.Group("/:seasonId/teams")
+			{
+				teams.GET("/", controllers.GetAllTeams)
+				teams.POST("/", controllers.CreateTeam)
+				teams.GET("/:teamId", controllers.GetTeam)
+				teams.PUT("/:teamId", controllers.UpdateTeam)
+				teams.DELETE("/:teamId", controllers.DeleteTeam)
 
-		results := v1.Group("/results")
-		{
-			results.GET("/", controllers.GetAllResults)
-			results.POST("/", controllers.CreateResult)
-			results.GET("/:id", controllers.GetResult)
-			results.PUT("/:id", controllers.UpdateResult)
-			results.DELETE("/:id", controllers.DeleteResult)
+				results := teams.Group("/:teamId/results")
+				{
+					results.GET("/", controllers.GetAllResults)
+					results.POST("/", controllers.CreateResult)
+					results.GET("/:resultId", controllers.GetResult)
+					results.PUT("/:resultId", controllers.UpdateResult)
+					results.DELETE("/:resultId", controllers.DeleteResult)
+				}
+			}
 		}
 	}
 }

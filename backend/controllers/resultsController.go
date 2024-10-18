@@ -1,67 +1,130 @@
 package controllers
 
 import (
-	"MatchManiaAPI/initializers"
 	"MatchManiaAPI/models"
-	"net/http"
+	"fmt"
+
+	r "MatchManiaAPI/responses"
+	"MatchManiaAPI/services"
 
 	"github.com/gin-gonic/gin"
 )
 
 func CreateResult(c *gin.Context) {
-	var result models.Result
-	if err := c.ShouldBindJSON(&result); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	seasonID := c.Param("seasonId")
+	teamID := c.Param("teamId")
+	var bodyDto models.CreateResultDto
+
+	if err := c.ShouldBindJSON(&bodyDto); err != nil {
+		r.BadRequest(c, err)
 		return
 	}
 
-	initializers.DB.Create(&result)
-
-	c.JSON(http.StatusCreated, gin.H{"data": result})
-}
-
-func GetResult(c *gin.Context) {
-	var result models.Result
-	if err := initializers.DB.First(&result, c.Param("id")).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Record not found!"})
+	if err := bodyDto.Validate(); err != nil {
+		r.UnprocessableEntity(c, err)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": result})
-}
+	if fmt.Sprint(bodyDto.OpponentTeamID) == teamID {
+		r.UnprocessableEntity(c, fmt.Errorf("opponent Team ID cannot be the same as Team ID"))
+		return
+	}
 
-func GetAllResults(c *gin.Context) {
-	var results []models.Result
-	initializers.DB.Find(&results)
+	team, err := services.GetTeamByID(seasonID, teamID)
+	if err != nil {
+		r.NotFound(c, "Team with id "+teamID+" not found in season with id "+seasonID)
+		return
+	}
 
-	c.JSON(http.StatusOK, gin.H{"data": results})
+	_, err = services.GetTeamByID(seasonID, fmt.Sprint(bodyDto.OpponentTeamID))
+	if err != nil {
+		r.NotFound(c, "Opponent Team with id "+fmt.Sprint(bodyDto.OpponentTeamID)+" not found in season with id "+seasonID)
+		return
+	}
+
+	newResult, err := services.CreateResult(&bodyDto, team.SeasonID, team.ID)
+	if err != nil {
+		r.BadGateway(c, err)
+		return
+	}
+
+	r.Created(c, "result", newResult.ToDto())
 }
 
 func UpdateResult(c *gin.Context) {
-	var result models.Result
-	if err := initializers.DB.First(&result, c.Param("id")).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Record not found!"})
+	seasonID := c.Param("seasonId")
+	teamID := c.Param("teamId")
+	resultID := c.Param("resultId")
+	var bodyDto models.UpdateResultDto
+
+	if err := c.ShouldBindJSON(&bodyDto); err != nil {
+		r.BadRequest(c, err)
 		return
 	}
 
-	if err := c.ShouldBindJSON(&result); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if err := bodyDto.Validate(); err != nil {
+		r.UnprocessableEntity(c, err)
 		return
 	}
 
-	initializers.DB.Save(&result)
+	resultModel, err := services.GetResultByID(seasonID, teamID, resultID)
+	if err != nil {
+		r.NotFound(c, "Result with id "+resultID+" not found in team with id "+teamID+" in season with id "+seasonID)
+		return
+	}
 
-	c.JSON(http.StatusOK, gin.H{"data": result})
+	updatedResult, err := services.UpdateResult(resultModel, &bodyDto)
+	if err != nil {
+		r.BadGateway(c, err)
+		return
+	}
+
+	r.OK(c, "result", updatedResult.ToDto())
+}
+
+func GetResult(c *gin.Context) {
+	seasonID := c.Param("seasonId")
+	teamID := c.Param("teamId")
+	resultID := c.Param("resultId")
+
+	resultModel, err := services.GetResultByID(seasonID, teamID, resultID)
+	if err != nil {
+		r.NotFound(c, "Result with id "+resultID+" not found in team with id "+teamID+" in season with id "+seasonID)
+		return
+	}
+
+	r.OK(c, "result", resultModel.ToDto())
+}
+
+func GetAllResults(c *gin.Context) {
+	seasonID := c.Param("seasonId")
+	teamID := c.Param("teamId")
+
+	resultModels, err := services.GetAllResults(seasonID, teamID)
+	if err != nil {
+		r.BadGateway(c, err)
+		return
+	}
+
+	r.OK(c, "results", models.ToResultDtos(resultModels))
 }
 
 func DeleteResult(c *gin.Context) {
-	var result models.Result
-	if err := initializers.DB.First(&result, c.Param("id")).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Record not found!"})
+	seasonID := c.Param("seasonId")
+	teamID := c.Param("teamId")
+	resultID := c.Param("resultId")
+
+	resultModel, err := services.GetResultByID(seasonID, teamID, resultID)
+	if err != nil {
+		r.NotFound(c, "Result with id "+resultID+" not found in team with id "+teamID+" in season with id "+seasonID)
 		return
 	}
 
-	initializers.DB.Delete(&result)
+	err = services.DeleteResult(resultModel)
+	if err != nil {
+		r.BadGateway(c, err)
+		return
+	}
 
-	c.JSON(http.StatusOK, gin.H{"data": true})
+	r.Deleted(c)
 }
