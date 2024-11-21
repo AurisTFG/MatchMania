@@ -3,7 +3,6 @@ package main
 import (
 	"MatchManiaAPI/initializers"
 	"MatchManiaAPI/routes"
-	"MatchManiaAPI/seeders"
 	"log"
 	"time"
 
@@ -14,8 +13,8 @@ import (
 func init() {
 	initializers.LoadEnv()
 	initializers.ConnectDB()
-
-	seeders.SeedDatabase()
+	initializers.SyncDatabase()
+	initializers.SeedDatabase()
 }
 
 // @title MatchMania API

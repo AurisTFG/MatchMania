@@ -1,9 +1,7 @@
-package seeders
+package initializers
 
 import (
-	"MatchManiaAPI/initializers"
 	"MatchManiaAPI/models"
-	"MatchManiaAPI/services"
 	"log"
 	"time"
 )
@@ -20,13 +18,13 @@ type CustomResultCreationType struct {
 }
 
 func SeedDatabase() {
-	initializers.DB.Exec("DELETE FROM results;")
-	initializers.DB.Exec("DELETE FROM teams;")
-	initializers.DB.Exec("DELETE FROM seasons;")
+	DB.Exec("DELETE FROM results;")
+	DB.Exec("DELETE FROM teams;")
+	DB.Exec("DELETE FROM seasons;")
 
-	initializers.DB.Exec("ALTER SEQUENCE seasons_id_seq RESTART WITH 1;")
-	initializers.DB.Exec("ALTER SEQUENCE teams_id_seq RESTART WITH 1;")
-	initializers.DB.Exec("ALTER SEQUENCE results_id_seq RESTART WITH 1;")
+	DB.Exec("ALTER SEQUENCE seasons_id_seq RESTART WITH 1;")
+	DB.Exec("ALTER SEQUENCE teams_id_seq RESTART WITH 1;")
+	DB.Exec("ALTER SEQUENCE results_id_seq RESTART WITH 1;")
 
 	seasons := []models.CreateSeasonDto{
 		{Name: "TO BE DELETED", StartDate: time.Now(), EndDate: time.Now().AddDate(0, 0, 30)},
@@ -61,15 +59,23 @@ func SeedDatabase() {
 	}
 
 	for _, season := range seasons {
-		services.CreateSeason(&season)
+		DB.Create(&season)
 	}
 
 	for _, team := range teams {
-		services.CreateTeam(&team.dto, team.seasonID)
+		newTeam := team.dto.ToTeam()
+		newTeam.SeasonID = team.seasonID
+		newTeam.Elo = 1000
+
+		DB.Create(&newTeam)
 	}
 
 	for _, result := range results {
-		services.CreateResult(&result.dto, result.seasonID, result.teamID)
+		newResult := result.dto.ToResult()
+		newResult.SeasonID = result.seasonID
+		newResult.TeamID = result.teamID
+
+		DB.Create(&newResult)
 	}
 
 	log.Println("Database seeded successfully!")
