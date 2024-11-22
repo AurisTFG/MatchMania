@@ -2,6 +2,7 @@ package routes
 
 import (
 	"MatchManiaAPI/controllers"
+	"MatchManiaAPI/middlewares"
 
 	_ "MatchManiaAPI/docs"
 
@@ -16,6 +17,14 @@ func ApplyRoutes(server *gin.Engine) {
 	v1 := server.Group("/api/v1")
 	{
 		v1.GET("/health-check", controllers.HealthCheck)
+
+		auth := v1.Group("/auth")
+		{
+			auth.POST("/signup", controllers.UserSignUp)
+			auth.POST("/login", controllers.UserLogIn)
+			auth.POST("/logout", controllers.UserLogOut)
+			auth.POST("/refresh-token", controllers.UserRefreshToken)
+		}
 
 		seasons := v1.Group("/seasons")
 		{
@@ -36,7 +45,7 @@ func ApplyRoutes(server *gin.Engine) {
 				results := teams.Group("/:teamId/results")
 				{
 					results.GET("/", controllers.GetAllResults)
-					results.POST("/", controllers.CreateResult)
+					results.POST("/", middlewares.RequireAuth, controllers.CreateResult)
 					results.GET("/:resultId", controllers.GetResult)
 					results.PUT("/:resultId", controllers.UpdateResult)
 					results.DELETE("/:resultId", controllers.DeleteResult)

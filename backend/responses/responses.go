@@ -23,6 +23,11 @@ func BadRequest(c *gin.Context, errorMessage string) {
 	c.JSON(http.StatusBadRequest, models.BadRequestResponse{Error: errorMessage})
 }
 
+func Unauthorized(c *gin.Context, errorMessage string) {
+	c.JSON(http.StatusUnauthorized, models.UnauthorizedResponse{Error: errorMessage})
+	c.Abort()
+}
+
 func NotFound(c *gin.Context, errorMessage string) {
 	c.JSON(http.StatusNotFound, models.NotFoundResponse{Error: errorMessage})
 }

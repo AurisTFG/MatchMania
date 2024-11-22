@@ -4,6 +4,10 @@ type BadRequestResponse struct {
 	Error string `json:"error" example:"JSON parsing error"`
 }
 
+type UnauthorizedResponse struct {
+	Error string `json:"error" example:"Unauthorized"`
+}
+
 type NotFoundResponse struct {
 	Error string `json:"error" example:"Resource was not found"`
 }
@@ -14,6 +18,19 @@ type UnprocessableEntityResponse struct {
 
 type BadGatewayResponse struct {
 	Error string `json:"error" example:"Unable to communicate with the database"`
+}
+
+type UserSignUpResponse struct {
+	User UserDto `json:"user"`
+}
+
+type UserLoginResponse struct {
+	AccessToken  string `json:"accessToken"`
+	RefreshToken string `json:"refreshToken"`
+}
+
+type UserRefreshTokenResponse struct {
+	AccessToken string `json:"accessToken"`
 }
 
 type SeasonResponse struct {

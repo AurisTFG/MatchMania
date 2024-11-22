@@ -2,18 +2,19 @@ package initializers
 
 import (
 	"MatchManiaAPI/models"
-	"log"
+	"fmt"
 )
 
-func SyncDatabase() {
+func SyncDatabase() error {
 	err := DB.AutoMigrate(
+		&models.User{},
 		&models.Season{},
 		&models.Team{},
 		&models.Result{},
 	)
 	if err != nil {
-		log.Fatal("Failed to migrate database", err)
+		return fmt.Errorf("failed to migrate database: %w", err)
 	}
 
-	log.Println("Migration complete")
+	return nil
 }

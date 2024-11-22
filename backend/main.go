@@ -3,6 +3,7 @@ package main
 import (
 	"MatchManiaAPI/initializers"
 	"MatchManiaAPI/routes"
+	"fmt"
 	"log"
 	"time"
 
@@ -11,10 +12,25 @@ import (
 )
 
 func init() {
-	initializers.LoadEnv()
-	initializers.ConnectDB()
-	initializers.SyncDatabase()
-	initializers.SeedDatabase()
+	if err := initializers.LoadEnvVars(); err != nil {
+		log.Fatalf("Failed to load environment variables: %v", err)
+	}
+	fmt.Println("(1/4) Environment variables successfully loaded")
+
+	if err := initializers.ConnectToDatabase(); err != nil {
+		log.Fatalf("Failed to connect to database: %v", err)
+	}
+	fmt.Println("(2/4) Successfully connected to database")
+
+	if err := initializers.SyncDatabase(); err != nil {
+		log.Fatalf("Failed to sync database: %v", err)
+	}
+	fmt.Println("(3/4) Successfully synced database")
+
+	if err := initializers.SeedDatabase(); err != nil {
+		log.Fatalf("Failed to seed database: %v", err)
+	}
+	fmt.Println("(4/4) Successfully seeded database")
 }
 
 // @title MatchMania API

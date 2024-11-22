@@ -2,8 +2,11 @@ package initializers
 
 import (
 	"MatchManiaAPI/models"
-	"log"
+	"fmt"
 	"time"
+
+	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm/logger"
 )
 
 type CustomTeamCreationType struct {
@@ -17,14 +20,29 @@ type CustomResultCreationType struct {
 	teamID   uint
 }
 
-func SeedDatabase() {
-	DB.Exec("DELETE FROM results;")
-	DB.Exec("DELETE FROM teams;")
-	DB.Exec("DELETE FROM seasons;")
+func SeedDatabase() error {
+	originalLogger := DB.Logger
+	DB.Logger = originalLogger.LogMode(logger.Silent)
 
-	DB.Exec("ALTER SEQUENCE seasons_id_seq RESTART WITH 1;")
-	DB.Exec("ALTER SEQUENCE teams_id_seq RESTART WITH 1;")
-	DB.Exec("ALTER SEQUENCE results_id_seq RESTART WITH 1;")
+	tables := []string{"results", "teams", "seasons", "users"}
+
+	// Delete all rows from all tables
+	for _, table := range tables {
+		if err := DB.Exec("DELETE FROM " + table).Error; err != nil {
+			return fmt.Errorf("failed to delete from table %s: %w", table, err)
+		}
+	}
+
+	// Reset ID counters for all tables
+	for _, table := range tables {
+		seqName := fmt.Sprintf("%s_id_seq", table)
+		if err := DB.Exec("ALTER SEQUENCE " + seqName + " RESTART WITH 1").Error; err != nil {
+			return fmt.Errorf("failed to reset sequence for table %s: %w", table, err)
+		}
+	}
+
+	DB.Exec(`DROP TYPE IF EXISTS role;`)
+	DB.Exec(`CREATE TYPE role AS ENUM ('admin', 'moderator', 'user');`)
 
 	seasons := []models.CreateSeasonDto{
 		{Name: "TO BE DELETED", StartDate: time.Now(), EndDate: time.Now().AddDate(0, 0, 30)},
@@ -58,8 +76,19 @@ func SeedDatabase() {
 		{models.CreateResultDto{MatchStartDate: time.Now(), MatchEndDate: time.Now().Add(40 * time.Minute), Score: 12, OpponentScore: 15, OpponentTeamID: 8}, 2, 2},
 	}
 
+	users := []models.User{
+		{Username: "AdminXD", Email: "adminemail@gmail.com", Password: "admin", Role: models.AdminRole},
+		{Username: "ModeratorXDD", Email: "moderatoremail@gmail.com", Password: "mod", Role: models.ModeratorRole},
+		{Username: "UserXDDD", Email: "userremail@gmail.com", Password: "user", Role: models.UserRole},
+	}
+
 	for _, season := range seasons {
-		DB.Create(&season)
+		newSeason := season.ToSeason()
+
+		result := DB.Create(&newSeason)
+		if result.Error != nil {
+			return result.Error
+		}
 	}
 
 	for _, team := range teams {
@@ -67,7 +96,10 @@ func SeedDatabase() {
 		newTeam.SeasonID = team.seasonID
 		newTeam.Elo = 1000
 
-		DB.Create(&newTeam)
+		result := DB.Create(&newTeam)
+		if result.Error != nil {
+			return result.Error
+		}
 	}
 
 	for _, result := range results {
@@ -75,8 +107,27 @@ func SeedDatabase() {
 		newResult.SeasonID = result.seasonID
 		newResult.TeamID = result.teamID
 
-		DB.Create(&newResult)
+		result := DB.Create(&newResult)
+		if result.Error != nil {
+			return result.Error
+		}
 	}
 
-	log.Println("Database seeded successfully!")
+	for _, user := range users {
+		hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+		if err != nil {
+			return err
+		}
+
+		user.Password = string(hash)
+
+		result := DB.Create(&user)
+		if result.Error != nil {
+			return result.Error
+		}
+	}
+
+	DB.Logger = originalLogger
+
+	return nil
 }
