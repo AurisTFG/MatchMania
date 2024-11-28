@@ -47,7 +47,9 @@ func (r *userRepository) FindByEmail(email string) (*models.User, error) {
 }
 
 func (r *userRepository) Create(user *models.User) (*models.User, error) {
-	user.HashPassword()
+	if err := user.HashPassword(); err != nil {
+		return nil, err
+	}
 
 	result := r.db.Create(user)
 

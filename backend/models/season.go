@@ -102,9 +102,15 @@ func dateDiffValidator(fl validator.FieldLevel) bool {
 func (dto *CreateSeasonDto) Validate() error {
 	var validate = validator.New()
 
-	validate.RegisterValidation("startDate", startDateValidator)
-	validate.RegisterValidation("endDate", endDateValidator)
-	validate.RegisterValidation("dateDiff", dateDiffValidator)
+	if err := validate.RegisterValidation("startDate", startDateValidator); err != nil {
+		return err
+	}
+	if err := validate.RegisterValidation("endDate", endDateValidator); err != nil {
+		return err
+	}
+	if err := validate.RegisterValidation("dateDiff", dateDiffValidator); err != nil {
+		return err
+	}
 
 	return seasonValidationErrorHandler(validate.Struct(dto))
 }
@@ -112,9 +118,15 @@ func (dto *CreateSeasonDto) Validate() error {
 func (dto *UpdateSeasonDto) Validate() error {
 	var validate = validator.New()
 
-	validate.RegisterValidation("startDate", startDateValidator)
-	validate.RegisterValidation("endDate", endDateValidator)
-	validate.RegisterValidation("dateDiff", dateDiffValidator)
+	if err := validate.RegisterValidation("startDate", startDateValidator); err != nil {
+		return err
+	}
+	if err := validate.RegisterValidation("endDate", endDateValidator); err != nil {
+		return err
+	}
+	if err := validate.RegisterValidation("dateDiff", dateDiffValidator); err != nil {
+		return err
+	}
 
 	return seasonValidationErrorHandler(validate.Struct(dto))
 }

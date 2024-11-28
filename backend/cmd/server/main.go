@@ -71,7 +71,10 @@ func main() {
 
 	server := gin.Default()
 
-	server.SetTrustedProxies(nil)
+	if err := server.SetTrustedProxies(nil); err != nil {
+		log.Fatal("Failed to set trusted proxies.")
+	}
+
 	server.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{env.ClientURL},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},

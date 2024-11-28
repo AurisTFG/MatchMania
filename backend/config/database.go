@@ -127,7 +127,10 @@ func SeedDatabase(db *DB) error {
 	}
 
 	for _, user := range users {
-		user.HashPassword()
+		if err := user.HashPassword(); err != nil {
+			return err
+		}
+
 		if err := db.Create(&user).Error; err != nil {
 			return err
 		}

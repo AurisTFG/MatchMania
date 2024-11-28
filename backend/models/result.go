@@ -127,10 +127,18 @@ func scoreValidatorResult(fl validator.FieldLevel) bool {
 func (dto *CreateResultDto) Validate() error {
 	var validate = validator.New()
 
-	validate.RegisterValidation("startDate", startDateValidatorResult)
-	validate.RegisterValidation("endDate", endDateValidatorResult)
-	validate.RegisterValidation("dateDiff", dateDiffValidatorResult)
-	validate.RegisterValidation("score", scoreValidatorResult)
+	if err := validate.RegisterValidation("startDate", startDateValidatorResult); err != nil {
+		return err
+	}
+	if err := validate.RegisterValidation("endDate", endDateValidatorResult); err != nil {
+		return err
+	}
+	if err := validate.RegisterValidation("dateDiff", dateDiffValidatorResult); err != nil {
+		return err
+	}
+	if err := validate.RegisterValidation("score", scoreValidatorResult); err != nil {
+		return err
+	}
 
 	return resultValidationErrorHandler(validate.Struct(dto))
 }
@@ -138,10 +146,18 @@ func (dto *CreateResultDto) Validate() error {
 func (dto *UpdateResultDto) Validate() error {
 	var validate = validator.New()
 
-	validate.RegisterValidation("startDate", startDateValidatorResult)
-	validate.RegisterValidation("endDate", endDateValidatorResult)
-	validate.RegisterValidation("dateDiff", dateDiffValidatorResult)
-	validate.RegisterValidation("score", scoreValidatorResult)
+	if err := validate.RegisterValidation("startDate", startDateValidatorResult); err != nil {
+		return err
+	}
+	if err := validate.RegisterValidation("endDate", endDateValidatorResult); err != nil {
+		return err
+	}
+	if err := validate.RegisterValidation("dateDiff", dateDiffValidatorResult); err != nil {
+		return err
+	}
+	if err := validate.RegisterValidation("score", scoreValidatorResult); err != nil {
+		return err
+	}
 
 	return resultValidationErrorHandler(validate.Struct(dto))
 }

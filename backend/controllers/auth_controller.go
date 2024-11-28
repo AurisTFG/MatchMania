@@ -101,6 +101,10 @@ func (c *AuthController) AuthRefreshToken(ctx *gin.Context) {
 	}
 
 	user, err := c.authService.VerifyRefreshToken(tokenString)
+	if err != nil {
+		r.Unauthorized(ctx, err.Error())
+		return
+	}
 
 	accessToken, err := c.authService.CreateAccessToken(user)
 	if err != nil {

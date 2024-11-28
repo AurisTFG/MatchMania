@@ -29,8 +29,8 @@ test:
 
 lint:
 	@go vet ./...
-	@golangci-lint run ./...
-	@echo "Lint completed"
+	@golangci-lint run
+	@echo "Lint completed without errors"
 
 clean:
 	@if [ -d $(OUTPUT_DIR) ]; then rm -rf $(OUTPUT_DIR); fi
