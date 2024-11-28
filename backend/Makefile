@@ -23,8 +23,9 @@ rund: build
 	@CompileDaemon -command="$(OUTPUT_PATH)" -build="go build -o $(OUTPUT_PATH) $(SOURCE)"
 	@echo "Server stopped"
 
-test:
-	@go test -v ./...
+test: build
+	@go test ./... -v -coverprofile $(OUTPUT_DIR)/coverage.out
+	@go tool cover -html $(OUTPUT_DIR)/coverage.out
 	@echo "Test completed"
 
 lint:
