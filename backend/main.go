@@ -1,43 +1,72 @@
 package main
 
 import (
-	"MatchManiaAPI/initializers"
+	"MatchManiaAPI/config"
+	"MatchManiaAPI/controllers"
+	"MatchManiaAPI/middlewares"
+	"MatchManiaAPI/repositories"
 	"MatchManiaAPI/routes"
+	"MatchManiaAPI/services"
 	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
+)
+
+var (
+	env *config.Env
+	db  *gorm.DB
+	err error
 )
 
 func init() {
-	if err := initializers.LoadEnvVars(); err != nil {
+	fmt.Print("(0/4) ")
+	envName := os.Getenv("ENV")
+	if envName == "" {
+		envName = "dev" // Default to "dev" if not set
+	}
+	fmt.Println("Environment:", envName)
+
+	fmt.Print("(1/4) ")
+	env, err = config.LoadEnv(envName)
+	if err != nil {
 		log.Fatalf("Failed to load environment variables: %v", err)
 	}
-	fmt.Println("(1/4) Environment variables successfully loaded")
+	fmt.Println("Environment variables successfully loaded")
 
-	if err := initializers.ConnectToDatabase(); err != nil {
+	fmt.Print("(2/4) ")
+	db, err = config.ConnectDatabase(env)
+	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
-	fmt.Println("(2/4) Successfully connected to database")
+	fmt.Println("Successfully connected to database")
 
-	if err := initializers.SyncDatabase(); err != nil {
+	fmt.Print("(3/4) ")
+	err = config.MigrateDatabase(db)
+	if err != nil {
 		log.Fatalf("Failed to sync database: %v", err)
 	}
-	fmt.Println("(3/4) Successfully synced database")
+	fmt.Println("Successfully synced database")
 
-	if err := initializers.SeedDatabase(); err != nil {
+	fmt.Print("(4/4) ")
+	err = config.SeedDatabase(db)
+	if err != nil {
 		log.Fatalf("Failed to seed database: %v", err)
 	}
-	fmt.Println("(4/4) Successfully seeded database")
+	fmt.Println("Successfully seeded database")
 }
 
 // @title MatchMania API
 // @version 1.0
-// @description This is an API for managing matchmaking seasons, teams, and results
+// @description This is the API server for the MatchMania application.
 // @host localhost:8000
 // @BasePath /api/v1
+// @externalDocs.description  OpenAPI
+// @externalDocs.url          https://swagger.io/resources/open-api/
 func main() {
 	gin.SetMode(gin.DebugMode)
 
@@ -45,7 +74,7 @@ func main() {
 
 	server.SetTrustedProxies(nil)
 	server.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{initializers.Cfg.ClientURL},
+		AllowOrigins:     []string{env.ClientURL},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
 		AllowHeaders:     []string{"Origin"},
 		ExposeHeaders:    []string{"Content-Length"},
@@ -53,9 +82,27 @@ func main() {
 		MaxAge:           12 * time.Hour,
 	}))
 
-	routes.ApplyRoutes(server)
+	userRepository := repositories.NewUserRepository(db)
+	seasonRepository := repositories.NewSeasonRepository(db)
+	teamRepository := repositories.NewTeamRepository(db)
+	resultRepository := repositories.NewResultRepository(db)
 
-	err := server.Run(":" + initializers.Cfg.ServerPort)
+	userService := services.NewUserService(userRepository)
+	authService := services.NewAuthService(userService, env)
+	seasonService := services.NewSeasonService(seasonRepository)
+	teamService := services.NewTeamService(teamRepository)
+	resultService := services.NewResultService(resultRepository)
+
+	authMiddleware := middlewares.NewAuthMiddleware(authService)
+
+	authController := controllers.NewAuthController(authService, env)
+	seasonController := controllers.NewSeasonController(seasonService)
+	teamController := controllers.NewTeamController(seasonService, teamService)
+	resultController := controllers.NewResultController(teamService, resultService)
+
+	routes.ApplyRoutes(server, authMiddleware, authController, seasonController, teamController, resultController)
+
+	err := server.Run(":" + env.ServerPort)
 	if err != nil {
 		log.Fatal("Failed to start Gin server.")
 	}

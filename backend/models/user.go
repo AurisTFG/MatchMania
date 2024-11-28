@@ -3,17 +3,21 @@ package models
 import (
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/go-playground/validator/v10"
 	"gorm.io/gorm"
 )
 
 type User struct {
-	gorm.Model
-	Username string `gorm:"unique"`
-	Email    string `gorm:"unique"`
-	Role     Role   `gorm:"type:role;default:'user'"`
-	Password string
+	ID        uint `gorm:"primarykey"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt `gorm:"index"`
+	Username  string         `gorm:"unique"`
+	Email     string         `gorm:"unique"`
+	Role      Role           `gorm:"type:role;default:'user'"`
+	Password  string
 }
 
 type UserDto struct {
