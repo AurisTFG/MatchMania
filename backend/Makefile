@@ -1,11 +1,10 @@
-MAKEFLAGS += --no-print-directory
+.PHONY: all build run rund test lint clean help
 
+MAKEFLAGS += --no-print-directory
 OUTPUT_DIR = bin
 OUTPUT_FILE = MatchManiaAPI.exe
 OUTPUT_PATH = $(OUTPUT_DIR)/$(OUTPUT_FILE)
 SOURCE = cmd/server/main.go
-
-.PHONY: all build run rund test lint clean help
 
 all: run
 
@@ -20,7 +19,7 @@ run: build
 
 rund: build
 	@echo "Server started with CompileDaemon"
-	@CompileDaemon -command="$(OUTPUT_PATH)" -build="go build -o $(OUTPUT_PATH) $(SOURCE)"
+	@ENV=dev CompileDaemon -command="$(OUTPUT_PATH)" -build="go build -o $(OUTPUT_PATH) $(SOURCE)"
 	@echo "Server stopped"
 
 test: build

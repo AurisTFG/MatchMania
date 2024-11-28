@@ -30,9 +30,9 @@ func LoadEnv(envName string) (*Env, error) {
 		envName = "dev"
 	}
 
-	viper.AddConfigPath("./config")
-	viper.SetConfigName(envName)
+	viper.SetConfigFile("./config/.env." + envName)
 	viper.SetConfigType("env")
+
 	viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err != nil {

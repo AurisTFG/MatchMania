@@ -26,7 +26,7 @@ func init() {
 	fmt.Print("(0/4) ")
 	envName := os.Getenv("ENV")
 	if envName == "" {
-		envName = "dev" // Default to "dev" if not set
+		envName = "dev"
 	}
 	fmt.Println("Environment:", envName)
 
@@ -62,7 +62,7 @@ func init() {
 // @title MatchMania API
 // @version 1.0
 // @description This is the API server for the MatchMania application.
-// @host localhost:8000
+// @host localhost:8080
 // @BasePath /api/v1
 // @externalDocs.description  OpenAPI
 // @externalDocs.url          https://swagger.io/resources/open-api/
