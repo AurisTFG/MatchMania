@@ -61,8 +61,7 @@ func (c *AuthController) AuthLogIn(ctx *gin.Context) {
 		return
 	}
 
-	err = user.ComparePassword(bodyDto.Password)
-	if err != nil {
+	if !user.ComparePassword(bodyDto.Password) {
 		r.UnprocessableEntity(ctx, "Invalid email or password")
 		return
 	}

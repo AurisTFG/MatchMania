@@ -1,9 +1,8 @@
 package repositories
 
 import (
+	"MatchManiaAPI/config"
 	"MatchManiaAPI/models"
-
-	"gorm.io/gorm"
 )
 
 type SeasonRepository interface {
@@ -15,10 +14,10 @@ type SeasonRepository interface {
 }
 
 type seasonRepository struct {
-	db *gorm.DB
+	db *config.DB
 }
 
-func NewSeasonRepository(db *gorm.DB) SeasonRepository {
+func NewSeasonRepository(db *config.DB) SeasonRepository {
 	return &seasonRepository{db: db}
 }
 

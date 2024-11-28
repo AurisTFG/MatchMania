@@ -2,7 +2,6 @@ package config
 
 import (
 	"MatchManiaAPI/models"
-	"MatchManiaAPI/repositories"
 	"fmt"
 	"time"
 
@@ -11,7 +10,11 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-func ConnectDatabase(env *Env) (*gorm.DB, error) {
+type DB struct {
+	*gorm.DB
+}
+
+func ConnectDatabase(env *Env) (*DB, error) {
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s",
 		env.DBHost, env.DBUser, env.DBUserPassword, env.DBName, env.DBPort, env.DBSSLMode)
 
@@ -29,12 +32,11 @@ func ConnectDatabase(env *Env) (*gorm.DB, error) {
 		return nil, fmt.Errorf("failed to ping database: %w", err)
 	}
 
-	return db, nil
+	return &DB{db}, nil
 }
 
-func MigrateDatabase(db *gorm.DB) error {
+func MigrateDatabase(db *DB) error {
 	db.Exec(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`)
-
 	db.Exec(`DROP TYPE IF EXISTS role;`)
 	db.Exec(`CREATE TYPE role AS ENUM ('admin', 'moderator', 'user');`)
 
@@ -51,7 +53,7 @@ func MigrateDatabase(db *gorm.DB) error {
 	return nil
 }
 
-func SeedDatabase(db *gorm.DB) error {
+func SeedDatabase(db *DB) error {
 	originalLogger := db.Logger
 	db.Logger = originalLogger.LogMode(logger.Silent)
 
@@ -106,35 +108,27 @@ func SeedDatabase(db *gorm.DB) error {
 		{Username: "UserXDDD", Email: "userremail@gmail.com", Password: "UserPassword", Role: models.UserRole},
 	}
 
-	seasonRepository := repositories.NewSeasonRepository(db)
-	teamRepository := repositories.NewTeamRepository(db)
-	resultRepository := repositories.NewResultRepository(db)
-	userRepository := repositories.NewUserRepository(db)
-
 	for _, season := range seasons {
-		_, err := seasonRepository.Create(&season)
-		if err != nil {
+		if err := db.Create(&season).Error; err != nil {
 			return err
 		}
 	}
 
 	for _, team := range teams {
-		_, err := teamRepository.Create(&team)
-		if err != nil {
+		if err := db.Create(&team).Error; err != nil {
 			return err
 		}
 	}
 
 	for _, result := range results {
-		_, err := resultRepository.Create(&result)
-		if err != nil {
+		if err := db.Create(&result).Error; err != nil {
 			return err
 		}
 	}
 
 	for _, user := range users {
-		_, err := userRepository.Create(&user)
-		if err != nil {
+		user.HashPassword()
+		if err := db.Create(&user).Error; err != nil {
 			return err
 		}
 	}

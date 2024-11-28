@@ -1,9 +1,8 @@
 package repositories
 
 import (
+	"MatchManiaAPI/config"
 	"MatchManiaAPI/models"
-
-	"gorm.io/gorm"
 )
 
 type TeamRepository interface {
@@ -17,10 +16,10 @@ type TeamRepository interface {
 }
 
 type teamRepository struct {
-	db *gorm.DB
+	db *config.DB
 }
 
-func NewTeamRepository(db *gorm.DB) TeamRepository {
+func NewTeamRepository(db *config.DB) TeamRepository {
 	return &teamRepository{db: db}
 }
 

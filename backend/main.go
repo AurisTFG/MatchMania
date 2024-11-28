@@ -14,12 +14,11 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
 var (
 	env *config.Env
-	db  *gorm.DB
+	db  *config.DB
 	err error
 )
 
