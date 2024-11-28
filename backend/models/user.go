@@ -6,36 +6,56 @@ import (
 	"time"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/google/uuid"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
 type User struct {
-	ID        uint `gorm:"primarykey"`
+	ID        uuid.UUID `gorm:"type:uuid;default:uuid_generate_v5();primaryKey"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
 	Username  string         `gorm:"unique"`
 	Email     string         `gorm:"unique"`
-	Role      Role           `gorm:"type:role;default:'user'"`
-	Password  string
+	//Country   string // TODO: Add country to user
+	Role     Role `gorm:"type:role;default:'user'"`
+	Password string
+}
+
+func (u *User) HashPassword() error {
+	hash, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+
+	u.Password = string(hash)
+
+	return nil
+}
+
+func (u *User) ComparePassword(password string) error {
+	err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password))
+
+	return err
 }
 
 type UserDto struct {
-	ID       uint   `json:"id" example:"1"`
-	Username string `json:"username" example:"AurisTFG"`
-	Email    string `json:"email" example:"email@gmail.com"`
-	Role     Role   `json:"role" example:"admin"`
+	ID       uuid.UUID `json:"id" example:"550e8400-e29b-41d4-a716-446655440000"`
+	Username string    `json:"username" example:"AurisTFG"`
+	Email    string    `json:"email" example:"email@gmail.com"`
+	Role     Role      `json:"role" example:"admin"`
 }
 
 type SignUpDto struct {
 	Username string `json:"username" validate:"required,min=3,max=100" example:"AurisTFG"`
 	Email    string `json:"email" validate:"required,email" example:"email@gmail.com"`
-	Password string `json:"password" validate:"required,min=3,max=100" example:"VeryStrongPassword"`
+	Password string `json:"password" validate:"required,min=8,max=255" example:"VeryStrongPassword"`
 }
 
 type LoginDto struct {
 	Email    string `json:"email" validate:"required,email" example:"email@gmail.com"`
-	Password string `json:"password" validate:"required,min=3,max=100" example:"VeryStrongPassword"`
+	Password string `json:"password" validate:"required,min=8,max=255" example:"VeryStrongPassword"`
 }
 
 func (dto *SignUpDto) ToUser() User {

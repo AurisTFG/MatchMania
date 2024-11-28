@@ -33,6 +33,11 @@ func ConnectDatabase(env *Env) (*gorm.DB, error) {
 }
 
 func MigrateDatabase(db *gorm.DB) error {
+	db.Exec(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`)
+
+	db.Exec(`DROP TYPE IF EXISTS role;`)
+	db.Exec(`CREATE TYPE role AS ENUM ('admin', 'moderator', 'user');`)
+
 	err := db.AutoMigrate(
 		&models.User{},
 		&models.Season{},
@@ -50,25 +55,18 @@ func SeedDatabase(db *gorm.DB) error {
 	originalLogger := db.Logger
 	db.Logger = originalLogger.LogMode(logger.Silent)
 
-	tables := []string{"results", "teams", "seasons", "users"}
-
-	// Delete all rows from all tables
-	for _, table := range tables {
+	for _, table := range []string{"results", "teams", "seasons", "users"} {
 		if err := db.Exec("DELETE FROM " + table).Error; err != nil {
-			return fmt.Errorf("failed to delete from table %s: %w", table, err)
+			return fmt.Errorf("failed to delete rows from table %s: %w", table, err)
 		}
 	}
 
-	// Reset ID counters for all tables
-	for _, table := range tables {
+	for _, table := range []string{"results", "teams", "seasons"} {
 		seqName := fmt.Sprintf("%s_id_seq", table)
 		if err := db.Exec("ALTER SEQUENCE " + seqName + " RESTART WITH 1").Error; err != nil {
-			return fmt.Errorf("failed to reset sequence for table %s: %w", table, err)
+			return fmt.Errorf("failed to reset id sequence for table %s: %w", table, err)
 		}
 	}
-
-	db.Exec(`DROP TYPE IF EXISTS role;`)
-	db.Exec(`CREATE TYPE role AS ENUM ('admin', 'moderator', 'user');`)
 
 	seasons := []models.Season{
 		{Name: "TO BE DELETED", StartDate: time.Now(), EndDate: time.Now().AddDate(0, 0, 30)},
@@ -103,9 +101,9 @@ func SeedDatabase(db *gorm.DB) error {
 	}
 
 	users := []models.User{
-		{Username: "AdminXD", Email: "adminemail@gmail.com", Password: "admin", Role: models.AdminRole},
-		{Username: "ModeratorXDD", Email: "moderatoremail@gmail.com", Password: "mod", Role: models.ModeratorRole},
-		{Username: "UserXDDD", Email: "userremail@gmail.com", Password: "user", Role: models.UserRole},
+		{Username: "AdminXD", Email: "adminemail@gmail.com", Password: "AdminPassword", Role: models.AdminRole},
+		{Username: "ModeratorXDD", Email: "moderatoremail@gmail.com", Password: "ModeratorPassword", Role: models.ModeratorRole},
+		{Username: "UserXDDD", Email: "userremail@gmail.com", Password: "UserPassword", Role: models.UserRole},
 	}
 
 	seasonRepository := repositories.NewSeasonRepository(db)

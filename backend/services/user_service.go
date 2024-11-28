@@ -3,8 +3,6 @@ package services
 import (
 	"MatchManiaAPI/models"
 	"MatchManiaAPI/repositories"
-
-	"golang.org/x/crypto/bcrypt"
 )
 
 type UserService interface {
@@ -36,13 +34,6 @@ func (s *userService) GetUserByEmail(email string) (*models.User, error) {
 
 func (s *userService) CreateUser(signUpDto *models.SignUpDto) (*models.User, error) {
 	newUser := signUpDto.ToUser()
-
-	hash, err := bcrypt.GenerateFromPassword([]byte(newUser.Password), bcrypt.DefaultCost)
-	if err != nil {
-		return nil, err
-	}
-
-	newUser.Password = string(hash)
 
 	return s.repo.Create(&newUser)
 }

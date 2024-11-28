@@ -9,7 +9,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type AuthController struct {
@@ -62,7 +61,7 @@ func (c *AuthController) AuthLogIn(ctx *gin.Context) {
 		return
 	}
 
-	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(bodyDto.Password))
+	err = user.ComparePassword(bodyDto.Password)
 	if err != nil {
 		r.UnprocessableEntity(ctx, "Invalid email or password")
 		return
