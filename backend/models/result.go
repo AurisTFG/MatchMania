@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -17,12 +18,13 @@ type Result struct {
 	Score          string    `gorm:"not null"`
 	OpponentScore  string    `gorm:"not null"`
 
-	TeamID         uint `gorm:"not null"`
-	OpponentTeamID uint `gorm:"not null"`
-	SeasonID       uint `gorm:"not null"`
-
 	Team         Team `gorm:"foreignKey:TeamID"`
 	OpponentTeam Team `gorm:"foreignKey:OpponentTeamID"`
+
+	UserUUID       uuid.UUID `gorm:"type:uuid;not null"`
+	TeamID         uint      `gorm:"not null"`
+	OpponentTeamID uint      `gorm:"not null"`
+	SeasonID       uint      `gorm:"not null"`
 }
 
 type ResultDto struct {

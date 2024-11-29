@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -13,11 +14,12 @@ type Team struct {
 	Name string `gorm:"not null"`
 	Elo  uint   `gorm:"not null"`
 
-	SeasonID uint `gorm:"not null"`
-
-	// Players     []Player `gorm:"foreignKey:TeamID"`
+	// Players     []Player `gorm:"foreignKey:TeamID"` TODO: Add players to team
 	HomeResults []Result `gorm:"foreignKey:TeamID"`
 	AwayResults []Result `gorm:"foreignKey:OpponentTeamID"`
+
+	SeasonID uint      `gorm:"not null"`
+	UserUUID uuid.UUID `gorm:"type:uuid;not null"`
 }
 
 type TeamDto struct {

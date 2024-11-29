@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -16,6 +17,8 @@ type Season struct {
 	EndDate   time.Time `gorm:"not null"`
 
 	Teams []Team `gorm:"foreignKey:SeasonID"`
+
+	UserUUID uuid.UUID `gorm:"type:uuid;not null"`
 }
 
 type SeasonDto struct {

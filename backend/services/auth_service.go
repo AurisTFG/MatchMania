@@ -31,7 +31,7 @@ func NewAuthService(userService UserService, env *config.Env) AuthService {
 func (s *authService) CreateAccessToken(user *models.User) (string, error) {
 	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"jti":  uuid.New().String(),
-		"sub":  user.ID,
+		"sub":  user.UUID,
 		"role": user.Role,
 		"iss":  s.env.JWTIssuer,
 		"aud":  s.env.JWTAudience,
@@ -48,7 +48,7 @@ func (s *authService) CreateAccessToken(user *models.User) (string, error) {
 func (s *authService) CreateRefreshToken(user *models.User) (string, error) {
 	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"jti":  uuid.New().String(),
-		"sub":  user.ID,
+		"sub":  user.UUID,
 		"role": user.Role,
 		"iss":  s.env.JWTIssuer,
 		"aud":  s.env.JWTAudience,

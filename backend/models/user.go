@@ -12,7 +12,7 @@ import (
 )
 
 type User struct {
-	ID        uuid.UUID `gorm:"type:uuid;default:uuid_generate_v5();primaryKey"`
+	UUID      uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4();primaryKey"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
@@ -21,6 +21,10 @@ type User struct {
 	//Country   string // TODO: Add country to user
 	Role     Role `gorm:"type:role;default:'user'"`
 	Password string
+
+	Seasons []Season `gorm:"foreignKey:UserUUID"`
+	Teams   []Team   `gorm:"foreignKey:UserUUID"`
+	Results []Result `gorm:"foreignKey:UserUUID"`
 }
 
 func (u *User) HashPassword() error {
@@ -41,7 +45,7 @@ func (u *User) ComparePassword(password string) bool {
 }
 
 type UserDto struct {
-	ID       uuid.UUID `json:"id" example:"550e8400-e29b-41d4-a716-446655440000"`
+	UUID     uuid.UUID `json:"id" example:"526432ea-822b-4b5b-b1b3-34e8ab453e03"`
 	Username string    `json:"username" example:"AurisTFG"`
 	Email    string    `json:"email" example:"email@gmail.com"`
 	Role     Role      `json:"role" example:"admin"`
@@ -68,7 +72,7 @@ func (dto *SignUpDto) ToUser() User {
 
 func (u *User) ToDto() UserDto {
 	return UserDto{
-		ID:       u.ID,
+		UUID:     u.UUID,
 		Username: u.Username,
 		Email:    u.Email,
 		Role:     u.Role,

@@ -33,7 +33,7 @@ func (r *userRepository) FindAll() ([]models.User, error) {
 func (r *userRepository) FindByID(userID string) (*models.User, error) {
 	var user models.User
 
-	result := r.db.First(&user, "id = ?", userID)
+	result := r.db.First(&user, "uuid = ?", userID)
 
 	return &user, result.Error
 }
