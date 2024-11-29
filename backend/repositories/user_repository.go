@@ -10,7 +10,7 @@ type UserRepository interface {
 	FindByID(string) (*models.User, error)
 	FindByEmail(string) (*models.User, error)
 	Create(*models.User) (*models.User, error)
-	Update(*models.User) (*models.User, error)
+	Update(string, *models.User) (*models.User, error)
 	Delete(*models.User) error
 }
 
@@ -56,8 +56,12 @@ func (r *userRepository) Create(user *models.User) (*models.User, error) {
 	return user, result.Error
 }
 
-func (r *userRepository) Update(user *models.User) (*models.User, error) {
-	result := r.db.Save(user)
+func (r *userRepository) Update(usedID string, user *models.User) (*models.User, error) {
+	if err := user.HashPassword(); err != nil {
+		return nil, err
+	}
+
+	result := r.db.Model(&models.User{}).Where("id = ?", usedID).Updates(user)
 
 	return user, result.Error
 }

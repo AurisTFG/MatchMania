@@ -39,9 +39,8 @@ func (s *teamService) CreateTeam(teamDto *models.CreateTeamDto, seasonID uint) (
 
 func (s *teamService) UpdateTeam(teamID uint, teamDto *models.UpdateTeamDto) (*models.Team, error) {
 	updatedTeam := teamDto.ToTeam()
-	updatedTeam.ID = teamID
 
-	return s.repo.Update(&updatedTeam)
+	return s.repo.Update(teamID, &updatedTeam)
 }
 
 func (s *teamService) DeleteTeam(team *models.Team) error {

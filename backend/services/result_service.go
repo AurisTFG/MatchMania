@@ -39,9 +39,8 @@ func (s *resultService) CreateResult(resultDto *models.CreateResultDto, seasonID
 
 func (s *resultService) UpdateResult(resultID uint, resultDto *models.UpdateResultDto) (*models.Result, error) {
 	updatedResult := resultDto.ToResult()
-	updatedResult.ID = resultID
 
-	return s.repo.Update(&updatedResult)
+	return s.repo.Update(resultID, &updatedResult)
 }
 
 func (s *resultService) DeleteResult(resultModel *models.Result) error {

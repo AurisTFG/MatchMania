@@ -9,7 +9,7 @@ type SeasonRepository interface {
 	FindAll() ([]models.Season, error)
 	FindByID(uint) (*models.Season, error)
 	Create(*models.Season) (*models.Season, error)
-	Update(*models.Season) (*models.Season, error)
+	Update(uint, *models.Season) (*models.Season, error)
 	Delete(*models.Season) error
 }
 
@@ -43,8 +43,8 @@ func (r *seasonRepository) Create(season *models.Season) (*models.Season, error)
 	return season, result.Error
 }
 
-func (r *seasonRepository) Update(season *models.Season) (*models.Season, error) {
-	result := r.db.Save(season)
+func (r *seasonRepository) Update(seasonID uint, season *models.Season) (*models.Season, error) {
+	result := r.db.Model(&models.Season{}).Where("id = ?", seasonID).Updates(season)
 
 	return season, result.Error
 }

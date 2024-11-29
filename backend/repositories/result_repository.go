@@ -13,7 +13,7 @@ type ResultRepository interface {
 	FindByID(uint) (*models.Result, error)
 	FindByIDAndSeasonIDAndTeamID(uint, uint, uint) (*models.Result, error)
 	Create(*models.Result) (*models.Result, error)
-	Update(*models.Result) (*models.Result, error)
+	Update(uint, *models.Result) (*models.Result, error)
 	Delete(*models.Result) error
 }
 
@@ -86,8 +86,8 @@ func (r *resultRepository) Create(resultModel *models.Result) (*models.Result, e
 	return resultModel, result.Error
 }
 
-func (r *resultRepository) Update(resultModel *models.Result) (*models.Result, error) {
-	result := r.db.Save(resultModel)
+func (r *resultRepository) Update(resultID uint, resultModel *models.Result) (*models.Result, error) {
+	result := r.db.Model(&models.Result{}).Where("id = ?", resultID).Updates(resultModel)
 
 	return resultModel, result.Error
 }

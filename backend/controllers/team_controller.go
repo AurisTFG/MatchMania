@@ -76,7 +76,7 @@ func (c *TeamController) CreateTeam(ctx *gin.Context) {
 // @Failure 400 {object} models.BadRequestResponse
 // @Failure 404 {object} models.NotFoundResponse
 // @Failure 502 {object} models.BadGatewayResponse
-// @Router /seasons/{seasonId}/teams/{teamId} [put]
+// @Router /seasons/{seasonId}/teams/{teamId} [patch]
 func (c *TeamController) UpdateTeam(ctx *gin.Context) {
 	seasonID, err := utils.ParseID(ctx, "seasonId")
 	if err != nil {

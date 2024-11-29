@@ -95,7 +95,7 @@ func (c *ResultController) CreateResult(ctx *gin.Context) {
 // @Failure 400 {object} models.BadRequestResponse
 // @Failure 404 {object} models.NotFoundResponse
 // @Failure 502 {object} models.BadGatewayResponse
-// @Router /seasons/{seasonId}/teams/{teamId}/results/{resultId} [put]
+// @Router /seasons/{seasonId}/teams/{teamId}/results/{resultId} [patch]
 func (c *ResultController) UpdateResult(ctx *gin.Context) {
 	seasonID, err := utils.ParseID(ctx, "seasonId")
 	if err != nil {

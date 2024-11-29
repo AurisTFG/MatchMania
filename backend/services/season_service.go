@@ -37,9 +37,8 @@ func (s *seasonService) CreateSeason(seasonDto *models.CreateSeasonDto) (*models
 
 func (s *seasonService) UpdateSeason(seasonID uint, seasonDto *models.UpdateSeasonDto) (*models.Season, error) {
 	updatedSeason := seasonDto.ToSeason()
-	updatedSeason.ID = seasonID
 
-	return s.repo.Update(&updatedSeason)
+	return s.repo.Update(seasonID, &updatedSeason)
 }
 
 func (s *seasonService) DeleteSeason(season *models.Season) error {

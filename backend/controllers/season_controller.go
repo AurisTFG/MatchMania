@@ -61,7 +61,7 @@ func (c *SeasonController) CreateSeason(ctx *gin.Context) {
 // @Failure 400 {object} models.BadRequestResponse
 // @Failure 404 {object} models.NotFoundResponse
 // @Failure 502 {object} models.BadGatewayResponse
-// @Router /seasons/{seasonId} [put]
+// @Router /seasons/{seasonId} [patch]
 func (c *SeasonController) UpdateSeason(ctx *gin.Context) {
 	seasonID, err := utils.ParseID(ctx, "seasonId")
 	if err != nil {

@@ -11,7 +11,7 @@ type TeamRepository interface {
 	FindByID(uint) (*models.Team, error)
 	FindByIDAndSeasonID(uint, uint) (*models.Team, error)
 	Create(*models.Team) (*models.Team, error)
-	Update(*models.Team) (*models.Team, error)
+	Update(uint, *models.Team) (*models.Team, error)
 	Delete(*models.Team) error
 }
 
@@ -61,8 +61,8 @@ func (r *teamRepository) Create(team *models.Team) (*models.Team, error) {
 	return team, result.Error
 }
 
-func (r *teamRepository) Update(team *models.Team) (*models.Team, error) {
-	result := r.db.Save(team)
+func (r *teamRepository) Update(teamID uint, team *models.Team) (*models.Team, error) {
+	result := r.db.Model(&models.Team{}).Where("id = ?", teamID).Updates(team)
 
 	return team, result.Error
 }
