@@ -34,25 +34,25 @@ func ApplyRoutes(
 		seasons := v1.Group("/seasons")
 		{
 			seasons.GET("/", seasonController.GetAllSeasons)
-			seasons.POST("/", seasonController.CreateSeason)
 			seasons.GET("/:seasonId", seasonController.GetSeason)
-			seasons.PUT("/:seasonId", seasonController.UpdateSeason)
+			seasons.POST("/", seasonController.CreateSeason)
+			seasons.PATCH("/:seasonId", seasonController.UpdateSeason)
 			seasons.DELETE("/:seasonId", seasonController.DeleteSeason)
 
 			teams := seasons.Group("/:seasonId/teams")
 			{
 				teams.GET("/", teamController.GetAllTeams)
-				teams.POST("/", teamController.CreateTeam)
 				teams.GET("/:teamId", teamController.GetTeam)
-				teams.PUT("/:teamId", teamController.UpdateTeam)
+				teams.POST("/", teamController.CreateTeam)
+				teams.PATCH("/:teamId", teamController.UpdateTeam)
 				teams.DELETE("/:teamId", teamController.DeleteTeam)
 
 				results := teams.Group("/:teamId/results")
 				{
 					results.GET("/", resultController.GetAllResults)
-					results.POST("/", authMiddleware.RequireAuth, resultController.CreateResult)
 					results.GET("/:resultId", resultController.GetResult)
-					results.PUT("/:resultId", resultController.UpdateResult)
+					results.POST("/", authMiddleware.RequireAuth, resultController.CreateResult)
+					results.PATCH("/:resultId", resultController.UpdateResult)
 					results.DELETE("/:resultId", resultController.DeleteResult)
 				}
 			}
