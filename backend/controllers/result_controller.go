@@ -19,6 +19,77 @@ func NewResultController(teamService services.TeamService, resultService service
 	return ResultController{teamService: teamService, resultService: resultService}
 }
 
+// @Summary Get all results
+// @Description Get all results
+// @Tags results
+// @Accept json
+// @Produce json
+// @Param seasonId path string true "Season ID"
+// @Param teamId path string true "Team ID"
+// @Success 200 {object} models.ResultsResponse
+// @Failure 502 {object} models.BadGatewayResponse
+// @Router /seasons/{seasonId}/teams/{teamId}/results [get]
+func (c *ResultController) GetAllResults(ctx *gin.Context) {
+	seasonID, err := utils.ParseID(ctx, "seasonId")
+	if err != nil {
+		r.BadRequest(ctx, err.Error())
+		return
+	}
+
+	teamID, err := utils.ParseID(ctx, "teamId")
+	if err != nil {
+		r.BadRequest(ctx, err.Error())
+		return
+	}
+
+	resultModels, err := c.resultService.GetAllResults(seasonID, teamID)
+	if err != nil {
+		r.BadGateway(ctx, err.Error())
+		return
+	}
+
+	r.OK(ctx, r.ResultsResponse{Results: models.ToResultDtos(resultModels)})
+}
+
+// @Summary Get a result
+// @Description Get a result
+// @Tags results
+// @Accept json
+// @Produce json
+// @Param seasonId path string true "Season ID"
+// @Param teamId path string true "Team ID"
+// @Param resultId path string true "Result ID"
+// @Success 200 {object} models.ResultResponse
+// @Failure 404 {object} models.NotFoundResponse
+// @Router /seasons/{seasonId}/teams/{teamId}/results/{resultId} [get]
+func (c *ResultController) GetResult(ctx *gin.Context) {
+	seasonID, err := utils.ParseID(ctx, "seasonId")
+	if err != nil {
+		r.BadRequest(ctx, err.Error())
+		return
+	}
+
+	teamID, err := utils.ParseID(ctx, "teamId")
+	if err != nil {
+		r.BadRequest(ctx, err.Error())
+		return
+	}
+
+	resultID, err := utils.ParseID(ctx, "resultId")
+	if err != nil {
+		r.BadRequest(ctx, err.Error())
+		return
+	}
+
+	resultModel, err := c.resultService.GetResultByID(seasonID, teamID, resultID)
+	if err != nil {
+		r.NotFound(ctx, "Result not found in given team and season")
+		return
+	}
+
+	r.OK(ctx, r.ResultResponse{Result: resultModel.ToDto()})
+}
+
 // @Summary Create a result
 // @Description Create a result
 // @Tags results
@@ -139,77 +210,6 @@ func (c *ResultController) UpdateResult(ctx *gin.Context) {
 	}
 
 	r.OK(ctx, r.ResultResponse{Result: updatedResult.ToDto()})
-}
-
-// @Summary Get a result
-// @Description Get a result
-// @Tags results
-// @Accept json
-// @Produce json
-// @Param seasonId path string true "Season ID"
-// @Param teamId path string true "Team ID"
-// @Param resultId path string true "Result ID"
-// @Success 200 {object} models.ResultResponse
-// @Failure 404 {object} models.NotFoundResponse
-// @Router /seasons/{seasonId}/teams/{teamId}/results/{resultId} [get]
-func (c *ResultController) GetResult(ctx *gin.Context) {
-	seasonID, err := utils.ParseID(ctx, "seasonId")
-	if err != nil {
-		r.BadRequest(ctx, err.Error())
-		return
-	}
-
-	teamID, err := utils.ParseID(ctx, "teamId")
-	if err != nil {
-		r.BadRequest(ctx, err.Error())
-		return
-	}
-
-	resultID, err := utils.ParseID(ctx, "resultId")
-	if err != nil {
-		r.BadRequest(ctx, err.Error())
-		return
-	}
-
-	resultModel, err := c.resultService.GetResultByID(seasonID, teamID, resultID)
-	if err != nil {
-		r.NotFound(ctx, "Result not found in given team and season")
-		return
-	}
-
-	r.OK(ctx, r.ResultResponse{Result: resultModel.ToDto()})
-}
-
-// @Summary Get all results
-// @Description Get all results
-// @Tags results
-// @Accept json
-// @Produce json
-// @Param seasonId path string true "Season ID"
-// @Param teamId path string true "Team ID"
-// @Success 200 {object} models.ResultsResponse
-// @Failure 502 {object} models.BadGatewayResponse
-// @Router /seasons/{seasonId}/teams/{teamId}/results [get]
-func (c *ResultController) GetAllResults(ctx *gin.Context) {
-	seasonID, err := utils.ParseID(ctx, "seasonId")
-	if err != nil {
-		r.BadRequest(ctx, err.Error())
-		return
-	}
-
-	teamID, err := utils.ParseID(ctx, "teamId")
-	if err != nil {
-		r.BadRequest(ctx, err.Error())
-		return
-	}
-
-	resultModels, err := c.resultService.GetAllResults(seasonID, teamID)
-	if err != nil {
-		r.BadGateway(ctx, err.Error())
-		return
-	}
-
-	r.OK(ctx, r.ResultsResponse{Results: models.ToResultDtos(resultModels)})
 }
 
 // @Summary Delete a result

@@ -19,6 +19,63 @@ func NewTeamController(seasonService services.SeasonService, teamService service
 	return TeamController{seasonService: seasonService, teamService: teamService}
 }
 
+// @Summary Get all teams
+// @Description Get all teams
+// @Tags teams
+// @Accept json
+// @Produce json
+// @Param seasonId path string true "Season ID"
+// @Success 200 {object} models.TeamsResponse
+// @Failure 502 {object} models.BadGatewayResponse
+// @Router /seasons/{seasonId}/teams [get]
+func (c *TeamController) GetAllTeams(ctx *gin.Context) {
+	seasonID, err := utils.ParseID(ctx, "seasonId")
+	if err != nil {
+		r.BadRequest(ctx, err.Error())
+		return
+	}
+
+	teams, err := c.teamService.GetAllTeams(seasonID)
+	if err != nil {
+		r.BadGateway(ctx, err.Error())
+		return
+	}
+
+	r.OK(ctx, responses.TeamsResponse{Teams: models.ToTeamDtos(teams)})
+}
+
+// @Summary Get a team
+// @Description Get a team
+// @Tags teams
+// @Accept json
+// @Produce json
+// @Param seasonId path string true "Season ID"
+// @Param teamId path string true "Team ID"
+// @Success 200 {object} models.TeamResponse
+// @Failure 404 {object} models.NotFoundResponse
+// @Router /seasons/{seasonId}/teams/{teamId} [get]
+func (c *TeamController) GetTeam(ctx *gin.Context) {
+	seasonID, err := utils.ParseID(ctx, "seasonId")
+	if err != nil {
+		r.BadRequest(ctx, err.Error())
+		return
+	}
+
+	teamID, err := utils.ParseID(ctx, "seasonId")
+	if err != nil {
+		r.BadRequest(ctx, err.Error())
+		return
+	}
+
+	team, err := c.teamService.GetTeamByID(seasonID, teamID)
+	if err != nil {
+		r.NotFound(ctx, "Team not found in season")
+		return
+	}
+
+	r.OK(ctx, responses.TeamResponse{Team: team.ToDto()})
+}
+
 // @Summary Create a team
 // @Description Create a team
 // @Tags teams
@@ -115,63 +172,6 @@ func (c *TeamController) UpdateTeam(ctx *gin.Context) {
 	}
 
 	r.OK(ctx, responses.TeamResponse{Team: updatedTeam.ToDto()})
-}
-
-// @Summary Get a team
-// @Description Get a team
-// @Tags teams
-// @Accept json
-// @Produce json
-// @Param seasonId path string true "Season ID"
-// @Param teamId path string true "Team ID"
-// @Success 200 {object} models.TeamResponse
-// @Failure 404 {object} models.NotFoundResponse
-// @Router /seasons/{seasonId}/teams/{teamId} [get]
-func (c *TeamController) GetTeam(ctx *gin.Context) {
-	seasonID, err := utils.ParseID(ctx, "seasonId")
-	if err != nil {
-		r.BadRequest(ctx, err.Error())
-		return
-	}
-
-	teamID, err := utils.ParseID(ctx, "seasonId")
-	if err != nil {
-		r.BadRequest(ctx, err.Error())
-		return
-	}
-
-	team, err := c.teamService.GetTeamByID(seasonID, teamID)
-	if err != nil {
-		r.NotFound(ctx, "Team not found in season")
-		return
-	}
-
-	r.OK(ctx, responses.TeamResponse{Team: team.ToDto()})
-}
-
-// @Summary Get all teams
-// @Description Get all teams
-// @Tags teams
-// @Accept json
-// @Produce json
-// @Param seasonId path string true "Season ID"
-// @Success 200 {object} models.TeamsResponse
-// @Failure 502 {object} models.BadGatewayResponse
-// @Router /seasons/{seasonId}/teams [get]
-func (c *TeamController) GetAllTeams(ctx *gin.Context) {
-	seasonID, err := utils.ParseID(ctx, "seasonId")
-	if err != nil {
-		r.BadRequest(ctx, err.Error())
-		return
-	}
-
-	teams, err := c.teamService.GetAllTeams(seasonID)
-	if err != nil {
-		r.BadGateway(ctx, err.Error())
-		return
-	}
-
-	r.OK(ctx, responses.TeamsResponse{Teams: models.ToTeamDtos(teams)})
 }
 
 // @Summary Delete a team

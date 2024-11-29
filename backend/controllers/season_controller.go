@@ -18,6 +18,49 @@ func NewSeasonController(seasonService services.SeasonService) SeasonController 
 	return SeasonController{seasonService: seasonService}
 }
 
+// @Summary Get all seasons
+// @Description Get all seasons
+// @Tags seasons
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.SeasonsResponse
+// @Failure 502 {object} models.BadGatewayResponse
+// @Router /seasons [get]
+func (c *SeasonController) GetAllSeasons(ctx *gin.Context) {
+	seasons, err := c.seasonService.GetAllSeasons()
+	if err != nil {
+		r.BadGateway(ctx, err.Error())
+		return
+	}
+
+	r.OK(ctx, responses.SeasonsResponse{Seasons: models.ToSeasonDtos(seasons)})
+}
+
+// @Summary Get a season
+// @Description Get a season
+// @Tags seasons
+// @Accept json
+// @Produce json
+// @Param seasonId path string true "Season ID"
+// @Success 200 {object} models.SeasonResponse
+// @Failure 404 {object} models.NotFoundResponse
+// @Router /seasons/{seasonId} [get]
+func (c *SeasonController) GetSeason(ctx *gin.Context) {
+	seasonID, err := utils.ParseID(ctx, "seasonId")
+	if err != nil {
+		r.BadRequest(ctx, err.Error())
+		return
+	}
+
+	season, err := c.seasonService.GetSeasonByID(seasonID)
+	if err != nil {
+		r.NotFound(ctx, "Season not found")
+		return
+	}
+
+	r.OK(ctx, responses.SeasonResponse{Season: season.ToDto()})
+}
+
 // @Summary Create a season
 // @Description Create a season
 // @Tags seasons
@@ -92,49 +135,6 @@ func (c *SeasonController) UpdateSeason(ctx *gin.Context) {
 	}
 
 	r.OK(ctx, responses.SeasonResponse{Season: updatedSeason.ToDto()})
-}
-
-// @Summary Get a season
-// @Description Get a season
-// @Tags seasons
-// @Accept json
-// @Produce json
-// @Param seasonId path string true "Season ID"
-// @Success 200 {object} models.SeasonResponse
-// @Failure 404 {object} models.NotFoundResponse
-// @Router /seasons/{seasonId} [get]
-func (c *SeasonController) GetSeason(ctx *gin.Context) {
-	seasonID, err := utils.ParseID(ctx, "seasonId")
-	if err != nil {
-		r.BadRequest(ctx, err.Error())
-		return
-	}
-
-	season, err := c.seasonService.GetSeasonByID(seasonID)
-	if err != nil {
-		r.NotFound(ctx, "Season not found")
-		return
-	}
-
-	r.OK(ctx, responses.SeasonResponse{Season: season.ToDto()})
-}
-
-// @Summary Get all seasons
-// @Description Get all seasons
-// @Tags seasons
-// @Accept json
-// @Produce json
-// @Success 200 {object} models.SeasonsResponse
-// @Failure 502 {object} models.BadGatewayResponse
-// @Router /seasons [get]
-func (c *SeasonController) GetAllSeasons(ctx *gin.Context) {
-	seasons, err := c.seasonService.GetAllSeasons()
-	if err != nil {
-		r.BadGateway(ctx, err.Error())
-		return
-	}
-
-	r.OK(ctx, responses.SeasonsResponse{Seasons: models.ToSeasonDtos(seasons)})
 }
 
 // @Summary Delete a season
