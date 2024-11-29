@@ -22,9 +22,10 @@ type User struct {
 	Role     Role `gorm:"type:role;default:'user'"`
 	Password string
 
-	Seasons []Season `gorm:"foreignKey:UserUUID"`
-	Teams   []Team   `gorm:"foreignKey:UserUUID"`
-	Results []Result `gorm:"foreignKey:UserUUID"`
+	Sessions []Session `gorm:"foreignKey:UserUUID"`
+	Seasons  []Season  `gorm:"foreignKey:UserUUID"`
+	Teams    []Team    `gorm:"foreignKey:UserUUID"`
+	Results  []Result  `gorm:"foreignKey:UserUUID"`
 }
 
 func (u *User) HashPassword() error {

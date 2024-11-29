@@ -30,13 +30,13 @@ func NewResultController(teamService services.TeamService, resultService service
 // @Failure 502 {object} models.BadGatewayResponse
 // @Router /seasons/{seasonId}/teams/{teamId}/results [get]
 func (c *ResultController) GetAllResults(ctx *gin.Context) {
-	seasonID, err := utils.ParseID(ctx, "seasonId")
+	seasonID, err := utils.GetParamUint(ctx, "seasonId")
 	if err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
 	}
 
-	teamID, err := utils.ParseID(ctx, "teamId")
+	teamID, err := utils.GetParamUint(ctx, "teamId")
 	if err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
@@ -63,19 +63,19 @@ func (c *ResultController) GetAllResults(ctx *gin.Context) {
 // @Failure 404 {object} models.NotFoundResponse
 // @Router /seasons/{seasonId}/teams/{teamId}/results/{resultId} [get]
 func (c *ResultController) GetResult(ctx *gin.Context) {
-	seasonID, err := utils.ParseID(ctx, "seasonId")
+	seasonID, err := utils.GetParamUint(ctx, "seasonId")
 	if err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
 	}
 
-	teamID, err := utils.ParseID(ctx, "teamId")
+	teamID, err := utils.GetParamUint(ctx, "teamId")
 	if err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
 	}
 
-	resultID, err := utils.ParseID(ctx, "resultId")
+	resultID, err := utils.GetParamUint(ctx, "resultId")
 	if err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
@@ -104,13 +104,13 @@ func (c *ResultController) GetResult(ctx *gin.Context) {
 // @Failure 502 {object} models.BadGatewayResponse
 // @Router /seasons/{seasonId}/teams/{teamId}/results [post]
 func (c *ResultController) CreateResult(ctx *gin.Context) {
-	seasonID, err := utils.ParseID(ctx, "seasonId")
+	seasonID, err := utils.GetParamUint(ctx, "seasonId")
 	if err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
 	}
 
-	teamID, err := utils.ParseID(ctx, "teamId")
+	teamID, err := utils.GetParamUint(ctx, "teamId")
 	if err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
@@ -144,7 +144,13 @@ func (c *ResultController) CreateResult(ctx *gin.Context) {
 		return
 	}
 
-	newResult, err := c.resultService.CreateResult(&bodyDto, team.SeasonID, team.ID)
+	user := utils.GetAuthUser(ctx)
+	if user == nil {
+		r.Unauthorized(ctx, "User not found")
+		return
+	}
+
+	newResult, err := c.resultService.CreateResult(&bodyDto, team.SeasonID, team.ID, user.UUID)
 	if err != nil {
 		r.BadGateway(ctx, err.Error())
 		return
@@ -168,19 +174,19 @@ func (c *ResultController) CreateResult(ctx *gin.Context) {
 // @Failure 502 {object} models.BadGatewayResponse
 // @Router /seasons/{seasonId}/teams/{teamId}/results/{resultId} [patch]
 func (c *ResultController) UpdateResult(ctx *gin.Context) {
-	seasonID, err := utils.ParseID(ctx, "seasonId")
+	seasonID, err := utils.GetParamUint(ctx, "seasonId")
 	if err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
 	}
 
-	teamID, err := utils.ParseID(ctx, "teamId")
+	teamID, err := utils.GetParamUint(ctx, "teamId")
 	if err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
 	}
 
-	resultID, err := utils.ParseID(ctx, "resultId")
+	resultID, err := utils.GetParamUint(ctx, "resultId")
 	if err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
@@ -197,9 +203,20 @@ func (c *ResultController) UpdateResult(ctx *gin.Context) {
 		return
 	}
 
-	_, err = c.resultService.GetResultByID(seasonID, teamID, resultID)
+	user := utils.GetAuthUser(ctx)
+	if user == nil {
+		r.Unauthorized(ctx, "User not found")
+		return
+	}
+
+	result, err := c.resultService.GetResultByID(seasonID, teamID, resultID)
 	if err != nil {
 		r.NotFound(ctx, "Result not found in given team and season")
+		return
+	}
+
+	if user.Role != models.AdminRole && user.UUID != result.UserUUID {
+		r.Forbidden(ctx, "This action is forbidden")
 		return
 	}
 
@@ -225,27 +242,38 @@ func (c *ResultController) UpdateResult(ctx *gin.Context) {
 // @Failure 502 {object} models.BadGatewayResponse
 // @Router /seasons/{seasonId}/teams/{teamId}/results/{resultId} [delete]
 func (c *ResultController) DeleteResult(ctx *gin.Context) {
-	seasonID, err := utils.ParseID(ctx, "seasonId")
+	seasonID, err := utils.GetParamUint(ctx, "seasonId")
 	if err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
 	}
 
-	teamID, err := utils.ParseID(ctx, "teamId")
+	teamID, err := utils.GetParamUint(ctx, "teamId")
 	if err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
 	}
 
-	resultID, err := utils.ParseID(ctx, "resultId")
+	resultID, err := utils.GetParamUint(ctx, "resultId")
 	if err != nil {
 		r.BadRequest(ctx, err.Error())
+		return
+	}
+
+	user := utils.GetAuthUser(ctx)
+	if user == nil {
+		r.Unauthorized(ctx, "User not found")
 		return
 	}
 
 	resultModel, err := c.resultService.GetResultByID(seasonID, teamID, resultID)
 	if err != nil {
 		r.NotFound(ctx, "Result not found in given team and season")
+		return
+	}
+
+	if user.Role != models.AdminRole && user.UUID != resultModel.UserUUID {
+		r.Forbidden(ctx, "This action is forbidden")
 		return
 	}
 

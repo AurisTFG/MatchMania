@@ -28,6 +28,10 @@ func Unauthorized(c *gin.Context, errorMessage string) {
 	c.Abort()
 }
 
+func Forbidden(c *gin.Context, errorMessage string) {
+	c.JSON(http.StatusForbidden, ForbiddenResponse{Error: errorMessage})
+}
+
 func NotFound(c *gin.Context, errorMessage string) {
 	c.JSON(http.StatusNotFound, NotFoundResponse{Error: errorMessage})
 }
@@ -48,6 +52,10 @@ type UnauthorizedResponse struct {
 	Error string `json:"error" example:"Unauthorized"`
 }
 
+type ForbiddenResponse struct {
+	Error string `json:"error" example:"Forbidden"`
+}
+
 type NotFoundResponse struct {
 	Error string `json:"error" example:"Resource was not found"`
 }
@@ -65,11 +73,10 @@ type AuthSignUpResponse struct {
 }
 
 type AuthLoginResponse struct {
-	AccessToken  string `json:"accessToken"`
-	RefreshToken string `json:"refreshToken"`
+	AccessToken string `json:"accessToken"`
 }
 
-type UserRefreshTokenResponse struct {
+type AuthRefreshTokenResponse struct {
 	AccessToken string `json:"accessToken"`
 }
 

@@ -14,7 +14,6 @@ type Team struct {
 	Name string `gorm:"not null"`
 	Elo  uint   `gorm:"not null"`
 
-	// Players     []Player `gorm:"foreignKey:TeamID"` TODO: Add players to team
 	HomeResults []Result `gorm:"foreignKey:TeamID"`
 	AwayResults []Result `gorm:"foreignKey:OpponentTeamID"`
 

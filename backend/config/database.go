@@ -40,6 +40,7 @@ func MigrateDatabase(db *DB) error {
 
 	err := db.AutoMigrate(
 		&models.User{},
+		&models.Session{},
 		&models.Season{},
 		&models.Team{},
 		&models.Result{},
@@ -54,6 +55,7 @@ func MigrateDatabase(db *DB) error {
 func SeedDatabase(db *DB) error {
 	if err := db.Migrator().DropTable(
 		&models.User{},
+		&models.Session{},
 		&models.Season{},
 		&models.Team{},
 		&models.Result{},

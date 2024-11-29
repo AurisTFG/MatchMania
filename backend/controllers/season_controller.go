@@ -46,7 +46,7 @@ func (c *SeasonController) GetAllSeasons(ctx *gin.Context) {
 // @Failure 404 {object} models.NotFoundResponse
 // @Router /seasons/{seasonId} [get]
 func (c *SeasonController) GetSeason(ctx *gin.Context) {
-	seasonID, err := utils.ParseID(ctx, "seasonId")
+	seasonID, err := utils.GetParamUint(ctx, "seasonId")
 	if err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
@@ -84,7 +84,13 @@ func (c *SeasonController) CreateSeason(ctx *gin.Context) {
 		return
 	}
 
-	newSeason, err := c.seasonService.CreateSeason(&bodyDto)
+	user := utils.GetAuthUser(ctx)
+	if user == nil {
+		r.Unauthorized(ctx, "User not found")
+		return
+	}
+
+	newSeason, err := c.seasonService.CreateSeason(&bodyDto, user.UUID)
 	if err != nil {
 		r.BadGateway(ctx, err.Error())
 		return
@@ -106,7 +112,7 @@ func (c *SeasonController) CreateSeason(ctx *gin.Context) {
 // @Failure 502 {object} models.BadGatewayResponse
 // @Router /seasons/{seasonId} [patch]
 func (c *SeasonController) UpdateSeason(ctx *gin.Context) {
-	seasonID, err := utils.ParseID(ctx, "seasonId")
+	seasonID, err := utils.GetParamUint(ctx, "seasonId")
 	if err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
@@ -123,8 +129,20 @@ func (c *SeasonController) UpdateSeason(ctx *gin.Context) {
 		return
 	}
 
-	if _, err := c.seasonService.GetSeasonByID(seasonID); err != nil {
+	user := utils.GetAuthUser(ctx)
+	if user == nil {
+		r.Unauthorized(ctx, "User not found")
+		return
+	}
+
+	season, err := c.seasonService.GetSeasonByID(seasonID)
+	if err != nil {
 		r.NotFound(ctx, "Season not found")
+		return
+	}
+
+	if user.Role != models.AdminRole && user.UUID != season.UserUUID {
+		r.Forbidden(ctx, "This action is forbidden")
 		return
 	}
 
@@ -148,15 +166,26 @@ func (c *SeasonController) UpdateSeason(ctx *gin.Context) {
 // @Failure 502 {object} models.BadGatewayResponse
 // @Router /seasons/{seasonId} [delete]
 func (c *SeasonController) DeleteSeason(ctx *gin.Context) {
-	seasonID, err := utils.ParseID(ctx, "seasonId")
+	seasonID, err := utils.GetParamUint(ctx, "seasonId")
 	if err != nil {
 		r.BadRequest(ctx, err.Error())
+		return
+	}
+
+	user := utils.GetAuthUser(ctx)
+	if user == nil {
+		r.Unauthorized(ctx, "User not found")
 		return
 	}
 
 	season, err := c.seasonService.GetSeasonByID(seasonID)
 	if err != nil {
 		r.NotFound(ctx, "Season not found")
+		return
+	}
+
+	if user.Role != models.AdminRole && user.UUID != season.UserUUID {
+		r.Forbidden(ctx, "This action is forbidden")
 		return
 	}
 

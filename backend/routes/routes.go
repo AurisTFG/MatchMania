@@ -35,25 +35,25 @@ func ApplyRoutes(
 		{
 			seasons.GET("/", seasonController.GetAllSeasons)
 			seasons.GET("/:seasonId", seasonController.GetSeason)
-			seasons.POST("/", seasonController.CreateSeason)
-			seasons.PATCH("/:seasonId", seasonController.UpdateSeason)
-			seasons.DELETE("/:seasonId", seasonController.DeleteSeason)
+			seasons.POST("/", authMiddleware.RequireAuth, seasonController.CreateSeason)
+			seasons.PATCH("/:seasonId", authMiddleware.RequireAuth, seasonController.UpdateSeason)
+			seasons.DELETE("/:seasonId", authMiddleware.RequireAuth, seasonController.DeleteSeason)
 
 			teams := seasons.Group("/:seasonId/teams")
 			{
 				teams.GET("/", teamController.GetAllTeams)
 				teams.GET("/:teamId", teamController.GetTeam)
-				teams.POST("/", teamController.CreateTeam)
-				teams.PATCH("/:teamId", teamController.UpdateTeam)
-				teams.DELETE("/:teamId", teamController.DeleteTeam)
+				teams.POST("/", authMiddleware.RequireAuth, teamController.CreateTeam)
+				teams.PATCH("/:teamId", authMiddleware.RequireAuth, teamController.UpdateTeam)
+				teams.DELETE("/:teamId", authMiddleware.RequireAuth, teamController.DeleteTeam)
 
 				results := teams.Group("/:teamId/results")
 				{
 					results.GET("/", resultController.GetAllResults)
 					results.GET("/:resultId", resultController.GetResult)
 					results.POST("/", authMiddleware.RequireAuth, resultController.CreateResult)
-					results.PATCH("/:resultId", resultController.UpdateResult)
-					results.DELETE("/:resultId", resultController.DeleteResult)
+					results.PATCH("/:resultId", authMiddleware.RequireAuth, resultController.UpdateResult)
+					results.DELETE("/:resultId", authMiddleware.RequireAuth, resultController.DeleteResult)
 				}
 			}
 		}

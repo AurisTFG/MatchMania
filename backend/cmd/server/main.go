@@ -84,11 +84,13 @@ func main() {
 		MaxAge:           12 * time.Hour,
 	}))
 
+	sessionRepository := repositories.NewSessionRepository(db)
 	userRepository := repositories.NewUserRepository(db)
 	seasonRepository := repositories.NewSeasonRepository(db)
 	teamRepository := repositories.NewTeamRepository(db)
 	resultRepository := repositories.NewResultRepository(db)
 
+	sessionService := services.NewSessionService(sessionRepository)
 	userService := services.NewUserService(userRepository)
 	authService := services.NewAuthService(userService, env)
 	seasonService := services.NewSeasonService(seasonRepository)
@@ -97,7 +99,7 @@ func main() {
 
 	authMiddleware := middlewares.NewAuthMiddleware(authService)
 
-	authController := controllers.NewAuthController(authService, env)
+	authController := controllers.NewAuthController(authService, sessionService, env)
 	seasonController := controllers.NewSeasonController(seasonService)
 	teamController := controllers.NewTeamController(seasonService, teamService)
 	resultController := controllers.NewResultController(teamService, resultService)

@@ -3,12 +3,14 @@ package services
 import (
 	"MatchManiaAPI/models"
 	"MatchManiaAPI/repositories"
+
+	"github.com/google/uuid"
 )
 
 type ResultService interface {
 	GetAllResults(uint, uint) ([]models.Result, error)
 	GetResultByID(uint, uint, uint) (*models.Result, error)
-	CreateResult(*models.CreateResultDto, uint, uint) (*models.Result, error)
+	CreateResult(*models.CreateResultDto, uint, uint, uuid.UUID) (*models.Result, error)
 	UpdateResult(uint, *models.UpdateResultDto) (*models.Result, error)
 	DeleteResult(*models.Result) error
 }
@@ -29,10 +31,11 @@ func (s *resultService) GetResultByID(seasonID uint, teamID uint, resultID uint)
 	return s.repo.FindByIDAndSeasonIDAndTeamID(seasonID, teamID, resultID)
 }
 
-func (s *resultService) CreateResult(resultDto *models.CreateResultDto, seasonID uint, teamID uint) (*models.Result, error) {
+func (s *resultService) CreateResult(resultDto *models.CreateResultDto, seasonID uint, teamID uint, userUUID uuid.UUID) (*models.Result, error) {
 	newResult := resultDto.ToResult()
 	newResult.SeasonID = seasonID
 	newResult.TeamID = teamID
+	newResult.UserUUID = userUUID
 
 	return s.repo.Create(&newResult)
 }
