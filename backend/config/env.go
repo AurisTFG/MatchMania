@@ -21,7 +21,7 @@ type Env struct {
 	JWTRefreshTokenSecret         string `mapstructure:"JWT_REFRESH_TOKEN_SECRET"`
 	JWTIssuer                     string `mapstructure:"JWT_ISSUER"`
 	JWTAudience                   string `mapstructure:"JWT_AUDIENCE"`
-	JWTTokenExpirationDays        int    `mapstructure:"JWT_TOKEN_EXPIRATION_DAYS"`
+	JWTAccessTokenExpirationDays  int    `mapstructure:"JWT_ACCESS_TOKEN_EXPIRATION_DAYS"`
 	JWTRefreshTokenExpirationDays int    `mapstructure:"JWT_REFRESH_EXPIRATION_DAYS"`
 }
 
@@ -70,7 +70,7 @@ func (e *Env) Validate() error {
 		e.JWTRefreshTokenSecret == "" ||
 		e.JWTIssuer == "" ||
 		e.JWTAudience == "" ||
-		e.JWTTokenExpirationDays == 0 ||
+		e.JWTAccessTokenExpirationDays == 0 ||
 		e.JWTRefreshTokenExpirationDays == 0 {
 		return fmt.Errorf("missing JWT configuration values")
 	}

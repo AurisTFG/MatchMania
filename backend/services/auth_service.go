@@ -37,7 +37,7 @@ func (s *authService) CreateAccessToken(user *models.User) (string, error) {
 		"aud":  s.env.JWTAudience,
 		"iat":  time.Now().Unix(),
 		"nbf":  time.Now().Unix(),
-		"exp":  time.Now().AddDate(0, 0, s.env.JWTTokenExpirationDays).Unix(),
+		"exp":  time.Now().AddDate(0, 0, s.env.JWTAccessTokenExpirationDays).Unix(),
 	})
 
 	accessTokenString, err := accessToken.SignedString([]byte(s.env.JWTAccessTokenSecret))
@@ -67,45 +67,45 @@ func (s *authService) VerifyAccessToken(accessToken string) (*models.User, error
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, jwt.ErrSignatureInvalid
 		}
-		return []byte(s.env.JWTRefreshTokenSecret), nil
+		return []byte(s.env.JWTAccessTokenSecret), nil
 	})
 	if err != nil || !token.Valid {
-		return nil, fmt.Errorf("Invalid access token")
+		return nil, fmt.Errorf("invalid access token")
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
-		return nil, fmt.Errorf("Invalid access token claims")
+		return nil, fmt.Errorf("invalid access token claims")
 	}
 
 	if claims["aud"] != s.env.JWTAudience {
-		return nil, fmt.Errorf("Invalid audience")
+		return nil, fmt.Errorf("invalid audience")
 	}
 
 	if claims["iss"] != s.env.JWTIssuer {
-		return nil, fmt.Errorf("Invalid issuer")
+		return nil, fmt.Errorf("invalid issuer")
 	}
 
 	if float64(time.Now().Unix()) > claims["exp"].(float64) {
-		return nil, fmt.Errorf("Access token expired")
+		return nil, fmt.Errorf("access token expired")
 	}
 
 	if claims["nbf"].(float64) > float64(time.Now().Unix()) {
-		return nil, fmt.Errorf("Access token not valid yet")
+		return nil, fmt.Errorf("access token not valid yet")
 	}
 
-	if claims["exp"].(float64)-claims["iat"].(float64) != float64(s.env.JWTRefreshTokenExpirationDays*24*60*60) {
-		return nil, fmt.Errorf("Access token expiration date is invalid")
+	if claims["exp"].(float64)-claims["iat"].(float64) != float64(s.env.JWTAccessTokenExpirationDays*24*60*60) {
+		return nil, fmt.Errorf("access token expiration date is invalid")
 	}
 
-	user, err := s.userService.GetUserByID(uint(claims["sub"].(float64)))
+	user, err := s.userService.GetUserByID(claims["sub"].(string))
 	if err != nil {
-		return nil, fmt.Errorf("Invalid user")
+		return nil, fmt.Errorf("invalid user")
 	}
 
 	roleClaim := models.Role(claims["role"].(string))
 	if user.Role != roleClaim {
-		return nil, fmt.Errorf("User role mismatch")
+		return nil, fmt.Errorf("user role mismatch")
 	}
 
 	return nil, nil
@@ -119,34 +119,34 @@ func (s *authService) VerifyRefreshToken(refreshToken string) (*models.User, err
 		return []byte(s.env.JWTRefreshTokenSecret), nil
 	})
 	if err != nil || !token.Valid {
-		return nil, fmt.Errorf("Invalid refresh token")
+		return nil, fmt.Errorf("invalid refresh token")
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
-		return nil, fmt.Errorf("Invalid refresh token claims")
+		return nil, fmt.Errorf("invalid refresh token claims")
 	}
 
 	if claims["aud"] != s.env.JWTAudience {
-		return nil, fmt.Errorf("Invalid audience")
+		return nil, fmt.Errorf("invalid audience")
 	}
 
 	if claims["iss"] != s.env.JWTIssuer {
-		return nil, fmt.Errorf("Invalid issuer")
+		return nil, fmt.Errorf("invalid issuer")
 	}
 
 	if float64(time.Now().Unix()) > claims["exp"].(float64) {
-		return nil, fmt.Errorf("Refresh token expired")
+		return nil, fmt.Errorf("refresh token expired")
 	}
 
-	user, err := s.userService.GetUserByID(uint(claims["sub"].(float64)))
+	user, err := s.userService.GetUserByID(claims["sub"].(string))
 	if err != nil {
-		return nil, fmt.Errorf("Invalid user")
+		return nil, fmt.Errorf("invalid user")
 	}
 
 	roleClaim := models.Role(claims["role"].(string))
 	if user.Role != roleClaim {
-		return nil, fmt.Errorf("User role mismatch")
+		return nil, fmt.Errorf("user role mismatch")
 	}
 
 	return user, nil

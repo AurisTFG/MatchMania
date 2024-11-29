@@ -93,13 +93,13 @@ func SeedDatabase(db *DB) error {
 	}
 
 	results := []models.Result{
-		{MatchStartDate: time.Now(), MatchEndDate: time.Now().Add(40 * time.Minute), Score: 19, OpponentScore: 9, TeamID: 3, OpponentTeamID: 2, SeasonID: 2},
-		{MatchStartDate: time.Now(), MatchEndDate: time.Now().Add(40 * time.Minute), Score: 15, OpponentScore: 5, TeamID: 4, OpponentTeamID: 3, SeasonID: 2},
-		{MatchStartDate: time.Now(), MatchEndDate: time.Now().Add(40 * time.Minute), Score: 16, OpponentScore: 13, TeamID: 5, OpponentTeamID: 4, SeasonID: 2},
-		{MatchStartDate: time.Now(), MatchEndDate: time.Now().Add(40 * time.Minute), Score: 8, OpponentScore: 6, TeamID: 6, OpponentTeamID: 5, SeasonID: 2},
-		{MatchStartDate: time.Now(), MatchEndDate: time.Now().Add(40 * time.Minute), Score: 11, OpponentScore: 2, TeamID: 7, OpponentTeamID: 6, SeasonID: 2},
-		{MatchStartDate: time.Now(), MatchEndDate: time.Now().Add(40 * time.Minute), Score: 7, OpponentScore: 8, TeamID: 8, OpponentTeamID: 7, SeasonID: 2},
-		{MatchStartDate: time.Now(), MatchEndDate: time.Now().Add(40 * time.Minute), Score: 12, OpponentScore: 15, TeamID: 2, OpponentTeamID: 8, SeasonID: 2},
+		{MatchStartDate: time.Now(), MatchEndDate: time.Now().Add(40 * time.Minute), Score: "19", OpponentScore: "9", TeamID: 3, OpponentTeamID: 2, SeasonID: 2},
+		{MatchStartDate: time.Now(), MatchEndDate: time.Now().Add(40 * time.Minute), Score: "15", OpponentScore: "5", TeamID: 4, OpponentTeamID: 3, SeasonID: 2},
+		{MatchStartDate: time.Now(), MatchEndDate: time.Now().Add(40 * time.Minute), Score: "16", OpponentScore: "13", TeamID: 5, OpponentTeamID: 4, SeasonID: 2},
+		{MatchStartDate: time.Now(), MatchEndDate: time.Now().Add(40 * time.Minute), Score: "8", OpponentScore: "6", TeamID: 6, OpponentTeamID: 5, SeasonID: 2},
+		{MatchStartDate: time.Now(), MatchEndDate: time.Now().Add(40 * time.Minute), Score: "11", OpponentScore: "2", TeamID: 7, OpponentTeamID: 6, SeasonID: 2},
+		{MatchStartDate: time.Now(), MatchEndDate: time.Now().Add(40 * time.Minute), Score: "7", OpponentScore: "8", TeamID: 8, OpponentTeamID: 7, SeasonID: 2},
+		{MatchStartDate: time.Now(), MatchEndDate: time.Now().Add(40 * time.Minute), Score: "12", OpponentScore: "15", TeamID: 2, OpponentTeamID: 8, SeasonID: 2},
 	}
 
 	users := []models.User{

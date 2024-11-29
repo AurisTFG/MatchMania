@@ -3,6 +3,7 @@ package models
 import (
 	"errors"
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/go-playground/validator/v10"
@@ -13,8 +14,8 @@ type Result struct {
 	gorm.Model
 	MatchStartDate time.Time `gorm:"not null"`
 	MatchEndDate   time.Time `gorm:"not null"`
-	Score          int       `gorm:"not null"`
-	OpponentScore  int       `gorm:"not null"`
+	Score          string    `gorm:"not null"`
+	OpponentScore  string    `gorm:"not null"`
 
 	TeamID         uint `gorm:"not null"`
 	OpponentTeamID uint `gorm:"not null"`
@@ -28,8 +29,8 @@ type ResultDto struct {
 	ID             uint      `json:"id" example:"7"`
 	MatchStartDate time.Time `json:"matchStartDate" example:"2025-06-01T00:00:00Z"`
 	MatchEndDate   time.Time `json:"matchEndDate" example:"2025-06-01T00:40:00Z"`
-	Score          int       `json:"score" example:"16"`
-	OpponentScore  int       `json:"opponentScore" example:"14"`
+	Score          string    `json:"score" example:"16"`
+	OpponentScore  string    `json:"opponentScore" example:"14"`
 	TeamID         uint      `json:"team" example:"6"`
 	OpponentTeamID uint      `json:"opponentTeam" example:"7"`
 }
@@ -37,16 +38,16 @@ type ResultDto struct {
 type CreateResultDto struct {
 	MatchStartDate time.Time `json:"matchStartDate" validate:"required,startDate" example:"2025-06-01T00:00:00Z"`
 	MatchEndDate   time.Time `json:"matchEndDate" validate:"required,endDate,dateDiff,gtfield=MatchStartDate" example:"2025-06-01T00:40:00Z"`
-	Score          int       `json:"score" validate:"score" example:"16"`
-	OpponentScore  int       `json:"opponentScore" validate:"score" example:"14"`
+	Score          string    `json:"score" validate:"score" example:"16"`
+	OpponentScore  string    `json:"opponentScore" validate:"score" example:"14"`
 	OpponentTeamID uint      `json:"opponentTeamId" validate:"required" example:"7"`
 }
 
 type UpdateResultDto struct {
 	MatchStartDate time.Time `json:"matchStartDate" validate:"required,startDate" example:"2025-06-01T00:00:00Z"`
 	MatchEndDate   time.Time `json:"matchEndDate" validate:"required,endDate,dateDiff,gtfield=MatchStartDate" example:"2025-06-01T00:40:00Z"`
-	Score          int       `json:"score" validate:"score" example:"16"`
-	OpponentScore  int       `json:"opponentScore" validate:"score" example:"14"`
+	Score          string    `json:"score" validate:"score" example:"16"`
+	OpponentScore  string    `json:"opponentScore" validate:"score" example:"14"`
 }
 
 func (r *Result) ToDto() ResultDto {
@@ -119,9 +120,14 @@ func dateDiffValidatorResult(fl validator.FieldLevel) bool {
 }
 
 func scoreValidatorResult(fl validator.FieldLevel) bool {
-	score := fl.Field().Interface().(int)
+	score := fl.Field().Interface().(string)
 
-	return score >= 0 && score <= 100
+	scoreInt, err := strconv.Atoi(score)
+	if err != nil {
+		return false
+	}
+
+	return scoreInt >= 0 && scoreInt <= 100
 }
 
 func (dto *CreateResultDto) Validate() error {

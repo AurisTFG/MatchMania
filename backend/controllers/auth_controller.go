@@ -79,7 +79,7 @@ func (c *AuthController) AuthLogIn(ctx *gin.Context) {
 	}
 
 	ctx.SetSameSite(http.SameSiteLaxMode)
-	ctx.SetCookie("AccessToken", accessToken, c.env.JWTTokenExpirationDays*24*60*60, "/", "", false, true)
+	ctx.SetCookie("AccessToken", accessToken, c.env.JWTAccessTokenExpirationDays*24*60*60, "/", "", false, true)
 	ctx.SetCookie("RefreshToken", refreshToken, c.env.JWTRefreshTokenExpirationDays*24*60*60, "/", "", false, true)
 
 	r.OK(ctx, responses.AuthLoginResponse{AccessToken: accessToken, RefreshToken: refreshToken})
@@ -119,7 +119,7 @@ func (c *AuthController) AuthRefreshToken(ctx *gin.Context) {
 	}
 
 	ctx.SetSameSite(http.SameSiteLaxMode)
-	ctx.SetCookie("AccessToken", accessToken, c.env.JWTTokenExpirationDays*24*60*60, "/", "", false, true)
+	ctx.SetCookie("AccessToken", accessToken, c.env.JWTAccessTokenExpirationDays*24*60*60, "/", "", false, true)
 	ctx.SetCookie("RefreshToken", refreshToken, c.env.JWTRefreshTokenExpirationDays*24*60*60, "/", "", false, true)
 
 	r.OK(ctx, responses.AuthLoginResponse{AccessToken: accessToken, RefreshToken: refreshToken})
