@@ -39,7 +39,7 @@ func (c *ResultController) CreateResult(ctx *gin.Context) {
 		return
 	}
 
-	teamID, err := utils.ParseID(ctx, "seasonId")
+	teamID, err := utils.ParseID(ctx, "teamId")
 	if err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
@@ -103,7 +103,7 @@ func (c *ResultController) UpdateResult(ctx *gin.Context) {
 		return
 	}
 
-	teamID, err := utils.ParseID(ctx, "seasonId")
+	teamID, err := utils.ParseID(ctx, "teamId")
 	if err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
@@ -159,7 +159,7 @@ func (c *ResultController) GetResult(ctx *gin.Context) {
 		return
 	}
 
-	teamID, err := utils.ParseID(ctx, "seasonId")
+	teamID, err := utils.ParseID(ctx, "teamId")
 	if err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
@@ -197,7 +197,7 @@ func (c *ResultController) GetAllResults(ctx *gin.Context) {
 		return
 	}
 
-	teamID, err := utils.ParseID(ctx, "seasonId")
+	teamID, err := utils.ParseID(ctx, "teamId")
 	if err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
@@ -231,7 +231,7 @@ func (c *ResultController) DeleteResult(ctx *gin.Context) {
 		return
 	}
 
-	teamID, err := utils.ParseID(ctx, "seasonId")
+	teamID, err := utils.ParseID(ctx, "teamId")
 	if err != nil {
 		r.BadRequest(ctx, err.Error())
 		return

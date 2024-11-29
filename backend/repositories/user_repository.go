@@ -7,7 +7,7 @@ import (
 
 type UserRepository interface {
 	FindAll() ([]models.User, error)
-	FindByID(uint) (*models.User, error)
+	FindByID(string) (*models.User, error)
 	FindByEmail(string) (*models.User, error)
 	Create(*models.User) (*models.User, error)
 	Update(*models.User) (*models.User, error)
@@ -30,10 +30,10 @@ func (r *userRepository) FindAll() ([]models.User, error) {
 	return users, result.Error
 }
 
-func (r *userRepository) FindByID(userID uint) (*models.User, error) {
+func (r *userRepository) FindByID(userID string) (*models.User, error) {
 	var user models.User
 
-	result := r.db.First(&user, userID)
+	result := r.db.First(&user, "id = ?", userID)
 
 	return &user, result.Error
 }

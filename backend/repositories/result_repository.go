@@ -74,7 +74,7 @@ func (r *resultRepository) FindByIDAndSeasonIDAndTeamID(seasonID uint, teamID ui
 
 	result := r.db.Where(
 		"season_id = ? AND (team_id = ? OR opponent_team_id = ?) AND id = ?",
-		seasonID, teamID, resultID,
+		seasonID, teamID, teamID, resultID,
 	).First(&resultModel)
 
 	return &resultModel, result.Error
