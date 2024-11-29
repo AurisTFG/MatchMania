@@ -23,13 +23,12 @@ func NewSeasonController(seasonService services.SeasonService) SeasonController 
 // @Tags seasons
 // @Accept json
 // @Produce json
-// @Success 200 {object} models.SeasonsResponse
-// @Failure 502 {object} models.BadGatewayResponse
+// @Success 200 {object} responses.SeasonsResponse
 // @Router /seasons [get]
 func (c *SeasonController) GetAllSeasons(ctx *gin.Context) {
 	seasons, err := c.seasonService.GetAllSeasons()
 	if err != nil {
-		r.BadGateway(ctx, err.Error())
+		r.UnprocessableEntity(ctx, err.Error())
 		return
 	}
 
@@ -42,8 +41,8 @@ func (c *SeasonController) GetAllSeasons(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param seasonId path string true "Season ID"
-// @Success 200 {object} models.SeasonResponse
-// @Failure 404 {object} models.NotFoundResponse
+// @Success 200 {object} responses.SeasonResponse
+// @Failure 404 {object} responses.NotFoundResponse
 // @Router /seasons/{seasonId} [get]
 func (c *SeasonController) GetSeason(ctx *gin.Context) {
 	seasonID, err := utils.GetParamUint(ctx, "seasonId")
@@ -67,10 +66,9 @@ func (c *SeasonController) GetSeason(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param season body models.CreateSeasonDto true "Season object that needs to be created"
-// @Success 201 {object} models.SeasonResponse
-// @Failure 400 {object} models.BadRequestResponse
-// @Failure 422 {object} models.UnprocessableEntityResponse
-// @Failure 502 {object} models.BadGatewayResponse
+// @Success 201 {object} responses.SeasonResponse
+// @Failure 400 {object} responses.BadRequestResponse
+// @Failure 422 {object} responses.UnprocessableEntityResponse
 // @Router /seasons [post]
 func (c *SeasonController) CreateSeason(ctx *gin.Context) {
 	var bodyDto models.CreateSeasonDto
@@ -92,7 +90,7 @@ func (c *SeasonController) CreateSeason(ctx *gin.Context) {
 
 	newSeason, err := c.seasonService.CreateSeason(&bodyDto, user.UUID)
 	if err != nil {
-		r.BadGateway(ctx, err.Error())
+		r.UnprocessableEntity(ctx, err.Error())
 		return
 	}
 
@@ -106,10 +104,9 @@ func (c *SeasonController) CreateSeason(ctx *gin.Context) {
 // @Produce json
 // @Param seasonId path string true "Season ID"
 // @Param season body models.UpdateSeasonDto true "Season object that needs to be updated"
-// @Success 200 {object} models.SeasonResponse
-// @Failure 400 {object} models.BadRequestResponse
-// @Failure 404 {object} models.NotFoundResponse
-// @Failure 502 {object} models.BadGatewayResponse
+// @Success 200 {object} responses.SeasonResponse
+// @Failure 400 {object} responses.BadRequestResponse
+// @Failure 404 {object} responses.NotFoundResponse
 // @Router /seasons/{seasonId} [patch]
 func (c *SeasonController) UpdateSeason(ctx *gin.Context) {
 	seasonID, err := utils.GetParamUint(ctx, "seasonId")
@@ -148,7 +145,7 @@ func (c *SeasonController) UpdateSeason(ctx *gin.Context) {
 
 	updatedSeason, err := c.seasonService.UpdateSeason(seasonID, &bodyDto)
 	if err != nil {
-		r.BadGateway(ctx, err.Error())
+		r.UnprocessableEntity(ctx, err.Error())
 		return
 	}
 
@@ -162,8 +159,7 @@ func (c *SeasonController) UpdateSeason(ctx *gin.Context) {
 // @Produce json
 // @Param seasonId path string true "Season ID"
 // @Success 204
-// @Failure 404 {object} models.NotFoundResponse
-// @Failure 502 {object} models.BadGatewayResponse
+// @Failure 404 {object} responses.NotFoundResponse
 // @Router /seasons/{seasonId} [delete]
 func (c *SeasonController) DeleteSeason(ctx *gin.Context) {
 	seasonID, err := utils.GetParamUint(ctx, "seasonId")
@@ -191,7 +187,7 @@ func (c *SeasonController) DeleteSeason(ctx *gin.Context) {
 
 	err = c.seasonService.DeleteSeason(season)
 	if err != nil {
-		r.BadGateway(ctx, err.Error())
+		r.UnprocessableEntity(ctx, err.Error())
 		return
 	}
 

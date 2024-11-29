@@ -22,6 +22,16 @@ func NewAuthController(authService services.AuthService, sessionService services
 	return AuthController{authService: authService, sessionService: sessionService, env: env}
 }
 
+// @Summary Sign up
+// @Description Sign up
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param body body models.SignUpDto true "Sign up details"
+// @Success 201 {object} responses.AuthSignUpResponse
+// @Failure 400 {object} responses.BadRequestResponse
+// @Failure 422 {object} responses.UnprocessableEntityResponse
+// @Router /auth/signup [post]
 func (c *AuthController) AuthSignUp(ctx *gin.Context) {
 	var bodyDto models.SignUpDto
 
@@ -44,6 +54,16 @@ func (c *AuthController) AuthSignUp(ctx *gin.Context) {
 	r.Created(ctx, r.AuthSignUpResponse{User: user.ToDto()})
 }
 
+// @Summary Log in
+// @Description Log in
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param body body models.LoginDto true "Log in details"
+// @Success 200 {object} responses.AuthLoginResponse
+// @Failure 400 {object} responses.BadRequestResponse
+// @Failure 422 {object} responses.UnprocessableEntityResponse
+// @Router /auth/login [post]
 func (c *AuthController) AuthLogIn(ctx *gin.Context) {
 	var bodyDto models.LoginDto
 
@@ -94,6 +114,12 @@ func (c *AuthController) AuthLogIn(ctx *gin.Context) {
 	r.OK(ctx, r.AuthLoginResponse{AccessToken: accessToken})
 }
 
+// @Summary Log out
+// @Description Log out
+// @Tags auth
+// @Success 204
+// @Failure 422 {object} responses.UnprocessableEntityResponse
+// @Router /auth/logout [post]
 func (c *AuthController) AuthLogOut(ctx *gin.Context) {
 	tokenString, err := ctx.Cookie("RefreshToken")
 	if err != nil {
@@ -112,7 +138,11 @@ func (c *AuthController) AuthLogOut(ctx *gin.Context) {
 		return
 	}
 
-	c.sessionService.InvalidateSession(sessionId)
+	err = c.sessionService.InvalidateSession(sessionId)
+	if err != nil {
+		r.UnprocessableEntity(ctx, err.Error())
+		return
+	}
 
 	ctx.SetSameSite(http.SameSiteLaxMode)
 	ctx.SetCookie("RefreshToken", "", -1, "/", "", false, true)
@@ -120,6 +150,12 @@ func (c *AuthController) AuthLogOut(ctx *gin.Context) {
 	r.Deleted(ctx)
 }
 
+// @Summary Refresh token
+// @Description Refresh token
+// @Tags auth
+// @Success 200 {object} responses.AuthRefreshTokenResponse
+// @Failure 422 {object} responses.UnprocessableEntityResponse
+// @Router /auth/refresh-token [post]
 func (c *AuthController) AuthRefreshToken(ctx *gin.Context) {
 	tokenString, err := ctx.Cookie("RefreshToken")
 	if err != nil {
@@ -150,7 +186,11 @@ func (c *AuthController) AuthRefreshToken(ctx *gin.Context) {
 		return
 	}
 
-	c.sessionService.ExtendSession(sessionId, refreshToken, time.Now().AddDate(0, 0, c.env.JWTRefreshTokenExpirationDays))
+	err = c.sessionService.ExtendSession(sessionId, refreshToken, time.Now().AddDate(0, 0, c.env.JWTRefreshTokenExpirationDays))
+	if err != nil {
+		r.UnprocessableEntity(ctx, err.Error())
+		return
+	}
 
 	ctx.SetSameSite(http.SameSiteLaxMode)
 	ctx.SetCookie("RefreshToken", refreshToken, c.env.JWTRefreshTokenExpirationDays*24*60*60, "/", "", false, true)

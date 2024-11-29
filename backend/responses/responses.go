@@ -40,8 +40,8 @@ func UnprocessableEntity(c *gin.Context, errorMessage string) {
 	c.JSON(http.StatusUnprocessableEntity, UnprocessableEntityResponse{Error: errorMessage})
 }
 
-func BadGateway(c *gin.Context, errorMessage string) {
-	c.JSON(http.StatusBadGateway, BadGatewayResponse{Error: errorMessage})
+func InternalServerError(c *gin.Context, errorMessage string) {
+	c.JSON(http.StatusInternalServerError, InternalServerErrorResponse{Error: errorMessage})
 }
 
 type BadRequestResponse struct {
@@ -64,8 +64,8 @@ type UnprocessableEntityResponse struct {
 	Error string `json:"error" example:"Validation error"`
 }
 
-type BadGatewayResponse struct {
-	Error string `json:"error" example:"Unable to communicate with the database"`
+type InternalServerErrorResponse struct {
+	Error string `json:"error" example:"Internal server error"`
 }
 
 type AuthSignUpResponse struct {

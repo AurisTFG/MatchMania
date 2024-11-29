@@ -1,4 +1,4 @@
-.PHONY: all build run rund test lint clean help
+.PHONY: all build run rund test lint clean gendocs help
 
 MAKEFLAGS += --no-print-directory
 OUTPUT_DIR = bin
@@ -32,6 +32,10 @@ lint:
 	@golangci-lint run
 	@echo "Lint completed without errors"
 
+gendocs:
+	@swag init -g cmd/server/main.go
+	@echo "Generated API documentation"
+
 clean:
 	@if [ -d $(OUTPUT_DIR) ]; then rm -rf $(OUTPUT_DIR); fi
 	@echo "Cleaned up output directory \"$(OUTPUT_DIR)\""
@@ -45,5 +49,6 @@ help:
 	@echo "  make rund    - Runs the application with CompileDaemon"
 	@echo "  make test    - Runs the tests"
 	@echo "  make lint    - Runs the linter"
+	@echo "  make gendocs - Generates the API documentation with Swagger"
 	@echo "  make clean   - Cleans up the output directory"
 	@echo "  make help    - Displays this help message"

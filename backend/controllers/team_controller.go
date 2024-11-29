@@ -25,8 +25,7 @@ func NewTeamController(seasonService services.SeasonService, teamService service
 // @Accept json
 // @Produce json
 // @Param seasonId path string true "Season ID"
-// @Success 200 {object} models.TeamsResponse
-// @Failure 502 {object} models.BadGatewayResponse
+// @Success 200 {object} responses.TeamsResponse
 // @Router /seasons/{seasonId}/teams [get]
 func (c *TeamController) GetAllTeams(ctx *gin.Context) {
 	seasonID, err := utils.GetParamUint(ctx, "seasonId")
@@ -37,7 +36,7 @@ func (c *TeamController) GetAllTeams(ctx *gin.Context) {
 
 	teams, err := c.teamService.GetAllTeams(seasonID)
 	if err != nil {
-		r.BadGateway(ctx, err.Error())
+		r.UnprocessableEntity(ctx, err.Error())
 		return
 	}
 
@@ -51,8 +50,8 @@ func (c *TeamController) GetAllTeams(ctx *gin.Context) {
 // @Produce json
 // @Param seasonId path string true "Season ID"
 // @Param teamId path string true "Team ID"
-// @Success 200 {object} models.TeamResponse
-// @Failure 404 {object} models.NotFoundResponse
+// @Success 200 {object} responses.TeamResponse
+// @Failure 404 {object} responses.NotFoundResponse
 // @Router /seasons/{seasonId}/teams/{teamId} [get]
 func (c *TeamController) GetTeam(ctx *gin.Context) {
 	seasonID, err := utils.GetParamUint(ctx, "seasonId")
@@ -83,10 +82,9 @@ func (c *TeamController) GetTeam(ctx *gin.Context) {
 // @Produce json
 // @Param seasonId path string true "Season ID"
 // @Param team body models.CreateTeamDto true "Team object that needs to be created"
-// @Success 201 {object} models.TeamResponse
-// @Failure 400 {object} models.BadRequestResponse
-// @Failure 422 {object} models.UnprocessableEntityResponse
-// @Failure 502 {object} models.BadGatewayResponse
+// @Success 201 {object} responses.TeamResponse
+// @Failure 400 {object} responses.BadRequestResponse
+// @Failure 422 {object} responses.UnprocessableEntityResponse
 // @Router /seasons/{seasonId}/teams [post]
 func (c *TeamController) CreateTeam(ctx *gin.Context) {
 	seasonID, err := utils.GetParamUint(ctx, "seasonId")
@@ -120,7 +118,7 @@ func (c *TeamController) CreateTeam(ctx *gin.Context) {
 
 	newTeam, err := c.teamService.CreateTeam(&bodyDto, season.ID, user.UUID)
 	if err != nil {
-		r.BadGateway(ctx, err.Error())
+		r.UnprocessableEntity(ctx, err.Error())
 		return
 	}
 
@@ -135,10 +133,9 @@ func (c *TeamController) CreateTeam(ctx *gin.Context) {
 // @Param seasonId path string true "Season ID"
 // @Param teamId path string true "Team ID"
 // @Param team body models.UpdateTeamDto true "Team object that needs to be updated"
-// @Success 200 {object} models.TeamResponse
-// @Failure 400 {object} models.BadRequestResponse
-// @Failure 404 {object} models.NotFoundResponse
-// @Failure 502 {object} models.BadGatewayResponse
+// @Success 200 {object} responses.TeamResponse
+// @Failure 400 {object} responses.BadRequestResponse
+// @Failure 404 {object} responses.NotFoundResponse
 // @Router /seasons/{seasonId}/teams/{teamId} [patch]
 func (c *TeamController) UpdateTeam(ctx *gin.Context) {
 	seasonID, err := utils.GetParamUint(ctx, "seasonId")
@@ -184,7 +181,7 @@ func (c *TeamController) UpdateTeam(ctx *gin.Context) {
 
 	updatedTeam, err := c.teamService.UpdateTeam(teamID, &bodyDto)
 	if err != nil {
-		r.BadGateway(ctx, err.Error())
+		r.UnprocessableEntity(ctx, err.Error())
 		return
 	}
 
@@ -199,8 +196,7 @@ func (c *TeamController) UpdateTeam(ctx *gin.Context) {
 // @Param seasonId path string true "Season ID"
 // @Param teamId path string true "Team ID"
 // @Success 204
-// @Failure 404 {object} models.NotFoundResponse
-// @Failure 502 {object} models.BadGatewayResponse
+// @Failure 404 {object} responses.NotFoundResponse
 // @Router /seasons/{seasonId}/teams/{teamId} [delete]
 func (c *TeamController) DeleteTeam(ctx *gin.Context) {
 	seasonID, err := utils.GetParamUint(ctx, "seasonId")
@@ -234,7 +230,7 @@ func (c *TeamController) DeleteTeam(ctx *gin.Context) {
 
 	err = c.teamService.DeleteTeam(team)
 	if err != nil {
-		r.BadGateway(ctx, err.Error())
+		r.UnprocessableEntity(ctx, err.Error())
 		return
 	}
 

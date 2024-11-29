@@ -15,6 +15,141 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/auth/login": {
+            "post": {
+                "description": "Log in",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Log in",
+                "parameters": [
+                    {
+                        "description": "Log in details",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.LoginDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.AuthLoginResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.BadRequestResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/responses.UnprocessableEntityResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/logout": {
+            "post": {
+                "description": "Log out",
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Log out",
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/responses.UnprocessableEntityResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/refresh-token": {
+            "post": {
+                "description": "Refresh token",
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Refresh token",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.AuthRefreshTokenResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/responses.UnprocessableEntityResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/signup": {
+            "post": {
+                "description": "Sign up",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Sign up",
+                "parameters": [
+                    {
+                        "description": "Sign up details",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.SignUpDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/responses.AuthSignUpResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.BadRequestResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/responses.UnprocessableEntityResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/seasons": {
             "get": {
                 "description": "Get all seasons",
@@ -32,13 +167,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.SeasonsResponse"
-                        }
-                    },
-                    "502": {
-                        "description": "Bad Gateway",
-                        "schema": {
-                            "$ref": "#/definitions/models.BadGatewayResponse"
+                            "$ref": "#/definitions/responses.SeasonsResponse"
                         }
                     }
                 }
@@ -70,25 +199,19 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/models.SeasonResponse"
+                            "$ref": "#/definitions/responses.SeasonResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.BadRequestResponse"
+                            "$ref": "#/definitions/responses.BadRequestResponse"
                         }
                     },
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "$ref": "#/definitions/models.UnprocessableEntityResponse"
-                        }
-                    },
-                    "502": {
-                        "description": "Bad Gateway",
-                        "schema": {
-                            "$ref": "#/definitions/models.BadGatewayResponse"
+                            "$ref": "#/definitions/responses.UnprocessableEntityResponse"
                         }
                     }
                 }
@@ -120,18 +243,51 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.SeasonResponse"
+                            "$ref": "#/definitions/responses.SeasonResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/models.NotFoundResponse"
+                            "$ref": "#/definitions/responses.NotFoundResponse"
                         }
                     }
                 }
             },
-            "put": {
+            "delete": {
+                "description": "Delete a season",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "seasons"
+                ],
+                "summary": "Delete a season",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Season ID",
+                        "name": "seasonId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/responses.NotFoundResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
                 "description": "Update a season",
                 "consumes": [
                     "application/json"
@@ -165,64 +321,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.SeasonResponse"
+                            "$ref": "#/definitions/responses.SeasonResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.BadRequestResponse"
+                            "$ref": "#/definitions/responses.BadRequestResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/models.NotFoundResponse"
-                        }
-                    },
-                    "502": {
-                        "description": "Bad Gateway",
-                        "schema": {
-                            "$ref": "#/definitions/models.BadGatewayResponse"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "description": "Delete a season",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "seasons"
-                ],
-                "summary": "Delete a season",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Season ID",
-                        "name": "seasonId",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content"
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/models.NotFoundResponse"
-                        }
-                    },
-                    "502": {
-                        "description": "Bad Gateway",
-                        "schema": {
-                            "$ref": "#/definitions/models.BadGatewayResponse"
+                            "$ref": "#/definitions/responses.NotFoundResponse"
                         }
                     }
                 }
@@ -254,13 +365,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.TeamsResponse"
-                        }
-                    },
-                    "502": {
-                        "description": "Bad Gateway",
-                        "schema": {
-                            "$ref": "#/definitions/models.BadGatewayResponse"
+                            "$ref": "#/definitions/responses.TeamsResponse"
                         }
                     }
                 }
@@ -299,25 +404,19 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/models.TeamResponse"
+                            "$ref": "#/definitions/responses.TeamResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.BadRequestResponse"
+                            "$ref": "#/definitions/responses.BadRequestResponse"
                         }
                     },
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "$ref": "#/definitions/models.UnprocessableEntityResponse"
-                        }
-                    },
-                    "502": {
-                        "description": "Bad Gateway",
-                        "schema": {
-                            "$ref": "#/definitions/models.BadGatewayResponse"
+                            "$ref": "#/definitions/responses.UnprocessableEntityResponse"
                         }
                     }
                 }
@@ -356,18 +455,58 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.TeamResponse"
+                            "$ref": "#/definitions/responses.TeamResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/models.NotFoundResponse"
+                            "$ref": "#/definitions/responses.NotFoundResponse"
                         }
                     }
                 }
             },
-            "put": {
+            "delete": {
+                "description": "Delete a team",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "teams"
+                ],
+                "summary": "Delete a team",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Season ID",
+                        "name": "seasonId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Team ID",
+                        "name": "teamId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/responses.NotFoundResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
                 "description": "Update a team",
                 "consumes": [
                     "application/json"
@@ -408,71 +547,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.TeamResponse"
+                            "$ref": "#/definitions/responses.TeamResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.BadRequestResponse"
+                            "$ref": "#/definitions/responses.BadRequestResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/models.NotFoundResponse"
-                        }
-                    },
-                    "502": {
-                        "description": "Bad Gateway",
-                        "schema": {
-                            "$ref": "#/definitions/models.BadGatewayResponse"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "description": "Delete a team",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "teams"
-                ],
-                "summary": "Delete a team",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Season ID",
-                        "name": "seasonId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Team ID",
-                        "name": "teamId",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content"
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/models.NotFoundResponse"
-                        }
-                    },
-                    "502": {
-                        "description": "Bad Gateway",
-                        "schema": {
-                            "$ref": "#/definitions/models.BadGatewayResponse"
+                            "$ref": "#/definitions/responses.NotFoundResponse"
                         }
                     }
                 }
@@ -511,13 +598,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.ResultsResponse"
-                        }
-                    },
-                    "502": {
-                        "description": "Bad Gateway",
-                        "schema": {
-                            "$ref": "#/definitions/models.BadGatewayResponse"
+                            "$ref": "#/definitions/responses.ResultsResponse"
                         }
                     }
                 }
@@ -563,25 +644,19 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/models.ResultResponse"
+                            "$ref": "#/definitions/responses.ResultResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.BadRequestResponse"
+                            "$ref": "#/definitions/responses.BadRequestResponse"
                         }
                     },
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "$ref": "#/definitions/models.UnprocessableEntityResponse"
-                        }
-                    },
-                    "502": {
-                        "description": "Bad Gateway",
-                        "schema": {
-                            "$ref": "#/definitions/models.BadGatewayResponse"
+                            "$ref": "#/definitions/responses.UnprocessableEntityResponse"
                         }
                     }
                 }
@@ -627,18 +702,65 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.ResultResponse"
+                            "$ref": "#/definitions/responses.ResultResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/models.NotFoundResponse"
+                            "$ref": "#/definitions/responses.NotFoundResponse"
                         }
                     }
                 }
             },
-            "put": {
+            "delete": {
+                "description": "Delete a result",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "results"
+                ],
+                "summary": "Delete a result",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Season ID",
+                        "name": "seasonId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Team ID",
+                        "name": "teamId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Result ID",
+                        "name": "resultId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/responses.NotFoundResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
                 "description": "Update a result",
                 "consumes": [
                     "application/json"
@@ -686,78 +808,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.ResultResponse"
+                            "$ref": "#/definitions/responses.ResultResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.BadRequestResponse"
+                            "$ref": "#/definitions/responses.BadRequestResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/models.NotFoundResponse"
-                        }
-                    },
-                    "502": {
-                        "description": "Bad Gateway",
-                        "schema": {
-                            "$ref": "#/definitions/models.BadGatewayResponse"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "description": "Delete a result",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "results"
-                ],
-                "summary": "Delete a result",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Season ID",
-                        "name": "seasonId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Team ID",
-                        "name": "teamId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Result ID",
-                        "name": "resultId",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content"
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/models.NotFoundResponse"
-                        }
-                    },
-                    "502": {
-                        "description": "Bad Gateway",
-                        "schema": {
-                            "$ref": "#/definitions/models.BadGatewayResponse"
+                            "$ref": "#/definitions/responses.NotFoundResponse"
                         }
                     }
                 }
@@ -765,24 +828,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "models.BadGatewayResponse": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "type": "string",
-                    "example": "Unable to communicate with the database"
-                }
-            }
-        },
-        "models.BadRequestResponse": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "type": "string",
-                    "example": "JSON parsing error"
-                }
-            }
-        },
         "models.CreateResultDto": {
             "type": "object",
             "required": [
@@ -800,16 +845,16 @@ const docTemplate = `{
                     "example": "2025-06-01T00:00:00Z"
                 },
                 "opponentScore": {
-                    "type": "integer",
-                    "example": 14
+                    "type": "string",
+                    "example": "14"
                 },
                 "opponentTeamId": {
                     "type": "integer",
                     "example": 7
                 },
                 "score": {
-                    "type": "integer",
-                    "example": 16
+                    "type": "string",
+                    "example": "16"
                 }
             }
         },
@@ -851,12 +896,22 @@ const docTemplate = `{
                 }
             }
         },
-        "models.NotFoundResponse": {
+        "models.LoginDto": {
             "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
             "properties": {
-                "error": {
+                "email": {
                     "type": "string",
-                    "example": "Resource was not found"
+                    "example": "email@gmail.com"
+                },
+                "password": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 8,
+                    "example": "VeryStrongPassword"
                 }
             }
         },
@@ -876,16 +931,16 @@ const docTemplate = `{
                     "example": "2025-06-01T00:00:00Z"
                 },
                 "opponentScore": {
-                    "type": "integer",
-                    "example": 14
+                    "type": "string",
+                    "example": "14"
                 },
                 "opponentTeam": {
                     "type": "integer",
                     "example": 7
                 },
                 "score": {
-                    "type": "integer",
-                    "example": 16
+                    "type": "string",
+                    "example": "16"
                 },
                 "team": {
                     "type": "integer",
@@ -893,24 +948,18 @@ const docTemplate = `{
                 }
             }
         },
-        "models.ResultResponse": {
-            "type": "object",
-            "properties": {
-                "result": {
-                    "$ref": "#/definitions/models.ResultDto"
-                }
-            }
-        },
-        "models.ResultsResponse": {
-            "type": "object",
-            "properties": {
-                "results": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.ResultDto"
-                    }
-                }
-            }
+        "models.Role": {
+            "type": "string",
+            "enum": [
+                "admin",
+                "moderator",
+                "user"
+            ],
+            "x-enum-varnames": [
+                "AdminRole",
+                "ModeratorRole",
+                "UserRole"
+            ]
         },
         "models.SeasonDto": {
             "type": "object",
@@ -933,22 +982,29 @@ const docTemplate = `{
                 }
             }
         },
-        "models.SeasonResponse": {
+        "models.SignUpDto": {
             "type": "object",
+            "required": [
+                "email",
+                "password",
+                "username"
+            ],
             "properties": {
-                "season": {
-                    "$ref": "#/definitions/models.SeasonDto"
-                }
-            }
-        },
-        "models.SeasonsResponse": {
-            "type": "object",
-            "properties": {
-                "seasons": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.SeasonDto"
-                    }
+                "email": {
+                    "type": "string",
+                    "example": "email@gmail.com"
+                },
+                "password": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 8,
+                    "example": "VeryStrongPassword"
+                },
+                "username": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 3,
+                    "example": "AurisTFG"
                 }
             }
         },
@@ -969,34 +1025,6 @@ const docTemplate = `{
                 }
             }
         },
-        "models.TeamResponse": {
-            "type": "object",
-            "properties": {
-                "team": {
-                    "$ref": "#/definitions/models.TeamDto"
-                }
-            }
-        },
-        "models.TeamsResponse": {
-            "type": "object",
-            "properties": {
-                "teams": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.TeamDto"
-                    }
-                }
-            }
-        },
-        "models.UnprocessableEntityResponse": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "type": "string",
-                    "example": "Validation error"
-                }
-            }
-        },
         "models.UpdateResultDto": {
             "type": "object",
             "required": [
@@ -1013,12 +1041,12 @@ const docTemplate = `{
                     "example": "2025-06-01T00:00:00Z"
                 },
                 "opponentScore": {
-                    "type": "integer",
-                    "example": 14
+                    "type": "string",
+                    "example": "14"
                 },
                 "score": {
-                    "type": "integer",
-                    "example": 16
+                    "type": "string",
+                    "example": "16"
                 }
             }
         },
@@ -1059,18 +1087,155 @@ const docTemplate = `{
                     "example": "BIG Clan"
                 }
             }
+        },
+        "models.UserDto": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "email@gmail.com"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "526432ea-822b-4b5b-b1b3-34e8ab453e03"
+                },
+                "role": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.Role"
+                        }
+                    ],
+                    "example": "admin"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "AurisTFG"
+                }
+            }
+        },
+        "responses.AuthLoginResponse": {
+            "type": "object",
+            "properties": {
+                "accessToken": {
+                    "type": "string"
+                }
+            }
+        },
+        "responses.AuthRefreshTokenResponse": {
+            "type": "object",
+            "properties": {
+                "accessToken": {
+                    "type": "string"
+                }
+            }
+        },
+        "responses.AuthSignUpResponse": {
+            "type": "object",
+            "properties": {
+                "user": {
+                    "$ref": "#/definitions/models.UserDto"
+                }
+            }
+        },
+        "responses.BadRequestResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "JSON parsing error"
+                }
+            }
+        },
+        "responses.NotFoundResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Resource was not found"
+                }
+            }
+        },
+        "responses.ResultResponse": {
+            "type": "object",
+            "properties": {
+                "result": {
+                    "$ref": "#/definitions/models.ResultDto"
+                }
+            }
+        },
+        "responses.ResultsResponse": {
+            "type": "object",
+            "properties": {
+                "results": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.ResultDto"
+                    }
+                }
+            }
+        },
+        "responses.SeasonResponse": {
+            "type": "object",
+            "properties": {
+                "season": {
+                    "$ref": "#/definitions/models.SeasonDto"
+                }
+            }
+        },
+        "responses.SeasonsResponse": {
+            "type": "object",
+            "properties": {
+                "seasons": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.SeasonDto"
+                    }
+                }
+            }
+        },
+        "responses.TeamResponse": {
+            "type": "object",
+            "properties": {
+                "team": {
+                    "$ref": "#/definitions/models.TeamDto"
+                }
+            }
+        },
+        "responses.TeamsResponse": {
+            "type": "object",
+            "properties": {
+                "teams": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.TeamDto"
+                    }
+                }
+            }
+        },
+        "responses.UnprocessableEntityResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Validation error"
+                }
+            }
         }
+    },
+    "externalDocs": {
+        "description": "OpenAPI",
+        "url": "https://swagger.io/resources/open-api/"
     }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:8000",
+	Host:             "localhost:8080",
 	BasePath:         "/api/v1",
 	Schemes:          []string{},
 	Title:            "MatchMania API",
-	Description:      "This is an API for managing matchmaking seasons, teams, and results",
+	Description:      "This is the API server for the MatchMania application.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",
