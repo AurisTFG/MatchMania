@@ -7,6 +7,7 @@ import (
 )
 
 type Env struct {
+	ServerHost string `mapstructure:"SERVER_HOST"`
 	ServerPort string `mapstructure:"SERVER_PORT"`
 	ClientURL  string `mapstructure:"CLIENT_URL"`
 
@@ -53,7 +54,8 @@ func LoadEnv(envName string) (*Env, error) {
 
 func (e *Env) Validate() error {
 	if e.ServerPort == "" ||
-		e.ClientURL == "" {
+		e.ClientURL == "" ||
+		e.ServerHost == "" {
 		return fmt.Errorf("missing server configuration values")
 	}
 

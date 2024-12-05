@@ -106,7 +106,7 @@ func main() {
 
 	routes.ApplyRoutes(server, authMiddleware, authController, seasonController, teamController, resultController)
 
-	err := server.Run(":" + env.ServerPort)
+	err := server.Run(env.ServerHost + ":" + env.ServerPort)
 	if err != nil {
 		log.Fatal("Failed to start Gin server.")
 	}
