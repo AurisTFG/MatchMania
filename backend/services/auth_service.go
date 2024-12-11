@@ -13,7 +13,7 @@ type AuthService interface {
 	CreateAccessToken(user *models.User) (string, error)
 	CreateRefreshToken(sessionUUID string, user *models.User) (string, error)
 	VerifyAccessToken(token string) (*models.User, error)
-	VerifyRefreshToken(token string) (*models.User, string, error)
+	VerifyRefreshToken(token string) (user *models.User, sessionID string, err error)
 	CreateUser(signUpDto *models.SignUpDto) (*models.User, error)
 	GetUserByEmail(string) (*models.User, error)
 }
@@ -35,7 +35,7 @@ func (s *authService) CreateAccessToken(user *models.User) (string, error) {
 		"aud":  s.env.JWTAudience,
 		"iat":  time.Now().Unix(),
 		"nbf":  time.Now().Unix(),
-		"exp":  time.Now().AddDate(0, 0, s.env.JWTAccessTokenExpirationDays).Unix(),
+		"exp":  time.Now().Add(s.env.JWTAccessTokenDuration).Unix(),
 	})
 
 	accessTokenString, err := accessToken.SignedString([]byte(s.env.JWTAccessTokenSecret))
@@ -52,7 +52,7 @@ func (s *authService) CreateRefreshToken(sessionUUID string, user *models.User) 
 		"aud":       s.env.JWTAudience,
 		"iat":       time.Now().Unix(),
 		"nbf":       time.Now().Unix(),
-		"exp":       time.Now().AddDate(0, 0, s.env.JWTRefreshTokenExpirationDays).Unix(),
+		"exp":       time.Now().Add(s.env.JWTRefreshTokenDuration).Unix(),
 	})
 
 	refreshTokenString, err := refreshToken.SignedString([]byte(s.env.JWTRefreshTokenSecret))
@@ -92,7 +92,7 @@ func (s *authService) VerifyAccessToken(accessToken string) (*models.User, error
 		return nil, fmt.Errorf("access token not valid yet")
 	}
 
-	if claims["exp"].(float64)-claims["iat"].(float64) != float64(s.env.JWTAccessTokenExpirationDays*24*60*60) {
+	if claims["exp"].(float64)-claims["iat"].(float64) != s.env.JWTAccessTokenDuration.Seconds() {
 		return nil, fmt.Errorf("access token expiration date is invalid")
 	}
 
@@ -109,7 +109,7 @@ func (s *authService) VerifyAccessToken(accessToken string) (*models.User, error
 	return user, nil
 }
 
-func (s *authService) VerifyRefreshToken(refreshToken string) (*models.User, string, error) {
+func (s *authService) VerifyRefreshToken(refreshToken string) (user *models.User, sessionID string, err error) {
 	token, err := jwt.Parse(refreshToken, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, jwt.ErrSignatureInvalid
@@ -141,7 +141,15 @@ func (s *authService) VerifyRefreshToken(refreshToken string) (*models.User, str
 		return nil, "", fmt.Errorf("refresh token expired")
 	}
 
-	user, err := s.userService.GetUserByID(claims["sub"].(string))
+	if claims["nbf"].(float64) > float64(time.Now().Unix()) {
+		return nil, "", fmt.Errorf("refresh token not valid yet")
+	}
+
+	if claims["exp"].(float64)-claims["iat"].(float64) != s.env.JWTRefreshTokenDuration.Seconds() {
+		return nil, "", fmt.Errorf("refresh token expiration date is invalid")
+	}
+
+	user, err = s.userService.GetUserByID(claims["sub"].(string))
 	if err != nil {
 		return nil, "", fmt.Errorf("invalid user")
 	}

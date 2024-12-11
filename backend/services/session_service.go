@@ -1,6 +1,7 @@
 package services
 
 import (
+	"MatchManiaAPI/config"
 	"MatchManiaAPI/models"
 	"MatchManiaAPI/repositories"
 	"time"
@@ -9,26 +10,27 @@ import (
 )
 
 type SessionService interface {
-	CreateSession(sessionUUID uuid.UUID, userUUID uuid.UUID, refreshToken string, expiresAt time.Time) error
-	ExtendSession(sessionUUID string, refreshToken string, expiresAt time.Time) error
+	CreateSession(sessionUUID uuid.UUID, userUUID uuid.UUID, refreshToken string) error
+	ExtendSession(sessionUUID string, refreshToken string) error
 	InvalidateSession(sessionUUID string) error
 	IsSessionValid(sessionUUID string, refreshToken string) bool
 }
 
 type sessionService struct {
 	repo repositories.SessionRepository
+	env  *config.Env
 }
 
-func NewSessionService(repo repositories.SessionRepository) SessionService {
-	return &sessionService{repo: repo}
+func NewSessionService(repo repositories.SessionRepository, env *config.Env) SessionService {
+	return &sessionService{repo: repo, env: env}
 }
 
-func (s *sessionService) CreateSession(sessionUUID uuid.UUID, userUUID uuid.UUID, refreshToken string, expiresAt time.Time) error {
+func (s *sessionService) CreateSession(sessionUUID uuid.UUID, userUUID uuid.UUID, refreshToken string) error {
 	session := &models.Session{
 		UUID:             sessionUUID,
 		UserUUID:         userUUID,
 		LastRefreshToken: refreshToken,
-		ExpiresAt:        expiresAt,
+		ExpiresAt:        time.Now().Add(s.env.JWTRefreshTokenDuration),
 		InitiatedAt:      time.Now(),
 	}
 
@@ -44,14 +46,14 @@ func (s *sessionService) CreateSession(sessionUUID uuid.UUID, userUUID uuid.UUID
 	return nil
 }
 
-func (s *sessionService) ExtendSession(sessionUUID string, refreshToken string, expiresAt time.Time) error {
+func (s *sessionService) ExtendSession(sessionUUID string, refreshToken string) error {
 	session, err := s.repo.FindByID(sessionUUID)
 	if err != nil {
 		return err
 	}
 
 	session.LastRefreshToken = refreshToken
-	session.ExpiresAt = expiresAt
+	session.ExpiresAt = time.Now().Add(s.env.JWTRefreshTokenDuration)
 
 	if err := session.HashToken(); err != nil {
 		return err

@@ -67,7 +67,11 @@ func init() {
 // @externalDocs.description  OpenAPI
 // @externalDocs.url          https://swagger.io/resources/open-api/
 func main() {
-	gin.SetMode(gin.DebugMode)
+	if env.IsDev {
+		gin.SetMode(gin.DebugMode)
+	} else {
+		gin.SetMode(gin.ReleaseMode)
+	}
 
 	server := gin.Default()
 
@@ -77,7 +81,7 @@ func main() {
 
 	server.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{env.ClientURL},
-		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
+		AllowMethods:     []string{"GET", "POST", "PATCH", "DELETE"},
 		AllowHeaders:     []string{"Origin"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
@@ -90,7 +94,7 @@ func main() {
 	teamRepository := repositories.NewTeamRepository(db)
 	resultRepository := repositories.NewResultRepository(db)
 
-	sessionService := services.NewSessionService(sessionRepository)
+	sessionService := services.NewSessionService(sessionRepository, env)
 	userService := services.NewUserService(userRepository)
 	authService := services.NewAuthService(userService, env)
 	seasonService := services.NewSeasonService(seasonRepository)

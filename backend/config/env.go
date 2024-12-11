@@ -2,11 +2,14 @@ package config
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/spf13/viper"
 )
 
 type Env struct {
+	IsDev bool
+
 	ServerHost string `mapstructure:"SERVER_HOST"`
 	ServerPort string `mapstructure:"SERVER_PORT"`
 	ClientURL  string `mapstructure:"CLIENT_URL"`
@@ -18,12 +21,12 @@ type Env struct {
 	DBPort         string `mapstructure:"DB_PORT"`
 	DBSSLMode      string `mapstructure:"DB_SSLMODE"`
 
-	JWTAccessTokenSecret          string `mapstructure:"JWT_ACCESS_TOKEN_SECRET"`
-	JWTRefreshTokenSecret         string `mapstructure:"JWT_REFRESH_TOKEN_SECRET"`
-	JWTIssuer                     string `mapstructure:"JWT_ISSUER"`
-	JWTAudience                   string `mapstructure:"JWT_AUDIENCE"`
-	JWTAccessTokenExpirationDays  int    `mapstructure:"JWT_ACCESS_TOKEN_EXPIRATION_DAYS"`
-	JWTRefreshTokenExpirationDays int    `mapstructure:"JWT_REFRESH_EXPIRATION_DAYS"`
+	JWTAccessTokenSecret    string        `mapstructure:"JWT_ACCESS_TOKEN_SECRET"`
+	JWTRefreshTokenSecret   string        `mapstructure:"JWT_REFRESH_TOKEN_SECRET"`
+	JWTIssuer               string        `mapstructure:"JWT_ISSUER"`
+	JWTAudience             string        `mapstructure:"JWT_AUDIENCE"`
+	JWTAccessTokenDuration  time.Duration `mapstructure:"JWT_ACCESS_TOKEN_DURATION"`
+	JWTRefreshTokenDuration time.Duration `mapstructure:"JWT_REFRESH_TOKEN_DURATION"`
 }
 
 func LoadEnv(envName string) (*Env, error) {
@@ -49,6 +52,8 @@ func LoadEnv(envName string) (*Env, error) {
 		return nil, fmt.Errorf("error validating config: %w", err)
 	}
 
+	env.IsDev = envName == "dev"
+
 	return &env, nil
 }
 
@@ -72,8 +77,8 @@ func (e *Env) Validate() error {
 		e.JWTRefreshTokenSecret == "" ||
 		e.JWTIssuer == "" ||
 		e.JWTAudience == "" ||
-		e.JWTAccessTokenExpirationDays == 0 ||
-		e.JWTRefreshTokenExpirationDays == 0 {
+		e.JWTAccessTokenDuration == 0 ||
+		e.JWTRefreshTokenDuration == 0 {
 		return fmt.Errorf("missing JWT configuration values")
 	}
 

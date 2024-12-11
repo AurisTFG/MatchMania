@@ -6,7 +6,6 @@ import (
 	r "MatchManiaAPI/responses"
 	"MatchManiaAPI/services"
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -102,14 +101,14 @@ func (c *AuthController) AuthLogIn(ctx *gin.Context) {
 		return
 	}
 
-	err = c.sessionService.CreateSession(sessionUUID, user.UUID, refreshToken, time.Now().AddDate(0, 0, c.env.JWTRefreshTokenExpirationDays))
+	err = c.sessionService.CreateSession(sessionUUID, user.UUID, refreshToken)
 	if err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
 	}
 
 	ctx.SetSameSite(http.SameSiteLaxMode)
-	ctx.SetCookie("RefreshToken", refreshToken, c.env.JWTRefreshTokenExpirationDays*24*60*60, "/", "", false, true)
+	ctx.SetCookie("RefreshToken", refreshToken, int(c.env.JWTRefreshTokenDuration.Seconds()), "/", "", false, true)
 
 	r.OK(ctx, r.AuthLoginResponse{AccessToken: accessToken})
 }
@@ -186,14 +185,14 @@ func (c *AuthController) AuthRefreshToken(ctx *gin.Context) {
 		return
 	}
 
-	err = c.sessionService.ExtendSession(sessionId, refreshToken, time.Now().AddDate(0, 0, c.env.JWTRefreshTokenExpirationDays))
+	err = c.sessionService.ExtendSession(sessionId, refreshToken)
 	if err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
 	}
 
 	ctx.SetSameSite(http.SameSiteLaxMode)
-	ctx.SetCookie("RefreshToken", refreshToken, c.env.JWTRefreshTokenExpirationDays*24*60*60, "/", "", false, true)
+	ctx.SetCookie("RefreshToken", refreshToken, int(c.env.JWTRefreshTokenDuration.Seconds()), "/", "", false, true)
 
 	r.OK(ctx, r.AuthRefreshTokenResponse{AccessToken: accessToken})
 }
