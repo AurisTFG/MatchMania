@@ -35,7 +35,7 @@ func (s *Session) HashToken() error {
 	return nil
 }
 
-func (s *Session) CompareToken(password string) bool {
+func (s *Session) CompareToken(newToken string) bool {
 	data, err := base64.StdEncoding.DecodeString(s.LastRefreshToken)
 	if err != nil {
 		log.Println("Error decoding token:", err)
@@ -45,7 +45,7 @@ func (s *Session) CompareToken(password string) bool {
 	salt := data[:16]
 	storedHash := data[16:]
 
-	hash := argon2.IDKey([]byte(password), salt, 1, 64*1024, 4, 32)
+	newTokenHash := argon2.IDKey([]byte(newToken), salt, 1, 64*1024, 4, 32)
 
-	return string(hash) == string(storedHash)
+	return string(newTokenHash) == string(storedHash)
 }

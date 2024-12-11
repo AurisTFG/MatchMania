@@ -21,10 +21,10 @@ type Result struct {
 	Team         Team `gorm:"foreignKey:TeamID"`
 	OpponentTeam Team `gorm:"foreignKey:OpponentTeamID"`
 
-	UserUUID       uuid.UUID `gorm:"type:uuid;not null"`
+	SeasonID       uint      `gorm:"not null"`
 	TeamID         uint      `gorm:"not null"`
 	OpponentTeamID uint      `gorm:"not null"`
-	SeasonID       uint      `gorm:"not null"`
+	UserUUID       uuid.UUID `gorm:"type:uuid;not null"`
 }
 
 type ResultDto struct {
@@ -33,8 +33,11 @@ type ResultDto struct {
 	MatchEndDate   time.Time `json:"matchEndDate" example:"2025-06-01T00:40:00Z"`
 	Score          string    `json:"score" example:"16"`
 	OpponentScore  string    `json:"opponentScore" example:"14"`
-	TeamID         uint      `json:"team" example:"6"`
-	OpponentTeamID uint      `json:"opponentTeam" example:"7"`
+
+	SeasonID       uint      `json:"seasonId" example:"5"`
+	TeamID         uint      `json:"teamId" example:"6"`
+	OpponentTeamID uint      `json:"opponentTeamId" example:"7"`
+	UserUUID       uuid.UUID `json:"userUUID" example:"550e8400-e29b-41d4-a716-446655440000"`
 }
 
 type CreateResultDto struct {
@@ -59,8 +62,10 @@ func (r *Result) ToDto() ResultDto {
 		MatchEndDate:   r.MatchEndDate,
 		Score:          r.Score,
 		OpponentScore:  r.OpponentScore,
+		SeasonID:       r.SeasonID,
 		TeamID:         r.TeamID,
 		OpponentTeamID: r.OpponentTeamID,
+		UserUUID:       r.UserUUID,
 	}
 }
 

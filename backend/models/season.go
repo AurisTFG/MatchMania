@@ -26,6 +26,8 @@ type SeasonDto struct {
 	Name      string    `json:"name" example:"Summer 2025"`
 	StartDate time.Time `json:"startDate" example:"2025-06-01T00:00:00Z"`
 	EndDate   time.Time `json:"endDate" example:"2025-08-31T00:00:00Z"`
+
+	UserUUID uuid.UUID `json:"userUUID" example:"550e8400-e29b-41d4-a716-446655440000"`
 }
 
 type CreateSeasonDto struct {
@@ -46,6 +48,7 @@ func (s *Season) ToDto() SeasonDto {
 		Name:      s.Name,
 		StartDate: s.StartDate,
 		EndDate:   s.EndDate,
+		UserUUID:  s.UserUUID,
 	}
 }
 
