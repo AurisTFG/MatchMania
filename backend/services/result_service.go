@@ -8,8 +8,8 @@ import (
 )
 
 type ResultService interface {
-	GetAllResults(uint, uint) ([]models.Result, error)
-	GetResultByID(uint, uint, uint) (*models.Result, error)
+	GetAllResults(seasonID uint, teamID uint) ([]models.Result, error)
+	GetResultByID(seasonID uint, teamID uint, resultID uint) (*models.Result, error)
 	CreateResult(*models.CreateResultDto, uint, uint, uuid.UUID) (*models.Result, error)
 	UpdateResult(*models.Result, *models.UpdateResultDto) (*models.Result, error)
 	DeleteResult(*models.Result) error

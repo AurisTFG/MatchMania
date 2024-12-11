@@ -59,7 +59,7 @@ func (c *TeamController) GetTeam(ctx *gin.Context) {
 		return
 	}
 
-	teamID, err := utils.GetParamUint(ctx, "seasonId")
+	teamID, err := utils.GetParamUint(ctx, "teamId")
 	if err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
@@ -143,7 +143,7 @@ func (c *TeamController) UpdateTeam(ctx *gin.Context) {
 		return
 	}
 
-	teamID, err := utils.GetParamUint(ctx, "seasonId")
+	teamID, err := utils.GetParamUint(ctx, "teamId")
 	if err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
@@ -204,7 +204,7 @@ func (c *TeamController) DeleteTeam(ctx *gin.Context) {
 		return
 	}
 
-	teamID, err := utils.GetParamUint(ctx, "seasonId")
+	teamID, err := utils.GetParamUint(ctx, "teamId")
 	if err != nil {
 		r.BadRequest(ctx, err.Error())
 		return

@@ -42,6 +42,28 @@ type UpdateSeasonDto struct {
 	EndDate   time.Time `json:"endDate" example:"2025-08-31T00:00:00Z" validate:"required,endDate,dateDiff,gtfield=StartDate"`
 }
 
+func (s *Season) BeforeDelete(tx *gorm.DB) error {
+	results := []Result{}
+	tx.Where("season_id = ?", s.ID).Find(&results)
+
+	for _, result := range results {
+		if err := tx.Delete(&result).Error; err != nil {
+			return err
+		}
+	}
+
+	teams := []Team{}
+	tx.Where("season_id = ?", s.ID).Find(&teams)
+
+	for _, team := range teams {
+		if err := tx.Delete(&team).Error; err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (s *Season) ToDto() SeasonDto {
 	return SeasonDto{
 		ID:        s.ID,

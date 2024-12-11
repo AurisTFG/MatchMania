@@ -11,7 +11,7 @@ type ResultRepository interface {
 	FindAllByTeamID(uint) ([]models.Result, error)
 	FindAllBySeasonIDAndTeamID(uint, uint) ([]models.Result, error)
 	FindByID(uint) (*models.Result, error)
-	FindByIDAndSeasonIDAndTeamID(uint, uint, uint) (*models.Result, error)
+	FindByIDAndSeasonIDAndTeamID(seasonID uint, teamID uint, resultID uint) (*models.Result, error)
 	Create(*models.Result) (*models.Result, error)
 	Update(*models.Result, *models.Result) (*models.Result, error)
 	Delete(*models.Result) error
@@ -80,10 +80,10 @@ func (r *resultRepository) FindByIDAndSeasonIDAndTeamID(seasonID uint, teamID ui
 	return &resultModel, result.Error
 }
 
-func (r *resultRepository) Create(resultModel *models.Result) (*models.Result, error) {
-	result := r.db.Create(resultModel)
+func (r *resultRepository) Create(newResult *models.Result) (*models.Result, error) {
+	result := r.db.Create(newResult)
 
-	return resultModel, result.Error
+	return newResult, result.Error
 }
 
 func (r *resultRepository) Update(currentResult *models.Result, updatedResult *models.Result) (*models.Result, error) {

@@ -3,6 +3,8 @@ package repositories
 import (
 	"MatchManiaAPI/config"
 	"MatchManiaAPI/models"
+
+	"gorm.io/gorm/clause"
 )
 
 type TeamRepository interface {
@@ -68,7 +70,7 @@ func (r *teamRepository) Update(currentTeam *models.Team, updatedTeam *models.Te
 }
 
 func (r *teamRepository) Delete(team *models.Team) error {
-	result := r.db.Delete(team)
+	result := r.db.Select(clause.Associations).Delete(team)
 
 	return result.Error
 }
