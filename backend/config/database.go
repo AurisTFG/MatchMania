@@ -52,7 +52,7 @@ func MigrateDatabase(db *DB) error {
 	return nil
 }
 
-func SeedDatabase(db *DB) error {
+func SeedDatabase(db *DB, env *Env) error {
 	if err := db.Migrator().DropTable(
 		&models.User{},
 		&models.Session{},
@@ -71,9 +71,9 @@ func SeedDatabase(db *DB) error {
 	}
 
 	users := []models.User{
-		{UUID: uuid.New(), Username: "AdminXD", Email: "adminemail@gmail.com", Password: "AdminPassword", Role: models.AdminRole},
-		{UUID: uuid.New(), Username: "ModeratorXDD", Email: "moderatoremail@gmail.com", Password: "ModeratorPassword", Role: models.ModeratorRole},
-		{UUID: uuid.New(), Username: "UserXDDD", Email: "userremail@gmail.com", Password: "UserPassword", Role: models.UserRole},
+		{UUID: uuid.New(), Username: "AdminXD", Email: env.AdminEmail, Password: env.AdminPassword, Role: models.AdminRole},
+		{UUID: uuid.New(), Username: "ModeratorXDD", Email: env.ModeratorEmail, Password: env.ModeratorPassword, Role: models.ModeratorRole},
+		{UUID: uuid.New(), Username: "UserXDDD", Email: env.UserEmail, Password: env.UserPassword, Role: models.UserRole},
 	}
 
 	seasons := []models.Season{

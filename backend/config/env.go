@@ -27,6 +27,13 @@ type Env struct {
 	JWTAudience             string        `mapstructure:"JWT_AUDIENCE"`
 	JWTAccessTokenDuration  time.Duration `mapstructure:"JWT_ACCESS_TOKEN_DURATION"`
 	JWTRefreshTokenDuration time.Duration `mapstructure:"JWT_REFRESH_TOKEN_DURATION"`
+
+	UserEmail         string `mapstructure:"USER_EMAIL"`
+	UserPassword      string `mapstructure:"USER_PASSWORD"`
+	ModeratorEmail    string `mapstructure:"MODERATOR_EMAIL"`
+	ModeratorPassword string `mapstructure:"MODERATOR_PASSWORD"`
+	AdminEmail        string `mapstructure:"ADMIN_EMAIL"`
+	AdminPassword     string `mapstructure:"ADMIN_PASSWORD"`
 }
 
 func LoadEnv(envName string) (*Env, error) {
