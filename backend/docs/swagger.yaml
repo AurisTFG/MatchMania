@@ -12,7 +12,7 @@ definitions:
         example: "14"
         type: string
       opponentTeamId:
-        example: 7
+        example: 4
         type: integer
       score:
         example: "16"
@@ -78,15 +78,21 @@ definitions:
       opponentScore:
         example: "14"
         type: string
-      opponentTeam:
+      opponentTeamId:
         example: 7
         type: integer
       score:
         example: "16"
         type: string
-      team:
+      seasonId:
+        example: 5
+        type: integer
+      teamId:
         example: 6
         type: integer
+      userUUID:
+        example: 550e8400-e29b-41d4-a716-446655440000
+        type: string
     type: object
   models.Role:
     enum:
@@ -111,6 +117,9 @@ definitions:
         type: string
       startDate:
         example: "2025-06-01T00:00:00Z"
+        type: string
+      userUUID:
+        example: 550e8400-e29b-41d4-a716-446655440000
         type: string
     type: object
   models.SignUpDto:
@@ -143,6 +152,12 @@ definitions:
         type: integer
       name:
         example: BIG Clan
+        type: string
+      seasonId:
+        example: 5
+        type: integer
+      userUUID:
+        example: 550e8400-e29b-41d4-a716-446655440000
         type: string
     type: object
   models.UpdateResultDto:
@@ -424,7 +439,8 @@ paths:
       - application/json
       description: Delete a season
       parameters:
-      - description: Season ID
+      - default: "1"
+        description: Season ID
         in: path
         name: seasonId
         required: true
@@ -446,7 +462,8 @@ paths:
       - application/json
       description: Get a season
       parameters:
-      - description: Season ID
+      - default: "2"
+        description: Season ID
         in: path
         name: seasonId
         required: true
@@ -470,7 +487,8 @@ paths:
       - application/json
       description: Update a season
       parameters:
-      - description: Season ID
+      - default: "2"
+        description: Season ID
         in: path
         name: seasonId
         required: true
@@ -505,7 +523,8 @@ paths:
       - application/json
       description: Get all teams
       parameters:
-      - description: Season ID
+      - default: "2"
+        description: Season ID
         in: path
         name: seasonId
         required: true
@@ -525,7 +544,8 @@ paths:
       - application/json
       description: Create a team
       parameters:
-      - description: Season ID
+      - default: "2"
+        description: Season ID
         in: path
         name: seasonId
         required: true
@@ -560,12 +580,14 @@ paths:
       - application/json
       description: Delete a team
       parameters:
-      - description: Season ID
+      - default: "1"
+        description: Season ID
         in: path
         name: seasonId
         required: true
         type: string
-      - description: Team ID
+      - default: "1"
+        description: Team ID
         in: path
         name: teamId
         required: true
@@ -587,12 +609,14 @@ paths:
       - application/json
       description: Get a team
       parameters:
-      - description: Season ID
+      - default: "2"
+        description: Season ID
         in: path
         name: seasonId
         required: true
         type: string
-      - description: Team ID
+      - default: "2"
+        description: Team ID
         in: path
         name: teamId
         required: true
@@ -616,12 +640,14 @@ paths:
       - application/json
       description: Update a team
       parameters:
-      - description: Season ID
+      - default: "2"
+        description: Season ID
         in: path
         name: seasonId
         required: true
         type: string
-      - description: Team ID
+      - default: "2"
+        description: Team ID
         in: path
         name: teamId
         required: true
@@ -656,12 +682,14 @@ paths:
       - application/json
       description: Get all results
       parameters:
-      - description: Season ID
+      - default: "2"
+        description: Season ID
         in: path
         name: seasonId
         required: true
         type: string
-      - description: Team ID
+      - default: "4"
+        description: Team ID
         in: path
         name: teamId
         required: true
@@ -681,12 +709,14 @@ paths:
       - application/json
       description: Create a result
       parameters:
-      - description: Season ID
+      - default: "2"
+        description: Season ID
         in: path
         name: seasonId
         required: true
         type: string
-      - description: Team ID
+      - default: "3"
+        description: Team ID
         in: path
         name: teamId
         required: true
@@ -721,17 +751,20 @@ paths:
       - application/json
       description: Delete a result
       parameters:
-      - description: Season ID
+      - default: "2"
+        description: Season ID
         in: path
         name: seasonId
         required: true
         type: string
-      - description: Team ID
+      - default: "3"
+        description: Team ID
         in: path
         name: teamId
         required: true
         type: string
-      - description: Result ID
+      - default: "1"
+        description: Result ID
         in: path
         name: resultId
         required: true
@@ -753,17 +786,20 @@ paths:
       - application/json
       description: Get a result
       parameters:
-      - description: Season ID
+      - default: "2"
+        description: Season ID
         in: path
         name: seasonId
         required: true
         type: string
-      - description: Team ID
+      - default: "4"
+        description: Team ID
         in: path
         name: teamId
         required: true
         type: string
-      - description: Result ID
+      - default: "2"
+        description: Result ID
         in: path
         name: resultId
         required: true
@@ -787,17 +823,20 @@ paths:
       - application/json
       description: Update a result
       parameters:
-      - description: Season ID
+      - default: "2"
+        description: Season ID
         in: path
         name: seasonId
         required: true
         type: string
-      - description: Team ID
+      - default: "4"
+        description: Team ID
         in: path
         name: teamId
         required: true
         type: string
-      - description: Result ID
+      - default: "2"
+        description: Result ID
         in: path
         name: resultId
         required: true

@@ -45,7 +45,7 @@ type CreateResultDto struct {
 	MatchEndDate   time.Time `json:"matchEndDate" validate:"required,endDate,dateDiff,gtfield=MatchStartDate" example:"2025-06-01T00:40:00Z"`
 	Score          string    `json:"score" validate:"score" example:"16"`
 	OpponentScore  string    `json:"opponentScore" validate:"score" example:"14"`
-	OpponentTeamID uint      `json:"opponentTeamId" validate:"required" example:"7"`
+	OpponentTeamID uint      `json:"opponentTeamId" validate:"required" example:"4"`
 }
 
 type UpdateResultDto struct {

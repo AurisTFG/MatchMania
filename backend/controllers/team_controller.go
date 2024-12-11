@@ -24,7 +24,7 @@ func NewTeamController(seasonService services.SeasonService, teamService service
 // @Tags teams
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID"
+// @Param seasonId path string true "Season ID" default(2)
 // @Success 200 {object} responses.TeamsResponse
 // @Router /seasons/{seasonId}/teams [get]
 func (c *TeamController) GetAllTeams(ctx *gin.Context) {
@@ -48,8 +48,8 @@ func (c *TeamController) GetAllTeams(ctx *gin.Context) {
 // @Tags teams
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID"
-// @Param teamId path string true "Team ID"
+// @Param seasonId path string true "Season ID" default(2)
+// @Param teamId path string true "Team ID" default(2)
 // @Success 200 {object} responses.TeamResponse
 // @Failure 404 {object} responses.NotFoundResponse
 // @Router /seasons/{seasonId}/teams/{teamId} [get]
@@ -80,7 +80,7 @@ func (c *TeamController) GetTeam(ctx *gin.Context) {
 // @Tags teams
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID"
+// @Param seasonId path string true "Season ID" default(2)
 // @Param team body models.CreateTeamDto true "Team object that needs to be created"
 // @Success 201 {object} responses.TeamResponse
 // @Failure 400 {object} responses.BadRequestResponse
@@ -130,8 +130,8 @@ func (c *TeamController) CreateTeam(ctx *gin.Context) {
 // @Tags teams
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID"
-// @Param teamId path string true "Team ID"
+// @Param seasonId path string true "Season ID" default(2)
+// @Param teamId path string true "Team ID" default(2)
 // @Param team body models.UpdateTeamDto true "Team object that needs to be updated"
 // @Success 200 {object} responses.TeamResponse
 // @Failure 400 {object} responses.BadRequestResponse
@@ -193,8 +193,8 @@ func (c *TeamController) UpdateTeam(ctx *gin.Context) {
 // @Tags teams
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID"
-// @Param teamId path string true "Team ID"
+// @Param seasonId path string true "Season ID" default(1)
+// @Param teamId path string true "Team ID" default(1)
 // @Success 204
 // @Failure 404 {object} responses.NotFoundResponse
 // @Router /seasons/{seasonId}/teams/{teamId} [delete]

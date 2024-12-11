@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"MatchManiaAPI/models"
-	"MatchManiaAPI/responses"
 	r "MatchManiaAPI/responses"
 	"MatchManiaAPI/services"
 	"MatchManiaAPI/utils"
@@ -32,7 +31,7 @@ func (c *SeasonController) GetAllSeasons(ctx *gin.Context) {
 		return
 	}
 
-	r.OK(ctx, responses.SeasonsResponse{Seasons: models.ToSeasonDtos(seasons)})
+	r.OK(ctx, r.SeasonsResponse{Seasons: models.ToSeasonDtos(seasons)})
 }
 
 // @Summary Get a season
@@ -40,7 +39,7 @@ func (c *SeasonController) GetAllSeasons(ctx *gin.Context) {
 // @Tags seasons
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID"
+// @Param seasonId path string true "Season ID" default(2)
 // @Success 200 {object} responses.SeasonResponse
 // @Failure 404 {object} responses.NotFoundResponse
 // @Router /seasons/{seasonId} [get]
@@ -57,7 +56,7 @@ func (c *SeasonController) GetSeason(ctx *gin.Context) {
 		return
 	}
 
-	r.OK(ctx, responses.SeasonResponse{Season: season.ToDto()})
+	r.OK(ctx, r.SeasonResponse{Season: season.ToDto()})
 }
 
 // @Summary Create a season
@@ -94,7 +93,7 @@ func (c *SeasonController) CreateSeason(ctx *gin.Context) {
 		return
 	}
 
-	r.Created(ctx, responses.SeasonResponse{Season: newSeason.ToDto()})
+	r.Created(ctx, r.SeasonResponse{Season: newSeason.ToDto()})
 }
 
 // @Summary Update a season
@@ -102,7 +101,7 @@ func (c *SeasonController) CreateSeason(ctx *gin.Context) {
 // @Tags seasons
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID"
+// @Param seasonId path string true "Season ID" default(2)
 // @Param season body models.UpdateSeasonDto true "Season object that needs to be updated"
 // @Success 200 {object} responses.SeasonResponse
 // @Failure 400 {object} responses.BadRequestResponse
@@ -149,7 +148,7 @@ func (c *SeasonController) UpdateSeason(ctx *gin.Context) {
 		return
 	}
 
-	r.OK(ctx, responses.SeasonResponse{Season: updatedSeason.ToDto()})
+	r.OK(ctx, r.SeasonResponse{Season: updatedSeason.ToDto()})
 }
 
 // @Summary Delete a season
@@ -157,7 +156,7 @@ func (c *SeasonController) UpdateSeason(ctx *gin.Context) {
 // @Tags seasons
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID"
+// @Param seasonId path string true "Season ID" default(1)
 // @Success 204
 // @Failure 404 {object} responses.NotFoundResponse
 // @Router /seasons/{seasonId} [delete]

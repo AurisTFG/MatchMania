@@ -233,6 +233,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "2",
                         "description": "Season ID",
                         "name": "seasonId",
                         "in": "path",
@@ -269,6 +270,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "1",
                         "description": "Season ID",
                         "name": "seasonId",
                         "in": "path",
@@ -302,6 +304,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "2",
                         "description": "Season ID",
                         "name": "seasonId",
                         "in": "path",
@@ -355,6 +358,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "2",
                         "description": "Season ID",
                         "name": "seasonId",
                         "in": "path",
@@ -385,6 +389,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "2",
                         "description": "Season ID",
                         "name": "seasonId",
                         "in": "path",
@@ -438,6 +443,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "2",
                         "description": "Season ID",
                         "name": "seasonId",
                         "in": "path",
@@ -445,6 +451,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "default": "2",
                         "description": "Team ID",
                         "name": "teamId",
                         "in": "path",
@@ -481,6 +488,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "1",
                         "description": "Season ID",
                         "name": "seasonId",
                         "in": "path",
@@ -488,6 +496,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "default": "1",
                         "description": "Team ID",
                         "name": "teamId",
                         "in": "path",
@@ -521,6 +530,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "2",
                         "description": "Season ID",
                         "name": "seasonId",
                         "in": "path",
@@ -528,6 +538,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "default": "2",
                         "description": "Team ID",
                         "name": "teamId",
                         "in": "path",
@@ -581,6 +592,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "2",
                         "description": "Season ID",
                         "name": "seasonId",
                         "in": "path",
@@ -588,6 +600,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "default": "4",
                         "description": "Team ID",
                         "name": "teamId",
                         "in": "path",
@@ -618,6 +631,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "2",
                         "description": "Season ID",
                         "name": "seasonId",
                         "in": "path",
@@ -625,6 +639,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "default": "3",
                         "description": "Team ID",
                         "name": "teamId",
                         "in": "path",
@@ -678,6 +693,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "2",
                         "description": "Season ID",
                         "name": "seasonId",
                         "in": "path",
@@ -685,6 +701,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "default": "4",
                         "description": "Team ID",
                         "name": "teamId",
                         "in": "path",
@@ -692,6 +709,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "default": "2",
                         "description": "Result ID",
                         "name": "resultId",
                         "in": "path",
@@ -728,6 +746,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "2",
                         "description": "Season ID",
                         "name": "seasonId",
                         "in": "path",
@@ -735,6 +754,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "default": "3",
                         "description": "Team ID",
                         "name": "teamId",
                         "in": "path",
@@ -742,6 +762,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "default": "1",
                         "description": "Result ID",
                         "name": "resultId",
                         "in": "path",
@@ -775,6 +796,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "2",
                         "description": "Season ID",
                         "name": "seasonId",
                         "in": "path",
@@ -782,6 +804,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "default": "4",
                         "description": "Team ID",
                         "name": "teamId",
                         "in": "path",
@@ -789,6 +812,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "default": "2",
                         "description": "Result ID",
                         "name": "resultId",
                         "in": "path",
@@ -850,7 +874,7 @@ const docTemplate = `{
                 },
                 "opponentTeamId": {
                     "type": "integer",
-                    "example": 7
+                    "example": 4
                 },
                 "score": {
                     "type": "string",
@@ -934,7 +958,7 @@ const docTemplate = `{
                     "type": "string",
                     "example": "14"
                 },
-                "opponentTeam": {
+                "opponentTeamId": {
                     "type": "integer",
                     "example": 7
                 },
@@ -942,9 +966,17 @@ const docTemplate = `{
                     "type": "string",
                     "example": "16"
                 },
-                "team": {
+                "seasonId": {
+                    "type": "integer",
+                    "example": 5
+                },
+                "teamId": {
                     "type": "integer",
                     "example": 6
+                },
+                "userUUID": {
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
                 }
             }
         },
@@ -979,6 +1011,10 @@ const docTemplate = `{
                 "startDate": {
                     "type": "string",
                     "example": "2025-06-01T00:00:00Z"
+                },
+                "userUUID": {
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
                 }
             }
         },
@@ -1022,6 +1058,14 @@ const docTemplate = `{
                 "name": {
                     "type": "string",
                     "example": "BIG Clan"
+                },
+                "seasonId": {
+                    "type": "integer",
+                    "example": 5
+                },
+                "userUUID": {
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
                 }
             }
         },
