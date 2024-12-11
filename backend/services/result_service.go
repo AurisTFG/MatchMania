@@ -11,7 +11,7 @@ type ResultService interface {
 	GetAllResults(uint, uint) ([]models.Result, error)
 	GetResultByID(uint, uint, uint) (*models.Result, error)
 	CreateResult(*models.CreateResultDto, uint, uint, uuid.UUID) (*models.Result, error)
-	UpdateResult(uint, *models.UpdateResultDto) (*models.Result, error)
+	UpdateResult(*models.Result, *models.UpdateResultDto) (*models.Result, error)
 	DeleteResult(*models.Result) error
 }
 
@@ -40,10 +40,10 @@ func (s *resultService) CreateResult(resultDto *models.CreateResultDto, seasonID
 	return s.repo.Create(&newResult)
 }
 
-func (s *resultService) UpdateResult(resultID uint, resultDto *models.UpdateResultDto) (*models.Result, error) {
-	updatedResult := resultDto.ToResult()
+func (s *resultService) UpdateResult(currentResult *models.Result, updatedResultDto *models.UpdateResultDto) (*models.Result, error) {
+	updatedResult := updatedResultDto.ToResult()
 
-	return s.repo.Update(resultID, &updatedResult)
+	return s.repo.Update(currentResult, &updatedResult)
 }
 
 func (s *resultService) DeleteResult(resultModel *models.Result) error {

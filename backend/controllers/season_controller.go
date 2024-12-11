@@ -131,18 +131,18 @@ func (c *SeasonController) UpdateSeason(ctx *gin.Context) {
 		return
 	}
 
-	season, err := c.seasonService.GetSeasonByID(seasonID)
+	currentSeason, err := c.seasonService.GetSeasonByID(seasonID)
 	if err != nil {
 		r.NotFound(ctx, "Season not found")
 		return
 	}
 
-	if user.Role != models.AdminRole && user.UUID != season.UserUUID {
+	if user.Role != models.AdminRole && user.UUID != currentSeason.UserUUID {
 		r.Forbidden(ctx, "This action is forbidden")
 		return
 	}
 
-	updatedSeason, err := c.seasonService.UpdateSeason(seasonID, &bodyDto)
+	updatedSeason, err := c.seasonService.UpdateSeason(currentSeason, &bodyDto)
 	if err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return

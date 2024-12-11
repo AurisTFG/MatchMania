@@ -11,7 +11,7 @@ type TeamService interface {
 	GetAllTeams(uint) ([]models.Team, error)
 	GetTeamByID(uint, uint) (*models.Team, error)
 	CreateTeam(*models.CreateTeamDto, uint, uuid.UUID) (*models.Team, error)
-	UpdateTeam(uint, *models.UpdateTeamDto) (*models.Team, error)
+	UpdateTeam(*models.Team, *models.UpdateTeamDto) (*models.Team, error)
 	DeleteTeam(*models.Team) error
 }
 
@@ -40,10 +40,10 @@ func (s *teamService) CreateTeam(teamDto *models.CreateTeamDto, seasonID uint, u
 	return s.repo.Create(&newTeam)
 }
 
-func (s *teamService) UpdateTeam(teamID uint, teamDto *models.UpdateTeamDto) (*models.Team, error) {
-	updatedTeam := teamDto.ToTeam()
+func (s *teamService) UpdateTeam(currentTeam *models.Team, updatedTeamDto *models.UpdateTeamDto) (*models.Team, error) {
+	updatedTeam := updatedTeamDto.ToTeam()
 
-	return s.repo.Update(teamID, &updatedTeam)
+	return s.repo.Update(currentTeam, &updatedTeam)
 }
 
 func (s *teamService) DeleteTeam(team *models.Team) error {

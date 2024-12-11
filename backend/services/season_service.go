@@ -11,7 +11,7 @@ type SeasonService interface {
 	GetAllSeasons() ([]models.Season, error)
 	GetSeasonByID(uint) (*models.Season, error)
 	CreateSeason(*models.CreateSeasonDto, uuid.UUID) (*models.Season, error)
-	UpdateSeason(uint, *models.UpdateSeasonDto) (*models.Season, error)
+	UpdateSeason(*models.Season, *models.UpdateSeasonDto) (*models.Season, error)
 	DeleteSeason(*models.Season) error
 }
 
@@ -38,10 +38,10 @@ func (s *seasonService) CreateSeason(seasonDto *models.CreateSeasonDto, userUUID
 	return s.repo.Create(&newSeason)
 }
 
-func (s *seasonService) UpdateSeason(seasonID uint, seasonDto *models.UpdateSeasonDto) (*models.Season, error) {
-	updatedSeason := seasonDto.ToSeason()
+func (s *seasonService) UpdateSeason(currentSeason *models.Season, updatedSeasonDto *models.UpdateSeasonDto) (*models.Season, error) {
+	updatedSeason := updatedSeasonDto.ToSeason()
 
-	return s.repo.Update(seasonID, &updatedSeason)
+	return s.repo.Update(currentSeason, &updatedSeason)
 }
 
 func (s *seasonService) DeleteSeason(season *models.Season) error {

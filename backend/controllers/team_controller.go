@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"MatchManiaAPI/models"
-	"MatchManiaAPI/responses"
 	r "MatchManiaAPI/responses"
 	"MatchManiaAPI/services"
 	"MatchManiaAPI/utils"
@@ -40,7 +39,7 @@ func (c *TeamController) GetAllTeams(ctx *gin.Context) {
 		return
 	}
 
-	r.OK(ctx, responses.TeamsResponse{Teams: models.ToTeamDtos(teams)})
+	r.OK(ctx, r.TeamsResponse{Teams: models.ToTeamDtos(teams)})
 }
 
 // @Summary Get a team
@@ -72,7 +71,7 @@ func (c *TeamController) GetTeam(ctx *gin.Context) {
 		return
 	}
 
-	r.OK(ctx, responses.TeamResponse{Team: team.ToDto()})
+	r.OK(ctx, r.TeamResponse{Team: team.ToDto()})
 }
 
 // @Summary Create a team
@@ -122,7 +121,7 @@ func (c *TeamController) CreateTeam(ctx *gin.Context) {
 		return
 	}
 
-	r.Created(ctx, responses.TeamResponse{Team: newTeam.ToDto()})
+	r.Created(ctx, r.TeamResponse{Team: newTeam.ToDto()})
 }
 
 // @Summary Update a team
@@ -168,24 +167,24 @@ func (c *TeamController) UpdateTeam(ctx *gin.Context) {
 		return
 	}
 
-	team, err := c.teamService.GetTeamByID(seasonID, teamID)
+	currentTeam, err := c.teamService.GetTeamByID(seasonID, teamID)
 	if err != nil {
 		r.NotFound(ctx, "Team not found in season")
 		return
 	}
 
-	if user.Role != models.AdminRole && user.UUID != team.UserUUID {
+	if user.Role != models.AdminRole && user.UUID != currentTeam.UserUUID {
 		r.Forbidden(ctx, "This action is forbidden")
 		return
 	}
 
-	updatedTeam, err := c.teamService.UpdateTeam(teamID, &bodyDto)
+	updatedTeam, err := c.teamService.UpdateTeam(currentTeam, &bodyDto)
 	if err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
 	}
 
-	r.OK(ctx, responses.TeamResponse{Team: updatedTeam.ToDto()})
+	r.OK(ctx, r.TeamResponse{Team: updatedTeam.ToDto()})
 }
 
 // @Summary Delete a team

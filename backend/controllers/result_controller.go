@@ -2,10 +2,9 @@ package controllers
 
 import (
 	"MatchManiaAPI/models"
-	"MatchManiaAPI/utils"
-
 	r "MatchManiaAPI/responses"
 	"MatchManiaAPI/services"
+	"MatchManiaAPI/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -206,18 +205,18 @@ func (c *ResultController) UpdateResult(ctx *gin.Context) {
 		return
 	}
 
-	result, err := c.resultService.GetResultByID(seasonID, teamID, resultID)
+	currentResult, err := c.resultService.GetResultByID(seasonID, teamID, resultID)
 	if err != nil {
 		r.NotFound(ctx, "Result not found in given team and season")
 		return
 	}
 
-	if user.Role != models.AdminRole && user.UUID != result.UserUUID {
+	if user.Role != models.AdminRole && user.UUID != currentResult.UserUUID {
 		r.Forbidden(ctx, "This action is forbidden")
 		return
 	}
 
-	updatedResult, err := c.resultService.UpdateResult(resultID, &bodyDto)
+	updatedResult, err := c.resultService.UpdateResult(currentResult, &bodyDto)
 	if err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
