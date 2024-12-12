@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/spf13/viper"
@@ -46,11 +47,17 @@ func LoadEnv(envName string) (*Env, error) {
 
 	viper.AutomaticEnv()
 
+	var env Env
+	env.IsDev = envName == "dev"
+
 	if err := viper.ReadInConfig(); err != nil {
-		return nil, fmt.Errorf("error reading config file: %w", err)
+		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+
+		} else {
+			return nil, fmt.Errorf("error reading config file: %w", err)
+		}
 	}
 
-	var env Env
 	if err := viper.Unmarshal(&env); err != nil {
 		return nil, fmt.Errorf("unable to decode config into struct: %w", err)
 	}
@@ -59,9 +66,14 @@ func LoadEnv(envName string) (*Env, error) {
 		return nil, fmt.Errorf("error validating config: %w", err)
 	}
 
-	env.IsDev = envName == "dev"
-
 	return &env, nil
+}
+
+func (e *Env) getVarsFromEnv() {
+	e.ServerHost = os.Getenv("SERVER_HOST")
+	e.ServerPort = os.Getenv("SERVER_PORT")
+	e.ClientURL = os.Getenv("CLIENT_URL")
+	// etc..
 }
 
 func (e *Env) Validate() error {
