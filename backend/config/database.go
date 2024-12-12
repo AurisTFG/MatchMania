@@ -38,6 +38,9 @@ func ConnectDatabase(env *Env) (*DB, error) {
 func MigrateDatabase(db *DB) error {
 	db.Exec(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`)
 
+	db.Exec(`DROP TYPE IF EXISTS role;`)
+	db.Exec(`CREATE TYPE role AS ENUM ('admin', 'moderator', 'user');`)
+
 	err := db.AutoMigrate(
 		&models.User{},
 		&models.Session{},
@@ -53,6 +56,10 @@ func MigrateDatabase(db *DB) error {
 }
 
 func SeedDatabase(db *DB, env *Env) error {
+	if !env.IsDev {
+		return nil
+	}
+
 	if err := db.Migrator().DropTable(
 		&models.User{},
 		&models.Session{},
@@ -62,9 +69,6 @@ func SeedDatabase(db *DB, env *Env) error {
 	); err != nil {
 		return err
 	}
-
-	db.Exec(`DROP TYPE IF EXISTS role;`)
-	db.Exec(`CREATE TYPE role AS ENUM ('admin', 'moderator', 'user');`)
 
 	if err := MigrateDatabase(db); err != nil {
 		return err
