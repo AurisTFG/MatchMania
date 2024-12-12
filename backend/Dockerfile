@@ -12,4 +12,6 @@ RUN go build -o MatchManiaAPI cmd/server/main.go
 
 # EXPOSE 8080
 
+ENV MATCHMANIA_ENV=prod
+
 CMD ["./MatchManiaAPI"]

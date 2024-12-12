@@ -23,35 +23,35 @@ var (
 )
 
 func init() {
-	fmt.Print("(0/4) ")
-	envName := os.Getenv("ENV")
+	fmt.Print("(1/5) ")
+	envName := os.Getenv("MATCHMANIA_ENV")
 	if envName == "" {
-		log.Fatal("Failed to load environment variables: ENV not set.")
+		log.Fatal("Failed to load environment variables: MATCHMANIA_ENV not set.")
 	}
 	fmt.Println("Environment:", envName)
 
-	fmt.Print("(1/4) ")
+	fmt.Print("(2/5) ")
 	env, err = config.LoadEnv(envName)
 	if err != nil {
 		log.Fatalf("Failed to load environment variables: %v", err)
 	}
 	fmt.Println("Environment variables successfully loaded")
 
-	fmt.Print("(2/4) ")
+	fmt.Print("(3/5) ")
 	db, err = config.ConnectDatabase(env)
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
 	fmt.Println("Successfully connected to database")
 
-	fmt.Print("(3/4) ")
+	fmt.Print("(4/5) ")
 	err = config.MigrateDatabase(db)
 	if err != nil {
 		log.Fatalf("Failed to sync database: %v", err)
 	}
 	fmt.Println("Successfully synced database")
 
-	fmt.Print("(4/4) ")
+	fmt.Print("(5/5) ")
 	err = config.SeedDatabase(db, env)
 	if err != nil {
 		log.Fatalf("Failed to seed database: %v", err)
