@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/spf13/viper"
@@ -37,25 +36,23 @@ type Env struct {
 	AdminPassword     string `mapstructure:"ADMIN_PASSWORD"`
 }
 
+var invalidString = "INVALID"
+var invalidDuration = time.Duration(0)
+
 func LoadEnv(envName string) (*Env, error) {
-	if envName == "" {
-		envName = "dev"
-	}
+	var env Env
+	env.IsDev = envName == "dev"
 
 	viper.SetConfigFile("./config/.env." + envName)
 	viper.SetConfigType("env")
 
 	viper.AutomaticEnv()
 
-	var env Env
-	env.IsDev = envName == "dev"
+	// must set all defaults, otherwise viper will not read from env
+	setDefaults()
 
 	if err := viper.ReadInConfig(); err != nil {
-		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-
-		} else {
-			return nil, fmt.Errorf("error reading config file: %w", err)
-		}
+		// ignore error if file does not exist, cuz digital ocean will read from env
 	}
 
 	if err := viper.Unmarshal(&env); err != nil {
@@ -69,35 +66,55 @@ func LoadEnv(envName string) (*Env, error) {
 	return &env, nil
 }
 
-func (e *Env) getVarsFromEnv() {
-	e.ServerHost = os.Getenv("SERVER_HOST")
-	e.ServerPort = os.Getenv("SERVER_PORT")
-	e.ClientURL = os.Getenv("CLIENT_URL")
-	// etc..
+func setDefaults() {
+	viper.SetDefault("SERVER_HOST", invalidString)
+	viper.SetDefault("SERVER_PORT", invalidString)
+	viper.SetDefault("CLIENT_URL", invalidString)
+
+	viper.SetDefault("DB_HOST", invalidString)
+	viper.SetDefault("DB_USER", invalidString)
+	viper.SetDefault("DB_PASSWORD", invalidString)
+	viper.SetDefault("DB_NAME", invalidString)
+	viper.SetDefault("DB_PORT", invalidString)
+	viper.SetDefault("DB_SSLMODE", invalidString)
+
+	viper.SetDefault("JWT_ACCESS_TOKEN_SECRET", invalidString)
+	viper.SetDefault("JWT_REFRESH_TOKEN_SECRET", invalidString)
+	viper.SetDefault("JWT_ISSUER", invalidString)
+	viper.SetDefault("JWT_AUDIENCE", invalidString)
+	viper.SetDefault("JWT_ACCESS_TOKEN_DURATION", invalidDuration)
+	viper.SetDefault("JWT_REFRESH_TOKEN_DURATION", invalidDuration)
+
+	viper.SetDefault("USER_EMAIL", invalidString)
+	viper.SetDefault("USER_PASSWORD", invalidString)
+	viper.SetDefault("MODERATOR_EMAIL", invalidString)
+	viper.SetDefault("MODERATOR_PASSWORD", invalidString)
+	viper.SetDefault("ADMIN_EMAIL", invalidString)
+	viper.SetDefault("ADMIN_PASSWORD", invalidString)
 }
 
 func (e *Env) Validate() error {
-	if e.ServerPort == "" ||
-		e.ClientURL == "" ||
-		e.ServerHost == "" {
+	if e.ServerHost == invalidString ||
+		e.ServerPort == invalidString ||
+		e.ClientURL == invalidString {
 		return fmt.Errorf("missing server configuration values")
 	}
 
-	if e.DBHost == "" ||
-		e.DBUser == "" ||
-		e.DBUserPassword == "" ||
-		e.DBName == "" ||
-		e.DBPort == "" ||
-		e.DBSSLMode == "" {
+	if e.DBHost == invalidString ||
+		e.DBUser == invalidString ||
+		e.DBUserPassword == invalidString ||
+		e.DBName == invalidString ||
+		e.DBPort == invalidString ||
+		e.DBSSLMode == invalidString {
 		return fmt.Errorf("missing database configuration values")
 	}
 
-	if e.JWTAccessTokenSecret == "" ||
-		e.JWTRefreshTokenSecret == "" ||
-		e.JWTIssuer == "" ||
-		e.JWTAudience == "" ||
-		e.JWTAccessTokenDuration == 0 ||
-		e.JWTRefreshTokenDuration == 0 {
+	if e.JWTAccessTokenSecret == invalidString ||
+		e.JWTRefreshTokenSecret == invalidString ||
+		e.JWTIssuer == invalidString ||
+		e.JWTAudience == invalidString ||
+		e.JWTAccessTokenDuration == invalidDuration ||
+		e.JWTRefreshTokenDuration == invalidDuration {
 		return fmt.Errorf("missing JWT configuration values")
 	}
 

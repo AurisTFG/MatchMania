@@ -56,10 +56,6 @@ func MigrateDatabase(db *DB) error {
 }
 
 func SeedDatabase(db *DB, env *Env) error {
-	if !env.IsDev {
-		return nil
-	}
-
 	if err := db.Migrator().DropTable(
 		&models.User{},
 		&models.Session{},

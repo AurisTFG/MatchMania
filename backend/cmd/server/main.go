@@ -26,7 +26,7 @@ func init() {
 	fmt.Print("(0/4) ")
 	envName := os.Getenv("ENV")
 	if envName == "" {
-		envName = "dev"
+		log.Fatal("Failed to load environment variables: ENV not set.")
 	}
 	fmt.Println("Environment:", envName)
 
@@ -70,7 +70,8 @@ func main() {
 	if env.IsDev {
 		gin.SetMode(gin.DebugMode)
 	} else {
-		gin.SetMode(gin.ReleaseMode)
+		// gin.SetMode(gin.ReleaseMode)
+		gin.SetMode(gin.DebugMode)
 	}
 
 	server := gin.Default()
