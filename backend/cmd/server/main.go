@@ -75,6 +75,14 @@ func main() {
 
 	server := gin.Default()
 
+	server.Use(func(c *gin.Context) {
+		proto := c.Request.Header.Get("X-Forwarded-Proto")
+
+		log.Printf("X-Forwarded-Proto: %s", proto)
+
+		c.Next()
+	})
+
 	if err := server.SetTrustedProxies(nil); err != nil {
 		log.Fatal("Failed to set trusted proxies.")
 	}
