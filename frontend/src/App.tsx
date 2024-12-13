@@ -1,11 +1,31 @@
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+import NotFound from "./pages/NotFound/NotFound";
+import Home from "./pages/Home/Home";
+import Login from "./pages/Auth/Login";
+// import SignUp from "./pages/Auth/SignUp";
+// import SeasonList from "./pages/Seasons/SeasonList";
+// import SeasonDetail from "./pages/Seasons/SeasonDetail";
+import "./styles/theme.ts";
 import "./App.css";
 
 function App() {
   return (
-    <>
-      <h1>App Title</h1>
-      <p>App content</p>
-    </>
+    <div className="App">
+      <Router>
+        <Header />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          {/* <Route path="/signup" element={<SignUp />} />
+          <Route path="/seasons" element={<SeasonList />} />
+          <Route path="/seasons/:seasonId" element={<SeasonDetail />} /> */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+        <Footer />
+      </Router>
+    </div>
   );
 }
 
