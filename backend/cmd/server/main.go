@@ -70,8 +70,7 @@ func main() {
 	if env.IsDev {
 		gin.SetMode(gin.DebugMode)
 	} else {
-		// gin.SetMode(gin.ReleaseMode)
-		gin.SetMode(gin.DebugMode)
+		gin.SetMode(gin.ReleaseMode)
 	}
 
 	server := gin.Default()
