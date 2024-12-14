@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { TextField, Button, Box } from "@mui/material";
-import api from "../../api";
+import { login } from "../../api/auth";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -8,8 +8,8 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await api.post("/auth/login", { email, password });
-      console.log("Login success:", response.data);
+      const result = await login(email, password);
+      console.log("Login success:", result);
     } catch (error) {
       console.error("Login failed:", error);
     }

@@ -4,7 +4,7 @@ import Footer from "./components/Footer";
 import NotFound from "./pages/NotFound/NotFound";
 import Home from "./pages/Home/Home";
 import Login from "./pages/Auth/Login";
-// import SignUp from "./pages/Auth/SignUp";
+import Signup from "./pages/Auth/Signup";
 // import SeasonList from "./pages/Seasons/SeasonList";
 // import SeasonDetail from "./pages/Seasons/SeasonDetail";
 import "./styles/theme.ts";
@@ -18,8 +18,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
-          {/* <Route path="/signup" element={<SignUp />} />
-          <Route path="/seasons" element={<SeasonList />} />
+          <Route path="/signup" element={<Signup />} />
+          {/* <Route path="/seasons" element={<SeasonList />} />
           <Route path="/seasons/:seasonId" element={<SeasonDetail />} /> */}
           <Route path="*" element={<NotFound />} />
         </Routes>
