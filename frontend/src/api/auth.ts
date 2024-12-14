@@ -1,4 +1,3 @@
-import { jwtDecode } from "jwt-decode";
 import api from "./api";
 
 export async function signup(
@@ -61,27 +60,13 @@ export async function refreshToken() {
 }
 
 export function saveAccessToken(accessToken: string) {
-  sessionStorage.setItem("accessToken", accessToken);
+  localStorage.setItem("accessToken", accessToken);
 }
 
 export function getAccessToken() {
-  return sessionStorage.getItem("accessToken");
+  return localStorage.getItem("accessToken");
 }
 
 export function removeAccessToken() {
-  sessionStorage.removeItem("accessToken");
-}
-
-export function isLoggedIn() {
-  const accessToken = getAccessToken();
-  return accessToken && !isTokenExpired(accessToken);
-}
-
-export function isTokenExpired(token: string) {
-  const { exp } = jwtDecode(token);
-  if (!exp) {
-    return true;
-  }
-
-  return Date.now() >= exp * 1000;
+  localStorage.removeItem("accessToken");
 }

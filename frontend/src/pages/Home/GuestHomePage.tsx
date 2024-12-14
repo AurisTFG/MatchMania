@@ -1,7 +1,7 @@
 import { Button, Typography, Box } from "@mui/material";
 import { Link } from "react-router-dom";
 
-const Home = () => {
+const GuestHomePage = () => {
   return (
     <Box sx={{ textAlign: "center", mt: 1, mb: 1 }}>
       <Typography variant="h3" gutterBottom>
@@ -34,4 +34,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default GuestHomePage;

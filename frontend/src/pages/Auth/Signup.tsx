@@ -1,18 +1,23 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { TextField, Button, Box } from "@mui/material";
 import { signup } from "../../api/auth";
 
 const Signup = () => {
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = async () => {
+  const handleSignup = async () => {
     try {
       const result = await signup(username, email, password);
-      console.log("Login success:", result);
+
+      console.log("Signup success:", result);
+
+      navigate("/login");
     } catch (error) {
-      console.error("Login failed:", error);
+      console.error("Signup failed:", error);
     }
   };
 
@@ -46,9 +51,9 @@ const Signup = () => {
           fullWidth
           variant="contained"
           color="primary"
-          onClick={handleLogin}
+          onClick={handleSignup}
         >
-          Login
+          Sign up
         </Button>
       </Box>
     </>
