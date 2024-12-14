@@ -19,7 +19,7 @@ run: build
 
 rund: build
 	@echo "Server started with CompileDaemon"
-	@MATCHMANIA_ENV=prod CompileDaemon -command="$(OUTPUT_PATH)" -build="go build -o $(OUTPUT_PATH) $(SOURCE)"
+	@MATCHMANIA_ENV=dev CompileDaemon -command="$(OUTPUT_PATH)" -build="go build -o $(OUTPUT_PATH) $(SOURCE)"
 	@echo "Server stopped"
 
 test: build

@@ -38,8 +38,10 @@ func ConnectDatabase(env *Env) (*DB, error) {
 func MigrateDatabase(db *DB) error {
 	db.Exec(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`)
 
-	db.Exec(`DROP TYPE IF EXISTS role;`)
-	db.Exec(`CREATE TYPE role AS ENUM ('admin', 'moderator', 'user');`)
+	if !db.Migrator().HasTable(&models.User{}) {
+		db.Exec(`DROP TYPE IF EXISTS role;`)
+		db.Exec(`CREATE TYPE role AS ENUM ('admin', 'moderator', 'user');`)
+	}
 
 	err := db.AutoMigrate(
 		&models.User{},

@@ -23,35 +23,35 @@ var (
 )
 
 func init() {
-	fmt.Print("(1/5) ")
+	fmt.Print("(1/6) ")
 	envName := os.Getenv("MATCHMANIA_ENV")
 	if envName == "" {
 		log.Fatal("Failed to load environment variables: MATCHMANIA_ENV not set.")
 	}
 	fmt.Println("Environment:", envName)
 
-	fmt.Print("(2/5) ")
+	fmt.Print("(2/6) ")
 	env, err = config.LoadEnv(envName)
 	if err != nil {
 		log.Fatalf("Failed to load environment variables: %v", err)
 	}
 	fmt.Println("Environment variables successfully loaded")
 
-	fmt.Print("(3/5) ")
+	fmt.Print("(3/6) ")
 	db, err = config.ConnectDatabase(env)
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
 	fmt.Println("Successfully connected to database")
 
-	fmt.Print("(4/5) ")
+	fmt.Print("(4/6) ")
 	err = config.MigrateDatabase(db)
 	if err != nil {
 		log.Fatalf("Failed to sync database: %v", err)
 	}
 	fmt.Println("Successfully synced database")
 
-	fmt.Print("(5/5) ")
+	fmt.Print("(5/6) ")
 	err = config.SeedDatabase(db, env)
 	if err != nil {
 		log.Fatalf("Failed to seed database: %v", err)
@@ -109,6 +109,8 @@ func main() {
 	resultController := controllers.NewResultController(teamService, resultService)
 
 	routes.ApplyRoutes(server, authMiddleware, authController, seasonController, teamController, resultController)
+
+	fmt.Println("(6/6) Starting server on " + env.ServerHost + ":" + env.ServerPort + " . . . ")
 
 	err := server.Run(env.ServerHost + ":" + env.ServerPort)
 	if err != nil {

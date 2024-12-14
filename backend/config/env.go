@@ -41,9 +41,17 @@ var invalidDuration = time.Duration(0)
 
 func LoadEnv(envName string) (*Env, error) {
 	var env Env
-	env.IsDev = envName == "dev"
+	var filePostfix string
 
-	viper.SetConfigFile("./config/.env." + envName)
+	env.IsDev = envName == "dev" || envName == "development"
+
+	if env.IsDev {
+		filePostfix = "development"
+	} else {
+		filePostfix = "production"
+	}
+
+	viper.SetConfigFile("./config/.env." + filePostfix)
 	viper.SetConfigType("env")
 
 	viper.AutomaticEnv()
