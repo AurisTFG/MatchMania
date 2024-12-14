@@ -48,7 +48,6 @@ func (u *User) ComparePassword(password string) bool {
 type UserDto struct {
 	UUID     uuid.UUID `json:"id" example:"526432ea-822b-4b5b-b1b3-34e8ab453e03"`
 	Username string    `json:"username" example:"AurisTFG"`
-	Email    string    `json:"email" example:"email@gmail.com"`
 	Role     Role      `json:"role" example:"admin"`
 }
 
@@ -63,7 +62,21 @@ type LoginDto struct {
 	Password string `json:"password" validate:"required,min=8,max=255" example:"VeryStrongPassword"`
 }
 
+type UpdateUserDto struct {
+	Username string `json:"username" validate:"omitempty,min=3,max=100" example:"AurisTFG"`
+	Email    string `json:"email" validate:"omitempty,email" example:"email@gmail.com"`
+	Password string `json:"password" validate:"omitempty,min=8,max=255" example:"VeryStrongPassword"`
+}
+
 func (dto *SignUpDto) ToUser() User {
+	return User{
+		Username: dto.Username,
+		Email:    dto.Email,
+		Password: dto.Password,
+	}
+}
+
+func (dto *UpdateUserDto) ToUser() User {
 	return User{
 		Username: dto.Username,
 		Email:    dto.Email,
@@ -75,9 +88,18 @@ func (u *User) ToDto() UserDto {
 	return UserDto{
 		UUID:     u.UUID,
 		Username: u.Username,
-		Email:    u.Email,
 		Role:     u.Role,
 	}
+}
+
+func ToUserDtos(users []User) []UserDto {
+	userDtos := make([]UserDto, len(users))
+
+	for i, user := range users {
+		userDtos[i] = user.ToDto()
+	}
+
+	return userDtos
 }
 
 func (dto *SignUpDto) Validate() error {
@@ -87,6 +109,12 @@ func (dto *SignUpDto) Validate() error {
 }
 
 func (dto *LoginDto) Validate() error {
+	var validate = validator.New()
+
+	return userValidationErrorHandler(validate.Struct(dto))
+}
+
+func (dto *UpdateUserDto) Validate() error {
 	var validate = validator.New()
 
 	return userValidationErrorHandler(validate.Struct(dto))

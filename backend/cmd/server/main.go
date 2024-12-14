@@ -104,11 +104,14 @@ func main() {
 	authMiddleware := middlewares.NewAuthMiddleware(authService)
 
 	authController := controllers.NewAuthController(authService, sessionService, env)
+	userController := controllers.NewUserController(userService)
 	seasonController := controllers.NewSeasonController(seasonService)
 	teamController := controllers.NewTeamController(seasonService, teamService)
 	resultController := controllers.NewResultController(teamService, resultService)
 
-	routes.ApplyRoutes(server, authMiddleware, authController, seasonController, teamController, resultController)
+	allControllers := routes.NewControllers(authMiddleware, authController, userController, seasonController, teamController, resultController)
+
+	routes.ApplyRoutes(server, &allControllers)
 
 	fmt.Println("(6/6) Starting server on " + env.ServerHost + ":" + env.ServerPort + " . . . ")
 

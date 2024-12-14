@@ -17,6 +17,10 @@ func GetParamUint(ctx *gin.Context, paramName string) (uint, error) {
 	return uint(integer), nil
 }
 
+func GetParamString(ctx *gin.Context, paramName string) string {
+	return ctx.Param(paramName)
+}
+
 func GetAuthUser(ctx *gin.Context) *models.User {
 	user, ok := ctx.Get("user")
 	if !ok {

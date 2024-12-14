@@ -103,3 +103,11 @@ type ResultResponse struct {
 type ResultsResponse struct {
 	Results []models.ResultDto `json:"results"`
 }
+
+type UsersResponse struct {
+	Users []models.UserDto `json:"users"`
+}
+
+type UserResponse struct {
+	User models.UserDto `json:"user"`
+}

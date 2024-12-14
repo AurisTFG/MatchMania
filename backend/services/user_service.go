@@ -10,6 +10,8 @@ type UserService interface {
 	GetUserByID(string) (*models.User, error)
 	GetUserByEmail(string) (*models.User, error)
 	CreateUser(signUpDto *models.SignUpDto) (*models.User, error)
+	UpdateUser(*models.User, *models.UpdateUserDto) (*models.User, error)
+	DeleteUser(*models.User) error
 }
 
 type userService struct {
@@ -36,4 +38,14 @@ func (s *userService) CreateUser(signUpDto *models.SignUpDto) (*models.User, err
 	newUser := signUpDto.ToUser()
 
 	return s.repo.Create(&newUser)
+}
+
+func (s *userService) UpdateUser(currentUser *models.User, updatedUserDto *models.UpdateUserDto) (*models.User, error) {
+	updatedUser := updatedUserDto.ToUser()
+
+	return s.repo.Update(currentUser, &updatedUser)
+}
+
+func (s *userService) DeleteUser(user *models.User) error {
+	return s.repo.Delete(user)
 }
