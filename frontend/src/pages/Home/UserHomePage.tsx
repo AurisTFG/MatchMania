@@ -1,8 +1,8 @@
 import { Typography, Box } from "@mui/material";
-import { useAuth } from "../../components/Auth/AuthContext";
+import { UseAuth } from "../../components/Auth/AuthContext";
 
 const UserHomePage = () => {
-  const { user } = useAuth();
+  const { user } = UseAuth();
 
   return (
     <Box sx={{ textAlign: "center", mt: 1, mb: 1 }}>

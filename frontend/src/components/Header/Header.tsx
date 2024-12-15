@@ -8,13 +8,13 @@ import IconButton from "@mui/material/IconButton";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
-import { useAuth } from "../Auth/AuthContext";
+import { UseAuth } from "../Auth/AuthContext";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../api/auth";
 
 export default function Header() {
-  const { user, setUser } = useAuth();
+  const { user, setUser } = UseAuth();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const navigate = useNavigate();
 

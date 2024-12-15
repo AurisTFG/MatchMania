@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { useAuth } from "./components/Auth/AuthContext.tsx";
+import { UseAuth } from "./components/Auth/AuthContext.tsx";
 import { useEffect } from "react";
 import { getCurrentUser } from "./api/users.ts";
 import Header from "./components/Header/Header.tsx";
@@ -17,7 +17,7 @@ import "./styles/theme.ts";
 import "./App.css";
 
 function App() {
-  const { user, setUser } = useAuth();
+  const { user, setUser } = UseAuth();
 
   useEffect(() => {
     const initializeAuth = async () => {

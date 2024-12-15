@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { TextField, Button, Box } from "@mui/material";
-import { useAuth } from "../../components/Auth/AuthContext";
+import { UseAuth } from "../../components/Auth/AuthContext";
 import { login } from "../../api/auth";
 import { getCurrentUser } from "../../api/users";
 
@@ -9,7 +9,7 @@ const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { setUser } = useAuth();
+  const { setUser } = UseAuth();
 
   const handleLogin = async () => {
     try {

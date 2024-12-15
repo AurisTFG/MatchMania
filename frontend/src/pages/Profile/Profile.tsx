@@ -1,8 +1,8 @@
 import { Button } from "@mui/material";
-import { useAuth } from "../../components/Auth/AuthContext";
+import { UseAuth } from "../../components/Auth/AuthContext";
 
 const Profile = () => {
-  const { user } = useAuth();
+  const { user } = UseAuth();
 
   const handleEditProfile = () => {
     console.log(user);
