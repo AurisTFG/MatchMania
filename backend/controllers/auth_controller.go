@@ -205,6 +205,9 @@ func (c *AuthController) SetCookie(ctx *gin.Context, refreshToken string) {
 	}
 	path := "/"
 	domain := "localhost"
+	if !c.env.IsDev {
+		domain = c.env.ClientURL
+	}
 	secure := !c.env.IsDev
 	httpOnly := true
 
