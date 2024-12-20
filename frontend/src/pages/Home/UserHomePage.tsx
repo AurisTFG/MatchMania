@@ -25,9 +25,9 @@ const UserHomePage = () => {
           wordWrap: "break-word",
           overflowWrap: "break-word",
           width: "100%",
-          color: "#9b59b6",
+          color: "rgba(94, 140, 192, 0.9)",
           fontSize: "6rem",
-          textShadow: "4px 4px 4px rgba(0, 0, 0, 0.8)",
+          textShadow: "5px 5px 5px rgba(0, 0, 0, 0.8)",
         }}
       >
         Welcome to MatchMania,

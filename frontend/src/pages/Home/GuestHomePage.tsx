@@ -1,6 +1,5 @@
 import { Button, Typography, Box } from "@mui/material";
 import { Link } from "react-router-dom";
-import "../../styles/fonts.css";
 
 const GuestHomePage = () => {
   return (

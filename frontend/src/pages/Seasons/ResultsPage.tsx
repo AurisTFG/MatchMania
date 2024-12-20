@@ -6,7 +6,7 @@ import {
   deleteResult,
 } from "../../api/results.ts";
 import { getSeason } from "../../api/seasons.ts";
-import { getTeam } from "../../api/teams.ts";
+import { getAllTeams, getTeam } from "../../api/teams.ts";
 import { Result, Team, Season } from "../../types/index.ts";
 import {
   Modal,
@@ -16,11 +16,14 @@ import {
   Space,
   Typography,
   DatePicker,
+  Select,
   message,
 } from "antd";
 import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { useParams } from "react-router-dom";
 import moment from "moment";
+
+const { Option } = Select;
 
 const isValidResult = (
   seasonId: string | undefined,
@@ -43,6 +46,7 @@ const ResultsPage: React.FC = () => {
   }>();
   const [season, setSeason] = useState<Partial<Season>>({});
   const [team, setTeam] = useState<Partial<Team>>({});
+  const [teams, setTeams] = useState<Team[]>([]);
 
   const [results, setResults] = useState<Result[]>([]);
   const [loading, setLoading] = useState(false);
@@ -97,6 +101,20 @@ const ResultsPage: React.FC = () => {
     }
   };
 
+  const fetchTeams = async () => {
+    if (!seasonId || resultsNotFound) return;
+
+    try {
+      const data = await getAllTeams(parseInt(seasonId));
+
+      setTeams(data);
+    } catch (error) {
+      message.error("Failed to fetch teams.");
+      console.error(error);
+      setResultsNotFound(true);
+    }
+  };
+
   useEffect(() => {
     if (!isValidResult(seasonId, teamId)) {
       setResultsNotFound(true);
@@ -106,6 +124,7 @@ const ResultsPage: React.FC = () => {
     setLoading(true);
     fetchSeason();
     fetchTeam();
+    fetchTeams();
     fetchResults();
     setLoading(false);
   }, [seasonId, teamId, resultsNotFound]);
@@ -200,6 +219,11 @@ const ResultsPage: React.FC = () => {
     }
   };
 
+  const getTeamName = (id: number) => {
+    const team = teams.find((team) => team.id === id);
+    return team ? team.name : "Unknown Team";
+  };
+
   return (
     <div style={{ padding: 20 }}>
       <Space
@@ -237,8 +261,18 @@ const ResultsPage: React.FC = () => {
             ]}
           >
             <List.Item.Meta
-              title={`Score: ${result.score} - Opponent Score: ${result.opponentScore}`}
-              description={`Date: ${new Date(result.matchStartDate).toLocaleDateString()}`}
+              title={`${getTeamName(result.teamId)} vs ${getTeamName(result.opponentTeamId)}`}
+              description={
+                <>
+                  <Typography.Text>
+                    {result.score} - {result.opponentScore}
+                  </Typography.Text>
+                  <br />
+                  <Typography.Text type="secondary">
+                    {new Date(result.matchStartDate).toLocaleDateString()}
+                  </Typography.Text>
+                </>
+              }
             />
           </List.Item>
         )}
@@ -278,16 +312,22 @@ const ResultsPage: React.FC = () => {
           }
           style={{ marginBottom: 8 }}
         />
-        <Input
-          placeholder="Opponent Team ID"
+        <Select
+          placeholder="Select Opponent Team"
           value={formData.opponentTeamId}
-          onChange={(e) =>
-            setFormData({
-              ...formData,
-              opponentTeamId: parseInt(e.target.value),
-            })
+          onChange={(value) =>
+            setFormData({ ...formData, opponentTeamId: value })
           }
-        />
+          style={{ width: "100%", marginBottom: 8 }}
+        >
+          {teams
+            .filter((opponentTeam) => opponentTeam.id !== parseInt(teamId!))
+            .map((opponentTeam) => (
+              <Option key={opponentTeam.id} value={opponentTeam.id}>
+                {opponentTeam.name}
+              </Option>
+            ))}
+        </Select>
       </Modal>
     </div>
   );

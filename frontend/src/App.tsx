@@ -14,9 +14,15 @@ import Profile from "./pages/Profile/Profile.tsx";
 import SeasonsPage from "./pages/Seasons/SeasonsPage.tsx";
 import TeamsPage from "./pages/Seasons/TeamsPage.tsx";
 import ResultsPage from "./pages/Seasons/ResultsPage.tsx";
-
-import "./styles/theme.ts";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
 import "./App.css";
+
+const theme = createTheme({
+  typography: {
+    fontFamily: "'Lato'", // Replace with your desired font(s)
+  },
+});
 
 function App() {
   const { user, setUser } = UseAuth();
@@ -38,46 +44,49 @@ function App() {
   }, [setUser]);
 
   return (
-    <div className="App">
-      <Router>
-        <Header />
-        <Content>
-          <Routes>
-            <Route
-              path="/"
-              element={user ? <UserHomePage /> : <GuestHomePage />}
-            />
-            <Route
-              path="/login"
-              element={user ? <UserHomePage /> : <Login />}
-            />
-            <Route
-              path="/signup"
-              element={user ? <UserHomePage /> : <Signup />}
-            />
-            <Route
-              path="/profile"
-              element={!user ? <GuestHomePage /> : <Profile />}
-            />
-            <Route
-              path="/seasons"
-              element={!user ? <GuestHomePage /> : <SeasonsPage />}
-            />
-            <Route
-              path="/seasons/:seasonId/teams"
-              element={!user ? <GuestHomePage /> : <TeamsPage />}
-            />
-            <Route
-              path="/seasons/:seasonId/teams/:teamId/results"
-              element={!user ? <GuestHomePage /> : <ResultsPage />}
-            />
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <div className="App">
+        <Router>
+          <Header />
+          <Content>
+            <Routes>
+              <Route
+                path="/"
+                element={user ? <UserHomePage /> : <GuestHomePage />}
+              />
+              <Route
+                path="/login"
+                element={user ? <UserHomePage /> : <Login />}
+              />
+              <Route
+                path="/signup"
+                element={user ? <UserHomePage /> : <Signup />}
+              />
+              <Route
+                path="/profile"
+                element={!user ? <GuestHomePage /> : <Profile />}
+              />
+              <Route
+                path="/seasons"
+                element={!user ? <GuestHomePage /> : <SeasonsPage />}
+              />
+              <Route
+                path="/seasons/:seasonId/teams"
+                element={!user ? <GuestHomePage /> : <TeamsPage />}
+              />
+              <Route
+                path="/seasons/:seasonId/teams/:teamId/results"
+                element={!user ? <GuestHomePage /> : <ResultsPage />}
+              />
 
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Content>
-        <Footer />
-      </Router>
-    </div>
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Content>
+          <Footer />
+        </Router>
+      </div>
+    </ThemeProvider>
   );
 }
 
