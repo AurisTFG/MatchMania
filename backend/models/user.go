@@ -48,6 +48,7 @@ func (u *User) ComparePassword(password string) bool {
 type UserDto struct {
 	UUID     uuid.UUID `json:"id" example:"526432ea-822b-4b5b-b1b3-34e8ab453e03"`
 	Username string    `json:"username" example:"AurisTFG"`
+	Email    string    `json:"email" example:"AurisTFG@gmail.com"`
 	Role     Role      `json:"role" example:"admin"`
 }
 
@@ -89,6 +90,7 @@ func (u *User) ToDto() UserDto {
 		UUID:     u.UUID,
 		Username: u.Username,
 		Role:     u.Role,
+		Email:    u.Email,
 	}
 }
 

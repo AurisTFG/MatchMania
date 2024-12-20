@@ -1,24 +1,26 @@
 import api from "./api";
+import { handleApiError } from "./utils";
 import { getAccessToken } from "./auth";
 import { jwtDecode } from "jwt-decode";
+import { User, UserResponse, UsersResponse } from "../types/users";
 
-export async function getAllUsers() {
+export async function getAllUsers(): Promise<User[]> {
   try {
-    const response = await api.get("/users");
+    const { data } = await api.get<UsersResponse>("/users");
 
-    return response.data;
+    return data.users || [];
   } catch (error) {
-    throw new Error(String(error));
+    handleApiError(error);
   }
 }
 
-export async function getUser(userId: string) {
+export async function getUser(userId: string): Promise<User> {
   try {
-    const response = await api.get(`/users/${userId}`);
+    const { data } = await api.get<UserResponse>(`/users/${userId}`);
 
-    return response.data;
+    return data.user || ({} as User);
   } catch (error) {
-    throw new Error(String(error));
+    handleApiError(error);
   }
 }
 

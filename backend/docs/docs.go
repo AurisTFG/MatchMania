@@ -1448,6 +1448,10 @@ const docTemplate = `{
         "models.UserDto": {
             "type": "object",
             "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "AurisTFG@gmail.com"
+                },
                 "id": {
                     "type": "string",
                     "example": "526432ea-822b-4b5b-b1b3-34e8ab453e03"

@@ -11,6 +11,8 @@ import { Modal, Button, Input, List, Space, Typography, message } from "antd";
 import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { useParams, Link } from "react-router-dom";
 import { UseAuth } from "../../components/Auth/AuthContext";
+import { User } from "../../types/users.ts";
+import { getAllUsers } from "../../api/users.ts";
 
 const isValidTeam = (seasonId: string | undefined) => {
   return seasonId && !isNaN(Number(seasonId)) && Number(seasonId) > 0;
@@ -30,11 +32,11 @@ const TeamsPage: React.FC = () => {
     name: "",
   });
   const { user } = UseAuth();
+  const [users, setUsers] = useState<User[]>([]);
 
   const fetchTeams = async () => {
     if (!seasonId || teamsNotFound) return;
 
-    setLoading(true);
     try {
       const data = await getAllTeams(parseInt(seasonId));
 
@@ -43,8 +45,6 @@ const TeamsPage: React.FC = () => {
       message.error("Failed to fetch teams.");
       console.error(error);
       setTeamsNotFound(true);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -61,14 +61,39 @@ const TeamsPage: React.FC = () => {
     }
   };
 
+  const fetchUsers = async () => {
+    try {
+      const data = await getAllUsers();
+      setUsers(data);
+    } catch (error) {
+      message.error("Failed to fetch users.");
+      console.error(error);
+    }
+  };
+
+  const getUserById = (userId: string): User => {
+    console.log(users);
+    console.log(userId);
+    return (
+      users.find((user) => user.id === userId) ||
+      ({
+        id: "",
+        username: "Unknown User",
+      } as User)
+    );
+  };
+
   useEffect(() => {
     if (!isValidTeam(seasonId)) {
       setTeamsNotFound(true);
       return;
     }
 
+    setLoading(true);
     fetchSeason();
     fetchTeams();
+    fetchUsers();
+    setLoading(false);
   }, [seasonId, teamsNotFound]);
 
   if (teamsNotFound) {
@@ -162,11 +187,11 @@ const TeamsPage: React.FC = () => {
               user &&
               (user.role === "moderator" ||
                 user.role === "admin" ||
-                season.userUUID === user.id) ? (
+                team.userUUID === user.id) ? (
                 <EditOutlined key="edit" onClick={() => openModal(team)} />
               ) : null,
 
-              user && (user.role === "admin" || season.userUUID === user.id) ? (
+              user && (user.role === "admin" || team.userUUID === user.id) ? (
                 <DeleteOutlined
                   key="delete"
                   onClick={() => handleDelete(team.id)}
@@ -184,7 +209,7 @@ const TeamsPage: React.FC = () => {
               description={
                 <>
                   <Typography.Text type="secondary">
-                    {season.userUUID}
+                    {`By: ${getUserById(team.userUUID).username}`}
                   </Typography.Text>
                 </>
               }

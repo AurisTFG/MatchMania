@@ -23,6 +23,8 @@ import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { useParams } from "react-router-dom";
 import moment from "moment";
 import { UseAuth } from "../../components/Auth/AuthContext";
+import { User } from "../../types/users.ts";
+import { getAllUsers } from "../../api/users.ts";
 
 const { Option } = Select;
 
@@ -63,6 +65,7 @@ const ResultsPage: React.FC = () => {
     opponentTeamId: 0,
   });
   const { user } = UseAuth();
+  const [users, setUsers] = useState<User[]>([]);
 
   const fetchResults = async () => {
     if (!seasonId || !teamId || resultsNotFound) return;
@@ -117,6 +120,28 @@ const ResultsPage: React.FC = () => {
     }
   };
 
+  const fetchUsers = async () => {
+    try {
+      const data = await getAllUsers();
+      setUsers(data);
+    } catch (error) {
+      message.error("Failed to fetch users.");
+      console.error(error);
+    }
+  };
+
+  const getUserById = (userId: string): User => {
+    console.log(users);
+    console.log(userId);
+    return (
+      users.find((user) => user.id === userId) ||
+      ({
+        id: "",
+        username: "Unknown User",
+      } as User)
+    );
+  };
+
   useEffect(() => {
     if (!isValidResult(seasonId, teamId)) {
       setResultsNotFound(true);
@@ -128,6 +153,7 @@ const ResultsPage: React.FC = () => {
     fetchTeam();
     fetchTeams();
     fetchResults();
+    fetchUsers();
     setLoading(false);
   }, [seasonId, teamId, resultsNotFound]);
 
@@ -262,14 +288,14 @@ const ResultsPage: React.FC = () => {
               user &&
               (user.role === "moderator" ||
                 user.role === "admin" ||
-                season.userUUID === user.id) ? (
+                result.userUUID === user.id) ? (
                 <EditOutlined
                   key="edit"
                   onClick={() => openEditModal(result)}
                 />
               ) : null,
 
-              user && (user.role === "admin" || season.userUUID === user.id) ? (
+              user && (user.role === "admin" || result.userUUID === user.id) ? (
                 <DeleteOutlined
                   key="delete"
                   onClick={() => handleDelete(result.id)}
@@ -291,7 +317,7 @@ const ResultsPage: React.FC = () => {
                   </Typography.Text>
                   <br />
                   <Typography.Text type="secondary">
-                    {season.userUUID}
+                    {`By: ${getUserById(result.userUUID).username}`}
                   </Typography.Text>
                 </>
               }
