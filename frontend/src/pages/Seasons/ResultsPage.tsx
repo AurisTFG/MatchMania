@@ -5,7 +5,9 @@ import {
   updateResult,
   deleteResult,
 } from "../../api/results.ts";
-import { Result } from "../../types/index.ts";
+import { getSeason } from "../../api/seasons.ts";
+import { getTeam } from "../../api/teams.ts";
+import { Result, Team, Season } from "../../types/index.ts";
 import {
   Modal,
   Button,
@@ -20,14 +22,31 @@ import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { useParams } from "react-router-dom";
 import moment from "moment";
 
+const isValidResult = (
+  seasonId: string | undefined,
+  teamId: string | undefined
+) => {
+  return (
+    seasonId &&
+    !isNaN(Number(seasonId)) &&
+    Number(seasonId) > 0 &&
+    teamId &&
+    !isNaN(Number(teamId)) &&
+    Number(teamId) > 0
+  );
+};
+
 const ResultsPage: React.FC = () => {
   const { seasonId, teamId } = useParams<{
     seasonId: string;
     teamId: string;
   }>();
+  const [season, setSeason] = useState<Partial<Season>>({});
+  const [team, setTeam] = useState<Partial<Team>>({});
 
   const [results, setResults] = useState<Result[]>([]);
   const [loading, setLoading] = useState(false);
+  const [resultsNotFound, setResultsNotFound] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editingResult, setEditingResult] = useState<Partial<Result>>({});
@@ -40,23 +59,64 @@ const ResultsPage: React.FC = () => {
   });
 
   const fetchResults = async () => {
-    if (!seasonId || !teamId) return;
+    if (!seasonId || !teamId || resultsNotFound) return;
 
-    setLoading(true);
     try {
       const data = await getAllResults(parseInt(seasonId), parseInt(teamId));
       setResults(data);
     } catch (error) {
       message.error("Failed to fetch results.");
       console.error(error);
-    } finally {
-      setLoading(false);
+      setResultsNotFound(true);
+    }
+  };
+
+  const fetchSeason = async () => {
+    if (!seasonId) return;
+
+    try {
+      const data = await getSeason(parseInt(seasonId));
+
+      setSeason(data);
+    } catch (error) {
+      console.error(error);
+      setResultsNotFound(true);
+    }
+  };
+
+  const fetchTeam = async () => {
+    if (!teamId || !seasonId) return;
+
+    try {
+      const data = await getTeam(parseInt(seasonId), parseInt(teamId));
+
+      setTeam(data);
+    } catch (error) {
+      console.error(error);
+      setResultsNotFound(true);
     }
   };
 
   useEffect(() => {
+    if (!isValidResult(seasonId, teamId)) {
+      setResultsNotFound(true);
+      return;
+    }
+
+    setLoading(true);
+    fetchSeason();
+    fetchTeam();
     fetchResults();
-  }, [seasonId, teamId]);
+    setLoading(false);
+  }, [seasonId, teamId, resultsNotFound]);
+
+  if (resultsNotFound) {
+    return (
+      <div style={{ padding: 20 }}>
+        <Typography.Title level={4}>Results not found</Typography.Title>
+      </div>
+    );
+  }
 
   const openEditModal = (result: Result) => {
     setIsEditing(true);
@@ -150,7 +210,7 @@ const ResultsPage: React.FC = () => {
         }}
       >
         <Typography.Title level={4}>
-          Results for Team {teamId} in Season {seasonId}
+          Results for Team "{team.name}" in Season "{season.name}"
         </Typography.Title>
         <Button
           type="primary"

@@ -5,20 +5,23 @@ import {
   updateTeam,
   deleteTeam,
 } from "../../api/teams.ts";
-import { Team } from "../../types/index.ts";
+import { getSeason } from "../../api/seasons.ts";
+import { Team, Season } from "../../types/index.ts";
 import { Modal, Button, Input, List, Space, Typography, message } from "antd";
 import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { useParams, Link } from "react-router-dom";
 
-const isValidSeasonId = (seasonId: string | undefined) => {
+const isValidTeam = (seasonId: string | undefined) => {
   return seasonId && !isNaN(Number(seasonId)) && Number(seasonId) > 0;
 };
 
 const TeamsPage: React.FC = () => {
   const { seasonId } = useParams<{ seasonId: string }>();
+  const [season, setSeason] = useState<Partial<Season>>({});
+
   const [teams, setTeams] = useState<Team[]>([]);
   const [loading, setLoading] = useState(false);
-  const [seasonNotFound, setSeasonNotFound] = useState(false);
+  const [teamsNotFound, setTeamsNotFound] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editingTeam, setEditingTeam] = useState<Partial<Team>>({});
@@ -27,38 +30,49 @@ const TeamsPage: React.FC = () => {
   });
 
   const fetchTeams = async () => {
-    if (!seasonId || seasonNotFound) return;
+    if (!seasonId || teamsNotFound) return;
 
     setLoading(true);
     try {
       const data = await getAllTeams(parseInt(seasonId));
-      if (data.length === 0) {
-        setSeasonNotFound(true);
-      } else {
-        setTeams(data);
-      }
+
+      setTeams(data);
     } catch (error) {
       message.error("Failed to fetch teams.");
       console.error(error);
-      setSeasonNotFound(true);
+      setTeamsNotFound(true);
     } finally {
       setLoading(false);
     }
   };
 
+  const fetchSeason = async () => {
+    if (!seasonId) return;
+
+    try {
+      const data = await getSeason(parseInt(seasonId));
+
+      setSeason(data);
+    } catch (error) {
+      console.error(error);
+      setTeamsNotFound(true);
+    }
+  };
+
   useEffect(() => {
-    if (!isValidSeasonId(seasonId)) {
-      setSeasonNotFound(true);
+    if (!isValidTeam(seasonId)) {
+      setTeamsNotFound(true);
       return;
     }
 
+    fetchSeason();
     fetchTeams();
-  }, [seasonId, seasonNotFound]);
+  }, [seasonId, teamsNotFound]);
 
-  if (seasonNotFound) {
+  if (teamsNotFound) {
     return (
       <div style={{ padding: 20 }}>
-        <Typography.Title level={4}>Season not found</Typography.Title>
+        <Typography.Title level={4}>Teams not found</Typography.Title>
       </div>
     );
   }
@@ -121,7 +135,7 @@ const TeamsPage: React.FC = () => {
         }}
       >
         <Typography.Title level={4}>
-          Teams for Season {seasonId}
+          Teams for Season "{season.name}"
         </Typography.Title>
         <Button
           type="primary"
