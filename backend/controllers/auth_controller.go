@@ -107,8 +107,7 @@ func (c *AuthController) AuthLogIn(ctx *gin.Context) {
 		return
 	}
 
-	ctx.SetSameSite(http.SameSiteLaxMode)
-	ctx.SetCookie("RefreshToken", refreshToken, int(c.env.JWTRefreshTokenDuration.Seconds()), "/", "", false, true)
+	c.SetCookie(ctx, refreshToken)
 
 	r.OK(ctx, r.AuthLoginResponse{AccessToken: accessToken})
 }
@@ -143,8 +142,7 @@ func (c *AuthController) AuthLogOut(ctx *gin.Context) {
 		return
 	}
 
-	ctx.SetSameSite(http.SameSiteLaxMode)
-	ctx.SetCookie("RefreshToken", "", -1, "/", "", false, true)
+	c.SetCookie(ctx, "refreshToken")
 
 	r.Deleted(ctx)
 }
@@ -191,8 +189,24 @@ func (c *AuthController) AuthRefreshToken(ctx *gin.Context) {
 		return
 	}
 
-	ctx.SetSameSite(http.SameSiteLaxMode)
-	ctx.SetCookie("RefreshToken", refreshToken, int(c.env.JWTRefreshTokenDuration.Seconds()), "/", "", false, true)
+	c.SetCookie(ctx, refreshToken)
 
 	r.OK(ctx, r.AuthRefreshTokenResponse{AccessToken: accessToken})
+}
+
+func (c *AuthController) SetCookie(ctx *gin.Context, refreshToken string) {
+	ctx.SetSameSite(http.SameSiteLaxMode)
+
+	name := "RefreshToken"
+	value := refreshToken
+	maxAge := -1
+	if refreshToken != "" {
+		maxAge = int(c.env.JWTRefreshTokenDuration.Seconds())
+	}
+	path := "/"
+	domain := "localhost"
+	secure := !c.env.IsDev
+	httpOnly := true
+
+	ctx.SetCookie(name, value, maxAge, path, domain, secure, httpOnly)
 }

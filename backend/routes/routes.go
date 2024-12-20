@@ -21,8 +21,6 @@ func ApplyRoutes(
 	{
 		auth := v1.Group("/auth")
 		{
-			auth.GET("/seasons", c.SeasonController.GetAllSeasons)
-
 			auth.POST("/signup", c.AuthController.AuthSignUp)
 			auth.POST("/login", c.AuthController.AuthLogIn)
 			auth.POST("/logout", c.AuthController.AuthLogOut)
