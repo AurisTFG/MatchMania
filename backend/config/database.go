@@ -73,9 +73,9 @@ func SeedDatabase(db *DB, env *Env) error {
 	}
 
 	users := []models.User{
-		{UUID: uuid.New(), Username: "AdminXD", Email: env.AdminEmail, Password: env.AdminPassword, Role: models.AdminRole},
-		{UUID: uuid.New(), Username: "ModeratorXDD", Email: env.ModeratorEmail, Password: env.ModeratorPassword, Role: models.ModeratorRole},
-		{UUID: uuid.New(), Username: "UserXDDD", Email: env.UserEmail, Password: env.UserPassword, Role: models.UserRole},
+		{UUID: uuid.New(), Username: "AdminNickname", Email: env.AdminEmail, Password: env.AdminPassword, Role: models.AdminRole},
+		{UUID: uuid.New(), Username: "ModeratorNickname", Email: env.ModeratorEmail, Password: env.ModeratorPassword, Role: models.ModeratorRole},
+		{UUID: uuid.New(), Username: "UserNickname", Email: env.UserEmail, Password: env.UserPassword, Role: models.UserRole},
 	}
 
 	seasons := []models.Season{

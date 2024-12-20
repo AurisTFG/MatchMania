@@ -8,7 +8,7 @@ import {
 import { Team } from "../../types/index.ts";
 import { Modal, Button, Input, List, Space, Typography, message } from "antd";
 import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 
 const isValidSeasonId = (seasonId: string | undefined) => {
   return seasonId && !isNaN(Number(seasonId)) && Number(seasonId) > 0;
@@ -147,7 +147,13 @@ const TeamsPage: React.FC = () => {
               />,
             ]}
           >
-            <List.Item.Meta title={team.name} />
+            <List.Item.Meta
+              title={
+                <Link to={`/seasons/${seasonId}/teams/${team.id}/results`}>
+                  {team.name}
+                </Link>
+              }
+            />
           </List.Item>
         )}
       />

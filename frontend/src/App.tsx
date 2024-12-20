@@ -13,6 +13,8 @@ import Signup from "./pages/Auth/Signup";
 import Profile from "./pages/Profile/Profile.tsx";
 import SeasonsPage from "./pages/Seasons/SeasonsPage.tsx";
 import TeamsPage from "./pages/Seasons/TeamsPage.tsx";
+import ResultsPage from "./pages/Seasons/ResultsPage.tsx";
+
 import "./styles/theme.ts";
 import "./App.css";
 
@@ -64,6 +66,10 @@ function App() {
             <Route
               path="/seasons/:seasonId/teams"
               element={!user ? <GuestHomePage /> : <TeamsPage />}
+            />
+            <Route
+              path="/seasons/:seasonId/teams/:teamId/results"
+              element={!user ? <GuestHomePage /> : <ResultsPage />}
             />
 
             <Route path="*" element={<NotFound />} />
