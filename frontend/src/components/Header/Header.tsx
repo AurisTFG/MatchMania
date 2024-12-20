@@ -14,12 +14,15 @@ import { useNavigate } from "react-router-dom";
 import { logout } from "../../api/auth";
 import { useMediaQuery } from "@mui/material";
 import Drawer from "@mui/material/Drawer";
+import { useLocation } from "react-router-dom";
 
 export default function Header() {
   const { user, setUser } = UseAuth();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const isActive = (path: string) => location.pathname === path;
 
   const handleLogout = () => {
     console.log("Logging out...");
@@ -44,7 +47,12 @@ export default function Header() {
   const isMobile = useMediaQuery("(max-width: 768px)");
 
   return (
-    <AppBar position="static">
+    <AppBar
+      position="static"
+      sx={{
+        background: "linear-gradient(to right,rgb(64, 112, 145), #9b59b6)",
+      }}
+    >
       <Toolbar>
         {isMobile && (
           <IconButton
@@ -59,23 +67,42 @@ export default function Header() {
           </IconButton>
         )}
 
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+        <Typography
+          variant="h6"
+          component="div"
+          sx={{ flexGrow: 1, display: "flex", alignItems: "center" }}
+        >
+          <img
+            src="/car_icon.svg"
+            alt="Logo"
+            style={{ height: "40px", marginRight: "8px" }}
+          />
           MatchMania
         </Typography>
 
         {!isMobile && (
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+          <Box
+            sx={{ flexGrow: 1, mr: 10, display: { xs: "none", md: "flex" } }}
+          >
             <Button
-              color="inherit"
               onClick={() => navigate("/")}
-              sx={{ mr: 1 }}
+              color="inherit"
+              sx={{
+                mr: 1,
+                textDecoration: isActive("/") ? "underline" : "none",
+                fontSize: "1.20rem",
+              }}
             >
               Home
             </Button>
             <Button
-              color="inherit"
               onClick={() => navigate("/seasons")}
-              sx={{ mr: 1 }}
+              color="inherit"
+              sx={{
+                mr: 1,
+                textDecoration: isActive("/seasons") ? "underline" : "none",
+                fontSize: "1.20rem",
+              }}
             >
               Seasons
             </Button>

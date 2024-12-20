@@ -4,10 +4,12 @@
   color: white;
   padding: 15px 0;
   text-align: center;
+
+  box-shadow: 0px -10px 6px rgba(0, 0, 0, 0.2);
 }
 
 .footer-text {
-  font-size: 16px;
+  font-size: 14px;
   padding-bottom: 10px;
 }
 
@@ -18,5 +20,5 @@
   transition: transform 0.3s;
 }
 .social-icons a:hover {
-  transform: scale(1.2);
+  transform: scale(1.4);
 }

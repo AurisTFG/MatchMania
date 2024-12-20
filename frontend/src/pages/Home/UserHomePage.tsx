@@ -5,7 +5,19 @@ const UserHomePage = () => {
   const { user } = UseAuth();
 
   return (
-    <Box sx={{ textAlign: "center" }}>
+    <Box
+      sx={{
+        textAlign: "center",
+        height: "83.5vh",
+        backgroundImage: 'url("https://i.imgur.com/2k81qri.jpeg")',
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
       <Typography
         variant="h3"
         gutterBottom
@@ -13,7 +25,9 @@ const UserHomePage = () => {
           wordWrap: "break-word",
           overflowWrap: "break-word",
           width: "100%",
-          marginTop: "35vh",
+          color: "#9b59b6",
+          fontSize: "6rem",
+          textShadow: "4px 4px 4px rgba(0, 0, 0, 0.8)",
         }}
       >
         Welcome to MatchMania,
