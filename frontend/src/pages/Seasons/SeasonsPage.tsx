@@ -17,6 +17,7 @@ import {
   message,
 } from "antd";
 import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
+import moment from "moment";
 
 const SeasonsPage: React.FC = () => {
   const [seasons, setSeasons] = useState<Season[]>([]);
@@ -26,8 +27,8 @@ const SeasonsPage: React.FC = () => {
   const [editingSeason, setEditingSeason] = useState<Partial<Season>>({});
   const [formData, setFormData] = useState({
     name: "",
-    startDate: new Date(Date.now()),
-    endDate: new Date(Date.now()),
+    startDate: moment(),
+    endDate: moment(),
   });
 
   const fetchSeasons = async () => {
@@ -50,11 +51,19 @@ const SeasonsPage: React.FC = () => {
   const handleCreateOrEdit = async () => {
     try {
       if (isEditing && editingSeason.id) {
-        await updateSeason(editingSeason.id, formData);
+        await updateSeason(editingSeason.id, {
+          ...formData,
+          startDate: formData.startDate.toDate(),
+          endDate: formData.endDate.toDate(),
+        });
 
         message.success("Season updated successfully.");
       } else {
-        await createSeason(formData);
+        await createSeason({
+          ...formData,
+          startDate: formData.startDate.toDate(),
+          endDate: formData.endDate.toDate(),
+        });
 
         message.success("Season created successfully.");
       }
@@ -82,8 +91,8 @@ const SeasonsPage: React.FC = () => {
     setEditingSeason(season);
     setFormData({
       name: season.name,
-      startDate: season.startDate,
-      endDate: season.endDate,
+      startDate: moment(season.startDate),
+      endDate: moment(season.endDate),
     });
     setIsModalOpen(true);
   };
@@ -93,8 +102,8 @@ const SeasonsPage: React.FC = () => {
     setEditingSeason({});
     setFormData({
       name: "",
-      startDate: new Date(Date.now()),
-      endDate: new Date(Date.now()),
+      startDate: moment(),
+      endDate: moment(),
     });
     setIsModalOpen(true);
   };
@@ -104,8 +113,8 @@ const SeasonsPage: React.FC = () => {
     setEditingSeason({});
     setFormData({
       name: "",
-      startDate: new Date(Date.now()),
-      endDate: new Date(Date.now()),
+      startDate: moment(),
+      endDate: moment(),
     });
   };
 
@@ -166,9 +175,14 @@ const SeasonsPage: React.FC = () => {
         <DatePicker
           placeholder="Start Date"
           value={formData.startDate}
+          onChange={(date) => setFormData({ ...formData, startDate: date })}
           style={{ marginBottom: 8 }}
         />
-        <DatePicker placeholder="End Date" value={formData.endDate} />
+        <DatePicker
+          placeholder="End Date"
+          value={formData.endDate}
+          onChange={(date) => setFormData({ ...formData, endDate: date })}
+        />
       </Modal>
     </div>
   );
