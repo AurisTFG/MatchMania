@@ -13,6 +13,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../api/auth";
 import { useMediaQuery } from "@mui/material";
+import Drawer from "@mui/material/Drawer";
 
 export default function Header() {
   const { user, setUser } = UseAuth();
@@ -62,7 +63,7 @@ export default function Header() {
           MatchMania
         </Typography>
 
-        {!isMobile && user && (
+        {!isMobile && (
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             <Button
               color="inherit"
@@ -114,17 +115,23 @@ export default function Header() {
           </div>
         )}
 
-        {isMobile && mobileMenuOpen && (
-          <Box
-            sx={{
-              position: "absolute",
-              top: "64px",
-              right: 0,
-              backgroundColor: "white",
-              boxShadow: 3,
-              zIndex: 1300,
-            }}
-          >
+        {/* Mobile Menu Drawer */}
+        <Drawer
+          anchor="left"
+          open={mobileMenuOpen}
+          onClose={() => setMobileMenuOpen(false)}
+          sx={{
+            "& .MuiDrawer-paper": {
+              width: "250px",
+              height: "100vh",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              padding: "20px",
+            },
+          }}
+        >
+          <Box sx={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             <Button
               color="inherit"
               onClick={() => {
@@ -143,14 +150,8 @@ export default function Header() {
             >
               Seasons
             </Button>
-            <Button color="inherit" onClick={handleLogout}>
-              Logout
-            </Button>
-            <Button color="inherit" onClick={handleProfile}>
-              Profile
-            </Button>
           </Box>
-        )}
+        </Drawer>
       </Toolbar>
     </AppBar>
   );
