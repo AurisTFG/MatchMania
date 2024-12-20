@@ -45,7 +45,7 @@ Swagger documentation for the API can be accessed at:
 [https://matchmania-api-ripky.ondigitalocean.app/swagger/index.html#/](https://matchmania-api-ripky.ondigitalocean.app/swagger/index.html#/)
 
 Additionally, the OpenAPI specification is available at:  
-[backend/docs/swagger.yaml](backend/docs/swagger.yaml)
+[backend/docs/swagger.yaml](../backend/docs/swagger.yaml)
 
 ## How to Run
 
@@ -75,35 +75,19 @@ The **Makefile** makes the setup and running process easier, automating most tas
 
 ### Home Page
 
-![Home Page Wireframe](./)  
-_Screenshot of the homepage with navigation and key features._
+![Home Page Wireframe](./homewire.jpg)  
+_Wireframe for the homepage with navigation and key features._
 
-![Home Page Screenshot](./)  
+![Home Page Screenshot](./homereal.jpg)  
 _Actual screenshot of the homepage UI._
 
-### Seasons Page
+### Models Page
 
-![Seasons Page Wireframe](./)  
-_Wireframe for the seasons page, showing available seasons and stats._
+![Seasons Page Wireframe](./listwire.jpg)  
+_Wireframe for the seasons or teams or results page, showing available items and information about them._
 
-![Seasons Page Screenshot](./)  
-_Actual screenshot of the seasons page with season details._
-
-### Teams Page
-
-![Teams Page Wireframe](./)  
-_Wireframe showing the teams listing and team creation features._
-
-![Teams Page Screenshot](./)  
-_Actual screenshot of the teams page displaying team names and stats._
-
-### Results Page
-
-![Results Page Wireframe](./)  
-_Wireframe showing how results are displayed after matches._
-
-![Results Page Screenshot](./)  
-_Screenshot showing the result submission and leaderboard view._
+![Seasons Page Screenshot](./listreal.jpg)  
+_Actual screenshot of the teams page with teams details._
 
 ## Conclusions
 
