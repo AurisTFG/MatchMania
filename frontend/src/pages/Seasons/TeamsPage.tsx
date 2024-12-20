@@ -207,6 +207,10 @@ const TeamsPage: React.FC = () => {
               description={
                 <>
                   <Typography.Text type="secondary">
+                    {`Elo: ${team.elo}`}
+                  </Typography.Text>
+                  <br />
+                  <Typography.Text type="secondary">
                     {`By: ${getUserById(team.userUUID).username}`}
                   </Typography.Text>
                 </>
