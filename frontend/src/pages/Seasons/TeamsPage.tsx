@@ -10,6 +10,7 @@ import { Team, Season } from "../../types/index.ts";
 import { Modal, Button, Input, List, Space, Typography, message } from "antd";
 import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { useParams, Link } from "react-router-dom";
+import { UseAuth } from "../../components/Auth/AuthContext";
 
 const isValidTeam = (seasonId: string | undefined) => {
   return seasonId && !isNaN(Number(seasonId)) && Number(seasonId) > 0;
@@ -28,6 +29,7 @@ const TeamsPage: React.FC = () => {
   const [formData, setFormData] = useState({
     name: "",
   });
+  const { user } = UseAuth();
 
   const fetchTeams = async () => {
     if (!seasonId || teamsNotFound) return;
@@ -118,7 +120,6 @@ const TeamsPage: React.FC = () => {
     }
   };
 
-  // Close the modal
   const closeModal = () => {
     setIsModalOpen(false);
     setFormData({ name: "" });
@@ -126,7 +127,7 @@ const TeamsPage: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: 20 }}>
+    <div style={{ padding: 20, width: "50%", margin: "auto" }}>
       <Space
         style={{
           marginBottom: 16,
@@ -141,8 +142,13 @@ const TeamsPage: React.FC = () => {
           type="primary"
           icon={<PlusOutlined />}
           onClick={() => openModal()}
+          disabled={user === null}
+          style={{
+            filter: user === null ? "blur(1px)" : "none",
+            cursor: user === null ? "not-allowed" : "pointer",
+          }}
         >
-          Create Team
+          Create Season
         </Button>
       </Space>
 
@@ -153,12 +159,20 @@ const TeamsPage: React.FC = () => {
         renderItem={(team) => (
           <List.Item
             actions={[
-              <EditOutlined key="edit" onClick={() => openModal(team)} />,
-              <DeleteOutlined
-                key="delete"
-                onClick={() => handleDelete(team.id)}
-                style={{ color: "red" }}
-              />,
+              user &&
+              (user.role === "moderator" ||
+                user.role === "admin" ||
+                season.userUUID === user.id) ? (
+                <EditOutlined key="edit" onClick={() => openModal(team)} />
+              ) : null,
+
+              user && (user.role === "admin" || season.userUUID === user.id) ? (
+                <DeleteOutlined
+                  key="delete"
+                  onClick={() => handleDelete(team.id)}
+                  style={{ color: "red" }}
+                />
+              ) : null,
             ]}
           >
             <List.Item.Meta
@@ -166,6 +180,13 @@ const TeamsPage: React.FC = () => {
                 <Link to={`/seasons/${seasonId}/teams/${team.id}/results`}>
                   {team.name}
                 </Link>
+              }
+              description={
+                <>
+                  <Typography.Text type="secondary">
+                    {season.userUUID}
+                  </Typography.Text>
+                </>
               }
             />
           </List.Item>

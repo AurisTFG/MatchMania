@@ -6,8 +6,7 @@ import Header from "./components/Header/Header.tsx";
 import Content from "./components/Content/Content.tsx";
 import Footer from "./components/Footer/Footer.tsx";
 import NotFound from "./pages/NotFound/NotFound";
-import GuestHomePage from "./pages/Home/GuestHomePage.tsx";
-import UserHomePage from "./pages/Home/UserHomePage.tsx";
+import HomePage from "./pages/Home/HomePage.tsx";
 import Login from "./pages/Auth/Login";
 import Signup from "./pages/Auth/Signup";
 import Profile from "./pages/Profile/Profile.tsx";
@@ -20,12 +19,12 @@ import "./App.css";
 
 const theme = createTheme({
   typography: {
-    fontFamily: "'Lato'", // Replace with your desired font(s)
+    fontFamily: "'Lato'",
   },
 });
 
 function App() {
-  const { user, setUser } = UseAuth();
+  const { setUser } = UseAuth();
 
   useEffect(() => {
     const initializeAuth = async () => {
@@ -51,33 +50,15 @@ function App() {
           <Header />
           <Content>
             <Routes>
-              <Route
-                path="/"
-                element={user ? <UserHomePage /> : <GuestHomePage />}
-              />
-              <Route
-                path="/login"
-                element={user ? <UserHomePage /> : <Login />}
-              />
-              <Route
-                path="/signup"
-                element={user ? <UserHomePage /> : <Signup />}
-              />
-              <Route
-                path="/profile"
-                element={!user ? <GuestHomePage /> : <Profile />}
-              />
-              <Route
-                path="/seasons"
-                element={!user ? <GuestHomePage /> : <SeasonsPage />}
-              />
-              <Route
-                path="/seasons/:seasonId/teams"
-                element={!user ? <GuestHomePage /> : <TeamsPage />}
-              />
+              <Route path="/" element={<HomePage />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/seasons" element={<SeasonsPage />} />
+              <Route path="/seasons/:seasonId/teams" element={<TeamsPage />} />
               <Route
                 path="/seasons/:seasonId/teams/:teamId/results"
-                element={!user ? <GuestHomePage /> : <ResultsPage />}
+                element={<ResultsPage />}
               />
 
               <Route path="*" element={<NotFound />} />

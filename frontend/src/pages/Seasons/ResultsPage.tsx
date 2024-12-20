@@ -22,6 +22,7 @@ import {
 import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { useParams } from "react-router-dom";
 import moment from "moment";
+import { UseAuth } from "../../components/Auth/AuthContext";
 
 const { Option } = Select;
 
@@ -61,6 +62,7 @@ const ResultsPage: React.FC = () => {
     opponentScore: "",
     opponentTeamId: 0,
   });
+  const { user } = UseAuth();
 
   const fetchResults = async () => {
     if (!seasonId || !teamId || resultsNotFound) return;
@@ -225,7 +227,7 @@ const ResultsPage: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: 20 }}>
+    <div style={{ padding: 20, width: "50%", margin: "auto" }}>
       <Space
         style={{
           marginBottom: 16,
@@ -240,6 +242,11 @@ const ResultsPage: React.FC = () => {
           type="primary"
           icon={<PlusOutlined />}
           onClick={openCreateModal}
+          disabled={user === null}
+          style={{
+            filter: user === null ? "blur(1px)" : "none",
+            cursor: user === null ? "not-allowed" : "pointer",
+          }}
         >
           Create Result
         </Button>
@@ -252,12 +259,23 @@ const ResultsPage: React.FC = () => {
         renderItem={(result) => (
           <List.Item
             actions={[
-              <EditOutlined key="edit" onClick={() => openEditModal(result)} />,
-              <DeleteOutlined
-                key="delete"
-                onClick={() => handleDelete(result.id)}
-                style={{ color: "red" }}
-              />,
+              user &&
+              (user.role === "moderator" ||
+                user.role === "admin" ||
+                season.userUUID === user.id) ? (
+                <EditOutlined
+                  key="edit"
+                  onClick={() => openEditModal(result)}
+                />
+              ) : null,
+
+              user && (user.role === "admin" || season.userUUID === user.id) ? (
+                <DeleteOutlined
+                  key="delete"
+                  onClick={() => handleDelete(result.id)}
+                  style={{ color: "red" }}
+                />
+              ) : null,
             ]}
           >
             <List.Item.Meta
@@ -270,6 +288,10 @@ const ResultsPage: React.FC = () => {
                   <br />
                   <Typography.Text type="secondary">
                     {new Date(result.matchStartDate).toLocaleDateString()}
+                  </Typography.Text>
+                  <br />
+                  <Typography.Text type="secondary">
+                    {season.userUUID}
                   </Typography.Text>
                 </>
               }

@@ -19,6 +19,7 @@ import {
 import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { Link } from "react-router-dom";
+import { UseAuth } from "../../components/Auth/AuthContext";
 
 const SeasonsPage: React.FC = () => {
   const [seasons, setSeasons] = useState<Season[]>([]);
@@ -31,23 +32,25 @@ const SeasonsPage: React.FC = () => {
     startDate: moment(),
     endDate: moment(),
   });
+  const { user } = UseAuth();
 
   const fetchSeasons = async () => {
-    setLoading(true);
     try {
       const data = await getAllSeasons();
       setSeasons(data);
     } catch (error) {
       message.error("Failed to fetch seasons.");
       console.error(error);
-    } finally {
-      setLoading(false);
     }
   };
 
   useEffect(() => {
+    setLoading(true);
     fetchSeasons();
-  }, []);
+    setLoading(false);
+
+    console.log(user);
+  }, [user]);
 
   const handleCreateOrEdit = async () => {
     try {
@@ -120,7 +123,7 @@ const SeasonsPage: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: 20 }}>
+    <div style={{ padding: 20, width: "50%", margin: "auto" }}>
       <Space
         style={{
           marginBottom: 16,
@@ -133,6 +136,11 @@ const SeasonsPage: React.FC = () => {
           type="primary"
           icon={<PlusOutlined />}
           onClick={openCreateModal}
+          disabled={user === null}
+          style={{
+            filter: user === null ? "blur(1px)" : "none",
+            cursor: user === null ? "not-allowed" : "pointer",
+          }}
         >
           Create Season
         </Button>
@@ -145,19 +153,40 @@ const SeasonsPage: React.FC = () => {
         renderItem={(season) => (
           <List.Item
             actions={[
-              <EditOutlined key="edit" onClick={() => openEditModal(season)} />,
-              <DeleteOutlined
-                key="delete"
-                onClick={() => handleDelete(season.id)}
-                style={{ color: "red" }}
-              />,
+              user &&
+              (user.role === "moderator" ||
+                user.role === "admin" ||
+                season.userUUID === user.id) ? (
+                <EditOutlined
+                  key="edit"
+                  onClick={() => openEditModal(season)}
+                />
+              ) : null,
+
+              user && (user.role === "admin" || season.userUUID === user.id) ? (
+                <DeleteOutlined
+                  key="delete"
+                  onClick={() => handleDelete(season.id)}
+                  style={{ color: "red" }}
+                />
+              ) : null,
             ]}
           >
             <List.Item.Meta
               title={
                 <Link to={`/seasons/${season.id}/teams`}>{season.name}</Link>
               }
-              description={`${season.startDate.toLocaleString().split("T")[0]} - ${season.endDate.toLocaleString().split("T")[0]}`}
+              description={
+                <>
+                  <Typography.Text>
+                    {`${season.startDate.toLocaleString().split("T")[0]} - ${season.endDate.toLocaleString().split("T")[0]}`}
+                  </Typography.Text>
+                  <br />
+                  <Typography.Text type="secondary">
+                    {season.userUUID}
+                  </Typography.Text>
+                </>
+              }
             />
           </List.Item>
         )}
