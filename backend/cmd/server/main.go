@@ -62,7 +62,7 @@ func init() {
 // @title MatchMania API
 // @version 1.0
 // @description This is the API server for the MatchMania application.
-// @host localhost:8080
+// @host https://matchmania-api-ripky.ondigitalocean.app
 // @BasePath /api/v1
 // @externalDocs.description  OpenAPI
 // @externalDocs.url          https://swagger.io/resources/open-api/

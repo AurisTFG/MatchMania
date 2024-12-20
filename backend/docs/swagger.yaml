@@ -224,9 +224,6 @@ definitions:
     type: object
   models.UserDto:
     properties:
-      email:
-        example: email@gmail.com
-        type: string
       id:
         example: 526432ea-822b-4b5b-b1b3-34e8ab453e03
         type: string
@@ -257,6 +254,12 @@ definitions:
     properties:
       error:
         example: JSON parsing error
+        type: string
+    type: object
+  responses.ForbiddenResponse:
+    properties:
+      error:
+        example: Forbidden
         type: string
     type: object
   responses.NotFoundResponse:
@@ -301,6 +304,12 @@ definitions:
           $ref: '#/definitions/models.TeamDto'
         type: array
     type: object
+  responses.UnauthorizedResponse:
+    properties:
+      error:
+        example: Unauthorized
+        type: string
+    type: object
   responses.UnprocessableEntityResponse:
     properties:
       error:
@@ -322,7 +331,7 @@ definitions:
 externalDocs:
   description: OpenAPI
   url: https://swagger.io/resources/open-api/
-host: localhost:8080
+host: https://matchmania-api-ripky.ondigitalocean.app
 info:
   contact: {}
   description: This is the API server for the MatchMania application.
@@ -454,6 +463,10 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/responses.BadRequestResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.UnauthorizedResponse'
         "422":
           description: Unprocessable Entity
           schema:
@@ -478,10 +491,26 @@ paths:
       responses:
         "204":
           description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.BadRequestResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.UnauthorizedResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/responses.ForbiddenResponse'
         "404":
           description: Not Found
           schema:
             $ref: '#/definitions/responses.NotFoundResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/responses.UnprocessableEntityResponse'
       summary: Delete a season
       tags:
       - seasons
@@ -503,6 +532,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/responses.SeasonResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.BadRequestResponse'
         "404":
           description: Not Found
           schema:
@@ -538,10 +571,22 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/responses.BadRequestResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.UnauthorizedResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/responses.ForbiddenResponse'
         "404":
           description: Not Found
           schema:
             $ref: '#/definitions/responses.NotFoundResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/responses.UnprocessableEntityResponse'
       summary: Update a season
       tags:
       - seasons
@@ -564,6 +609,14 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/responses.TeamsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.BadRequestResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/responses.UnprocessableEntityResponse'
       summary: Get all teams
       tags:
       - teams
@@ -595,6 +648,14 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/responses.BadRequestResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.UnauthorizedResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/responses.NotFoundResponse'
         "422":
           description: Unprocessable Entity
           schema:
@@ -625,10 +686,26 @@ paths:
       responses:
         "204":
           description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.BadRequestResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.UnauthorizedResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/responses.ForbiddenResponse'
         "404":
           description: Not Found
           schema:
             $ref: '#/definitions/responses.NotFoundResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/responses.UnprocessableEntityResponse'
       summary: Delete a team
       tags:
       - teams
@@ -656,6 +733,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/responses.TeamResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.BadRequestResponse'
         "404":
           description: Not Found
           schema:
@@ -697,10 +778,22 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/responses.BadRequestResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.UnauthorizedResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/responses.ForbiddenResponse'
         "404":
           description: Not Found
           schema:
             $ref: '#/definitions/responses.NotFoundResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/responses.UnprocessableEntityResponse'
       summary: Update a team
       tags:
       - teams
@@ -729,6 +822,14 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/responses.ResultsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.BadRequestResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/responses.UnprocessableEntityResponse'
       summary: Get all results
       tags:
       - results
@@ -766,6 +867,14 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/responses.BadRequestResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.UnauthorizedResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/responses.NotFoundResponse'
         "422":
           description: Unprocessable Entity
           schema:
@@ -802,10 +911,26 @@ paths:
       responses:
         "204":
           description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.BadRequestResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.UnauthorizedResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/responses.ForbiddenResponse'
         "404":
           description: Not Found
           schema:
             $ref: '#/definitions/responses.NotFoundResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/responses.UnprocessableEntityResponse'
       summary: Delete a result
       tags:
       - results
@@ -839,6 +964,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/responses.ResultResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.BadRequestResponse'
         "404":
           description: Not Found
           schema:
@@ -886,10 +1015,22 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/responses.BadRequestResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.UnauthorizedResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/responses.ForbiddenResponse'
         "404":
           description: Not Found
           schema:
             $ref: '#/definitions/responses.NotFoundResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/responses.UnprocessableEntityResponse'
       summary: Update a result
       tags:
       - results

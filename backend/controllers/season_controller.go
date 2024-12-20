@@ -41,6 +41,7 @@ func (c *SeasonController) GetAllSeasons(ctx *gin.Context) {
 // @Produce json
 // @Param seasonId path string true "Season ID" default(2)
 // @Success 200 {object} responses.SeasonResponse
+// @Failure 400 {object} responses.BadRequestResponse
 // @Failure 404 {object} responses.NotFoundResponse
 // @Router /seasons/{seasonId} [get]
 func (c *SeasonController) GetSeason(ctx *gin.Context) {
@@ -67,6 +68,7 @@ func (c *SeasonController) GetSeason(ctx *gin.Context) {
 // @Param season body models.CreateSeasonDto true "Season object that needs to be created"
 // @Success 201 {object} responses.SeasonResponse
 // @Failure 400 {object} responses.BadRequestResponse
+// @Failure 401 {object} responses.UnauthorizedResponse
 // @Failure 422 {object} responses.UnprocessableEntityResponse
 // @Router /seasons [post]
 func (c *SeasonController) CreateSeason(ctx *gin.Context) {
@@ -105,7 +107,10 @@ func (c *SeasonController) CreateSeason(ctx *gin.Context) {
 // @Param season body models.UpdateSeasonDto true "Season object that needs to be updated"
 // @Success 200 {object} responses.SeasonResponse
 // @Failure 400 {object} responses.BadRequestResponse
+// @Failure 401 {object} responses.UnauthorizedResponse
 // @Failure 404 {object} responses.NotFoundResponse
+// @Failure 403 {object} responses.ForbiddenResponse
+// @Failure 422 {object} responses.UnprocessableEntityResponse
 // @Router /seasons/{seasonId} [patch]
 func (c *SeasonController) UpdateSeason(ctx *gin.Context) {
 	seasonID, err := utils.GetParamUint(ctx, "seasonId")
@@ -158,7 +163,11 @@ func (c *SeasonController) UpdateSeason(ctx *gin.Context) {
 // @Produce json
 // @Param seasonId path string true "Season ID" default(1)
 // @Success 204
+// @Failure 400 {object} responses.BadRequestResponse
+// @Failure 401 {object} responses.UnauthorizedResponse
+// @Failure 403 {object} responses.ForbiddenResponse
 // @Failure 404 {object} responses.NotFoundResponse
+// @Failure 422 {object} responses.UnprocessableEntityResponse
 // @Router /seasons/{seasonId} [delete]
 func (c *SeasonController) DeleteSeason(ctx *gin.Context) {
 	seasonID, err := utils.GetParamUint(ctx, "seasonId")
