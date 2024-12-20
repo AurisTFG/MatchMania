@@ -31,7 +31,6 @@ func ApplyRoutes(
 		{
 			users.GET("", c.UserController.GetAllUsers)
 			users.GET(":userId", c.UserController.GetUserByID)
-			users.PATCH(":userId", c.AuthMiddleware.RequireAuth, c.UserController.UpdateUser)
 		}
 
 		seasons := v1.Group("/seasons")

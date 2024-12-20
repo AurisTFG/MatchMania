@@ -58,8 +58,6 @@ const SeasonsPage: React.FC = () => {
   };
 
   const getUserById = (userId: string): User => {
-    console.log(users);
-    console.log(userId);
     return (
       users.find((user) => user.id === userId) ||
       ({

@@ -142,7 +142,7 @@ func (c *SeasonController) UpdateSeason(ctx *gin.Context) {
 		return
 	}
 
-	if user.Role != models.AdminRole && user.UUID != currentSeason.UserUUID {
+	if user.Role != models.AdminRole && user.Role != models.ModeratorRole && user.UUID != currentSeason.UserUUID {
 		r.Forbidden(ctx, "This action is forbidden")
 		return
 	}

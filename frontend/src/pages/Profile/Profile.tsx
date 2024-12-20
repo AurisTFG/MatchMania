@@ -5,7 +5,6 @@ const Profile = () => {
   const { user } = UseAuth();
 
   const handleEditProfile = () => {
-    console.log(user);
     console.log("Editing profile...");
   };
 

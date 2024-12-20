@@ -219,7 +219,7 @@ func (c *ResultController) UpdateResult(ctx *gin.Context) {
 		return
 	}
 
-	if user.Role != models.AdminRole && user.UUID != currentResult.UserUUID {
+	if user.Role != models.AdminRole && user.Role != models.ModeratorRole && user.UUID != currentResult.UserUUID {
 		r.Forbidden(ctx, "This action is forbidden")
 		return
 	}

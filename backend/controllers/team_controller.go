@@ -181,7 +181,7 @@ func (c *TeamController) UpdateTeam(ctx *gin.Context) {
 		return
 	}
 
-	if user.Role != models.AdminRole && user.UUID != currentTeam.UserUUID {
+	if user.Role != models.AdminRole && user.Role != models.ModeratorRole && user.UUID != currentTeam.UserUUID {
 		r.Forbidden(ctx, "This action is forbidden")
 		return
 	}
