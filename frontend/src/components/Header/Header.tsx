@@ -12,15 +12,16 @@ import { UseAuth } from "../Auth/AuthContext";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../api/auth";
+import { useMediaQuery } from "@mui/material";
 
 export default function Header() {
   const { user, setUser } = UseAuth();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const handleLogout = () => {
     console.log("Logging out...");
-
     logout();
     setUser(null);
     navigate("/");
@@ -28,7 +29,6 @@ export default function Header() {
 
   const handleProfile = () => {
     console.log("Viewing profile...");
-
     navigate("/profile");
   };
 
@@ -40,40 +40,47 @@ export default function Header() {
     setAnchorEl(null);
   };
 
+  const isMobile = useMediaQuery("(max-width: 768px)");
+
   return (
     <AppBar position="static">
       <Toolbar>
-        <IconButton
-          size="large"
-          edge="start"
-          color="inherit"
-          aria-label="menu"
-          sx={{ mr: 2 }}
-        >
-          <MenuIcon />
-        </IconButton>
+        {isMobile && (
+          <IconButton
+            size="large"
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            sx={{ mr: 2 }}
+            onClick={() => setMobileMenuOpen(true)}
+          >
+            <MenuIcon />
+          </IconButton>
+        )}
+
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            {user && (
-              <Button
-                color="inherit"
-                onClick={() => navigate("/")}
-                sx={{ mr: 1 }}
-              >
-                Home
-              </Button>
-            )}
-            {user && (
-              <Button
-                color="inherit"
-                onClick={() => navigate("/seasons")}
-                sx={{ mr: 1 }}
-              >
-                Seasons
-              </Button>
-            )}
-          </Box>
+          MatchMania
         </Typography>
+
+        {!isMobile && user && (
+          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+            <Button
+              color="inherit"
+              onClick={() => navigate("/")}
+              sx={{ mr: 1 }}
+            >
+              Home
+            </Button>
+            <Button
+              color="inherit"
+              onClick={() => navigate("/seasons")}
+              sx={{ mr: 1 }}
+            >
+              Seasons
+            </Button>
+          </Box>
+        )}
+
         {user && (
           <div>
             <IconButton
@@ -105,6 +112,44 @@ export default function Header() {
               <MenuItem onClick={handleLogout}>Logout</MenuItem>
             </Menu>
           </div>
+        )}
+
+        {isMobile && mobileMenuOpen && (
+          <Box
+            sx={{
+              position: "absolute",
+              top: "64px",
+              right: 0,
+              backgroundColor: "white",
+              boxShadow: 3,
+              zIndex: 1300,
+            }}
+          >
+            <Button
+              color="inherit"
+              onClick={() => {
+                navigate("/");
+                setMobileMenuOpen(false);
+              }}
+            >
+              Home
+            </Button>
+            <Button
+              color="inherit"
+              onClick={() => {
+                navigate("/seasons");
+                setMobileMenuOpen(false);
+              }}
+            >
+              Seasons
+            </Button>
+            <Button color="inherit" onClick={handleLogout}>
+              Logout
+            </Button>
+            <Button color="inherit" onClick={handleProfile}>
+              Profile
+            </Button>
+          </Box>
         )}
       </Toolbar>
     </AppBar>
