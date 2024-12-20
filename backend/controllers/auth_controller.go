@@ -195,7 +195,11 @@ func (c *AuthController) AuthRefreshToken(ctx *gin.Context) {
 }
 
 func (c *AuthController) SetCookie(ctx *gin.Context, refreshToken string) {
-	ctx.SetSameSite(http.SameSiteLaxMode)
+	if c.env.IsDev {
+		ctx.SetSameSite(http.SameSiteLaxMode)
+	} else {
+		ctx.SetSameSite(http.SameSiteNoneMode)
+	}
 
 	name := "RefreshToken"
 	value := refreshToken
