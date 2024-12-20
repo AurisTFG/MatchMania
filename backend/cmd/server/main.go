@@ -52,10 +52,10 @@ func init() {
 	fmt.Println("Successfully synced database")
 
 	fmt.Print("(5/6) ")
-	err = config.SeedDatabase(db, env)
-	if err != nil {
-		log.Fatalf("Failed to seed database: %v", err)
-	}
+	// err = config.SeedDatabase(db, env)
+	// if err != nil {
+	// 	log.Fatalf("Failed to seed database: %v", err)
+	// }
 	fmt.Println("Successfully seeded database")
 }
 
