@@ -11,8 +11,7 @@ import UserHomePage from "./pages/Home/UserHomePage.tsx";
 import Login from "./pages/Auth/Login";
 import Signup from "./pages/Auth/Signup";
 import Profile from "./pages/Profile/Profile.tsx";
-// import SeasonList from "./pages/Seasons/SeasonList";
-// import SeasonDetail from "./pages/Seasons/SeasonDetail";
+import SeasonsPage from "./pages/Seasons/SeasonsPage.tsx";
 import "./styles/theme.ts";
 import "./App.css";
 
@@ -57,6 +56,11 @@ function App() {
               path="/profile"
               element={!user ? <GuestHomePage /> : <Profile />}
             />
+            <Route
+              path="/seasons"
+              element={!user ? <GuestHomePage /> : <SeasonsPage />}
+            />
+
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Content>

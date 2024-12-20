@@ -1,10 +1,11 @@
 import { Button, Typography, Box } from "@mui/material";
 import { Link } from "react-router-dom";
+import "../../styles/fonts.css";
 
 const GuestHomePage = () => {
   return (
     <Box sx={{ textAlign: "center", mt: 1, mb: 1 }}>
-      <Typography variant="h3" gutterBottom>
+      <Typography variant="h3" gutterBottom fontFamily={"Roboto Condensed"}>
         Welcome to MatchMania!
       </Typography>
       <Typography variant="h6" gutterBottom>
