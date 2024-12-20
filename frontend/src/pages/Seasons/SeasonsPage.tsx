@@ -5,7 +5,7 @@ import {
   updateSeason,
   deleteSeason,
 } from "../../api/seasons.ts";
-import { Season } from "../../types";
+import { Season } from "../../types/index.ts";
 import {
   Modal,
   Button,
@@ -18,6 +18,7 @@ import {
 } from "antd";
 import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import moment from "moment";
+import { Link } from "react-router-dom";
 
 const SeasonsPage: React.FC = () => {
   const [seasons, setSeasons] = useState<Season[]>([]);
@@ -153,8 +154,10 @@ const SeasonsPage: React.FC = () => {
             ]}
           >
             <List.Item.Meta
-              title={season.name}
-              description={`Start: ${season.startDate} | End: ${season.endDate}`}
+              title={
+                <Link to={`/seasons/${season.id}/teams`}>{season.name}</Link>
+              }
+              description={`${season.startDate.toLocaleString().split("T")[0]} - ${season.endDate.toLocaleString().split("T")[0]}`}
             />
           </List.Item>
         )}
