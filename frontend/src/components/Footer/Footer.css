@@ -1,7 +1,22 @@
 .footer {
   margin-top: auto;
-  background-color: #333;
+  background: linear-gradient(135deg, #3498db, #9b59b6);
   color: white;
-  padding: 20px 0;
+  padding: 15px 0;
   text-align: center;
+}
+
+.footer-text {
+  font-size: 16px;
+  padding-bottom: 10px;
+}
+
+.social-icons a {
+  color: white;
+  margin: 0 15px;
+  font-size: 24px;
+  transition: transform 0.3s;
+}
+.social-icons a:hover {
+  transform: scale(1.2);
 }
