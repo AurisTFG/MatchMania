@@ -50,7 +50,7 @@ Additionally, the OpenAPI specification is available at:
 ## How to Run
 
 1. **Clone the repository**:  
-   `git clone https://github.com/your-username/matchmania.git`
+   `git clone https://github.com/auristfg/matchmania.git`
 
 2. **Backend**:
 
