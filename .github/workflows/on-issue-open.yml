@@ -1,15 +1,15 @@
-name: On Issue Open move issue to "Backlog" column in Project
+name: On Issue Open assign issue to user
 
 on:
   issues:
-    types: [opened, reopened]
+    types:
+      - opened
 
 jobs:
-  automate-project-columns:
+  assign:
     runs-on: ubuntu-latest
     steps:
-      - uses: alex-page/github-project-automation-plus@v0.8.3
+      - name: Assign issue to user
+        uses: pozil/auto-assign-issue@v1
         with:
-          project: MatchMania Kanban Board
-          column: Backlog
-          repo-token: ${{ secrets.GHPROJECT_TOKEN }}
+          assignees: "auristfg"
