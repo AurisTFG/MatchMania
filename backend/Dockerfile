@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM golang:1.23.4
+FROM golang:1.24.1
 
 WORKDIR /MatchManiaAPI
 
