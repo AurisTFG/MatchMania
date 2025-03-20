@@ -1,9 +1,6 @@
 name: On Branch Create move issue to "In Progress" column in Project
 
-on:
-  create:
-    branches:
-      - "**"
+on: create
 
 jobs:
   automate-project-columns:
