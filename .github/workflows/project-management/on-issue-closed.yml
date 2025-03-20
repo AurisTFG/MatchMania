@@ -1,8 +1,8 @@
-name: On Issue Open move issue to "Backlog" column in Project
+name: On Issue Closed move issue to "Done" column in Project
 
 on:
   issues:
-    types: [opened, reopened]
+    types: [closed]
 
 jobs:
   automate-project-columns:
@@ -11,5 +11,5 @@ jobs:
       - uses: alex-page/github-project-automation-plus@v0.8.3
         with:
           project: MatchMania Kanban Board
-          column: Backlog
+          column: Done
           repo-token: ${{ secrets.GITHUB_TOKEN }}
