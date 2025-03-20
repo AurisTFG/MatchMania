@@ -60,7 +60,7 @@ func LoadEnv(envName string) (*Env, error) {
 	setDefaults()
 
 	if err := viper.ReadInConfig(); err != nil {
-		// ignore error if file does not exist, cuz digital ocean will read from env
+		_ = err // ignore error if file does not exist, cuz digital ocean will read from env
 	}
 
 	if err := viper.Unmarshal(&env); err != nil {
