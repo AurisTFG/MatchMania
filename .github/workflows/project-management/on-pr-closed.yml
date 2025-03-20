@@ -1,4 +1,4 @@
-name: On Pull Request Closed Move issue to "Done" column in project
+name: On Pull Request Closed move issue to "Done" column in Project
 
 on:
   pull_request:

@@ -1,4 +1,4 @@
-name: On Pull Request Open Move issue to "To do" column in project
+name: On Pull Request Open move issue to "In Review" column in Project
 
 on:
   pull_request:

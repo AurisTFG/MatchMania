@@ -1,8 +1,9 @@
-name: On Issue Open move issue to "Backlog" column in Project
+name: On Branch Create move issue to "In Progress" column in Project
 
 on:
-  issues:
-    types: [opened]
+  create:
+    branches:
+      - "**"
 
 jobs:
   automate-project-columns:
@@ -11,5 +12,5 @@ jobs:
       - uses: alex-page/github-project-automation-plus@v0.8.3
         with:
           project: MatchMania Kanban Board
-          column: Backlog
+          column: In Progress
           repo-token: ${{ secrets.GITHUB_TOKEN }}
