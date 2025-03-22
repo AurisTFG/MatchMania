@@ -71,4 +71,3 @@ func (r *userRepository) Delete(user *models.User) error {
 
 	return result.Error
 }
-

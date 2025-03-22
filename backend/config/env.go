@@ -8,7 +8,8 @@ import (
 )
 
 type Env struct {
-	IsDev bool
+	IsDev  bool
+	IsProd bool
 
 	ServerHost string `mapstructure:"SERVER_HOST"`
 	ServerPort string `mapstructure:"SERVER_PORT"`
@@ -44,6 +45,11 @@ func LoadEnv(envName string) (*Env, error) {
 	var filePostfix string
 
 	env.IsDev = envName == "dev" || envName == "development"
+	env.IsProd = envName == "prod" || envName == "production"
+
+	if !env.IsDev && !env.IsProd {
+		return nil, fmt.Errorf("invalid environment name: %s", envName)
+	}
 
 	if env.IsDev {
 		filePostfix = "development"

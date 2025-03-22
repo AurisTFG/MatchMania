@@ -2,55 +2,67 @@ MAKEFLAGS += --no-print-directory
 
 PACKAGE_MANAGER = pnpm
 
-INSTALL_CMD   = $(PACKAGE_MANAGER) install
-BUILD_CMD     = $(PACKAGE_MANAGER) run build
-RUN_CMD       = $(PACKAGE_MANAGER) run dev
-PREVIEW_CMD   = $(PACKAGE_MANAGER) run preview
-TEST_CMD      = $(PACKAGE_MANAGER) run test
-CLEAN_CMD     = rm -rf node_modules dist
-
 .PHONY: all
-all: run
+all: run-dev
 
 .PHONY: install
 install:
-	@echo "Installing project dependencies using $(PACKAGE_MANAGER)"
-	@$(INSTALL_CMD)
+	@echo "[?] Installing project dependencies using $(PACKAGE_MANAGER)..."
+	@$(PACKAGE_MANAGER) install
+	@echo "[✔] Dependencies installed"
 
 .PHONY: build
 build: install
-	@echo "Building the project"
-	@$(BUILD_CMD)
+	@echo "[?] Building the project for production..."
+	@$(PACKAGE_MANAGER) run build
+	@echo "[✔] Build completed"
 
-.PHONY: run
-run: install
-	@echo "Starting the development server"
-	@$(RUN_CMD)
+.PHONY: run-dev
+run-dev: install
+	@echo "[?] Starting the development server..."
+	@$(PACKAGE_MANAGER) run dev
+	@echo "[✔] Development server running"
 
-.PHONY: preview
-preview: build
-	@echo "Previewing the built application"
-	@$(PREVIEW_CMD)
+.PHONY: run-prod
+run-prod: build
+	@echo "[?] Previewing the built application..."
+	@$(PACKAGE_MANAGER) run preview
+	@echo "[✔] Preview started"
 
 .PHONY: test
 test:
-	@$(TEST_CMD)
-	@echo "Test completed"
-	
+	@echo "[?] Running tests..."
+	@$(PACKAGE_MANAGER) run test
+	@echo "[✔] Tests completed"
+
+.PHONY: lint
+lint:
+	@echo "[?] Running linter..."
+	@$(PACKAGE_MANAGER) run lint
+	@echo "[✔] Linter completed"
+
 .PHONY: clean
 clean:
-	@$(CLEAN_CMD)
-	@echo "Cleaned up node_modules and dist"
+	@echo "[?] Cleaning up node_modules and dist folder..."
+	@rm -rf node_modules dist
+	@echo "[✔] Cleaned up node_modules and dist"
+	
+.PHONY: prepare
+prepare: clean build lint test
+	@echo "[✔] Code prepared for pushing to the repository"
 
 .PHONY: help
 help:
-	@echo "Makefile for MatchMania React App"
+	@echo "Makefile for MatchMania React Web Application"
+	@echo ""
 	@echo "Available commands:"
 	@echo "  make          - Runs the development server (default target)"
 	@echo "  make install  - Install project dependencies using $(PACKAGE_MANAGER)"
 	@echo "  make build    - Build the project for production"
-	@echo "  make run      - Start the development server with live reloading"
-	@echo "  make preview  - Preview the built application"
+	@echo "  make run-dev  - Start the development server with live reloading"
+	@echo "  make run-prod - Preview the built application"
 	@echo "  make test     - Run the project tests"
+	@echo "  make lint     - Run the linter to check for code style and errors"
 	@echo "  make clean    - Clean up built files and dependencies"
+	@echo "  make prepare  - Prepare the code for pushing to the repository"
 	@echo "  make help     - Display this help message"
