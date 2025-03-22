@@ -1,0 +1,12 @@
+# Backend
+backend/vendor/
+backend/**/*.exe*
+backend/**/*.out
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+
+# Shared
+**/*.env*
+!**/.env.example
