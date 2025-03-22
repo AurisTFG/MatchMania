@@ -209,10 +209,10 @@ func (c *AuthController) SetCookie(ctx *gin.Context, refreshToken string) {
 	}
 	path := "/"
 	domain := "localhost"
-	if !c.env.IsDev {
+	if c.env.IsProd {
 		domain = c.env.ClientURL
 	}
-	secure := !c.env.IsDev
+	secure := c.env.IsProd
 	httpOnly := true
 
 	ctx.SetCookie(name, value, maxAge, path, domain, secure, httpOnly)
