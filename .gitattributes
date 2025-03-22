@@ -1,0 +1,12 @@
+# Automatically handle line endings
+* text=auto
+
+# Text files
+*.go text eol=lf
+*.env.* text eol=lf
+*.json text eol=lf
+*.yaml text eol=lf
+
+# Binary files
+*.jpg binary
+*.mdzip binary
