@@ -9,7 +9,10 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "contact": {},
+        "contact": {
+            "name": "AurisTFG",
+            "url": "https://github.com/AurisTFG"
+        },
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
@@ -40,11 +43,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/responses.AuthLoginResponse"
-                        }
+                    "204": {
+                        "description": "No Content"
                     },
                     "400": {
                         "description": "Bad Request",
@@ -81,7 +81,30 @@ const docTemplate = `{
                 }
             }
         },
-        "/auth/refresh-token": {
+        "/auth/me": {
+            "get": {
+                "description": "Get current user",
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Get current user",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.UserResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/responses.UnprocessableEntityResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/refresh": {
             "post": {
                 "description": "Refresh token",
                 "tags": [
@@ -89,11 +112,8 @@ const docTemplate = `{
                 ],
                 "summary": "Refresh token",
                 "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/responses.AuthRefreshTokenResponse"
-                        }
+                    "204": {
+                        "description": "No Content"
                     },
                     "422": {
                         "description": "Unprocessable Entity",
@@ -129,11 +149,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/responses.AuthSignUpResponse"
-                        }
+                    "204": {
+                        "description": "No Content"
                     },
                     "400": {
                         "description": "Bad Request",
@@ -1182,7 +1199,7 @@ const docTemplate = `{
             "properties": {
                 "email": {
                     "type": "string",
-                    "example": "email@gmail.com"
+                    "example": "email@example.com"
                 },
                 "password": {
                     "type": "string",
@@ -1281,7 +1298,7 @@ const docTemplate = `{
             "properties": {
                 "email": {
                     "type": "string",
-                    "example": "email@gmail.com"
+                    "example": "email@example.com"
                 },
                 "password": {
                     "type": "string",
@@ -1293,7 +1310,7 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 100,
                     "minLength": 3,
-                    "example": "AurisTFG"
+                    "example": "john_doe_123"
                 }
             }
         },
@@ -1390,7 +1407,7 @@ const docTemplate = `{
             "properties": {
                 "email": {
                     "type": "string",
-                    "example": "AurisTFG@gmail.com"
+                    "example": "email@example.com"
                 },
                 "id": {
                     "type": "string",
@@ -1406,31 +1423,7 @@ const docTemplate = `{
                 },
                 "username": {
                     "type": "string",
-                    "example": "AurisTFG"
-                }
-            }
-        },
-        "responses.AuthLoginResponse": {
-            "type": "object",
-            "properties": {
-                "accessToken": {
-                    "type": "string"
-                }
-            }
-        },
-        "responses.AuthRefreshTokenResponse": {
-            "type": "object",
-            "properties": {
-                "accessToken": {
-                    "type": "string"
-                }
-            }
-        },
-        "responses.AuthSignUpResponse": {
-            "type": "object",
-            "properties": {
-                "user": {
-                    "$ref": "#/definitions/models.UserDto"
+                    "example": "john_doe_123"
                 }
             }
         },
@@ -1564,12 +1557,12 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "1.0",
-	Host:             "https://matchmania-api-ripky.ondigitalocean.app",
+	Version:          "0.1.0",
+	Host:             "localhost:8080",
 	BasePath:         "/api/v1",
-	Schemes:          []string{},
+	Schemes:          []string{"http"},
 	Title:            "MatchMania API",
-	Description:      "This is the API server for the MatchMania application.",
+	Description:      "Documentation for MatchMania API",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

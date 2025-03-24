@@ -199,5 +199,5 @@ func (c *SeasonController) DeleteSeason(ctx *gin.Context) {
 		return
 	}
 
-	r.Deleted(ctx)
+	r.NoContent(ctx)
 }

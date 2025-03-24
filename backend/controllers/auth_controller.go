@@ -2,23 +2,33 @@ package controllers
 
 import (
 	"MatchManiaAPI/config"
+	"MatchManiaAPI/constants"
 	"MatchManiaAPI/models"
 	r "MatchManiaAPI/responses"
 	"MatchManiaAPI/services"
-	"net/http"
+	"MatchManiaAPI/utils"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
 
 type AuthController struct {
-	authService    services.AuthService
-	sessionService services.SessionService
-	env            *config.Env
+	authService services.AuthService
+	userService services.UserService
+	env         *config.Env
 }
 
-func NewAuthController(authService services.AuthService, sessionService services.SessionService, env *config.Env) AuthController {
-	return AuthController{authService: authService, sessionService: sessionService, env: env}
+func NewAuthController(
+	authService services.AuthService,
+	userService services.UserService,
+	env *config.Env,
+) AuthController {
+	return AuthController{
+		authService: authService,
+		userService: userService,
+		env:         env,
+	}
 }
 
 // @Summary Sign up
@@ -27,11 +37,11 @@ func NewAuthController(authService services.AuthService, sessionService services
 // @Accept json
 // @Produce json
 // @Param body body models.SignUpDto true "Sign up details"
-// @Success 201 {object} responses.AuthSignUpResponse
+// @Success 204
 // @Failure 400 {object} responses.BadRequestResponse
 // @Failure 422 {object} responses.UnprocessableEntityResponse
 // @Router /auth/signup [post]
-func (c *AuthController) AuthSignUp(ctx *gin.Context) {
+func (c *AuthController) SignUp(ctx *gin.Context) {
 	var bodyDto models.SignUpDto
 
 	if err := ctx.ShouldBindJSON(&bodyDto); err != nil {
@@ -44,7 +54,7 @@ func (c *AuthController) AuthSignUp(ctx *gin.Context) {
 		return
 	}
 
-	user, err := c.authService.CreateUser(&bodyDto)
+	user, err := c.userService.CreateUser(&bodyDto)
 	if err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
@@ -59,11 +69,11 @@ func (c *AuthController) AuthSignUp(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param body body models.LoginDto true "Log in details"
-// @Success 200 {object} responses.AuthLoginResponse
+// @Success 204
 // @Failure 400 {object} responses.BadRequestResponse
 // @Failure 422 {object} responses.UnprocessableEntityResponse
 // @Router /auth/login [post]
-func (c *AuthController) AuthLogIn(ctx *gin.Context) {
+func (c *AuthController) LogIn(ctx *gin.Context) {
 	var bodyDto models.LoginDto
 
 	if err := ctx.ShouldBindJSON(&bodyDto); err != nil {
@@ -76,7 +86,7 @@ func (c *AuthController) AuthLogIn(ctx *gin.Context) {
 		return
 	}
 
-	user, err := c.authService.GetUserByEmail(bodyDto.Email)
+	user, err := c.userService.GetUserByEmail(bodyDto.Email)
 	if err != nil {
 		r.UnprocessableEntity(ctx, "Username or password was incorrect.")
 		return
@@ -101,15 +111,16 @@ func (c *AuthController) AuthLogIn(ctx *gin.Context) {
 		return
 	}
 
-	err = c.sessionService.CreateSession(sessionUUID, user.UUID, refreshToken)
+	err = c.authService.CreateSession(sessionUUID, user.UUID, refreshToken)
 	if err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
 	}
 
-	c.SetCookie(ctx, refreshToken)
+	c.authService.SetCookie(ctx, constants.AccessTokenName, accessToken)
+	c.authService.SetCookie(ctx, constants.RefreshTokenName, refreshToken)
 
-	r.OK(ctx, r.AuthLoginResponse{AccessToken: accessToken})
+	r.NoContent(ctx)
 }
 
 // @Summary Log out
@@ -118,8 +129,8 @@ func (c *AuthController) AuthLogIn(ctx *gin.Context) {
 // @Success 204
 // @Failure 422 {object} responses.UnprocessableEntityResponse
 // @Router /auth/logout [post]
-func (c *AuthController) AuthLogOut(ctx *gin.Context) {
-	tokenString, err := ctx.Cookie("RefreshToken")
+func (c *AuthController) LogOut(ctx *gin.Context) {
+	tokenString, err := ctx.Cookie(constants.RefreshTokenName)
 	if err != nil {
 		r.UnprocessableEntity(ctx, "Refresh token not found")
 		return
@@ -131,30 +142,31 @@ func (c *AuthController) AuthLogOut(ctx *gin.Context) {
 		return
 	}
 
-	if !c.sessionService.IsSessionValid(sessionId, tokenString) {
+	if !c.authService.IsSessionValid(sessionId, tokenString) {
 		r.UnprocessableEntity(ctx, "Session is not valid")
 		return
 	}
 
-	err = c.sessionService.InvalidateSession(sessionId)
+	err = c.authService.InvalidateSession(sessionId)
 	if err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
 	}
 
-	c.SetCookie(ctx, "refreshToken")
+	c.authService.SetCookie(ctx, constants.AccessTokenName, "")
+	c.authService.SetCookie(ctx, constants.RefreshTokenName, "")
 
-	r.Deleted(ctx)
+	r.NoContent(ctx)
 }
 
 // @Summary Refresh token
 // @Description Refresh token
 // @Tags auth
-// @Success 200 {object} responses.AuthRefreshTokenResponse
+// @Success 204
 // @Failure 422 {object} responses.UnprocessableEntityResponse
-// @Router /auth/refresh-token [post]
-func (c *AuthController) AuthRefreshToken(ctx *gin.Context) {
-	tokenString, err := ctx.Cookie("RefreshToken")
+// @Router /auth/refresh [post]
+func (c *AuthController) RefreshToken(ctx *gin.Context) {
+	tokenString, err := ctx.Cookie(constants.RefreshTokenName)
 	if err != nil {
 		r.UnprocessableEntity(ctx, "Refresh token not found")
 		return
@@ -166,7 +178,7 @@ func (c *AuthController) AuthRefreshToken(ctx *gin.Context) {
 		return
 	}
 
-	if !c.sessionService.IsSessionValid(sessionId, tokenString) {
+	if !c.authService.IsSessionValid(sessionId, tokenString) {
 		r.UnprocessableEntity(ctx, "Session is not valid")
 		return
 	}
@@ -183,37 +195,32 @@ func (c *AuthController) AuthRefreshToken(ctx *gin.Context) {
 		return
 	}
 
-	err = c.sessionService.ExtendSession(sessionId, refreshToken)
+	err = c.authService.ExtendSession(sessionId, refreshToken)
 	if err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
 	}
 
-	c.SetCookie(ctx, refreshToken)
+	c.authService.SetCookie(ctx, constants.AccessTokenName, accessToken)
+	c.authService.SetCookie(ctx, constants.RefreshTokenName, refreshToken)
 
-	r.OK(ctx, r.AuthRefreshTokenResponse{AccessToken: accessToken})
+	r.NoContent(ctx)
 }
 
-func (c *AuthController) SetCookie(ctx *gin.Context, refreshToken string) {
-	if c.env.IsDev {
-		ctx.SetSameSite(http.SameSiteLaxMode)
-	} else {
-		ctx.SetSameSite(http.SameSiteNoneMode)
+// @Summary Get current user
+// @Description Get current user
+// @Tags auth
+// @Success 200 {object} responses.UserResponse
+// @Failure 422 {object} responses.UnprocessableEntityResponse
+// @Router /auth/me [get]
+func (c *AuthController) GetMe(ctx *gin.Context) {
+	fmt.Println("GetMe called")
+
+	user := utils.GetAuthUser(ctx)
+	if user == nil {
+		r.Unauthorized(ctx, "User not found")
+		return
 	}
 
-	name := "RefreshToken"
-	value := refreshToken
-	maxAge := -1
-	if refreshToken != "" {
-		maxAge = int(c.env.JWTRefreshTokenDuration.Seconds())
-	}
-	path := "/"
-	domain := "localhost"
-	if c.env.IsProd {
-		domain = c.env.ClientURL
-	}
-	secure := c.env.IsProd
-	httpOnly := true
-
-	ctx.SetCookie(name, value, maxAge, path, domain, secure, httpOnly)
+	r.OK(ctx, r.UserResponse{User: user.ToDto()})
 }

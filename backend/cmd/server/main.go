@@ -3,10 +3,9 @@ package main
 import (
 	"MatchManiaAPI/config"
 	"MatchManiaAPI/controllers"
+	"MatchManiaAPI/docs"
 	"MatchManiaAPI/middlewares"
-	"MatchManiaAPI/repositories"
 	"MatchManiaAPI/routes"
-	"MatchManiaAPI/services"
 	"fmt"
 	"log"
 	"os"
@@ -60,12 +59,15 @@ func init() {
 }
 
 // @title MatchMania API
-// @version 1.0
-// @description This is the API server for the MatchMania application.
-// @host https://matchmania-api-ripky.ondigitalocean.app
+// @version 0.1.0
+// @description Documentation for MatchMania API
+// @host localhost:8080
 // @BasePath /api/v1
+// @schemes http
 // @externalDocs.description  OpenAPI
 // @externalDocs.url          https://swagger.io/resources/open-api/
+// @contact.name AurisTFG
+// @contact.url https://github.com/AurisTFG
 func main() {
 	if env.IsDev {
 		gin.SetMode(gin.DebugMode)
@@ -88,30 +90,11 @@ func main() {
 		MaxAge:           12 * time.Hour,
 	}))
 
-	sessionRepository := repositories.NewSessionRepository(db)
-	userRepository := repositories.NewUserRepository(db)
-	seasonRepository := repositories.NewSeasonRepository(db)
-	teamRepository := repositories.NewTeamRepository(db)
-	resultRepository := repositories.NewResultRepository(db)
+	docs.SetupSwagger(server, env)
 
-	sessionService := services.NewSessionService(sessionRepository, env)
-	userService := services.NewUserService(userRepository)
-	authService := services.NewAuthService(userService, env)
-	seasonService := services.NewSeasonService(seasonRepository)
-	teamService := services.NewTeamService(teamRepository)
-	resultService := services.NewResultService(resultRepository)
-
-	authMiddleware := middlewares.NewAuthMiddleware(authService)
-
-	authController := controllers.NewAuthController(authService, sessionService, env)
-	userController := controllers.NewUserController(userService)
-	seasonController := controllers.NewSeasonController(seasonService)
-	teamController := controllers.NewTeamController(seasonService, teamService)
-	resultController := controllers.NewResultController(teamService, resultService)
-
-	allControllers := routes.NewControllers(authMiddleware, authController, userController, seasonController, teamController, resultController)
-
-	routes.ApplyRoutes(server, &allControllers)
+	controllers := controllers.SetupControllers(db, env)
+	middlewares := middlewares.SetupMiddlewares(db, env)
+	routes.SetupRoutes(server, controllers, middlewares)
 
 	fmt.Println("(6/6) Starting server on " + env.ServerHost + ":" + env.ServerPort + " . . . ")
 

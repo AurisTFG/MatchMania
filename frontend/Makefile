@@ -48,7 +48,7 @@ clean:
 	@echo "[✔] Cleaned up node_modules and dist"
 	
 .PHONY: prepare
-prepare: clean build lint test
+prepare: lint build test
 	@echo "[✔] Code prepared for pushing to the repository"
 
 .PHONY: help

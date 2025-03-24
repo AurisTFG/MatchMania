@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getAccessToken, refreshToken } from "./auth";
+import { refreshToken } from "./auth";
 
 const api = axios.create({
   baseURL: import.meta.env.MATCHMANIA_API_BASE_URL,
@@ -7,16 +7,6 @@ const api = axios.create({
     "Content-Type": "application/json",
   },
   withCredentials: true,
-});
-
-api.interceptors.request.use((config) => {
-  const token = getAccessToken();
-
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-
-  return config;
 });
 
 api.interceptors.response.use(
@@ -27,9 +17,7 @@ api.interceptors.response.use(
 
       await refreshToken();
 
-      error.config.headers.Authorization = `Bearer ${getAccessToken()}`;
-
-      return axios.request(error.config); // Retry the original request
+      return axios.request(error.config);
     }
 
     return Promise.reject(error);

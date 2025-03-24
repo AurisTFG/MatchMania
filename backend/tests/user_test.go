@@ -8,7 +8,7 @@ import (
 func TestPasswordHashing(t *testing.T) {
 	// Create a new user
 	user := models.User{
-		Email:    "test@gmail.com",
+		Email:    "test@example.com",
 		Password: "password",
 	}
 
