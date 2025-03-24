@@ -1,94 +1,85 @@
-# MatchMania
+# 🏎 MatchMania
 
-**A competitive matchmaking app for the racing game Trackmania**, developed as a university project.
+**A competitive matchmaking app for the racing game Trackmania**, originally developed as a university project for **Web Application Design (T120B165)** class and later extended as a **Bachelor’s Degree Final Project (P000B001)**
 
-## Purpose
+## 🎯 Purpose
 
-The purpose of **MatchMania** is to offer a dynamic and fair matchmaking experience for Trackmania players. By utilizing an **ELO-based ranking system**, it matches players of similar skill levels, ensuring balanced competition and enhancing player engagement.
+**MatchMania** aims to deliver a dynamic and balanced matchmaking experience for Trackmania players. By implementing an **ELO-based ranking system**, it ensures fair competition by matching players of similar skill levels, enhancing engagement and competitive integrity.
 
-## Functional Requirements
+## 🚀 Functional Requirements
 
-- **ELO Ranking System**: Tracks player performance and adjusts rankings based on match outcomes. Players are ranked according to their skill level, with the system continuously recalibrating after every match.
-- **User Registration**: Players can create an account, log in, and maintain a secure profile.
-- **Season Creation**: Users can create multiple seasons, each with its own ELO ranking system, providing a fresh start for each competitive period.
-- **Team Registration**: Users can form teams to compete together in season-based or individual competitions.
-- **Matchmaking**: Players are paired with others of similar skill levels, with support for both **team-based** and **individual** match types.
-- **Results Submission**: After completing a match, players can submit their results, which directly impact the ELO rankings.
-- **User Profiles**: Players have personalized profiles displaying their statistics, match history, and overall rankings, allowing them to track their progress and achievements.
+- **ELO Ranking System**  
+  Tracks player performance and adjusts rankings based on match outcomes, ensuring competitive balance through continuous recalibration.
 
-## Technologies Used
+- **User Registration & Profiles**  
+  Players can create an account, log in, and manage secure profiles displaying their statistics, match history, and overall rankings.
 
-### General
+- **Season Management**  
+  Supports the creation of multiple competitive seasons, each with its own ELO-based ranking system for a fresh start and renewed competition.
 
-- **Makefile**: Automation of build, run, and other tasks.
-- **Dockerfile**: Containerization of the app for consistent environments.
+- **Team Registration & Matchmaking**  
+  Allows players to form teams and participate in team-based or individual matchmaking, ensuring balanced pairings based on skill level.
 
-### Frontend
-
-- **pnpm**: Fast and efficient package manager.
-- **Vite**: Next-generation frontend build tool for fast development and optimized production builds.
-- **React + TypeScript + SWC**: Type-safe React development with SWC for fast JSX/TypeScript compilation.
+## 🛠️ Technologies Used
 
 ### Backend
 
-- **Go + Gin + GORM**: Go programming language with the Gin framework and GORM for easy database interaction.
-- **JWT**: JSON Web Tokens for secure authentication and user session management.
-- **PostgreSQL**: Relational database management system for storing user data, match results, and rankings.
+- **Go** – High-performance programming language.
+  - **Gin** – Lightweight HTTP web framework.
+  - **GORM** – ORM for database management.
+- **JWT** – Secure authentication using JSON Web Tokens.
 
-## Deployment Diagram
+### Frontend
 
-![Deployment Diagram](./deployment-diagram.jpg)
+- **pnpm** – Fast and efficient package manager.
+- **Vite** – Modern build tool for quick development and optimized production.
+- **React** – Frontend framework.
+  - **TypeScript** – Type-safe development.
+  - **SWC** – Fast JSX/TypeScript compilation.
 
-## Documentation
+### General
 
-Swagger documentation for the API can be accessed at:  
-[https://matchmania-api-ripky.ondigitalocean.app/swagger/index.html#/](https://matchmania-api-ripky.ondigitalocean.app/swagger/index.html#/)
+- **PostgreSQL** – High-performance relational database for storing user data, match results, and rankings.
+- **Makefile** – Automates build, run, test, clean and other tasks.
+- **Docker** – Containerizes the app for consistent and portable environments.
 
-Additionally, the OpenAPI specification is available at:  
+## 📄 Documentation
+
+The OpenAPI Swagger specification is available at:  
 [backend/docs/swagger.yaml](../backend/docs/swagger.yaml)
 
-## How to Run
+## ▶️ How to Run
 
-1. **Clone the repository**:  
-   `git clone https://github.com/auristfg/matchmania.git`
+1. **Clone the repository**:
 
-2. **Backend**:
+   ```sh
+   git clone https://github.com/auristfg/matchmania.git
+   ```
 
-   - Navigate to the `backend` directory:  
-     `cd backend`
-   - Run the app using the Makefile:  
-     `make run`
+2. **Run Backend**:
 
-3. **Frontend**:
+   - Navigate to the `backend` directory:
 
-   - Navigate to the `frontend` directory:  
-     `cd frontend`
-   - Run the app using the Makefile:  
-     `make run`
+     ```sh
+     cd .\backend\
+     ```
 
-4. For more commands, simply run:  
-   `make help`
+   - Run the API using Makefile:
 
-The **Makefile** makes the setup and running process easier, automating most tasks.
+     ```sh
+     make run-dev
+     ```
 
-## User Interface Design
+3. **Run Frontend**:
 
-### Home Page
+   - Navigate to the `frontend` directory:
 
-![Home Page Wireframe](./homewire.jpg)  
-_Wireframe for the homepage with navigation and key features._
+     ```sh
+     cd .\frontend\
+     ```
 
-![Home Page Screenshot](./homereal.jpg)  
-_Actual screenshot of the homepage UI._
+   - Run the web app using Makefile:
 
-### Models Page
-
-![Seasons Page Wireframe](./listwire.jpg)  
-_Wireframe for the seasons or teams or results page, showing available items and information about them._
-
-![Seasons Page Screenshot](./listreal.jpg)  
-_Actual screenshot of the teams page with teams details._
-
-## Conclusions
-
-In conclusion, **MatchMania** did not fully meet the expectations set at the beginning of this course. While the core CRUD operations for the three main models function as expected, the project lacks additional features and depth that were initially anticipated.
+     ```sh
+     make run-dev
+     ```
