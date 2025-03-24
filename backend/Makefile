@@ -42,7 +42,7 @@ coverage: build
 .PHONY: docs
 docs:
 	@echo "[?] Generating API documentation..."
-	@swag init -g $(MAIN_FILE) > /dev/null 2>&1
+	@swag init -g $(MAIN_FILE)
 	@echo "[✔] API documentation generated"
 
 .PHONY: vendor
