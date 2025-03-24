@@ -245,5 +245,5 @@ func (c *TeamController) DeleteTeam(ctx *gin.Context) {
 		return
 	}
 
-	r.Deleted(ctx)
+	r.NoContent(ctx)
 }

@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { UseAuth } from "./components/Auth/AuthContext.tsx";
 import { useEffect } from "react";
-import { getCurrentUser } from "./api/users.ts";
 import Header from "./components/Header/Header.tsx";
 import Content from "./components/Content/Content.tsx";
 import Footer from "./components/Footer/Footer.tsx";
@@ -16,6 +15,7 @@ import ResultsPage from "./pages/Seasons/ResultsPage.tsx";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import "./App.css";
+import { getMe } from "./api/auth.ts";
 
 const theme = createTheme({
   typography: {
@@ -29,7 +29,9 @@ function App() {
   useEffect(() => {
     const initializeAuth = async () => {
       try {
-        const user = await getCurrentUser();
+        const user = await getMe();
+
+        console.log("Current user:", user);
 
         setUser(user);
       } catch (error) {

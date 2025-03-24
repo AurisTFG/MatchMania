@@ -1,9 +1,10 @@
 package middlewares
 
 import (
+	"MatchManiaAPI/constants"
 	r "MatchManiaAPI/responses"
 	"MatchManiaAPI/services"
-	"strings"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
 )
@@ -17,19 +18,12 @@ func NewAuthMiddleware(authService services.AuthService) AuthMiddleware {
 }
 
 func (m *AuthMiddleware) RequireAuth(ctx *gin.Context) {
-	authHeader := ctx.GetHeader("Authorization")
-	if authHeader == "" {
-		r.Unauthorized(ctx, "Authorization header not found")
+	fmt.Println("RequireAuth middleware called")
+	accessToken, err := ctx.Cookie(constants.AccessTokenName)
+	if err != nil || accessToken == "" {
+		r.Unauthorized(ctx, "Access token not found in cookies")
 		return
 	}
-
-	parts := strings.SplitN(authHeader, " ", 2)
-	if len(parts) != 2 || strings.ToLower(parts[0]) != "bearer" {
-		r.Unauthorized(ctx, "Invalid Authorization header format")
-		return
-	}
-
-	accessToken := parts[1]
 
 	user, err := m.authService.VerifyAccessToken(accessToken)
 	if err != nil {

@@ -47,25 +47,25 @@ func (u *User) ComparePassword(password string) bool {
 
 type UserDto struct {
 	UUID     uuid.UUID `json:"id" example:"526432ea-822b-4b5b-b1b3-34e8ab453e03"`
-	Username string    `json:"username" example:"AurisTFG"`
-	Email    string    `json:"email" example:"AurisTFG@gmail.com"`
+	Username string    `json:"username" example:"john_doe_123"`
+	Email    string    `json:"email" example:"email@example.com"`
 	Role     Role      `json:"role" example:"admin"`
 }
 
 type SignUpDto struct {
-	Username string `json:"username" validate:"required,min=3,max=100" example:"AurisTFG"`
-	Email    string `json:"email" validate:"required,email" example:"email@gmail.com"`
+	Username string `json:"username" validate:"required,min=3,max=100" example:"john_doe_123"`
+	Email    string `json:"email" validate:"required,email" example:"email@example.com"`
 	Password string `json:"password" validate:"required,min=8,max=255" example:"VeryStrongPassword"`
 }
 
 type LoginDto struct {
-	Email    string `json:"email" validate:"required,email" example:"email@gmail.com"`
+	Email    string `json:"email" validate:"required,email" example:"email@example.com"`
 	Password string `json:"password" validate:"required,min=8,max=255" example:"VeryStrongPassword"`
 }
 
 type UpdateUserDto struct {
-	Username string `json:"username" validate:"omitempty,min=3,max=100" example:"AurisTFG"`
-	Email    string `json:"email" validate:"omitempty,email" example:"email@gmail.com"`
+	Username string `json:"username" validate:"omitempty,min=3,max=100" example:"john_doe_123"`
+	Email    string `json:"email" validate:"omitempty,email" example:"email@example.com"`
 	Password string `json:"password" validate:"omitempty,min=8,max=255" example:"VeryStrongPassword"`
 }
 

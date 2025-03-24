@@ -2,8 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { TextField, Button, Box } from "@mui/material";
 import { UseAuth } from "../../components/Auth/AuthContext";
-import { login } from "../../api/auth";
-import { getCurrentUser } from "../../api/users";
+import { getMe, login } from "../../api/auth";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -13,10 +12,13 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
-      const result = await login(email, password);
-      const user = await getCurrentUser();
+      await login(email, password);
+      const user = await getMe();
+      if (!user) {
+        throw new Error("User not found");
+      }
 
-      console.log("Login success:", result, user);
+      console.log("Login success:", user);
 
       setUser(user);
 

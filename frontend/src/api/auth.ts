@@ -12,9 +12,6 @@ export async function signup(
       password,
     });
 
-    const accessToken = response.data.accessToken;
-    saveAccessToken(accessToken);
-
     return response.data;
   } catch (error) {
     throw new Error(String(error));
@@ -23,12 +20,7 @@ export async function signup(
 
 export async function login(email: string, password: string) {
   try {
-    const response = await api.post("/auth/login", { email, password });
-
-    const accessToken = response.data.accessToken;
-    saveAccessToken(accessToken);
-
-    return response.data;
+    await api.post("/auth/login", { email, password });
   } catch (error) {
     throw new Error(String(error));
   }
@@ -37,8 +29,6 @@ export async function login(email: string, password: string) {
 export async function logout() {
   try {
     await api.post("/auth/logout", null);
-
-    removeAccessToken();
   } catch (error) {
     console.error("Failed to logout:", error);
   }
@@ -46,27 +36,18 @@ export async function logout() {
 
 export async function refreshToken() {
   try {
-    const response = await api.post("/auth/refresh-token", null);
-    // const response = await api.post("/auth/refresh-token", null, {
-    //   withCredentials: true,
-    // });
-
-    const newAccessToken = response.data.accessToken;
-
-    saveAccessToken(newAccessToken);
+    await api.post("/auth/refresh", null);
   } catch (error) {
     console.error("Failed to refresh token:", error);
   }
 }
 
-export function saveAccessToken(accessToken: string) {
-  localStorage.setItem("accessToken", accessToken);
-}
-
-export function getAccessToken() {
-  return localStorage.getItem("accessToken");
-}
-
-export function removeAccessToken() {
-  localStorage.removeItem("accessToken");
+export async function getMe() {
+  try {
+    const response = await api.get("/auth/me");
+    return response.data.user;
+  } catch (error) {
+    console.error("Failed to get user data:", error);
+    throw error;
+  }
 }

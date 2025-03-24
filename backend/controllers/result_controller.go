@@ -290,5 +290,5 @@ func (c *ResultController) DeleteResult(ctx *gin.Context) {
 		return
 	}
 
-	r.Deleted(ctx)
+	r.NoContent(ctx)
 }

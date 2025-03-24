@@ -7,40 +7,40 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func OK(c *gin.Context, obj any) {
+func OK(c *gin.Context, obj any) { // 200
 	c.JSON(http.StatusOK, obj)
 }
 
-func Created(c *gin.Context, obj any) {
+func Created(c *gin.Context, obj any) { // 201
 	c.JSON(http.StatusCreated, obj)
 }
 
-func Deleted(c *gin.Context) {
+func NoContent(c *gin.Context) { // 204
 	c.JSON(http.StatusNoContent, nil)
 }
 
-func BadRequest(c *gin.Context, errorMessage string) {
+func BadRequest(c *gin.Context, errorMessage string) { // 400
 	c.JSON(http.StatusBadRequest, BadRequestResponse{Error: errorMessage})
 }
 
-func Unauthorized(c *gin.Context, errorMessage string) {
+func Unauthorized(c *gin.Context, errorMessage string) { // 401
 	c.JSON(http.StatusUnauthorized, UnauthorizedResponse{Error: errorMessage})
 	c.Abort()
 }
 
-func Forbidden(c *gin.Context, errorMessage string) {
+func Forbidden(c *gin.Context, errorMessage string) { // 403
 	c.JSON(http.StatusForbidden, ForbiddenResponse{Error: errorMessage})
 }
 
-func NotFound(c *gin.Context, errorMessage string) {
+func NotFound(c *gin.Context, errorMessage string) { // 404
 	c.JSON(http.StatusNotFound, NotFoundResponse{Error: errorMessage})
 }
 
-func UnprocessableEntity(c *gin.Context, errorMessage string) {
+func UnprocessableEntity(c *gin.Context, errorMessage string) { // 422
 	c.JSON(http.StatusUnprocessableEntity, UnprocessableEntityResponse{Error: errorMessage})
 }
 
-func InternalServerError(c *gin.Context, errorMessage string) {
+func InternalServerError(c *gin.Context, errorMessage string) { // 500
 	c.JSON(http.StatusInternalServerError, InternalServerErrorResponse{Error: errorMessage})
 }
 
@@ -70,14 +70,6 @@ type InternalServerErrorResponse struct {
 
 type AuthSignUpResponse struct {
 	User models.UserDto `json:"user"`
-}
-
-type AuthLoginResponse struct {
-	AccessToken string `json:"accessToken"`
-}
-
-type AuthRefreshTokenResponse struct {
-	AccessToken string `json:"accessToken"`
 }
 
 type SeasonResponse struct {

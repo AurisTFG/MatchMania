@@ -1,12 +1,18 @@
 {
+    "schemes": [
+        "http"
+    ],
     "swagger": "2.0",
     "info": {
-        "description": "This is the API server for the MatchMania application.",
+        "description": "Documentation for MatchMania API",
         "title": "MatchMania API",
-        "contact": {},
-        "version": "1.0"
+        "contact": {
+            "name": "AurisTFG",
+            "url": "https://github.com/AurisTFG"
+        },
+        "version": "0.1.0"
     },
-    "host": "https://matchmania-api-ripky.ondigitalocean.app",
+    "host": "localhost:8080",
     "basePath": "/api/v1",
     "paths": {
         "/auth/login": {
@@ -34,11 +40,8 @@
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/responses.AuthLoginResponse"
-                        }
+                    "204": {
+                        "description": "No Content"
                     },
                     "400": {
                         "description": "Bad Request",
@@ -75,7 +78,30 @@
                 }
             }
         },
-        "/auth/refresh-token": {
+        "/auth/me": {
+            "get": {
+                "description": "Get current user",
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Get current user",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.UserResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/responses.UnprocessableEntityResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/refresh": {
             "post": {
                 "description": "Refresh token",
                 "tags": [
@@ -83,11 +109,8 @@
                 ],
                 "summary": "Refresh token",
                 "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/responses.AuthRefreshTokenResponse"
-                        }
+                    "204": {
+                        "description": "No Content"
                     },
                     "422": {
                         "description": "Unprocessable Entity",
@@ -123,11 +146,8 @@
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/responses.AuthSignUpResponse"
-                        }
+                    "204": {
+                        "description": "No Content"
                     },
                     "400": {
                         "description": "Bad Request",
@@ -1176,7 +1196,7 @@
             "properties": {
                 "email": {
                     "type": "string",
-                    "example": "email@gmail.com"
+                    "example": "email@example.com"
                 },
                 "password": {
                     "type": "string",
@@ -1275,7 +1295,7 @@
             "properties": {
                 "email": {
                     "type": "string",
-                    "example": "email@gmail.com"
+                    "example": "email@example.com"
                 },
                 "password": {
                     "type": "string",
@@ -1287,7 +1307,7 @@
                     "type": "string",
                     "maxLength": 100,
                     "minLength": 3,
-                    "example": "AurisTFG"
+                    "example": "john_doe_123"
                 }
             }
         },
@@ -1384,7 +1404,7 @@
             "properties": {
                 "email": {
                     "type": "string",
-                    "example": "AurisTFG@gmail.com"
+                    "example": "email@example.com"
                 },
                 "id": {
                     "type": "string",
@@ -1400,31 +1420,7 @@
                 },
                 "username": {
                     "type": "string",
-                    "example": "AurisTFG"
-                }
-            }
-        },
-        "responses.AuthLoginResponse": {
-            "type": "object",
-            "properties": {
-                "accessToken": {
-                    "type": "string"
-                }
-            }
-        },
-        "responses.AuthRefreshTokenResponse": {
-            "type": "object",
-            "properties": {
-                "accessToken": {
-                    "type": "string"
-                }
-            }
-        },
-        "responses.AuthSignUpResponse": {
-            "type": "object",
-            "properties": {
-                "user": {
-                    "$ref": "#/definitions/models.UserDto"
+                    "example": "john_doe_123"
                 }
             }
         },
