@@ -1,42 +1,40 @@
 SHELL=/bin/bash
 .DEFAULT_GOAL := help
 
-PACKAGE_MANAGER = pnpm
-
 .PHONY: install
 install: ## Installs project dependencies
 	@echo "[?] Installing project dependencies using $(PACKAGE_MANAGER)..."
-	@$(PACKAGE_MANAGER) install
+	@pnpm install
 	@echo "[✔] Dependencies installed"
 
 .PHONY: build
 build: ## Builds the project for production
 	@echo "[?] Building the project for production..."
-	@$(PACKAGE_MANAGER) run build
+	@pnpm build
 	@echo "[✔] Build completed"
 
 .PHONY: run-dev
 run-dev: install ## Starts the development server with live reloading
 	@echo "[?] Starting the development server..."
-	@$(PACKAGE_MANAGER) run dev
+	@pnpm dev
 	@echo "[✔] Development server running"
 
 .PHONY: run-prod
 run-prod: install ## Previews the built application
 	@echo "[?] Previewing the built application..."
-	@$(PACKAGE_MANAGER) run preview
+	@pnpm preview
 	@echo "[✔] Preview started"
 
 .PHONY: lint
 lint: ## Runs the linter to check for code style and errors
 	@echo "[?] Running linter..."
-	@$(PACKAGE_MANAGER) run lint
+	@pnpm lint
 	@echo "[✔] Linter completed"
 
 .PHONY: test
 test: ## Runs the project tests
 	@echo "[?] Running tests..."
-	@$(PACKAGE_MANAGER) run test
+	@pnpm test
 	@echo "[✔] Tests completed"
 
 .PHONY: clean
