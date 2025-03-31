@@ -34,7 +34,7 @@ lint: ## Runs the linter to check for code style and errors
 .PHONY: test
 test: ## Runs the project tests
 	@echo "[?] Running tests..."
-	@pnpm test
+	@pnpm test:run
 	@echo "[✔] Tests completed"
 
 .PHONY: clean
