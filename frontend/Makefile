@@ -3,7 +3,7 @@ SHELL=/bin/bash
 
 .PHONY: install
 install: ## Installs project dependencies
-	@echo "[?] Installing project dependencies using $(PACKAGE_MANAGER)..."
+	@echo "[?] Installing project dependencies..."
 	@pnpm install
 	@echo "[✔] Dependencies installed"
 
