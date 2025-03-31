@@ -57,7 +57,7 @@ func LoadEnv(envName string) (*Env, error) {
 		filePostfix = "production"
 	}
 
-	viper.SetConfigFile("./config/.env." + filePostfix)
+	viper.SetConfigFile("./.env." + filePostfix)
 	viper.SetConfigType("env")
 
 	viper.AutomaticEnv()
@@ -66,7 +66,9 @@ func LoadEnv(envName string) (*Env, error) {
 	setDefaults()
 
 	if err := viper.ReadInConfig(); err != nil {
-		_ = err // ignore error if file does not exist, cuz digital ocean will read from env
+		if env.IsDev {
+			return nil, fmt.Errorf("unable to read config file: %w", err)
+		}
 	}
 
 	if err := viper.Unmarshal(&env); err != nil {
