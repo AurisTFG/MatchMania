@@ -45,27 +45,27 @@ func InternalServerError(c *gin.Context, errorMessage string) { // 500
 }
 
 type BadRequestResponse struct {
-	Error string `json:"error" example:"JSON parsing error"`
+	Error string `example:"JSON parsing error" json:"error"`
 }
 
 type UnauthorizedResponse struct {
-	Error string `json:"error" example:"Unauthorized"`
+	Error string `example:"Unauthorized" json:"error"`
 }
 
 type ForbiddenResponse struct {
-	Error string `json:"error" example:"Forbidden"`
+	Error string `example:"Forbidden" json:"error"`
 }
 
 type NotFoundResponse struct {
-	Error string `json:"error" example:"Resource was not found"`
+	Error string `example:"Resource was not found" json:"error"`
 }
 
 type UnprocessableEntityResponse struct {
-	Error string `json:"error" example:"Validation error"`
+	Error string `example:"Validation error" json:"error"`
 }
 
 type InternalServerErrorResponse struct {
-	Error string `json:"error" example:"Internal server error"`
+	Error string `example:"Internal server error" json:"error"`
 }
 
 type AuthSignUpResponse struct {
