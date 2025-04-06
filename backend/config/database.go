@@ -15,10 +15,7 @@ type DB struct {
 }
 
 func ConnectDatabase(env *Env) (*DB, error) {
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s",
-		env.DBHost, env.DBUser, env.DBUserPassword, env.DBName, env.DBPort, env.DBSSLMode)
-
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(env.DatabaseUrl), &gorm.Config{})
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize database session: %w", err)
 	}
