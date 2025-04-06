@@ -27,7 +27,7 @@ run-prod: build ## Runs the application in Production environment
 .PHONY: lint
 lint: ## Runs the linter to check for code style and errors
 	@echo "[?] Running linter..."
-	@golangci-lint run --enable-all
+	@golangci-lint run --fix
 	@echo "[✔] Lint completed without errors"
 
 .PHONY: tidy
