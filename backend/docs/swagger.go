@@ -10,7 +10,7 @@ import (
 
 func SetupSwagger(server *gin.Engine, env *config.Env) {
 	if env.IsDev {
-		SwaggerInfo.Host = env.ServerHost + ":" + env.ServerPort
+		SwaggerInfo.Host = env.ServerUrl
 
 		server.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	}

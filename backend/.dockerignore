@@ -1,8 +1,8 @@
-/bin
-**/.env*
-**/swagger.json
-**/swagger.yaml
-**/.dockerignore
-**/.gitignore
+**/bin/
+**/vendor/
+**/*.env*
+**/*.dockerignore
 **/Dockerfile
 **/Makefile
+**/swagger.json
+**/swagger.yaml

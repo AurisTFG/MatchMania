@@ -96,9 +96,9 @@ func main() {
 	middlewares := middlewares.SetupMiddlewares(db, env)
 	routes.SetupRoutes(server, controllers, middlewares)
 
-	fmt.Println("(6/6) Starting server on " + env.ServerHost + ":" + env.ServerPort + " . . . ")
+	fmt.Println("(6/6) Starting server on " + env.ServerUrl + " . . . ")
 
-	err := server.Run(env.ServerHost + ":" + env.ServerPort)
+	err := server.Run(env.ServerUrl)
 	if err != nil {
 		log.Fatal("Failed to start Gin server.")
 	}

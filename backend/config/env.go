@@ -11,16 +11,9 @@ type Env struct {
 	IsDev  bool
 	IsProd bool
 
-	ServerHost string `mapstructure:"SERVER_HOST"`
-	ServerPort string `mapstructure:"SERVER_PORT"`
-	ClientURL  string `mapstructure:"CLIENT_URL"`
-
-	DBHost         string `mapstructure:"DB_HOST"`
-	DBUser         string `mapstructure:"DB_USER"`
-	DBUserPassword string `mapstructure:"DB_PASSWORD"`
-	DBName         string `mapstructure:"DB_NAME"`
-	DBPort         string `mapstructure:"DB_PORT"`
-	DBSSLMode      string `mapstructure:"DB_SSLMODE"`
+	DatabaseUrl string `mapstructure:"DATABASE_URL"`
+	ServerUrl   string `mapstructure:"SERVER_URL"`
+	ClientURL   string `mapstructure:"CLIENT_URL"`
 
 	JWTAccessTokenSecret    string        `mapstructure:"JWT_ACCESS_TOKEN_SECRET"`
 	JWTRefreshTokenSecret   string        `mapstructure:"JWT_REFRESH_TOKEN_SECRET"`
@@ -62,14 +55,9 @@ func LoadEnv(envName string) (*Env, error) {
 
 	viper.AutomaticEnv()
 
-	// must set all defaults, otherwise viper will not read from env
-	setDefaults()
+	setDefaults() // must set all defaults, otherwise viper will not read from env
 
-	if err := viper.ReadInConfig(); err != nil {
-		if env.IsDev {
-			return nil, fmt.Errorf("unable to read config file: %w", err)
-		}
-	}
+	viper.ReadInConfig()
 
 	if err := viper.Unmarshal(&env); err != nil {
 		return nil, fmt.Errorf("unable to decode config into struct: %w", err)
@@ -83,16 +71,9 @@ func LoadEnv(envName string) (*Env, error) {
 }
 
 func setDefaults() {
-	viper.SetDefault("SERVER_HOST", invalidString)
-	viper.SetDefault("SERVER_PORT", invalidString)
+	viper.SetDefault("DATABASE_URL", invalidString)
+	viper.SetDefault("SERVER_URL", invalidString)
 	viper.SetDefault("CLIENT_URL", invalidString)
-
-	viper.SetDefault("DB_HOST", invalidString)
-	viper.SetDefault("DB_USER", invalidString)
-	viper.SetDefault("DB_PASSWORD", invalidString)
-	viper.SetDefault("DB_NAME", invalidString)
-	viper.SetDefault("DB_PORT", invalidString)
-	viper.SetDefault("DB_SSLMODE", invalidString)
 
 	viper.SetDefault("JWT_ACCESS_TOKEN_SECRET", invalidString)
 	viper.SetDefault("JWT_REFRESH_TOKEN_SECRET", invalidString)
@@ -110,19 +91,14 @@ func setDefaults() {
 }
 
 func (e *Env) Validate() error {
-	if e.ServerHost == invalidString ||
-		e.ServerPort == invalidString ||
-		e.ClientURL == invalidString {
-		return fmt.Errorf("missing server configuration values")
+	if e.DatabaseUrl == invalidString {
+		return fmt.Errorf("missing database URL")
 	}
-
-	if e.DBHost == invalidString ||
-		e.DBUser == invalidString ||
-		e.DBUserPassword == invalidString ||
-		e.DBName == invalidString ||
-		e.DBPort == invalidString ||
-		e.DBSSLMode == invalidString {
-		return fmt.Errorf("missing database configuration values")
+	if e.ServerUrl == invalidString {
+		return fmt.Errorf("missing server URL")
+	}
+	if e.ClientURL == invalidString {
+		return fmt.Errorf("missing client URL")
 	}
 
 	if e.JWTAccessTokenSecret == invalidString ||

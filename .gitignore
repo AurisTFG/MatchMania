@@ -1,7 +1,6 @@
 # Backend
 backend/vendor/
-backend/**/*.exe*
-backend/**/*.out
+backend/bin/
 
 # Frontend
 frontend/node_modules/
