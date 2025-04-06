@@ -90,7 +90,7 @@ definitions:
       teamId:
         example: 6
         type: integer
-      userUUID:
+      userUuid:
         example: 550e8400-e29b-41d4-a716-446655440000
         type: string
     type: object
@@ -118,7 +118,7 @@ definitions:
       startDate:
         example: "2025-06-01T00:00:00Z"
         type: string
-      userUUID:
+      userUuid:
         example: 550e8400-e29b-41d4-a716-446655440000
         type: string
     type: object
@@ -156,7 +156,7 @@ definitions:
       seasonId:
         example: 5
         type: integer
-      userUUID:
+      userUuid:
         example: 550e8400-e29b-41d4-a716-446655440000
         type: string
     type: object
@@ -320,7 +320,7 @@ paths:
       parameters:
       - description: Log in details
         in: body
-        name: body
+        name: loginDto
         required: true
         schema:
           $ref: '#/definitions/models.LoginDto'
@@ -389,7 +389,7 @@ paths:
       parameters:
       - description: Sign up details
         in: body
-        name: body
+        name: signUpDto
         required: true
         schema:
           $ref: '#/definitions/models.SignUpDto'

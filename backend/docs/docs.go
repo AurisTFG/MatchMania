@@ -34,7 +34,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "Log in details",
-                        "name": "body",
+                        "name": "loginDto",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -140,7 +140,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "Sign up details",
-                        "name": "body",
+                        "name": "signUpDto",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -1244,7 +1244,7 @@ const docTemplate = `{
                     "type": "integer",
                     "example": 6
                 },
-                "userUUID": {
+                "userUuid": {
                     "type": "string",
                     "example": "550e8400-e29b-41d4-a716-446655440000"
                 }
@@ -1282,7 +1282,7 @@ const docTemplate = `{
                     "type": "string",
                     "example": "2025-06-01T00:00:00Z"
                 },
-                "userUUID": {
+                "userUuid": {
                     "type": "string",
                     "example": "550e8400-e29b-41d4-a716-446655440000"
                 }
@@ -1333,7 +1333,7 @@ const docTemplate = `{
                     "type": "integer",
                     "example": 5
                 },
-                "userUUID": {
+                "userUuid": {
                     "type": "string",
                     "example": "550e8400-e29b-41d4-a716-446655440000"
                 }
