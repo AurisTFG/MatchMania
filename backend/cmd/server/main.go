@@ -6,6 +6,7 @@ import (
 	"MatchManiaAPI/docs"
 	"MatchManiaAPI/middlewares"
 	"MatchManiaAPI/routes"
+	"MatchManiaAPI/seeders"
 	"fmt"
 	"log"
 	"os"
@@ -48,7 +49,7 @@ func init() {
 	fmt.Println("Successfully synced database")
 
 	fmt.Print("(5/6) ")
-	err = config.SeedDatabase(db, env)
+	err = seeders.SeedDatabase(db, env)
 	if err != nil {
 		log.Fatalf("Failed to seed database: %v", err)
 	}
