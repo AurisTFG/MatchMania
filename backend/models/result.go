@@ -28,31 +28,31 @@ type Result struct {
 }
 
 type ResultDto struct {
-	ID             uint      `json:"id" example:"7"`
+	ID             uint      `json:"id"             example:"7"`
 	MatchStartDate time.Time `json:"matchStartDate" example:"2025-06-01T00:00:00Z"`
-	MatchEndDate   time.Time `json:"matchEndDate" example:"2025-06-01T00:40:00Z"`
-	Score          string    `json:"score" example:"16"`
-	OpponentScore  string    `json:"opponentScore" example:"14"`
+	MatchEndDate   time.Time `json:"matchEndDate"   example:"2025-06-01T00:40:00Z"`
+	Score          string    `json:"score"          example:"16"`
+	OpponentScore  string    `json:"opponentScore"  example:"14"`
 
-	SeasonID       uint      `json:"seasonId" example:"5"`
-	TeamID         uint      `json:"teamId" example:"6"`
+	SeasonID       uint      `json:"seasonId"       example:"5"`
+	TeamID         uint      `json:"teamId"         example:"6"`
 	OpponentTeamID uint      `json:"opponentTeamId" example:"7"`
-	UserUUID       uuid.UUID `json:"userUUID" example:"550e8400-e29b-41d4-a716-446655440000"`
+	UserUUID       uuid.UUID `json:"userUuid"       example:"550e8400-e29b-41d4-a716-446655440000"`
 }
 
 type CreateResultDto struct {
-	MatchStartDate time.Time `json:"matchStartDate" validate:"required,startDate" example:"2025-06-01T00:00:00Z"`
-	MatchEndDate   time.Time `json:"matchEndDate" validate:"required,endDate,dateDiff,gtfield=MatchStartDate" example:"2025-06-01T00:40:00Z"`
-	Score          string    `json:"score" validate:"score" example:"16"`
-	OpponentScore  string    `json:"opponentScore" validate:"score" example:"14"`
-	OpponentTeamID uint      `json:"opponentTeamId" validate:"required" example:"4"`
+	MatchStartDate time.Time `json:"matchStartDate" validate:"required,startDate"                               example:"2025-06-01T00:00:00Z"`
+	MatchEndDate   time.Time `json:"matchEndDate"   validate:"required,endDate,dateDiff,gtfield=MatchStartDate" example:"2025-06-01T00:40:00Z"`
+	Score          string    `json:"score"          validate:"score"                                            example:"16"`
+	OpponentScore  string    `json:"opponentScore"  validate:"score"                                            example:"14"`
+	OpponentTeamID uint      `json:"opponentTeamId" validate:"required"                                         example:"4"`
 }
 
 type UpdateResultDto struct {
-	MatchStartDate time.Time `json:"matchStartDate" validate:"required,startDate" example:"2025-06-01T00:00:00Z"`
-	MatchEndDate   time.Time `json:"matchEndDate" validate:"required,endDate,dateDiff,gtfield=MatchStartDate" example:"2025-06-01T00:40:00Z"`
-	Score          string    `json:"score" validate:"score" example:"16"`
-	OpponentScore  string    `json:"opponentScore" validate:"score" example:"14"`
+	MatchStartDate time.Time `json:"matchStartDate" validate:"required,startDate"                               example:"2025-06-01T00:00:00Z"`
+	MatchEndDate   time.Time `json:"matchEndDate"   validate:"required,endDate,dateDiff,gtfield=MatchStartDate" example:"2025-06-01T00:40:00Z"`
+	Score          string    `json:"score"          validate:"score"                                            example:"16"`
+	OpponentScore  string    `json:"opponentScore"  validate:"score"                                            example:"14"`
 }
 
 func (r *Result) ToDto() ResultDto {
@@ -181,8 +181,13 @@ func resultValidationErrorHandler(err error) error {
 	}
 
 	var errorMessage string
+	var validationErrors validator.ValidationErrors
 
-	for _, err := range err.(validator.ValidationErrors) {
+	if !errors.As(err, &validationErrors) {
+		return errors.New("validation error")
+	}
+
+	for _, err := range validationErrors {
 		field := err.StructField()
 		tag := err.Tag()
 

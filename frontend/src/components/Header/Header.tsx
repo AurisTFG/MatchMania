@@ -1,20 +1,19 @@
+import AccountCircle from "@mui/icons-material/AccountCircle";
+import MenuIcon from "@mui/icons-material/Menu";
+import { useMediaQuery } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import Drawer from "@mui/material/Drawer";
+import IconButton from "@mui/material/IconButton";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import MenuIcon from "@mui/icons-material/Menu";
-import IconButton from "@mui/material/IconButton";
-import AccountCircle from "@mui/icons-material/AccountCircle";
-import MenuItem from "@mui/material/MenuItem";
-import Menu from "@mui/material/Menu";
-import { UseAuth } from "../Auth/AuthContext";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { logout } from "../../api/auth";
-import { useMediaQuery } from "@mui/material";
-import Drawer from "@mui/material/Drawer";
-import { useLocation } from "react-router-dom";
+import { UseAuth } from "../Auth/AuthContext";
 
 export default function Header() {
   const { user, setUser } = UseAuth();
@@ -62,7 +61,9 @@ export default function Header() {
             color="inherit"
             aria-label="menu"
             sx={{ mr: 2 }}
-            onClick={() => setMobileMenuOpen(true)}
+            onClick={() => {
+              setMobileMenuOpen(true);
+            }}
           >
             <MenuIcon />
           </IconButton>
@@ -147,7 +148,9 @@ export default function Header() {
         <Drawer
           anchor="left"
           open={mobileMenuOpen}
-          onClose={() => setMobileMenuOpen(false)}
+          onClose={() => {
+            setMobileMenuOpen(false);
+          }}
           sx={{
             "& .MuiDrawer-paper": {
               width: "250px",

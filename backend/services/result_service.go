@@ -31,7 +31,12 @@ func (s *resultService) GetResultByID(seasonID uint, teamID uint, resultID uint)
 	return s.repo.FindByIDAndSeasonIDAndTeamID(seasonID, teamID, resultID)
 }
 
-func (s *resultService) CreateResult(resultDto *models.CreateResultDto, seasonID uint, teamID uint, userUUID uuid.UUID) (*models.Result, error) {
+func (s *resultService) CreateResult(
+	resultDto *models.CreateResultDto,
+	seasonID uint,
+	teamID uint,
+	userUUID uuid.UUID,
+) (*models.Result, error) {
 	newResult := resultDto.ToResult()
 	newResult.SeasonID = seasonID
 	newResult.TeamID = teamID
@@ -40,7 +45,10 @@ func (s *resultService) CreateResult(resultDto *models.CreateResultDto, seasonID
 	return s.repo.Create(&newResult)
 }
 
-func (s *resultService) UpdateResult(currentResult *models.Result, updatedResultDto *models.UpdateResultDto) (*models.Result, error) {
+func (s *resultService) UpdateResult(
+	currentResult *models.Result,
+	updatedResultDto *models.UpdateResultDto,
+) (*models.Result, error) {
 	updatedResult := updatedResultDto.ToResult()
 
 	return s.repo.Update(currentResult, &updatedResult)

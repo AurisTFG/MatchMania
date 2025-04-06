@@ -18,7 +18,7 @@ type User struct {
 	DeletedAt gorm.DeletedAt `gorm:"index"`
 	Username  string         `gorm:"unique"`
 	Email     string         `gorm:"unique"`
-	//Country   string // TODO: Add country to user
+	// Country   string // TODO: Add country to user
 	Role     Role `gorm:"type:role;default:'user'"`
 	Password string
 
@@ -46,26 +46,26 @@ func (u *User) ComparePassword(password string) bool {
 }
 
 type UserDto struct {
-	UUID     uuid.UUID `json:"id" example:"526432ea-822b-4b5b-b1b3-34e8ab453e03"`
+	UUID     uuid.UUID `json:"id"       example:"526432ea-822b-4b5b-b1b3-34e8ab453e03"`
 	Username string    `json:"username" example:"john_doe_123"`
-	Email    string    `json:"email" example:"email@example.com"`
-	Role     Role      `json:"role" example:"admin"`
+	Email    string    `json:"email"    example:"email@example.com"`
+	Role     Role      `json:"role"     example:"admin"`
 }
 
 type SignUpDto struct {
 	Username string `json:"username" validate:"required,min=3,max=100" example:"john_doe_123"`
-	Email    string `json:"email" validate:"required,email" example:"email@example.com"`
+	Email    string `json:"email"    validate:"required,email"         example:"email@example.com"`
 	Password string `json:"password" validate:"required,min=8,max=255" example:"VeryStrongPassword"`
 }
 
 type LoginDto struct {
-	Email    string `json:"email" validate:"required,email" example:"email@example.com"`
+	Email    string `json:"email"    validate:"required,email"         example:"email@example.com"`
 	Password string `json:"password" validate:"required,min=8,max=255" example:"VeryStrongPassword"`
 }
 
 type UpdateUserDto struct {
 	Username string `json:"username" validate:"omitempty,min=3,max=100" example:"john_doe_123"`
-	Email    string `json:"email" validate:"omitempty,email" example:"email@example.com"`
+	Email    string `json:"email"    validate:"omitempty,email"         example:"email@example.com"`
 	Password string `json:"password" validate:"omitempty,min=8,max=255" example:"VeryStrongPassword"`
 }
 
@@ -128,8 +128,13 @@ func userValidationErrorHandler(err error) error {
 	}
 
 	var errorMessage string
+	var validationErrors validator.ValidationErrors
 
-	for _, err := range err.(validator.ValidationErrors) {
+	if !errors.As(err, &validationErrors) {
+		return errors.New("validation error")
+	}
+
+	for _, err := range validationErrors {
 		field := err.StructField()
 		tag := err.Tag()
 

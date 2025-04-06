@@ -4,14 +4,18 @@ SHELL=/bin/bash
 BACKEND_FOLDER = ./backend/
 FRONTEND_FOLDER = ./frontend/
 MAKE_CMD = @$(MAKE) -C
-	
-.PHONY: run-front
-run-front: ## Starts the React development server
-	$(MAKE_CMD) $(FRONTEND_FOLDER) run-dev
+
+.PHONY: run-db
+run-db: ## Starts the postgreSQL database server
+	pg_ctl start -D "C:\Program Files\PostgreSQL\17\data"
 
 .PHONY: run-back
 run-back: ## Starts the Go development server
 	$(MAKE_CMD) $(BACKEND_FOLDER) run-dev
+
+.PHONY: run-front
+run-front: ## Starts the React development server
+	$(MAKE_CMD) $(FRONTEND_FOLDER) run-dev
 
 .PHONY: prepare
 prepare: ##	Prepares the code for pushing to the repository

@@ -1,21 +1,21 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { UseAuth } from "./components/Auth/AuthContext.tsx";
+import CssBaseline from "@mui/material/CssBaseline";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { useEffect } from "react";
-import Header from "./components/Header/Header.tsx";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { getMe } from "./api/auth.ts";
+import { UseAuth } from "./components/Auth/AuthContext.tsx";
 import Content from "./components/Content/Content.tsx";
 import Footer from "./components/Footer/Footer.tsx";
-import NotFound from "./pages/NotFound/NotFound";
-import HomePage from "./pages/Home/HomePage.tsx";
+import Header from "./components/Header/Header.tsx";
 import Login from "./pages/Auth/Login";
 import Signup from "./pages/Auth/Signup";
+import HomePage from "./pages/Home/HomePage.tsx";
+import NotFound from "./pages/NotFound/NotFound";
 import Profile from "./pages/Profile/Profile.tsx";
+import ResultsPage from "./pages/Seasons/ResultsPage.tsx";
 import SeasonsPage from "./pages/Seasons/SeasonsPage.tsx";
 import TeamsPage from "./pages/Seasons/TeamsPage.tsx";
-import ResultsPage from "./pages/Seasons/ResultsPage.tsx";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
 import "./App.css";
-import { getMe } from "./api/auth.ts";
 
 const theme = createTheme({
   typography: {
@@ -48,7 +48,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <div className="App">
-        <Router>
+        <BrowserRouter>
           <Header />
           <Content>
             <Routes>
@@ -67,7 +67,7 @@ function App() {
             </Routes>
           </Content>
           <Footer />
-        </Router>
+        </BrowserRouter>
       </div>
     </ThemeProvider>
   );

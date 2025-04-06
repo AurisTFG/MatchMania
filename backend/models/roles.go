@@ -8,11 +8,11 @@ const (
 	UserRole      Role = "user"
 )
 
-func (r *Role) Scan(value interface{}) error {
+func (r *Role) Scan(value any) error {
 	*r = Role(value.(string))
 	return nil
 }
 
-func (r Role) Value() (interface{}, error) {
-	return string(r), nil
+func (r *Role) Value() (any, error) {
+	return string(*r), nil
 }

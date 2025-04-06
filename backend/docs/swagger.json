@@ -31,7 +31,7 @@
                 "parameters": [
                     {
                         "description": "Log in details",
-                        "name": "body",
+                        "name": "loginDto",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -137,7 +137,7 @@
                 "parameters": [
                     {
                         "description": "Sign up details",
-                        "name": "body",
+                        "name": "signUpDto",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -1241,7 +1241,7 @@
                     "type": "integer",
                     "example": 6
                 },
-                "userUUID": {
+                "userUuid": {
                     "type": "string",
                     "example": "550e8400-e29b-41d4-a716-446655440000"
                 }
@@ -1279,7 +1279,7 @@
                     "type": "string",
                     "example": "2025-06-01T00:00:00Z"
                 },
-                "userUUID": {
+                "userUuid": {
                     "type": "string",
                     "example": "550e8400-e29b-41d4-a716-446655440000"
                 }
@@ -1330,7 +1330,7 @@
                     "type": "integer",
                     "example": 5
                 },
-                "userUUID": {
+                "userUuid": {
                     "type": "string",
                     "example": "550e8400-e29b-41d4-a716-446655440000"
                 }

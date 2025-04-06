@@ -2,7 +2,7 @@ import axios from "axios";
 import { refreshToken } from "./auth";
 
 const api = axios.create({
-  baseURL: import.meta.env.MATCHMANIA_API_BASE_URL,
+  baseURL: import.meta.env.MATCHMANIA_API_BASE_URL as string,
   headers: {
     "Content-Type": "application/json",
   },

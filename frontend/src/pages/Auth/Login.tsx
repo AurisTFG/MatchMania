@@ -1,8 +1,8 @@
+import { Box, Button, TextField } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { TextField, Button, Box } from "@mui/material";
-import { UseAuth } from "../../components/Auth/AuthContext";
 import { getMe, login } from "../../api/auth";
+import { UseAuth } from "../../components/Auth/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -36,7 +36,9 @@ const Login = () => {
           fullWidth
           label="Email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => {
+            setEmail(e.target.value);
+          }}
           margin="normal"
         />
         <TextField
@@ -44,7 +46,9 @@ const Login = () => {
           label="Password"
           type="password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) => {
+            setPassword(e.target.value);
+          }}
           margin="normal"
         />
         <Button

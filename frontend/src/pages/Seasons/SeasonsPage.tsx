@@ -1,27 +1,27 @@
-import React, { useEffect, useState } from "react";
+import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import {
-  getAllSeasons,
-  createSeason,
-  updateSeason,
-  deleteSeason,
-} from "../../api/seasons.ts";
-import { Season } from "../../types/index.ts";
-import {
-  Modal,
   Button,
+  DatePicker,
   Input,
   List,
+  Modal,
   Space,
   Typography,
-  DatePicker,
   message,
 } from "antd";
-import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import moment from "moment";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { UseAuth } from "../../components/Auth/AuthContext";
-import { User } from "../../types/users.ts";
+import {
+  createSeason,
+  deleteSeason,
+  getAllSeasons,
+  updateSeason,
+} from "../../api/seasons.ts";
 import { getAllUsers } from "../../api/users.ts";
+import { UseAuth } from "../../components/Auth/AuthContext";
+import { Season } from "../../types/index.ts";
+import { User } from "../../types/users.ts";
 
 const SeasonsPage: React.FC = () => {
   const [seasons, setSeasons] = useState<Season[]>([]);
@@ -181,7 +181,9 @@ const SeasonsPage: React.FC = () => {
                 season.userUUID === user.id) ? (
                 <EditOutlined
                   key="edit"
-                  onClick={() => openEditModal(season)}
+                  onClick={() => {
+                    openEditModal(season);
+                  }}
                 />
               ) : null,
 
@@ -201,7 +203,9 @@ const SeasonsPage: React.FC = () => {
               description={
                 <>
                   <Typography.Text>
-                    {`${season.startDate.toLocaleString().split("T")[0]} - ${season.endDate.toLocaleString().split("T")[0]}`}
+                    {`${season.startDate.toLocaleString().split("T")[0]} - ${
+                      season.endDate.toLocaleString().split("T")[0]
+                    }`}
                   </Typography.Text>
                   <br />
                   <Typography.Text type="secondary">
@@ -223,19 +227,25 @@ const SeasonsPage: React.FC = () => {
         <Input
           placeholder="Name"
           value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          onChange={(e) => {
+            setFormData({ ...formData, name: e.target.value });
+          }}
           style={{ marginBottom: 8 }}
         />
         <DatePicker
           placeholder="Start Date"
           value={formData.startDate}
-          onChange={(date) => setFormData({ ...formData, startDate: date })}
+          onChange={(date) => {
+            setFormData({ ...formData, startDate: date });
+          }}
           style={{ marginBottom: 8 }}
         />
         <DatePicker
           placeholder="End Date"
           value={formData.endDate}
-          onChange={(date) => setFormData({ ...formData, endDate: date })}
+          onChange={(date) => {
+            setFormData({ ...formData, endDate: date });
+          }}
         />
       </Modal>
     </div>

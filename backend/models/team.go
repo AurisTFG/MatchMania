@@ -22,12 +22,12 @@ type Team struct {
 }
 
 type TeamDto struct {
-	ID   uint   `json:"id" example:"6"`
+	ID   uint   `json:"id"   example:"6"`
 	Name string `json:"name" example:"BIG Clan"`
-	Elo  uint   `json:"elo" example:"1200"`
+	Elo  uint   `json:"elo"  example:"1200"`
 
 	SeasonID uint      `json:"seasonId" example:"5"`
-	UserUUID uuid.UUID `json:"userUUID" example:"550e8400-e29b-41d4-a716-446655440000"`
+	UserUUID uuid.UUID `json:"userUuid" example:"550e8400-e29b-41d4-a716-446655440000"`
 }
 
 type CreateTeamDto struct {
@@ -88,8 +88,13 @@ func teamValidationErrorHandler(err error) error {
 	}
 
 	var errorMessage string
+	var validationErrors validator.ValidationErrors
 
-	for _, err := range err.(validator.ValidationErrors) {
+	if !errors.As(err, &validationErrors) {
+		return errors.New("validation error")
+	}
+
+	for _, err := range validationErrors {
 		field := err.StructField()
 		tag := err.Tag()
 

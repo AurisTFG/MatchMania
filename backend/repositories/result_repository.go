@@ -50,7 +50,6 @@ func (r *resultRepository) FindAllByTeamID(teamID uint) ([]models.Result, error)
 }
 
 func (r *resultRepository) FindAllBySeasonIDAndTeamID(seasonID uint, teamID uint) ([]models.Result, error) {
-
 	var results []models.Result
 
 	result := r.db.Where(
@@ -69,7 +68,11 @@ func (r *resultRepository) FindByID(resultID uint) (*models.Result, error) {
 	return &resultModel, result.Error
 }
 
-func (r *resultRepository) FindByIDAndSeasonIDAndTeamID(seasonID uint, teamID uint, resultID uint) (*models.Result, error) {
+func (r *resultRepository) FindByIDAndSeasonIDAndTeamID(
+	seasonID uint,
+	teamID uint,
+	resultID uint,
+) (*models.Result, error) {
 	var resultModel models.Result
 
 	result := r.db.Where(

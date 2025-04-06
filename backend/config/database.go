@@ -15,7 +15,7 @@ type DB struct {
 }
 
 func ConnectDatabase(env *Env) (*DB, error) {
-	db, err := gorm.Open(postgres.Open(env.DatabaseUrl), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(env.DatabaseURL), &gorm.Config{})
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize database session: %w", err)
 	}
@@ -25,7 +25,7 @@ func ConnectDatabase(env *Env) (*DB, error) {
 		return nil, fmt.Errorf("failed to get database connection pool: %w", err)
 	}
 
-	if err := sqlDB.Ping(); err != nil {
+	if err = sqlDB.Ping(); err != nil {
 		return nil, fmt.Errorf("failed to ping database: %w", err)
 	}
 
@@ -70,20 +70,73 @@ func SeedDatabase(db *DB, env *Env) error {
 	}
 
 	users := []models.User{
-		{UUID: uuid.New(), Username: "AdminNickname", Email: env.AdminEmail, Password: env.AdminPassword, Role: models.AdminRole},
-		{UUID: uuid.New(), Username: "ModeratorNickname", Email: env.ModeratorEmail, Password: env.ModeratorPassword, Role: models.ModeratorRole},
-		{UUID: uuid.New(), Username: "UserNickname", Email: env.UserEmail, Password: env.UserPassword, Role: models.UserRole},
+		{
+			UUID:     uuid.New(),
+			Username: "AdminNickname",
+			Email:    env.AdminEmail,
+			Password: env.AdminPassword,
+			Role:     models.AdminRole,
+		},
+		{
+			UUID:     uuid.New(),
+			Username: "ModeratorNickname",
+			Email:    env.ModeratorEmail,
+			Password: env.ModeratorPassword,
+			Role:     models.ModeratorRole,
+		},
+		{
+			UUID:     uuid.New(),
+			Username: "UserNickname",
+			Email:    env.UserEmail,
+			Password: env.UserPassword,
+			Role:     models.UserRole,
+		},
 	}
 
 	seasons := []models.Season{
 		{UserUUID: users[0].UUID, Name: "TO BE DELETED", StartDate: time.Now(), EndDate: time.Now().AddDate(0, 0, 30)},
-		{UserUUID: users[0].UUID, Name: "Fall 2024", StartDate: time.Date(2024, 9, 1, 0, 0, 0, 0, time.UTC), EndDate: time.Date(2024, 12, 31, 0, 0, 0, 0, time.UTC)},
-		{UserUUID: users[0].UUID, Name: "Winter 2025", StartDate: time.Date(2025, 1, 1, 0, 0, 0, 0, time.UTC), EndDate: time.Date(2025, 3, 31, 0, 0, 0, 0, time.UTC)},
-		{UserUUID: users[0].UUID, Name: "Spring 2025", StartDate: time.Date(2025, 4, 1, 0, 0, 0, 0, time.UTC), EndDate: time.Date(2025, 6, 30, 0, 0, 0, 0, time.UTC)},
-		{UserUUID: users[0].UUID, Name: "Summer 2025", StartDate: time.Date(2025, 7, 1, 0, 0, 0, 0, time.UTC), EndDate: time.Date(2025, 8, 31, 0, 0, 0, 0, time.UTC)},
-		{UserUUID: users[0].UUID, Name: "Fall 2025", StartDate: time.Date(2025, 9, 1, 0, 0, 0, 0, time.UTC), EndDate: time.Date(2025, 12, 31, 0, 0, 0, 0, time.UTC)},
-		{UserUUID: users[0].UUID, Name: "Winter 2026", StartDate: time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC), EndDate: time.Date(2026, 3, 31, 0, 0, 0, 0, time.UTC)},
-		{UserUUID: users[0].UUID, Name: "Spring 2026", StartDate: time.Date(2026, 4, 1, 0, 0, 0, 0, time.UTC), EndDate: time.Date(2026, 6, 30, 0, 0, 0, 0, time.UTC)},
+		{
+			UserUUID:  users[0].UUID,
+			Name:      "Fall 2024",
+			StartDate: time.Date(2024, 9, 1, 0, 0, 0, 0, time.UTC),
+			EndDate:   time.Date(2024, 12, 31, 0, 0, 0, 0, time.UTC),
+		},
+		{
+			UserUUID:  users[0].UUID,
+			Name:      "Winter 2025",
+			StartDate: time.Date(2025, 1, 1, 0, 0, 0, 0, time.UTC),
+			EndDate:   time.Date(2025, 3, 31, 0, 0, 0, 0, time.UTC),
+		},
+		{
+			UserUUID:  users[0].UUID,
+			Name:      "Spring 2025",
+			StartDate: time.Date(2025, 4, 1, 0, 0, 0, 0, time.UTC),
+			EndDate:   time.Date(2025, 6, 30, 0, 0, 0, 0, time.UTC),
+		},
+		{
+			UserUUID:  users[0].UUID,
+			Name:      "Summer 2025",
+			StartDate: time.Date(2025, 7, 1, 0, 0, 0, 0, time.UTC),
+			EndDate:   time.Date(2025, 8, 31, 0, 0, 0, 0, time.UTC),
+		},
+		{
+			UserUUID:  users[0].UUID,
+			Name:      "Fall 2025",
+			StartDate: time.Date(2025, 9, 1, 0, 0, 0, 0, time.UTC),
+			EndDate:   time.Date(2025, 12, 31, 0, 0, 0, 0, time.UTC),
+		},
+		{
+			UserUUID:  users[0].UUID,
+			Name:      "Winter 2026",
+			StartDate: time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
+			EndDate:   time.Date(2026, 3, 31, 0, 0, 0, 0, time.UTC),
+		},
+		{
+			UserUUID:  users[0].UUID,
+			Name:      "Spring 2026",
+			StartDate: time.Date(2026, 4, 1, 0, 0, 0, 0, time.UTC),
+			EndDate:   time.Date(2026, 6, 30, 0, 0, 0, 0, time.UTC),
+		},
 	}
 
 	teams := []models.Team{
@@ -98,13 +151,76 @@ func SeedDatabase(db *DB, env *Env) error {
 	}
 
 	results := []models.Result{
-		{UserUUID: users[0].UUID, MatchStartDate: time.Now(), MatchEndDate: time.Now().Add(40 * time.Minute), Score: "19", OpponentScore: "9", TeamID: 3, OpponentTeamID: 2, SeasonID: 2},
-		{UserUUID: users[0].UUID, MatchStartDate: time.Now(), MatchEndDate: time.Now().Add(40 * time.Minute), Score: "15", OpponentScore: "5", TeamID: 4, OpponentTeamID: 3, SeasonID: 2},
-		{UserUUID: users[0].UUID, MatchStartDate: time.Now(), MatchEndDate: time.Now().Add(40 * time.Minute), Score: "16", OpponentScore: "13", TeamID: 5, OpponentTeamID: 4, SeasonID: 2},
-		{UserUUID: users[0].UUID, MatchStartDate: time.Now(), MatchEndDate: time.Now().Add(40 * time.Minute), Score: "8", OpponentScore: "6", TeamID: 6, OpponentTeamID: 5, SeasonID: 2},
-		{UserUUID: users[0].UUID, MatchStartDate: time.Now(), MatchEndDate: time.Now().Add(40 * time.Minute), Score: "11", OpponentScore: "2", TeamID: 7, OpponentTeamID: 6, SeasonID: 2},
-		{UserUUID: users[0].UUID, MatchStartDate: time.Now(), MatchEndDate: time.Now().Add(40 * time.Minute), Score: "7", OpponentScore: "8", TeamID: 8, OpponentTeamID: 7, SeasonID: 2},
-		{UserUUID: users[0].UUID, MatchStartDate: time.Now(), MatchEndDate: time.Now().Add(40 * time.Minute), Score: "12", OpponentScore: "15", TeamID: 2, OpponentTeamID: 8, SeasonID: 2},
+		{
+			UserUUID:       users[0].UUID,
+			MatchStartDate: time.Now(),
+			MatchEndDate:   time.Now().Add(40 * time.Minute),
+			Score:          "19",
+			OpponentScore:  "9",
+			TeamID:         3,
+			OpponentTeamID: 2,
+			SeasonID:       2,
+		},
+		{
+			UserUUID:       users[0].UUID,
+			MatchStartDate: time.Now(),
+			MatchEndDate:   time.Now().Add(40 * time.Minute),
+			Score:          "15",
+			OpponentScore:  "5",
+			TeamID:         4,
+			OpponentTeamID: 3,
+			SeasonID:       2,
+		},
+		{
+			UserUUID:       users[0].UUID,
+			MatchStartDate: time.Now(),
+			MatchEndDate:   time.Now().Add(40 * time.Minute),
+			Score:          "16",
+			OpponentScore:  "13",
+			TeamID:         5,
+			OpponentTeamID: 4,
+			SeasonID:       2,
+		},
+		{
+			UserUUID:       users[0].UUID,
+			MatchStartDate: time.Now(),
+			MatchEndDate:   time.Now().Add(40 * time.Minute),
+			Score:          "8",
+			OpponentScore:  "6",
+			TeamID:         6,
+			OpponentTeamID: 5,
+			SeasonID:       2,
+		},
+		{
+			UserUUID:       users[0].UUID,
+			MatchStartDate: time.Now(),
+			MatchEndDate:   time.Now().Add(40 * time.Minute),
+			Score:          "11",
+			OpponentScore:  "2",
+			TeamID:         7,
+			OpponentTeamID: 6,
+			SeasonID:       2,
+		},
+		{
+			UserUUID:       users[0].UUID,
+			MatchStartDate: time.Now(),
+			MatchEndDate:   time.Now().Add(40 * time.Minute),
+			Score:          "7",
+			OpponentScore:  "8",
+			TeamID:         8,
+			OpponentTeamID: 7,
+			SeasonID:       2,
+		},
+		{
+			UserUUID:       users[0].UUID,
+			MatchStartDate: time.Now(),
+			MatchEndDate:   time.Now().Add(40 * time.Minute),
+			Score:          "12",
+			OpponentScore:  "15",
+			TeamID:         2,
+			OpponentTeamID: 8,
+			SeasonID:       2,
+		},
 	}
 
 	for _, user := range users {

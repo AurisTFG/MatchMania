@@ -1,30 +1,30 @@
-import React, { useEffect, useState } from "react";
+import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import {
-  getAllResults,
+  Button,
+  DatePicker,
+  Input,
+  List,
+  Modal,
+  Select,
+  Space,
+  Typography,
+  message,
+} from "antd";
+import moment from "moment";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import {
   createResult,
-  updateResult,
   deleteResult,
+  getAllResults,
+  updateResult,
 } from "../../api/results.ts";
 import { getSeason } from "../../api/seasons.ts";
 import { getAllTeams, getTeam } from "../../api/teams.ts";
-import { Result, Team, Season } from "../../types/index.ts";
-import {
-  Modal,
-  Button,
-  Input,
-  List,
-  Space,
-  Typography,
-  DatePicker,
-  Select,
-  message,
-} from "antd";
-import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
-import { useParams } from "react-router-dom";
-import moment from "moment";
-import { UseAuth } from "../../components/Auth/AuthContext";
-import { User } from "../../types/users.ts";
 import { getAllUsers } from "../../api/users.ts";
+import { UseAuth } from "../../components/Auth/AuthContext";
+import { Result, Season, Team } from "../../types/index.ts";
+import { User } from "../../types/users.ts";
 
 const { Option } = Select;
 
@@ -68,7 +68,9 @@ const ResultsPage: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
 
   const fetchResults = async () => {
-    if (!seasonId || !teamId || resultsNotFound) return;
+    if (!seasonId || !teamId || resultsNotFound) {
+      return;
+    }
 
     try {
       const data = await getAllResults(parseInt(seasonId), parseInt(teamId));
@@ -81,7 +83,9 @@ const ResultsPage: React.FC = () => {
   };
 
   const fetchSeason = async () => {
-    if (!seasonId) return;
+    if (!seasonId) {
+      return;
+    }
 
     try {
       const data = await getSeason(parseInt(seasonId));
@@ -94,7 +98,9 @@ const ResultsPage: React.FC = () => {
   };
 
   const fetchTeam = async () => {
-    if (!teamId || !seasonId) return;
+    if (!teamId || !seasonId) {
+      return;
+    }
 
     try {
       const data = await getTeam(parseInt(seasonId), parseInt(teamId));
@@ -107,7 +113,9 @@ const ResultsPage: React.FC = () => {
   };
 
   const fetchTeams = async () => {
-    if (!seasonId || resultsNotFound) return;
+    if (!seasonId || resultsNotFound) {
+      return;
+    }
 
     try {
       const data = await getAllTeams(parseInt(seasonId));
@@ -289,7 +297,9 @@ const ResultsPage: React.FC = () => {
                 result.userUUID === user.id) ? (
                 <EditOutlined
                   key="edit"
-                  onClick={() => openEditModal(result)}
+                  onClick={() => {
+                    openEditModal(result);
+                  }}
                 />
               ) : null,
 
@@ -303,7 +313,9 @@ const ResultsPage: React.FC = () => {
             ]}
           >
             <List.Item.Meta
-              title={`${getTeamName(result.teamId)} vs ${getTeamName(result.opponentTeamId)}`}
+              title={`${getTeamName(result.teamId)} vs ${getTeamName(
+                result.opponentTeamId
+              )}`}
               description={
                 <>
                   <Typography.Text>
@@ -333,37 +345,41 @@ const ResultsPage: React.FC = () => {
         <DatePicker
           placeholder="Match Start Date"
           value={formData.matchStartDate}
-          onChange={(date) =>
-            setFormData({ ...formData, matchStartDate: date })
-          }
+          onChange={(date) => {
+            setFormData({ ...formData, matchStartDate: date });
+          }}
           style={{ marginBottom: 8 }}
         />
         <DatePicker
           placeholder="Match End Date"
           value={formData.matchEndDate}
-          onChange={(date) => setFormData({ ...formData, matchEndDate: date })}
+          onChange={(date) => {
+            setFormData({ ...formData, matchEndDate: date });
+          }}
           style={{ marginBottom: 8 }}
         />
         <Input
           placeholder="Score"
           value={formData.score}
-          onChange={(e) => setFormData({ ...formData, score: e.target.value })}
+          onChange={(e) => {
+            setFormData({ ...formData, score: e.target.value });
+          }}
           style={{ marginBottom: 8 }}
         />
         <Input
           placeholder="Opponent Score"
           value={formData.opponentScore}
-          onChange={(e) =>
-            setFormData({ ...formData, opponentScore: e.target.value })
-          }
+          onChange={(e) => {
+            setFormData({ ...formData, opponentScore: e.target.value });
+          }}
           style={{ marginBottom: 8 }}
         />
         <Select
           placeholder="Select Opponent Team"
           value={formData.opponentTeamId}
-          onChange={(value) =>
-            setFormData({ ...formData, opponentTeamId: value })
-          }
+          onChange={(value) => {
+            setFormData({ ...formData, opponentTeamId: value });
+          }}
           style={{ width: "100%", marginBottom: 8 }}
         >
           {teams

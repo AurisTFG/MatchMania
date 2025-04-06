@@ -5,7 +5,7 @@ import (
 	"MatchManiaAPI/constants"
 	"MatchManiaAPI/models"
 	"MatchManiaAPI/repositories"
-	"fmt"
+	"errors"
 	"net/http"
 	"time"
 
@@ -78,102 +78,102 @@ func (s *authService) CreateRefreshToken(sessionUUID string, user *models.User) 
 }
 
 func (s *authService) VerifyAccessToken(accessToken string) (*models.User, error) {
-	token, err := jwt.Parse(accessToken, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.Parse(accessToken, func(token *jwt.Token) (any, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, jwt.ErrSignatureInvalid
 		}
 		return []byte(s.env.JWTAccessTokenSecret), nil
 	})
 	if err != nil || !token.Valid {
-		return nil, fmt.Errorf("invalid access token")
+		return nil, errors.New("invalid access token")
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
-		return nil, fmt.Errorf("invalid access token claims")
+		return nil, errors.New("invalid access token claims")
 	}
 
 	if claims["aud"] != s.env.JWTAudience {
-		return nil, fmt.Errorf("invalid audience")
+		return nil, errors.New("invalid audience")
 	}
 
 	if claims["iss"] != s.env.JWTIssuer {
-		return nil, fmt.Errorf("invalid issuer")
+		return nil, errors.New("invalid issuer")
 	}
 
 	if float64(time.Now().Unix()) > claims["exp"].(float64) {
-		return nil, fmt.Errorf("access token expired")
+		return nil, errors.New("access token expired")
 	}
 
 	if claims["nbf"].(float64) > float64(time.Now().Unix()) {
-		return nil, fmt.Errorf("access token not valid yet")
+		return nil, errors.New("access token not valid yet")
 	}
 
 	if claims["exp"].(float64)-claims["iat"].(float64) != s.env.JWTAccessTokenDuration.Seconds() {
-		return nil, fmt.Errorf("access token expiration date is invalid")
+		return nil, errors.New("access token expiration date is invalid")
 	}
 
 	user, err := s.userRepo.FindByID(claims["sub"].(string))
 	if err != nil {
-		return nil, fmt.Errorf("invalid user")
+		return nil, errors.New("invalid user")
 	}
 
 	roleClaim := models.Role(claims["role"].(string))
 	if user.Role != roleClaim {
-		return nil, fmt.Errorf("user role mismatch")
+		return nil, errors.New("user role mismatch")
 	}
 
 	return user, nil
 }
 
-func (s *authService) VerifyRefreshToken(refreshToken string) (user *models.User, sessionID string, err error) {
-	token, err := jwt.Parse(refreshToken, func(token *jwt.Token) (interface{}, error) {
+func (s *authService) VerifyRefreshToken(refreshToken string) (*models.User, string, error) {
+	token, err := jwt.Parse(refreshToken, func(token *jwt.Token) (any, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, jwt.ErrSignatureInvalid
 		}
 		return []byte(s.env.JWTRefreshTokenSecret), nil
 	})
 	if err != nil || !token.Valid {
-		return nil, "", fmt.Errorf("invalid refresh token")
+		return nil, "", errors.New("invalid refresh token")
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
-		return nil, "", fmt.Errorf("invalid refresh token claims")
+		return nil, "", errors.New("invalid refresh token claims")
 	}
 
 	if claims["jti"] == "" {
-		return nil, "", fmt.Errorf("invalid session id")
+		return nil, "", errors.New("invalid session id")
 	}
 
 	if claims["aud"] != s.env.JWTAudience {
-		return nil, "", fmt.Errorf("invalid audience")
+		return nil, "", errors.New("invalid audience")
 	}
 
 	if claims["iss"] != s.env.JWTIssuer {
-		return nil, "", fmt.Errorf("invalid issuer")
+		return nil, "", errors.New("invalid issuer")
 	}
 
 	if float64(time.Now().Unix()) > claims["exp"].(float64) {
-		return nil, "", fmt.Errorf("refresh token expired")
+		return nil, "", errors.New("refresh token expired")
 	}
 
 	if claims["nbf"].(float64) > float64(time.Now().Unix()) {
-		return nil, "", fmt.Errorf("refresh token not valid yet")
+		return nil, "", errors.New("refresh token not valid yet")
 	}
 
 	if claims["exp"].(float64)-claims["iat"].(float64) != s.env.JWTRefreshTokenDuration.Seconds() {
-		return nil, "", fmt.Errorf("refresh token expiration date is invalid")
+		return nil, "", errors.New("refresh token expiration date is invalid")
 	}
 
-	user, err = s.userRepo.FindByID(claims["sub"].(string))
+	user, err := s.userRepo.FindByID(claims["sub"].(string))
 	if err != nil {
-		return nil, "", fmt.Errorf("invalid user")
+		return nil, "", errors.New("invalid user")
 	}
 
 	roleClaim := models.Role(claims["role"].(string))
 	if user.Role != roleClaim {
-		return nil, "", fmt.Errorf("user role mismatch")
+		return nil, "", errors.New("user role mismatch")
 	}
 
 	return user, claims["sessionId"].(string), nil
@@ -186,6 +186,7 @@ func (s *authService) CreateSession(sessionUUID uuid.UUID, userUUID uuid.UUID, r
 		LastRefreshToken: refreshToken,
 		ExpiresAt:        time.Now().Add(s.env.JWTRefreshTokenDuration),
 		InitiatedAt:      time.Now(),
+		IsRevoked:        false,
 	}
 
 	if err := session.HashToken(); err != nil {
@@ -209,7 +210,7 @@ func (s *authService) ExtendSession(sessionUUID string, refreshToken string) err
 	session.LastRefreshToken = refreshToken
 	session.ExpiresAt = time.Now().Add(s.env.JWTRefreshTokenDuration)
 
-	if err := session.HashToken(); err != nil {
+	if err = session.HashToken(); err != nil {
 		return err
 	}
 
@@ -259,7 +260,7 @@ func (s *authService) IsSessionValid(sessionUUID string, refreshToken string) bo
 	return true
 }
 
-func (c *authService) SetCookie(ctx *gin.Context, name string, value string) {
+func (s *authService) SetCookie(ctx *gin.Context, name string, value string) {
 	maxAge := -1
 	path := ""
 	domain := ""
@@ -267,25 +268,27 @@ func (c *authService) SetCookie(ctx *gin.Context, name string, value string) {
 	httpOnly := true
 
 	if value != "" {
-		if name == constants.AccessTokenName {
-			maxAge = int(c.env.JWTAccessTokenDuration.Seconds())
+		switch name {
+		case constants.AccessTokenName:
+			maxAge = int(s.env.JWTAccessTokenDuration.Seconds())
 			path = "/"
-		} else if name == constants.RefreshTokenName {
-			maxAge = int(c.env.JWTRefreshTokenDuration.Seconds())
+		case constants.RefreshTokenName:
+			maxAge = int(s.env.JWTRefreshTokenDuration.Seconds())
 			path = "/refresh"
-		} else {
+		default:
 			panic("Invalid cookie name")
 		}
 
-		if c.env.IsDev {
+		switch {
+		case s.env.IsDev:
 			domain = "localhost"
 			secure = false
 			ctx.SetSameSite(http.SameSiteLaxMode)
-		} else if c.env.IsProd {
-			domain = c.env.ClientURL
+		case s.env.IsProd:
+			domain = s.env.ClientURL
 			secure = true
 			ctx.SetSameSite(http.SameSiteNoneMode)
-		} else {
+		default:
 			panic("Invalid environment")
 		}
 	}

@@ -120,12 +120,12 @@ func (c *SeasonController) UpdateSeason(ctx *gin.Context) {
 	}
 
 	var bodyDto models.UpdateSeasonDto
-	if err := ctx.ShouldBindJSON(&bodyDto); err != nil {
+	if err = ctx.ShouldBindJSON(&bodyDto); err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
 	}
 
-	if err := bodyDto.Validate(); err != nil {
+	if err = bodyDto.Validate(); err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
 	}

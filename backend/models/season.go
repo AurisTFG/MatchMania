@@ -22,24 +22,24 @@ type Season struct {
 }
 
 type SeasonDto struct {
-	ID        uint      `json:"id" example:"5"`
-	Name      string    `json:"name" example:"Summer 2025"`
+	ID        uint      `json:"id"        example:"5"`
+	Name      string    `json:"name"      example:"Summer 2025"`
 	StartDate time.Time `json:"startDate" example:"2025-06-01T00:00:00Z"`
-	EndDate   time.Time `json:"endDate" example:"2025-08-31T00:00:00Z"`
+	EndDate   time.Time `json:"endDate"   example:"2025-08-31T00:00:00Z"`
 
-	UserUUID uuid.UUID `json:"userUUID" example:"550e8400-e29b-41d4-a716-446655440000"`
+	UserUUID uuid.UUID `json:"userUuid" example:"550e8400-e29b-41d4-a716-446655440000"`
 }
 
 type CreateSeasonDto struct {
-	Name      string    `json:"name" example:"Summer 2025" validate:"required,min=3,max=100"`
+	Name      string    `json:"name"      example:"Summer 2025"          validate:"required,min=3,max=100"`
 	StartDate time.Time `json:"startDate" example:"2025-06-01T00:00:00Z" validate:"required,startDate"`
-	EndDate   time.Time `json:"endDate" example:"2025-08-31T00:00:00Z" validate:"required,endDate,dateDiff,gtfield=StartDate"`
+	EndDate   time.Time `json:"endDate"   example:"2025-08-31T00:00:00Z" validate:"required,endDate,dateDiff,gtfield=StartDate"`
 }
 
 type UpdateSeasonDto struct {
-	Name      string    `json:"name" example:"Summer 2025" validate:"required,min=3,max=100"`
+	Name      string    `json:"name"      example:"Summer 2025"          validate:"required,min=3,max=100"`
 	StartDate time.Time `json:"startDate" example:"2025-06-01T00:00:00Z" validate:"required,startDate"`
-	EndDate   time.Time `json:"endDate" example:"2025-08-31T00:00:00Z" validate:"required,endDate,dateDiff,gtfield=StartDate"`
+	EndDate   time.Time `json:"endDate"   example:"2025-08-31T00:00:00Z" validate:"required,endDate,dateDiff,gtfield=StartDate"`
 }
 
 func (s *Season) BeforeDelete(tx *gorm.DB) error {
@@ -84,19 +84,19 @@ func ToSeasonDtos(seasons []Season) []SeasonDto {
 	return seasonDtos
 }
 
-func (s *CreateSeasonDto) ToSeason() Season {
+func (dto *CreateSeasonDto) ToSeason() Season {
 	return Season{
-		Name:      s.Name,
-		StartDate: s.StartDate,
-		EndDate:   s.EndDate,
+		Name:      dto.Name,
+		StartDate: dto.StartDate,
+		EndDate:   dto.EndDate,
 	}
 }
 
-func (s *UpdateSeasonDto) ToSeason() Season {
+func (dto *UpdateSeasonDto) ToSeason() Season {
 	return Season{
-		Name:      s.Name,
-		StartDate: s.StartDate,
-		EndDate:   s.EndDate,
+		Name:      dto.Name,
+		StartDate: dto.StartDate,
+		EndDate:   dto.EndDate,
 	}
 }
 
@@ -165,8 +165,13 @@ func seasonValidationErrorHandler(err error) error {
 	}
 
 	var errorMessage string
+	var validationErrors validator.ValidationErrors
 
-	for _, err := range err.(validator.ValidationErrors) {
+	if !errors.As(err, &validationErrors) {
+		return errors.New("validation error")
+	}
+
+	for _, err := range validationErrors {
 		field := err.StructField()
 		tag := err.Tag()
 

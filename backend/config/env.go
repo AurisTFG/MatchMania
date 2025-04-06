@@ -1,6 +1,7 @@
 package config
 
 import (
+	"errors"
 	"fmt"
 	"time"
 
@@ -11,8 +12,8 @@ type Env struct {
 	IsDev  bool
 	IsProd bool
 
-	DatabaseUrl string `mapstructure:"DATABASE_URL"`
-	ServerUrl   string `mapstructure:"SERVER_URL"`
+	DatabaseURL string `mapstructure:"DATABASE_URL"`
+	ServerURL   string `mapstructure:"SERVER_URL"`
 	ClientURL   string `mapstructure:"CLIENT_URL"`
 
 	JWTAccessTokenSecret    string        `mapstructure:"JWT_ACCESS_TOKEN_SECRET"`
@@ -30,11 +31,14 @@ type Env struct {
 	AdminPassword     string `mapstructure:"ADMIN_PASSWORD"`
 }
 
-var invalidString = "INVALID"
-var invalidDuration = time.Duration(0)
+var (
+	invalidString   = "INVALID"
+	invalidDuration = time.Duration(0)
+)
 
 func LoadEnv(envName string) (*Env, error) {
 	var env Env
+
 	var filePostfix string
 
 	env.IsDev = envName == "dev" || envName == "development"
@@ -57,7 +61,13 @@ func LoadEnv(envName string) (*Env, error) {
 
 	setDefaults() // must set all defaults, otherwise viper will not read from env
 
-	viper.ReadInConfig()
+	if err := viper.ReadInConfig(); err != nil {
+		// Only return an error if it's not a "file not found" error
+		var configFileNotFoundErr viper.ConfigFileNotFoundError
+		if !errors.As(err, &configFileNotFoundErr) {
+			return nil, fmt.Errorf("error reading config file: %w", err)
+		}
+	}
 
 	if err := viper.Unmarshal(&env); err != nil {
 		return nil, fmt.Errorf("unable to decode config into struct: %w", err)
@@ -91,14 +101,16 @@ func setDefaults() {
 }
 
 func (e *Env) Validate() error {
-	if e.DatabaseUrl == invalidString {
-		return fmt.Errorf("missing database URL")
+	if e.DatabaseURL == invalidString {
+		return errors.New("missing database URL")
 	}
-	if e.ServerUrl == invalidString {
-		return fmt.Errorf("missing server URL")
+
+	if e.ServerURL == invalidString {
+		return errors.New("missing server URL")
 	}
+
 	if e.ClientURL == invalidString {
-		return fmt.Errorf("missing client URL")
+		return errors.New("missing client URL")
 	}
 
 	if e.JWTAccessTokenSecret == invalidString ||
@@ -107,7 +119,7 @@ func (e *Env) Validate() error {
 		e.JWTAudience == invalidString ||
 		e.JWTAccessTokenDuration == invalidDuration ||
 		e.JWTRefreshTokenDuration == invalidDuration {
-		return fmt.Errorf("missing JWT configuration values")
+		return errors.New("missing JWT configuration values")
 	}
 
 	return nil

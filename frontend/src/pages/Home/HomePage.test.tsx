@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
-import HomePage from "./HomePage";
 import { UseAuth } from "../../components/Auth/AuthContext";
+import HomePage from "./HomePage";
 
 vi.mock("../../components/Auth/AuthContext", () => ({
   UseAuth: vi.fn(),

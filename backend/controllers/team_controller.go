@@ -98,12 +98,12 @@ func (c *TeamController) CreateTeam(ctx *gin.Context) {
 	}
 
 	var bodyDto models.CreateTeamDto
-	if err := ctx.ShouldBindJSON(&bodyDto); err != nil {
+	if err = ctx.ShouldBindJSON(&bodyDto); err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
 	}
 
-	if err := bodyDto.Validate(); err != nil {
+	if err = bodyDto.Validate(); err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
 	}
@@ -159,12 +159,12 @@ func (c *TeamController) UpdateTeam(ctx *gin.Context) {
 
 	var bodyDto models.UpdateTeamDto
 
-	if err := ctx.ShouldBindJSON(&bodyDto); err != nil {
+	if err = ctx.ShouldBindJSON(&bodyDto); err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
 	}
 
-	if err := bodyDto.Validate(); err != nil {
+	if err = bodyDto.Validate(); err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
 	}

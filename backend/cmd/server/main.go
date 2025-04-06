@@ -18,10 +18,11 @@ import (
 var (
 	env *config.Env
 	db  *config.DB
-	err error
 )
 
 func init() {
+	var err error
+
 	fmt.Print("(1/6) ")
 	envName := os.Getenv("MATCHMANIA_ENV")
 	if envName == "" {
@@ -96,9 +97,9 @@ func main() {
 	middlewares := middlewares.SetupMiddlewares(db, env)
 	routes.SetupRoutes(server, controllers, middlewares)
 
-	fmt.Println("(6/6) Starting server on " + env.ServerUrl + " . . . ")
+	fmt.Println("(6/6) Starting server on " + env.ServerURL + " . . . ")
 
-	err := server.Run(env.ServerUrl)
+	err := server.Run(env.ServerURL)
 	if err != nil {
 		log.Fatal("Failed to start Gin server.")
 	}

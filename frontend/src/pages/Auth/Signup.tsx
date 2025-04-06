@@ -1,6 +1,6 @@
+import { Box, Button, TextField } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { TextField, Button, Box } from "@mui/material";
 import { signup } from "../../api/auth";
 
 const Signup = () => {
@@ -29,14 +29,18 @@ const Signup = () => {
           fullWidth
           label="Username"
           value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          onChange={(e) => {
+            setUsername(e.target.value);
+          }}
           margin="normal"
         />
         <TextField
           fullWidth
           label="Email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => {
+            setEmail(e.target.value);
+          }}
           margin="normal"
         />
         <TextField
@@ -44,7 +48,9 @@ const Signup = () => {
           label="Password"
           type="password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) => {
+            setPassword(e.target.value);
+          }}
           margin="normal"
         />
         <Button

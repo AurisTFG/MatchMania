@@ -17,25 +17,25 @@
     "dev": [
       [
         {
-          "name": "backend",
+          "name": "db",
           "autoExecuteCommands": true,
-          "icon": "terminal",
+          "icon": "database",
+          "color": "terminal.ansiRed",
+          "commands": ["make run-db"]
+        },
+        {
+          "name": "back",
+          "autoExecuteCommands": true,
+          "icon": "account",
           "color": "terminal.ansiGreen",
           "commands": ["make run-back"]
         },
         {
-          "name": "frontend",
+          "name": "front",
           "autoExecuteCommands": true,
-          "icon": "terminal",
+          "icon": "rocket",
           "color": "terminal.ansiCyan",
           "commands": ["make run-front"]
-        },
-        {
-          "name": "other",
-          "autoExecuteCommands": true,
-          "icon": "terminal",
-          "color": "terminal.ansiYellow",
-          "commands": ["echo 'Hello World'"]
         }
       ]
     ]
