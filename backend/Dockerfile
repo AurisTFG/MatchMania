@@ -1,15 +1,20 @@
-# syntax=docker/dockerfile:1
+FROM golang:1.24.1-alpine AS builder
 
-FROM golang:1.24.1
+WORKDIR /app
 
-WORKDIR /MatchManiaAPI
+COPY go.mod go.sum ./
+RUN go mod download
 
 COPY . .
-RUN go mod download
-RUN go build -o MatchManiaAPI cmd/server/main.go
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -o MatchManiaAPI ./cmd/server/main.go
+
+FROM alpine:latest
+
+WORKDIR /root/
+
+COPY --from=builder /app/.env.development .
+COPY --from=builder /app/MatchManiaAPI .
 
 EXPOSE 8080
-
-ENV MATCHMANIA_ENV=prod
 
 CMD ["./MatchManiaAPI"]
