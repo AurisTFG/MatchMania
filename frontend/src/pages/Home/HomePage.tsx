@@ -1,6 +1,6 @@
-import { UseAuth } from "../../components/Auth/AuthContext";
-import { Button, Typography, Box } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
+import { UseAuth } from "../../components/Auth/AuthContext";
 
 const HomePage = () => {
   const { user } = UseAuth();

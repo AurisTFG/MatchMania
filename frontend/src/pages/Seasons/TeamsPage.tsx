@@ -1,18 +1,18 @@
+import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
+import { Button, Input, List, Modal, Space, Typography, message } from "antd";
 import React, { useEffect, useState } from "react";
-import {
-  getAllTeams,
-  createTeam,
-  updateTeam,
-  deleteTeam,
-} from "../../api/teams.ts";
+import { Link, useParams } from "react-router-dom";
 import { getSeason } from "../../api/seasons.ts";
-import { Team, Season } from "../../types/index.ts";
-import { Modal, Button, Input, List, Space, Typography, message } from "antd";
-import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
-import { useParams, Link } from "react-router-dom";
-import { UseAuth } from "../../components/Auth/AuthContext";
-import { User } from "../../types/users.ts";
+import {
+  createTeam,
+  deleteTeam,
+  getAllTeams,
+  updateTeam,
+} from "../../api/teams.ts";
 import { getAllUsers } from "../../api/users.ts";
+import { UseAuth } from "../../components/Auth/AuthContext";
+import { Season, Team } from "../../types/index.ts";
+import { User } from "../../types/users.ts";
 
 const isValidTeam = (seasonId: string | undefined) => {
   return seasonId && !isNaN(Number(seasonId)) && Number(seasonId) > 0;
@@ -35,7 +35,9 @@ const TeamsPage: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
 
   const fetchTeams = async () => {
-    if (!seasonId || teamsNotFound) return;
+    if (!seasonId || teamsNotFound) {
+      return;
+    }
 
     try {
       const data = await getAllTeams(parseInt(seasonId));
@@ -49,7 +51,9 @@ const TeamsPage: React.FC = () => {
   };
 
   const fetchSeason = async () => {
-    if (!seasonId) return;
+    if (!seasonId) {
+      return;
+    }
 
     try {
       const data = await getSeason(parseInt(seasonId));
@@ -164,7 +168,9 @@ const TeamsPage: React.FC = () => {
         <Button
           type="primary"
           icon={<PlusOutlined />}
-          onClick={() => openModal()}
+          onClick={() => {
+            openModal();
+          }}
           disabled={user === null}
           style={{
             filter: user === null ? "blur(1px)" : "none",
@@ -186,7 +192,12 @@ const TeamsPage: React.FC = () => {
               (user.role === "moderator" ||
                 user.role === "admin" ||
                 team.userUUID === user.id) ? (
-                <EditOutlined key="edit" onClick={() => openModal(team)} />
+                <EditOutlined
+                  key="edit"
+                  onClick={() => {
+                    openModal(team);
+                  }}
+                />
               ) : null,
 
               user && (user.role === "admin" || team.userUUID === user.id) ? (
@@ -229,7 +240,9 @@ const TeamsPage: React.FC = () => {
         <Input
           placeholder="Team Name"
           value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          onChange={(e) => {
+            setFormData({ ...formData, name: e.target.value });
+          }}
           style={{ marginBottom: 8 }}
         />
       </Modal>

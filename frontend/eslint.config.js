@@ -50,35 +50,26 @@ export default tseslint.config(
 
       "react/react-in-jsx-scope": "off", // react is always in scope with vite
 
-      "import/no-unresolved": "off",
+      "import/named": "off", // fails to resolve imports from react-router-dom
+
+      "import/no-unresolved": "off", // fails to resolve imports from local files
+
       "import/order": [
         "error",
         {
           named: true,
-          "newlines-between": "always",
-          alphabetize: {
-            order: "asc",
-          },
+          "newlines-between": "never",
+          alphabetize: { order: "asc" },
           groups: [
             "builtin",
-            ["external", "internal"],
-            ["parent", "sibling", "index", "object"],
+            "external",
+            "internal",
+            "parent",
+            "sibling",
+            "index",
+            "object",
             "type",
           ],
-          pathGroups: [
-            {
-              group: "builtin",
-              pattern: "react",
-              position: "before",
-            },
-            {
-              group: "external",
-              pattern: "@mui/icons-material",
-              position: "after",
-            },
-          ],
-
-          pathGroupsExcludedImportTypes: ["react"],
         },
       ],
     },
