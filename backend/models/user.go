@@ -46,27 +46,27 @@ func (u *User) ComparePassword(password string) bool {
 }
 
 type UserDto struct {
-	UUID     uuid.UUID `json:"id"       example:"526432ea-822b-4b5b-b1b3-34e8ab453e03"`
-	Username string    `json:"username" example:"john_doe_123"`
-	Email    string    `json:"email"    example:"email@example.com"`
-	Role     Role      `json:"role"     example:"admin"`
+	UUID     uuid.UUID `example:"526432ea-822b-4b5b-b1b3-34e8ab453e03" json:"id"`
+	Username string    `example:"john_doe_123"                         json:"username"`
+	Email    string    `example:"email@example.com"                    json:"email"`
+	Role     Role      `example:"admin"                                json:"role"`
 }
 
 type SignUpDto struct {
-	Username string `json:"username" validate:"required,min=3,max=100" example:"john_doe_123"`
-	Email    string `json:"email"    validate:"required,email"         example:"email@example.com"`
-	Password string `json:"password" validate:"required,min=8,max=255" example:"VeryStrongPassword"`
+	Username string `example:"john_doe_123"       json:"username" validate:"required,min=3,max=100"`
+	Email    string `example:"email@example.com"  json:"email"    validate:"required,email"`
+	Password string `example:"VeryStrongPassword" json:"password" validate:"required,min=8,max=255"`
 }
 
 type LoginDto struct {
-	Email    string `json:"email"    validate:"required,email"         example:"email@example.com"`
-	Password string `json:"password" validate:"required,min=8,max=255" example:"VeryStrongPassword"`
+	Email    string `example:"email@example.com"  json:"email"    validate:"required,email"`
+	Password string `example:"VeryStrongPassword" json:"password" validate:"required"`
 }
 
 type UpdateUserDto struct {
-	Username string `json:"username" validate:"omitempty,min=3,max=100" example:"john_doe_123"`
-	Email    string `json:"email"    validate:"omitempty,email"         example:"email@example.com"`
-	Password string `json:"password" validate:"omitempty,min=8,max=255" example:"VeryStrongPassword"`
+	Username string `example:"john_doe_123"       json:"username" validate:"omitempty,min=3,max=100"`
+	Email    string `example:"email@example.com"  json:"email"    validate:"omitempty,email"`
+	Password string `example:"VeryStrongPassword" json:"password" validate:"omitempty,min=8,max=255"`
 }
 
 func (dto *SignUpDto) ToUser() User {
