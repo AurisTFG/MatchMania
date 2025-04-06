@@ -119,12 +119,12 @@ func (c *ResultController) CreateResult(ctx *gin.Context) {
 	}
 
 	var bodyDto models.CreateResultDto
-	if err := ctx.ShouldBindJSON(&bodyDto); err != nil {
+	if err = ctx.ShouldBindJSON(&bodyDto); err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
 	}
 
-	if err := bodyDto.Validate(); err != nil {
+	if err = bodyDto.Validate(); err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
 	}
@@ -197,12 +197,12 @@ func (c *ResultController) UpdateResult(ctx *gin.Context) {
 	}
 
 	var bodyDto models.UpdateResultDto
-	if err := ctx.ShouldBindJSON(&bodyDto); err != nil {
+	if err = ctx.ShouldBindJSON(&bodyDto); err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
 	}
 
-	if err := bodyDto.Validate(); err != nil {
+	if err = bodyDto.Validate(); err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
 	}

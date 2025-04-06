@@ -37,7 +37,7 @@ type ResultDto struct {
 	SeasonID       uint      `json:"seasonId"       example:"5"`
 	TeamID         uint      `json:"teamId"         example:"6"`
 	OpponentTeamID uint      `json:"opponentTeamId" example:"7"`
-	UserUUID       uuid.UUID `json:"userUUID"       example:"550e8400-e29b-41d4-a716-446655440000"`
+	UserUUID       uuid.UUID `json:"userUuid"       example:"550e8400-e29b-41d4-a716-446655440000"`
 }
 
 type CreateResultDto struct {
@@ -181,8 +181,13 @@ func resultValidationErrorHandler(err error) error {
 	}
 
 	var errorMessage string
+	var validationErrors validator.ValidationErrors
 
-	for _, err := range err.(validator.ValidationErrors) {
+	if !errors.As(err, &validationErrors) {
+		return errors.New("validation error")
+	}
+
+	for _, err := range validationErrors {
 		field := err.StructField()
 		tag := err.Tag()
 

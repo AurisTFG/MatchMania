@@ -126,7 +126,7 @@ func (s *authService) VerifyAccessToken(accessToken string) (*models.User, error
 	return user, nil
 }
 
-func (s *authService) VerifyRefreshToken(refreshToken string) (user *models.User, sessionID string, err error) {
+func (s *authService) VerifyRefreshToken(refreshToken string) (*models.User, string, error) {
 	token, err := jwt.Parse(refreshToken, func(token *jwt.Token) (any, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, jwt.ErrSignatureInvalid
@@ -166,7 +166,7 @@ func (s *authService) VerifyRefreshToken(refreshToken string) (user *models.User
 		return nil, "", errors.New("refresh token expiration date is invalid")
 	}
 
-	user, err = s.userRepo.FindByID(claims["sub"].(string))
+	user, err := s.userRepo.FindByID(claims["sub"].(string))
 	if err != nil {
 		return nil, "", errors.New("invalid user")
 	}
@@ -186,6 +186,7 @@ func (s *authService) CreateSession(sessionUUID uuid.UUID, userUUID uuid.UUID, r
 		LastRefreshToken: refreshToken,
 		ExpiresAt:        time.Now().Add(s.env.JWTRefreshTokenDuration),
 		InitiatedAt:      time.Now(),
+		IsRevoked:        false,
 	}
 
 	if err := session.HashToken(); err != nil {
@@ -209,7 +210,7 @@ func (s *authService) ExtendSession(sessionUUID string, refreshToken string) err
 	session.LastRefreshToken = refreshToken
 	session.ExpiresAt = time.Now().Add(s.env.JWTRefreshTokenDuration)
 
-	if err := session.HashToken(); err != nil {
+	if err = session.HashToken(); err != nil {
 		return err
 	}
 
@@ -278,15 +279,16 @@ func (s *authService) SetCookie(ctx *gin.Context, name string, value string) {
 			panic("Invalid cookie name")
 		}
 
-		if s.env.IsDev {
+		switch {
+		case s.env.IsDev:
 			domain = "localhost"
 			secure = false
 			ctx.SetSameSite(http.SameSiteLaxMode)
-		} else if s.env.IsProd {
+		case s.env.IsProd:
 			domain = s.env.ClientURL
 			secure = true
 			ctx.SetSameSite(http.SameSiteNoneMode)
-		} else {
+		default:
 			panic("Invalid environment")
 		}
 	}

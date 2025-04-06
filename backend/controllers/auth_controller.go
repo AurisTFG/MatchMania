@@ -36,7 +36,7 @@ func NewAuthController(
 // @Tags auth
 // @Accept json
 // @Produce json
-// @Param body body models.SignUpDto true "Sign up details"
+// @Param body models.SignUpDto true "Sign up details"
 // @Success 204
 // @Failure 400 {object} responses.BadRequestResponse
 // @Failure 422 {object} responses.UnprocessableEntityResponse
@@ -68,7 +68,7 @@ func (c *AuthController) SignUp(ctx *gin.Context) {
 // @Tags auth
 // @Accept json
 // @Produce json
-// @Param body body models.LoginDto true "Log in details"
+// @Param body models.LoginDto true "Log in details"
 // @Success 204
 // @Failure 400 {object} responses.BadRequestResponse
 // @Failure 422 {object} responses.UnprocessableEntityResponse

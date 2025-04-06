@@ -15,18 +15,18 @@ type Controllers struct {
 }
 
 func NewControllers(
-	AuthController AuthController,
+	authController AuthController,
 	userController UserController,
-	SeasonController SeasonController,
-	TeamController TeamController,
-	ResultController ResultController,
+	seasonController SeasonController,
+	teamController TeamController,
+	resultController ResultController,
 ) Controllers {
 	return Controllers{
-		AuthController:   AuthController,
+		AuthController:   authController,
 		UserController:   userController,
-		SeasonController: SeasonController,
-		TeamController:   TeamController,
-		ResultController: ResultController,
+		SeasonController: seasonController,
+		TeamController:   teamController,
+		ResultController: resultController,
 	}
 }
 

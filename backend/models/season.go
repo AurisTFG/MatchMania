@@ -27,7 +27,7 @@ type SeasonDto struct {
 	StartDate time.Time `json:"startDate" example:"2025-06-01T00:00:00Z"`
 	EndDate   time.Time `json:"endDate"   example:"2025-08-31T00:00:00Z"`
 
-	UserUUID uuid.UUID `json:"userUUID" example:"550e8400-e29b-41d4-a716-446655440000"`
+	UserUUID uuid.UUID `json:"userUuid" example:"550e8400-e29b-41d4-a716-446655440000"`
 }
 
 type CreateSeasonDto struct {
@@ -165,8 +165,13 @@ func seasonValidationErrorHandler(err error) error {
 	}
 
 	var errorMessage string
+	var validationErrors validator.ValidationErrors
 
-	for _, err := range err.(validator.ValidationErrors) {
+	if !errors.As(err, &validationErrors) {
+		return errors.New("validation error")
+	}
+
+	for _, err := range validationErrors {
 		field := err.StructField()
 		tag := err.Tag()
 

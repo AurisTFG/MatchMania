@@ -18,10 +18,11 @@ import (
 var (
 	env *config.Env
 	db  *config.DB
-	err error
 )
 
 func init() {
+	var err error
+
 	fmt.Print("(1/6) ")
 	envName := os.Getenv("MATCHMANIA_ENV")
 	if envName == "" {

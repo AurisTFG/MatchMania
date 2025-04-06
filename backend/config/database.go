@@ -25,7 +25,7 @@ func ConnectDatabase(env *Env) (*DB, error) {
 		return nil, fmt.Errorf("failed to get database connection pool: %w", err)
 	}
 
-	if err := sqlDB.Ping(); err != nil {
+	if err = sqlDB.Ping(); err != nil {
 		return nil, fmt.Errorf("failed to ping database: %w", err)
 	}
 
