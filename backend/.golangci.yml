@@ -103,7 +103,7 @@ linters:
     # - inamedparam # [great idea, but too strict, need to ignore a lot of cases by default] reports interfaces with unnamed method parameters
     - interfacebloat # checks the number of methods inside an interface
     - prealloc # [premature optimization, but can be used in some cases] finds slice declarations that could potentially be preallocated
-    # - tagalign # checks that struct tags are well aligned
+    - tagalign # checks that struct tags are well aligned
     - zerologlint # detects the wrong usage of zerolog that a user forgets to dispatch zerolog.Event
     - tagliatelle # checks the struct tags
     - dupword # [useless without config] checks for duplicate words in the source code

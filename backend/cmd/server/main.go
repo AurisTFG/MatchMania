@@ -6,13 +6,10 @@ import (
 	"MatchManiaAPI/docs"
 	"MatchManiaAPI/middlewares"
 	"MatchManiaAPI/routes"
+	"MatchManiaAPI/seeders"
 	"fmt"
 	"log"
 	"os"
-	"time"
-
-	"github.com/gin-contrib/cors"
-	"github.com/gin-gonic/gin"
 )
 
 var (
@@ -52,7 +49,7 @@ func init() {
 	fmt.Println("Successfully synced database")
 
 	fmt.Print("(5/6) ")
-	err = config.SeedDatabase(db, env)
+	err = seeders.SeedDatabase(db, env)
 	if err != nil {
 		log.Fatalf("Failed to seed database: %v", err)
 	}
@@ -70,26 +67,10 @@ func init() {
 // @contact.name AurisTFG
 // @contact.url https://github.com/AurisTFG
 func main() {
-	if env.IsDev {
-		gin.SetMode(gin.DebugMode)
-	} else {
-		gin.SetMode(gin.ReleaseMode)
+	server, err := config.SetupServer(env)
+	if err != nil {
+		log.Fatalf("Failed to setup server: %v", err)
 	}
-
-	server := gin.Default()
-
-	if err := server.SetTrustedProxies(nil); err != nil {
-		log.Fatal("Failed to set trusted proxies.")
-	}
-
-	server.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{env.ClientURL},
-		AllowMethods:     []string{"GET", "POST", "PATCH", "DELETE", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
-		ExposeHeaders:    []string{"Content-Length"},
-		AllowCredentials: true,
-		MaxAge:           12 * time.Hour,
-	}))
 
 	docs.SetupSwagger(server, env)
 
@@ -99,7 +80,7 @@ func main() {
 
 	fmt.Println("(6/6) Starting server on " + env.ServerURL + " . . . ")
 
-	err := server.Run(env.ServerURL)
+	err = server.Run(env.ServerURL)
 	if err != nil {
 		log.Fatal("Failed to start Gin server.")
 	}

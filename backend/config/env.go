@@ -122,5 +122,16 @@ func (e *Env) Validate() error {
 		return errors.New("missing JWT configuration values")
 	}
 
+	if e.IsDev {
+		if e.UserEmail == invalidString ||
+			e.UserPassword == invalidString ||
+			e.ModeratorEmail == invalidString ||
+			e.ModeratorPassword == invalidString ||
+			e.AdminEmail == invalidString ||
+			e.AdminPassword == invalidString {
+			return errors.New("missing default user credentials")
+		}
+	}
+
 	return nil
 }

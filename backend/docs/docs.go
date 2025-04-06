@@ -1203,8 +1203,6 @@ const docTemplate = `{
                 },
                 "password": {
                     "type": "string",
-                    "maxLength": 255,
-                    "minLength": 8,
                     "example": "VeryStrongPassword"
                 }
             }

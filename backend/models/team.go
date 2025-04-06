@@ -22,20 +22,20 @@ type Team struct {
 }
 
 type TeamDto struct {
-	ID   uint   `json:"id"   example:"6"`
-	Name string `json:"name" example:"BIG Clan"`
-	Elo  uint   `json:"elo"  example:"1200"`
+	ID   uint   `example:"6"        json:"id"`
+	Name string `example:"BIG Clan" json:"name"`
+	Elo  uint   `example:"1200"     json:"elo"`
 
-	SeasonID uint      `json:"seasonId" example:"5"`
-	UserUUID uuid.UUID `json:"userUuid" example:"550e8400-e29b-41d4-a716-446655440000"`
+	SeasonID uint      `example:"5"                                    json:"seasonId"`
+	UserUUID uuid.UUID `example:"550e8400-e29b-41d4-a716-446655440000" json:"userUuid"`
 }
 
 type CreateTeamDto struct {
-	Name string `json:"name" validate:"required,min=3,max=100" example:"BIG Clan"`
+	Name string `example:"BIG Clan" json:"name" validate:"required,min=3,max=100"`
 }
 
 type UpdateTeamDto struct {
-	Name string `json:"name" validate:"required,min=3,max=100" example:"BIG Clan"`
+	Name string `example:"BIG Clan" json:"name" validate:"required,min=3,max=100"`
 }
 
 func (t *Team) ToDto() TeamDto {
