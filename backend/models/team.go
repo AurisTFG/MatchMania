@@ -22,9 +22,9 @@ type Team struct {
 }
 
 type TeamDto struct {
-	ID   uint   `json:"id" example:"6"`
+	ID   uint   `json:"id"   example:"6"`
 	Name string `json:"name" example:"BIG Clan"`
-	Elo  uint   `json:"elo" example:"1200"`
+	Elo  uint   `json:"elo"  example:"1200"`
 
 	SeasonID uint      `json:"seasonId" example:"5"`
 	UserUUID uuid.UUID `json:"userUUID" example:"550e8400-e29b-41d4-a716-446655440000"`

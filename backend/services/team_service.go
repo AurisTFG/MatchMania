@@ -31,7 +31,11 @@ func (s *teamService) GetTeamByID(seasonID uint, teamID uint) (*models.Team, err
 	return s.repo.FindByIDAndSeasonID(teamID, seasonID)
 }
 
-func (s *teamService) CreateTeam(teamDto *models.CreateTeamDto, seasonID uint, userUUID uuid.UUID) (*models.Team, error) {
+func (s *teamService) CreateTeam(
+	teamDto *models.CreateTeamDto,
+	seasonID uint,
+	userUUID uuid.UUID,
+) (*models.Team, error) {
 	newTeam := teamDto.ToTeam()
 	newTeam.SeasonID = seasonID
 	newTeam.Elo = 1000

@@ -38,7 +38,10 @@ func (s *seasonService) CreateSeason(seasonDto *models.CreateSeasonDto, userUUID
 	return s.repo.Create(&newSeason)
 }
 
-func (s *seasonService) UpdateSeason(currentSeason *models.Season, updatedSeasonDto *models.UpdateSeasonDto) (*models.Season, error) {
+func (s *seasonService) UpdateSeason(
+	currentSeason *models.Season,
+	updatedSeasonDto *models.UpdateSeasonDto,
+) (*models.Season, error) {
 	updatedSeason := updatedSeasonDto.ToSeason()
 
 	return s.repo.Update(currentSeason, &updatedSeason)
