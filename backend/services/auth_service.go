@@ -78,7 +78,7 @@ func (s *authService) CreateRefreshToken(sessionUUID string, user *models.User) 
 }
 
 func (s *authService) VerifyAccessToken(accessToken string) (*models.User, error) {
-	token, err := jwt.Parse(accessToken, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.Parse(accessToken, func(token *jwt.Token) (any, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, jwt.ErrSignatureInvalid
 		}
@@ -127,7 +127,7 @@ func (s *authService) VerifyAccessToken(accessToken string) (*models.User, error
 }
 
 func (s *authService) VerifyRefreshToken(refreshToken string) (user *models.User, sessionID string, err error) {
-	token, err := jwt.Parse(refreshToken, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.Parse(refreshToken, func(token *jwt.Token) (any, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, jwt.ErrSignatureInvalid
 		}
@@ -259,7 +259,7 @@ func (s *authService) IsSessionValid(sessionUUID string, refreshToken string) bo
 	return true
 }
 
-func (c *authService) SetCookie(ctx *gin.Context, name string, value string) {
+func (s *authService) SetCookie(ctx *gin.Context, name string, value string) {
 	maxAge := -1
 	path := ""
 	domain := ""
@@ -269,21 +269,21 @@ func (c *authService) SetCookie(ctx *gin.Context, name string, value string) {
 	if value != "" {
 		switch name {
 		case constants.AccessTokenName:
-			maxAge = int(c.env.JWTAccessTokenDuration.Seconds())
+			maxAge = int(s.env.JWTAccessTokenDuration.Seconds())
 			path = "/"
 		case constants.RefreshTokenName:
-			maxAge = int(c.env.JWTRefreshTokenDuration.Seconds())
+			maxAge = int(s.env.JWTRefreshTokenDuration.Seconds())
 			path = "/refresh"
 		default:
 			panic("Invalid cookie name")
 		}
 
-		if c.env.IsDev {
+		if s.env.IsDev {
 			domain = "localhost"
 			secure = false
 			ctx.SetSameSite(http.SameSiteLaxMode)
-		} else if c.env.IsProd {
-			domain = c.env.ClientURL
+		} else if s.env.IsProd {
+			domain = s.env.ClientURL
 			secure = true
 			ctx.SetSameSite(http.SameSiteNoneMode)
 		} else {

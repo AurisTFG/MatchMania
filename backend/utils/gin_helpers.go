@@ -2,7 +2,7 @@ package utils
 
 import (
 	"MatchManiaAPI/models"
-	"log"
+	"fmt"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -29,7 +29,7 @@ func GetAuthUser(ctx *gin.Context) *models.User {
 
 	userObj, ok := user.(*models.User)
 	if !ok {
-		log.Printf("Expected user object, but got: %v", user)
+		fmt.Printf("Expected user object, but got: %v", user)
 		return nil
 	}
 

@@ -84,19 +84,19 @@ func ToSeasonDtos(seasons []Season) []SeasonDto {
 	return seasonDtos
 }
 
-func (s *CreateSeasonDto) ToSeason() Season {
+func (dto *CreateSeasonDto) ToSeason() Season {
 	return Season{
-		Name:      s.Name,
-		StartDate: s.StartDate,
-		EndDate:   s.EndDate,
+		Name:      dto.Name,
+		StartDate: dto.StartDate,
+		EndDate:   dto.EndDate,
 	}
 }
 
-func (s *UpdateSeasonDto) ToSeason() Season {
+func (dto *UpdateSeasonDto) ToSeason() Season {
 	return Season{
-		Name:      s.Name,
-		StartDate: s.StartDate,
-		EndDate:   s.EndDate,
+		Name:      dto.Name,
+		StartDate: dto.StartDate,
+		EndDate:   dto.EndDate,
 	}
 }
 

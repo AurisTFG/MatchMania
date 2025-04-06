@@ -12,8 +12,8 @@ type Env struct {
 	IsDev  bool
 	IsProd bool
 
-	DatabaseUrl string `mapstructure:"DATABASE_URL"`
-	ServerUrl   string `mapstructure:"SERVER_URL"`
+	DatabaseURL string `mapstructure:"DATABASE_URL"`
+	ServerURL   string `mapstructure:"SERVER_URL"`
 	ClientURL   string `mapstructure:"CLIENT_URL"`
 
 	JWTAccessTokenSecret    string        `mapstructure:"JWT_ACCESS_TOKEN_SECRET"`
@@ -100,11 +100,11 @@ func setDefaults() {
 }
 
 func (e *Env) Validate() error {
-	if e.DatabaseUrl == invalidString {
+	if e.DatabaseURL == invalidString {
 		return errors.New("missing database URL")
 	}
 
-	if e.ServerUrl == invalidString {
+	if e.ServerURL == invalidString {
 		return errors.New("missing server URL")
 	}
 

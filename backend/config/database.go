@@ -15,7 +15,7 @@ type DB struct {
 }
 
 func ConnectDatabase(env *Env) (*DB, error) {
-	db, err := gorm.Open(postgres.Open(env.DatabaseUrl), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(env.DatabaseURL), &gorm.Config{})
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize database session: %w", err)
 	}
