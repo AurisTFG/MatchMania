@@ -24,18 +24,6 @@ run-prod: build ## Runs the application in Production environment
 	@MATCHMANIA_ENV=prod $(BUILD_PATH)
 	@echo "[✔] Server stopped"
 
-.PHONY: format
-format: ## Formats the code using gofmt
-	@echo "[?] Formatting code..."
-	@go fmt ./...
-	@echo "[✔] Code formatted"
-
-.PHONY: vet
-vet: ## Runs Go vet, a static analysis tool
-	@echo "[?] Running Go vet..."
-	@go vet ./...
-	@echo "[✔] Go vet completed"
-
 .PHONY: lint
 lint: ## Runs the linter to check for code style and errors
 	@echo "[?] Running linter..."
@@ -74,7 +62,7 @@ clean: ## Cleans up the output directory
 	@echo "[✔] Cleaned up output directory"
 
 .PHONY: prepare
-prepare: format vet tidy test docs lint  ## Prepares the code for pushing to the repository
+prepare: tidy test docs lint  ## Prepares the code for pushing to the repository
 	@echo "[✔] Code prepared for pushing to the repository"
 
 .PHONY: help
