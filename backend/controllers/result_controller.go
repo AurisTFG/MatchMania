@@ -25,9 +25,9 @@ func NewResultController(teamService services.TeamService, resultService service
 // @Produce json
 // @Param seasonId path string true "Season ID" default(2)
 // @Param teamId path string true "Team ID" default(4)
-// @Success 200 {object} responses.ResultsResponse
-// @Failure 400 {object} responses.BadRequestResponse
-// @Failure 422 {object} responses.UnprocessableEntityResponse
+// @Success 200 {object} []models.ResultDto
+// @Failure 400 {object} models.ErrorDto
+// @Failure 422 {object} models.ErrorDto
 // @Router /seasons/{seasonId}/teams/{teamId}/results [get]
 func (c *ResultController) GetAllResults(ctx *gin.Context) {
 	seasonID, err := utils.GetParamUint(ctx, "seasonId")
@@ -48,7 +48,7 @@ func (c *ResultController) GetAllResults(ctx *gin.Context) {
 		return
 	}
 
-	r.OK(ctx, r.ResultsResponse{Results: models.ToResultDtos(resultModels)})
+	r.OK(ctx, models.ToResultDtos(resultModels))
 }
 
 // @Summary Get a result
@@ -58,10 +58,10 @@ func (c *ResultController) GetAllResults(ctx *gin.Context) {
 // @Produce json
 // @Param seasonId path string true "Season ID" default(2)
 // @Param teamId path string true "Team ID" default(4)
-// @Param resultId path string true "Result ID" default(2)
-// @Success 200 {object} responses.ResultResponse
-// @Failure 400 {object} responses.BadRequestResponse
-// @Failure 404 {object} responses.NotFoundResponse
+// @Param resultId	path		string	true	"Result ID"	default(2)
+// @Success 200 {object} []models.ResultDto
+// @Failure 400 {object} models.ErrorDto
+// @Failure 404 {object} models.ErrorDto
 // @Router /seasons/{seasonId}/teams/{teamId}/results/{resultId} [get]
 func (c *ResultController) GetResult(ctx *gin.Context) {
 	seasonID, err := utils.GetParamUint(ctx, "seasonId")
@@ -88,7 +88,7 @@ func (c *ResultController) GetResult(ctx *gin.Context) {
 		return
 	}
 
-	r.OK(ctx, r.ResultResponse{Result: resultModel.ToDto()})
+	r.OK(ctx, resultModel.ToDto())
 }
 
 // @Summary Create a result
@@ -99,11 +99,11 @@ func (c *ResultController) GetResult(ctx *gin.Context) {
 // @Param seasonId path string true "Season ID" default(2)
 // @Param teamId path string true "Team ID" default(3)
 // @Param result body models.CreateResultDto true "Result object that needs to be created"
-// @Success 201 {object} responses.ResultResponse
-// @Failure 400 {object} responses.BadRequestResponse
-// @Failure 401 {object} responses.UnauthorizedResponse
-// @Failure 404 {object} responses.NotFoundResponse
-// @Failure 422 {object} responses.UnprocessableEntityResponse
+// @Success 201 {object} models.ResultDto
+// @Failure 400 {object} models.ErrorDto
+// @Failure 401 {object} models.ErrorDto
+// @Failure 404 {object} models.ErrorDto
+// @Failure 422 {object} models.ErrorDto
 // @Router /seasons/{seasonId}/teams/{teamId}/results [post]
 func (c *ResultController) CreateResult(ctx *gin.Context) {
 	seasonID, err := utils.GetParamUint(ctx, "seasonId")
@@ -158,7 +158,7 @@ func (c *ResultController) CreateResult(ctx *gin.Context) {
 		return
 	}
 
-	r.Created(ctx, r.ResultResponse{Result: newResult.ToDto()})
+	r.Created(ctx, newResult.ToDto())
 }
 
 // @Summary Update a result
@@ -170,12 +170,12 @@ func (c *ResultController) CreateResult(ctx *gin.Context) {
 // @Param teamId path string true "Team ID" default(4)
 // @Param resultId path string true "Result ID" default(2)
 // @Param result body models.UpdateResultDto true "Result object that needs to be updated"
-// @Success 200 {object} responses.ResultResponse
-// @Failure 400 {object} responses.BadRequestResponse
-// @Failure 401 {object} responses.UnauthorizedResponse
-// @Failure 403 {object} responses.ForbiddenResponse
-// @Failure 404 {object} responses.NotFoundResponse
-// @Failure 422 {object} responses.UnprocessableEntityResponse
+// @Success 200 {object} models.ResultDto
+// @Failure 400 {object} models.ErrorDto
+// @Failure 401 {object} models.ErrorDto
+// @Failure 403 {object} models.ErrorDto
+// @Failure 404 {object} models.ErrorDto
+// @Failure 422 {object} models.ErrorDto
 // @Router /seasons/{seasonId}/teams/{teamId}/results/{resultId} [patch]
 func (c *ResultController) UpdateResult(ctx *gin.Context) {
 	seasonID, err := utils.GetParamUint(ctx, "seasonId")
@@ -230,7 +230,7 @@ func (c *ResultController) UpdateResult(ctx *gin.Context) {
 		return
 	}
 
-	r.OK(ctx, r.ResultResponse{Result: updatedResult.ToDto()})
+	r.OK(ctx, updatedResult.ToDto())
 }
 
 // @Summary Delete a result
@@ -242,11 +242,11 @@ func (c *ResultController) UpdateResult(ctx *gin.Context) {
 // @Param teamId path string true "Team ID" default(3)
 // @Param resultId path string true "Result ID" default(1)
 // @Success 204
-// @Failure 400 {object} responses.BadRequestResponse
-// @Failure 401 {object} responses.UnauthorizedResponse
-// @Failure 403 {object} responses.ForbiddenResponse
-// @Failure 404 {object} responses.NotFoundResponse
-// @Failure 422 {object} responses.UnprocessableEntityResponse
+// @Failure 400 {object} models.ErrorDto
+// @Failure 401 {object} models.ErrorDto
+// @Failure 403 {object} models.ErrorDto
+// @Failure 404 {object} models.ErrorDto
+// @Failure 422 {object} models.ErrorDto
 // @Router /seasons/{seasonId}/teams/{teamId}/results/{resultId} [delete]
 func (c *ResultController) DeleteResult(ctx *gin.Context) {
 	seasonID, err := utils.GetParamUint(ctx, "seasonId")

@@ -49,13 +49,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responses.BadRequestResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     },
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "$ref": "#/definitions/responses.UnprocessableEntityResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     }
                 }
@@ -75,7 +75,7 @@ const docTemplate = `{
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "$ref": "#/definitions/responses.UnprocessableEntityResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     }
                 }
@@ -92,13 +92,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/responses.UserResponse"
+                            "$ref": "#/definitions/models.UserDto"
                         }
                     },
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "$ref": "#/definitions/responses.UnprocessableEntityResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     }
                 }
@@ -118,7 +118,7 @@ const docTemplate = `{
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "$ref": "#/definitions/responses.UnprocessableEntityResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     }
                 }
@@ -149,19 +149,22 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "204": {
-                        "description": "No Content"
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.UserDto"
+                        }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responses.BadRequestResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     },
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "$ref": "#/definitions/responses.UnprocessableEntityResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     }
                 }
@@ -184,7 +187,10 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/responses.SeasonsResponse"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.SeasonDto"
+                            }
                         }
                     }
                 }
@@ -216,25 +222,25 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/responses.SeasonResponse"
+                            "$ref": "#/definitions/models.SeasonDto"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responses.BadRequestResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/responses.UnauthorizedResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     },
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "$ref": "#/definitions/responses.UnprocessableEntityResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     }
                 }
@@ -267,19 +273,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/responses.SeasonResponse"
+                            "$ref": "#/definitions/models.SeasonDto"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responses.BadRequestResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/responses.NotFoundResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     }
                 }
@@ -313,31 +319,31 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responses.BadRequestResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/responses.UnauthorizedResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/responses.ForbiddenResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/responses.NotFoundResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     },
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "$ref": "#/definitions/responses.UnprocessableEntityResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     }
                 }
@@ -377,37 +383,37 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/responses.SeasonResponse"
+                            "$ref": "#/definitions/models.SeasonDto"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responses.BadRequestResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/responses.UnauthorizedResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/responses.ForbiddenResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/responses.NotFoundResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     },
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "$ref": "#/definitions/responses.UnprocessableEntityResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     }
                 }
@@ -440,19 +446,22 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/responses.TeamsResponse"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.TeamDto"
+                            }
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responses.BadRequestResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     },
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "$ref": "#/definitions/responses.UnprocessableEntityResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     }
                 }
@@ -492,31 +501,31 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/responses.TeamResponse"
+                            "$ref": "#/definitions/models.TeamDto"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responses.BadRequestResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/responses.UnauthorizedResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/responses.NotFoundResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     },
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "$ref": "#/definitions/responses.UnprocessableEntityResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     }
                 }
@@ -557,19 +566,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/responses.TeamResponse"
+                            "$ref": "#/definitions/models.TeamDto"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responses.BadRequestResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/responses.NotFoundResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     }
                 }
@@ -611,31 +620,31 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responses.BadRequestResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/responses.UnauthorizedResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/responses.ForbiddenResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/responses.NotFoundResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     },
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "$ref": "#/definitions/responses.UnprocessableEntityResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     }
                 }
@@ -683,37 +692,37 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/responses.TeamResponse"
+                            "$ref": "#/definitions/models.TeamDto"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responses.BadRequestResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/responses.UnauthorizedResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/responses.ForbiddenResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/responses.NotFoundResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     },
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "$ref": "#/definitions/responses.UnprocessableEntityResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     }
                 }
@@ -754,19 +763,22 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/responses.ResultsResponse"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.ResultDto"
+                            }
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responses.BadRequestResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     },
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "$ref": "#/definitions/responses.UnprocessableEntityResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     }
                 }
@@ -814,31 +826,31 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/responses.ResultResponse"
+                            "$ref": "#/definitions/models.ResultDto"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responses.BadRequestResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/responses.UnauthorizedResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/responses.NotFoundResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     },
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "$ref": "#/definitions/responses.UnprocessableEntityResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     }
                 }
@@ -887,19 +899,22 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/responses.ResultResponse"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.ResultDto"
+                            }
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responses.BadRequestResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/responses.NotFoundResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     }
                 }
@@ -949,31 +964,31 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responses.BadRequestResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/responses.UnauthorizedResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/responses.ForbiddenResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/responses.NotFoundResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     },
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "$ref": "#/definitions/responses.UnprocessableEntityResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     }
                 }
@@ -1029,37 +1044,37 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/responses.ResultResponse"
+                            "$ref": "#/definitions/models.ResultDto"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responses.BadRequestResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/responses.UnauthorizedResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/responses.ForbiddenResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/responses.NotFoundResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     },
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "$ref": "#/definitions/responses.UnprocessableEntityResponse"
+                            "$ref": "#/definitions/models.ErrorDto"
                         }
                     }
                 }
@@ -1082,7 +1097,10 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/responses.UsersResponse"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.UserDto"
+                            }
                         }
                     }
                 }
@@ -1114,7 +1132,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/responses.UserResponse"
+                            "$ref": "#/definitions/models.UserDto"
                         }
                     }
                 }
@@ -1187,6 +1205,15 @@ const docTemplate = `{
                     "maxLength": 100,
                     "minLength": 3,
                     "example": "BIG Clan"
+                }
+            }
+        },
+        "models.ErrorDto": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Error message"
                 }
             }
         },
@@ -1422,127 +1449,6 @@ const docTemplate = `{
                 "username": {
                     "type": "string",
                     "example": "john_doe_123"
-                }
-            }
-        },
-        "responses.BadRequestResponse": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "type": "string",
-                    "example": "JSON parsing error"
-                }
-            }
-        },
-        "responses.ForbiddenResponse": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "type": "string",
-                    "example": "Forbidden"
-                }
-            }
-        },
-        "responses.NotFoundResponse": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "type": "string",
-                    "example": "Resource was not found"
-                }
-            }
-        },
-        "responses.ResultResponse": {
-            "type": "object",
-            "properties": {
-                "result": {
-                    "$ref": "#/definitions/models.ResultDto"
-                }
-            }
-        },
-        "responses.ResultsResponse": {
-            "type": "object",
-            "properties": {
-                "results": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.ResultDto"
-                    }
-                }
-            }
-        },
-        "responses.SeasonResponse": {
-            "type": "object",
-            "properties": {
-                "season": {
-                    "$ref": "#/definitions/models.SeasonDto"
-                }
-            }
-        },
-        "responses.SeasonsResponse": {
-            "type": "object",
-            "properties": {
-                "seasons": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.SeasonDto"
-                    }
-                }
-            }
-        },
-        "responses.TeamResponse": {
-            "type": "object",
-            "properties": {
-                "team": {
-                    "$ref": "#/definitions/models.TeamDto"
-                }
-            }
-        },
-        "responses.TeamsResponse": {
-            "type": "object",
-            "properties": {
-                "teams": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.TeamDto"
-                    }
-                }
-            }
-        },
-        "responses.UnauthorizedResponse": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "type": "string",
-                    "example": "Unauthorized"
-                }
-            }
-        },
-        "responses.UnprocessableEntityResponse": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "type": "string",
-                    "example": "Validation error"
-                }
-            }
-        },
-        "responses.UserResponse": {
-            "type": "object",
-            "properties": {
-                "user": {
-                    "$ref": "#/definitions/models.UserDto"
-                }
-            }
-        },
-        "responses.UsersResponse": {
-            "type": "object",
-            "properties": {
-                "users": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.UserDto"
-                    }
                 }
             }
         }

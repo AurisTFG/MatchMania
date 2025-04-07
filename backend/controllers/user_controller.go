@@ -22,7 +22,7 @@ func NewUserController(userService services.UserService) UserController {
 // @Tags users
 // @Accept json
 // @Produce json
-// @Success 200 {object} responses.UsersResponse
+// @Success 200 {object} []models.UserDto
 // @Router /users [get]
 func (c *UserController) GetAllUsers(ctx *gin.Context) {
 	users, err := c.userService.GetAllUsers()
@@ -31,7 +31,7 @@ func (c *UserController) GetAllUsers(ctx *gin.Context) {
 		return
 	}
 
-	r.OK(ctx, r.UsersResponse{Users: models.ToUserDtos(users)})
+	r.OK(ctx, models.ToUserDtos(users))
 }
 
 // @Summary Get user by ID
@@ -40,7 +40,7 @@ func (c *UserController) GetAllUsers(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param id path string true "User ID"
-// @Success 200 {object} responses.UserResponse
+// @Success 200 {object} models.UserDto
 // @Router /users/{id} [get]
 func (c *UserController) GetUserByID(ctx *gin.Context) {
 	userID := utils.GetParamString(ctx, "userId")
