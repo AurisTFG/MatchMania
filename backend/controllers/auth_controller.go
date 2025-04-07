@@ -210,7 +210,7 @@ func (c *AuthController) RefreshToken(ctx *gin.Context) {
 // @Summary Get current user
 // @Description Get current user
 // @Tags auth
-// @Success	200 {object} models.UserDto
+// @Success 200 {object} models.UserDto
 // @Failure 422 {object} models.ErrorDto
 // @Router /auth/me [get]
 func (c *AuthController) GetMe(ctx *gin.Context) {

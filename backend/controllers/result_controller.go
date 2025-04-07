@@ -58,7 +58,7 @@ func (c *ResultController) GetAllResults(ctx *gin.Context) {
 // @Produce json
 // @Param seasonId path string true "Season ID" default(2)
 // @Param teamId path string true "Team ID" default(4)
-// @Param resultId	path		string	true	"Result ID"	default(2)
+// @Param resultId path string true "Result ID" default(2)
 // @Success 200 {object} []models.ResultDto
 // @Failure 400 {object} models.ErrorDto
 // @Failure 404 {object} models.ErrorDto
