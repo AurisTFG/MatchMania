@@ -23,7 +23,8 @@ type AuthService interface {
 	ExtendSession(sessionUUID string, refreshToken string) error
 	InvalidateSession(sessionUUID string) error
 	IsSessionValid(sessionUUID string, refreshToken string) bool
-	SetCookie(ctx *gin.Context, name string, value string)
+	SetCookies(ctx *gin.Context, accessToken string, refreshToken string)
+	DeleteCookies(ctx *gin.Context)
 }
 
 type authService struct {
@@ -260,38 +261,20 @@ func (s *authService) IsSessionValid(sessionUUID string, refreshToken string) bo
 	return true
 }
 
-func (s *authService) SetCookie(ctx *gin.Context, name string, value string) {
-	maxAge := -1
-	path := ""
-	domain := ""
-	secure := false
-	httpOnly := true
+func (s *authService) SetCookies(ctx *gin.Context, accessToken string, refreshToken string) {
+	ctx.SetSameSite(http.SameSiteNoneMode)
 
-	if value != "" {
-		switch name {
-		case constants.AccessTokenName:
-			maxAge = int(s.env.JWTAccessTokenDuration.Seconds())
-			path = "/"
-		case constants.RefreshTokenName:
-			maxAge = int(s.env.JWTRefreshTokenDuration.Seconds())
-			path = "/refresh"
-		default:
-			panic("Invalid cookie name")
-		}
+	ctx.SetCookie(
+		constants.AccessTokenName, accessToken, int(s.env.JWTAccessTokenDuration.Seconds()),
+		"/api/v1", s.env.ClientURL, true, true)
+	ctx.SetCookie(
+		constants.RefreshTokenName, refreshToken, int(s.env.JWTRefreshTokenDuration.Seconds()),
+		"/api/v1/auth", s.env.ClientURL, true, true)
+}
 
-		switch {
-		case s.env.IsDev:
-			domain = "localhost"
-			secure = false
-			ctx.SetSameSite(http.SameSiteLaxMode)
-		case s.env.IsProd:
-			domain = s.env.ClientURL
-			secure = true
-			ctx.SetSameSite(http.SameSiteNoneMode)
-		default:
-			panic("Invalid environment")
-		}
-	}
+func (s *authService) DeleteCookies(ctx *gin.Context) {
+	ctx.SetSameSite(http.SameSiteNoneMode)
 
-	ctx.SetCookie(name, value, maxAge, path, domain, secure, httpOnly)
+	ctx.SetCookie(constants.AccessTokenName, "", -1, "/api/v1", s.env.ClientURL, true, true)
+	ctx.SetCookie(constants.RefreshTokenName, "", -1, "/api/v1/auth", s.env.ClientURL, true, true)
 }

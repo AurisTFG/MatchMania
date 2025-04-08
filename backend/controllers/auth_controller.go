@@ -69,7 +69,7 @@ func (c *AuthController) SignUp(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param loginDto body models.LoginDto true "Log in details"
-// @Success 204
+// @Success 200 {object} models.UserDto
 // @Failure 400 {object} models.ErrorDto
 // @Failure 422 {object} models.ErrorDto
 // @Router /auth/login [post]
@@ -117,10 +117,9 @@ func (c *AuthController) LogIn(ctx *gin.Context) {
 		return
 	}
 
-	c.authService.SetCookie(ctx, constants.AccessTokenName, accessToken)
-	c.authService.SetCookie(ctx, constants.RefreshTokenName, refreshToken)
+	c.authService.SetCookies(ctx, accessToken, refreshToken)
 
-	r.NoContent(ctx)
+	r.OK(ctx, user.ToDto())
 }
 
 // @Summary Log out
@@ -132,29 +131,32 @@ func (c *AuthController) LogIn(ctx *gin.Context) {
 func (c *AuthController) LogOut(ctx *gin.Context) {
 	tokenString, err := ctx.Cookie(constants.RefreshTokenName)
 	if err != nil {
-		r.UnprocessableEntity(ctx, "Refresh token not found")
+		r.UnprocessableEntity(ctx, "Already logged out")
+		c.authService.DeleteCookies(ctx)
 		return
 	}
 
 	_, sessionId, err := c.authService.VerifyRefreshToken(tokenString)
 	if err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
+		c.authService.DeleteCookies(ctx)
 		return
 	}
 
 	if !c.authService.IsSessionValid(sessionId, tokenString) {
 		r.UnprocessableEntity(ctx, "Session is not valid")
+		c.authService.DeleteCookies(ctx)
 		return
 	}
 
 	err = c.authService.InvalidateSession(sessionId)
 	if err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
+		c.authService.DeleteCookies(ctx)
 		return
 	}
 
-	c.authService.SetCookie(ctx, constants.AccessTokenName, "")
-	c.authService.SetCookie(ctx, constants.RefreshTokenName, "")
+	c.authService.DeleteCookies(ctx)
 
 	r.NoContent(ctx)
 }
@@ -201,8 +203,7 @@ func (c *AuthController) RefreshToken(ctx *gin.Context) {
 		return
 	}
 
-	c.authService.SetCookie(ctx, constants.AccessTokenName, accessToken)
-	c.authService.SetCookie(ctx, constants.RefreshTokenName, refreshToken)
+	c.authService.SetCookies(ctx, accessToken, refreshToken)
 
 	r.NoContent(ctx)
 }
