@@ -23,8 +23,8 @@ func NewResultController(teamService services.TeamService, resultService service
 // @Tags results
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID" default(2)
-// @Param teamId path string true "Team ID" default(4)
+// @Param seasonId path string true "Season ID" default(1)
+// @Param teamId path string true "Team ID" default(1)
 // @Success 200 {object} []models.ResultDto
 // @Failure 400 {object} models.ErrorDto
 // @Failure 422 {object} models.ErrorDto
@@ -56,9 +56,9 @@ func (c *ResultController) GetAllResults(ctx *gin.Context) {
 // @Tags results
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID" default(2)
-// @Param teamId path string true "Team ID" default(4)
-// @Param resultId path string true "Result ID" default(2)
+// @Param seasonId path string true "Season ID" default(1)
+// @Param teamId path string true "Team ID" default(1)
+// @Param resultId path string true "Result ID" default(1)
 // @Success 200 {object} []models.ResultDto
 // @Failure 400 {object} models.ErrorDto
 // @Failure 404 {object} models.ErrorDto
@@ -96,8 +96,8 @@ func (c *ResultController) GetResult(ctx *gin.Context) {
 // @Tags results
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID" default(2)
-// @Param teamId path string true "Team ID" default(3)
+// @Param seasonId path string true "Season ID" default(1)
+// @Param teamId path string true "Team ID" default(1)
 // @Param result body models.CreateResultDto true "Result object that needs to be created"
 // @Success 201 {object} models.ResultDto
 // @Failure 400 {object} models.ErrorDto
@@ -166,9 +166,9 @@ func (c *ResultController) CreateResult(ctx *gin.Context) {
 // @Tags results
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID" default(2)
-// @Param teamId path string true "Team ID" default(4)
-// @Param resultId path string true "Result ID" default(2)
+// @Param seasonId path string true "Season ID" default(1)
+// @Param teamId path string true "Team ID" default(1)
+// @Param resultId path string true "Result ID" default(1)
 // @Param result body models.UpdateResultDto true "Result object that needs to be updated"
 // @Success 200 {object} models.ResultDto
 // @Failure 400 {object} models.ErrorDto
@@ -238,8 +238,8 @@ func (c *ResultController) UpdateResult(ctx *gin.Context) {
 // @Tags results
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID" default(2)
-// @Param teamId path string true "Team ID" default(3)
+// @Param seasonId path string true "Season ID" default(1)
+// @Param teamId path string true "Team ID" default(1)
 // @Param resultId path string true "Result ID" default(1)
 // @Success 204
 // @Failure 400 {object} models.ErrorDto

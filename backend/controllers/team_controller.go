@@ -23,7 +23,7 @@ func NewTeamController(seasonService services.SeasonService, teamService service
 // @Tags teams
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID" default(2)
+// @Param seasonId path string true "Season ID" default(1)
 // @Success 200 {object} []models.TeamDto
 // @Failure 400 {object} models.ErrorDto
 // @Failure 422 {object} models.ErrorDto
@@ -49,8 +49,8 @@ func (c *TeamController) GetAllTeams(ctx *gin.Context) {
 // @Tags teams
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID" default(2)
-// @Param teamId path string true "Team ID" default(2)
+// @Param seasonId path string true "Season ID" default(1)
+// @Param teamId path string true "Team ID" default(1)
 // @Success 200 {object} models.TeamDto
 // @Failure 400 {object} models.ErrorDto
 // @Failure 404 {object} models.ErrorDto
@@ -82,7 +82,7 @@ func (c *TeamController) GetTeam(ctx *gin.Context) {
 // @Tags teams
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID" default(2)
+// @Param seasonId path string true "Season ID" default(1)
 // @Param team body models.CreateTeamDto true "Team object that needs to be created"
 // @Success 201 {object} models.TeamDto
 // @Failure 400 {object} models.ErrorDto
@@ -134,8 +134,8 @@ func (c *TeamController) CreateTeam(ctx *gin.Context) {
 // @Tags teams
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID" default(2)
-// @Param teamId path string true "Team ID" default(2)
+// @Param seasonId path string true "Season ID" default(1)
+// @Param teamId path string true "Team ID" default(1)
 // @Param team body models.UpdateTeamDto true "Team object that needs to be updated"
 // @Success 200 {object} models.TeamDto
 // @Failure 400 {object} models.ErrorDto

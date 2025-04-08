@@ -103,7 +103,7 @@ func (c *SeasonController) CreateSeason(ctx *gin.Context) {
 // @Tags seasons
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID" default(2)
+// @Param seasonId path string true "Season ID" default(1)
 // @Param season body models.UpdateSeasonDto true "Season object that needs to be updated"
 // @Success 200 {object} models.SeasonDto
 // @Failure 400 {object} models.ErrorDto
