@@ -18,7 +18,7 @@ import {
   useDeleteResult,
   useFetchResults,
   useUpdateResult,
-} from "../../api/hooks/resultsHooks.ts"; // Import your custom hooks
+} from "../../api/hooks/resultsHooks.ts";
 import { useFetchSeason } from "../../api/hooks/seasonsHooks.ts";
 import { useFetchTeam, useFetchTeams } from "../../api/hooks/teamsHooks.ts";
 import { useFetchUsers } from "../../api/hooks/usersHooks.ts";
