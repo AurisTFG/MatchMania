@@ -2,28 +2,18 @@ import { Box, Button, TextField } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLogIn } from "../../api/hooks/authHooks";
-import { User } from "../../types/users";
 
 export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
 
-  const { mutateAsync: loginMutation } = useLogIn();
+  const { mutateAsync: loginAsync, isPending: loginPending } = useLogIn();
 
   const handleLogin = async () => {
-    setLoading(true);
+    await loginAsync({ email, password });
 
-    const user = (await loginMutation({ email, password })) as User;
-
-    if (user.id) {
-      await navigate("/");
-    } else {
-      console.error("User not found");
-    }
-
-    setLoading(false);
+    await navigate("/");
   };
 
   return (
@@ -54,9 +44,9 @@ export default function Login() {
         color="primary"
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onClick={handleLogin}
-        disabled={loading}
+        disabled={loginPending}
       >
-        {loading ? "Logging in..." : "Login"}
+        {loginPending ? "Logging in..." : "Login"}
       </Button>
     </Box>
   );
