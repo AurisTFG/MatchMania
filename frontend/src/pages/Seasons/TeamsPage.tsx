@@ -8,7 +8,7 @@ import {
   useDeleteTeam,
   useFetchTeams,
   useUpdateTeam,
-} from "../../api/hooks/teansHooks";
+} from "../../api/hooks/teamsHooks";
 import { useFetchUsers } from "../../api/hooks/usersHooks";
 import { useAuth } from "../../providers/AuthProvider";
 import { Team } from "../../types";

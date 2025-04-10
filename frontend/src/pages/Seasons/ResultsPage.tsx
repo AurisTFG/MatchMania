@@ -20,9 +20,10 @@ import {
   useUpdateResult,
 } from "../../api/hooks/resultsHooks.ts"; // Import your custom hooks
 import { useFetchSeason } from "../../api/hooks/seasonsHooks.ts";
-import { useFetchTeam, useFetchTeams } from "../../api/hooks/teansHooks.ts";
+import { useFetchTeam, useFetchTeams } from "../../api/hooks/teamsHooks.ts";
 import { useFetchUsers } from "../../api/hooks/usersHooks.ts";
 import { useAuth } from "../../providers/AuthProvider.tsx";
+import { Result } from "../../types/results.ts";
 import { User } from "../../types/users.ts";
 
 const { Option } = Select;
@@ -49,9 +50,9 @@ export default function ResultsPage() {
 
   const { user } = useAuth();
 
-  const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [editingResult, setEditingResult] = useState<Partial<Result>>({});
   const [formData, setFormData] = useState({
     matchStartDate: moment(),
     matchEndDate: moment(),
@@ -67,7 +68,7 @@ export default function ResultsPage() {
   } = useFetchResults(parseInt(seasonId!), parseInt(teamId!));
   const { data: season } = useFetchSeason(parseInt(seasonId!));
   const { data: team } = useFetchTeam(parseInt(seasonId!), parseInt(teamId!));
-  const { data: teams } = useFetchTeams(parseInt(seasonId!), parseInt(teamId!));
+  const { data: teams } = useFetchTeams(parseInt(seasonId!));
   const { data: users = [] } = useFetchUsers();
 
   const { mutateAsync: createResult } = useCreateResult(
@@ -100,6 +101,8 @@ export default function ResultsPage() {
   };
 
   const openCreateModal = () => {
+    setIsEditing(false);
+    setEditingResult({});
     setFormData({
       matchStartDate: moment(),
       matchEndDate: moment(),
@@ -112,6 +115,27 @@ export default function ResultsPage() {
 
   const closeModal = () => {
     setIsModalOpen(false);
+    setEditingResult({});
+    setFormData({
+      matchStartDate: moment(),
+      matchEndDate: moment(),
+      score: "",
+      opponentScore: "",
+      opponentTeamId: 0,
+    });
+  };
+
+  const openEditModal = (result: Result) => {
+    setIsEditing(true);
+    setEditingResult(result);
+    setFormData({
+      matchStartDate: moment(result.matchStartDate),
+      matchEndDate: moment(result.matchEndDate),
+      score: result.score,
+      opponentScore: result.opponentScore,
+      opponentTeamId: result.opponentTeamId,
+    });
+    setIsModalOpen(true);
   };
 
   const handleCreateOrEdit = async () => {
@@ -206,7 +230,9 @@ export default function ResultsPage() {
                 result.userUUID === user.id) ? (
                 <EditOutlined
                   key="edit"
-                  onClick={() => openEditModal(result)}
+                  onClick={() => {
+                    openEditModal(result);
+                  }}
                 />
               ) : null,
 
