@@ -18,7 +18,7 @@
       [
         {
           "name": "db",
-          "autoExecuteCommands": true,
+          "autoExecuteCommands": false,
           "icon": "database",
           "color": "terminal.ansiRed",
           "commands": ["make run-db"]
