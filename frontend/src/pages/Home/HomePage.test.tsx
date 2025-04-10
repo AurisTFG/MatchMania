@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
-import { UseAuth } from "../../components/Auth/AuthContext";
+import { useAuth } from "../../providers/AuthProvider";
 import HomePage from "./HomePage";
 
 vi.mock("../../components/Auth/AuthContext", () => ({
@@ -13,7 +13,7 @@ describe("HomePage Component", () => {
   });
 
   it("should render welcome message with username when user is logged in", () => {
-    (UseAuth as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+    (useAuth as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
       user: { username: "TestUser" },
     });
 
@@ -30,7 +30,7 @@ describe("HomePage Component", () => {
   });
 
   it('should render welcome message with "Guest" when user is not logged in', () => {
-    (UseAuth as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+    (useAuth as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
       user: null,
     });
 

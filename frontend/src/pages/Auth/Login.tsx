@@ -1,67 +1,63 @@
 import { Box, Button, TextField } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getMe, login } from "../../api/auth";
-import { UseAuth } from "../../components/Auth/AuthContext";
+import { useLogIn } from "../../api/hooks/authHooks";
+import { User } from "../../types/users";
 
-const Login = () => {
+export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { setUser } = UseAuth();
+  const [loading, setLoading] = useState(false);
+
+  const { mutateAsync: loginMutation } = useLogIn();
 
   const handleLogin = async () => {
-    try {
-      await login(email, password);
-      const user = await getMe();
-      if (!user) {
-        throw new Error("User not found");
-      }
+    setLoading(true);
 
-      console.log("Login success:", user);
+    const user = (await loginMutation({ email, password })) as User;
 
-      setUser(user);
-
-      navigate("/");
-    } catch (error) {
-      console.error("Login failed:", error);
+    if (user.id) {
+      await navigate("/");
+    } else {
+      console.error("User not found");
     }
+
+    setLoading(false);
   };
 
   return (
-    <>
-      <Box sx={{ maxWidth: 400, mx: "auto", mt: 5 }}>
-        <h1>Login</h1>
-        <TextField
-          fullWidth
-          label="Email"
-          value={email}
-          onChange={(e) => {
-            setEmail(e.target.value);
-          }}
-          margin="normal"
-        />
-        <TextField
-          fullWidth
-          label="Password"
-          type="password"
-          value={password}
-          onChange={(e) => {
-            setPassword(e.target.value);
-          }}
-          margin="normal"
-        />
-        <Button
-          fullWidth
-          variant="contained"
-          color="primary"
-          onClick={handleLogin}
-        >
-          Login
-        </Button>
-      </Box>
-    </>
+    <Box sx={{ maxWidth: 400, mx: "auto", mt: 5 }}>
+      <h1>Login</h1>
+      <TextField
+        fullWidth
+        label="Email"
+        value={email}
+        onChange={(e) => {
+          setEmail(e.target.value);
+        }}
+        margin="normal"
+      />
+      <TextField
+        fullWidth
+        label="Password"
+        type="password"
+        value={password}
+        onChange={(e) => {
+          setPassword(e.target.value);
+        }}
+        margin="normal"
+      />
+      <Button
+        fullWidth
+        variant="contained"
+        color="primary"
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+        onClick={handleLogin}
+        disabled={loading}
+      >
+        {loading ? "Logging in..." : "Login"}
+      </Button>
+    </Box>
   );
-};
-
-export default Login;
+}

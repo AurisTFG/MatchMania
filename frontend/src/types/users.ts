@@ -4,11 +4,3 @@ export interface User {
   email: string;
   role: string;
 }
-
-export interface UsersResponse {
-  users?: User[];
-}
-
-export interface UserResponse {
-  user?: User;
-}

@@ -5,11 +5,3 @@ export interface Team {
   seasonId: number;
   userUUID: string;
 }
-
-export interface TeamsResponse {
-  teams?: Team[];
-}
-
-export interface TeamResponse {
-  team?: Team;
-}

@@ -1,9 +1,9 @@
 import { Box, Button, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
-import { UseAuth } from "../../components/Auth/AuthContext";
+import { useAuth } from "../../providers/AuthProvider";
 
-const HomePage = () => {
-  const { user } = UseAuth();
+export default function HomePage() {
+  const { user } = useAuth();
 
   return (
     <Box
@@ -80,6 +80,4 @@ const HomePage = () => {
       )}
     </Box>
   );
-};
-
-export default HomePage;
+}

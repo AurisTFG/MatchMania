@@ -11,19 +11,18 @@ import {
   message,
 } from "antd";
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
-  createResult,
-  deleteResult,
-  getAllResults,
-  updateResult,
-} from "../../api/results.ts";
-import { getSeason } from "../../api/seasons.ts";
-import { getAllTeams, getTeam } from "../../api/teams.ts";
-import { getAllUsers } from "../../api/users.ts";
-import { UseAuth } from "../../components/Auth/AuthContext";
-import { Result, Season, Team } from "../../types/index.ts";
+  useCreateResult,
+  useDeleteResult,
+  useFetchResults,
+  useUpdateResult,
+} from "../../api/hooks/resultsHooks.ts"; // Import your custom hooks
+import { useFetchSeason } from "../../api/hooks/seasonsHooks.ts";
+import { useFetchTeam, useFetchTeams } from "../../api/hooks/teansHooks.ts";
+import { useFetchUsers } from "../../api/hooks/usersHooks.ts";
+import { useAuth } from "../../providers/AuthProvider.tsx";
 import { User } from "../../types/users.ts";
 
 const { Option } = Select;
@@ -42,21 +41,17 @@ const isValidResult = (
   );
 };
 
-const ResultsPage: React.FC = () => {
+export default function ResultsPage() {
   const { seasonId, teamId } = useParams<{
     seasonId: string;
     teamId: string;
   }>();
-  const [season, setSeason] = useState<Partial<Season>>({});
-  const [team, setTeam] = useState<Partial<Team>>({});
-  const [teams, setTeams] = useState<Team[]>([]);
 
-  const [results, setResults] = useState<Result[]>([]);
+  const { user } = useAuth();
+
   const [loading, setLoading] = useState(false);
-  const [resultsNotFound, setResultsNotFound] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [editingResult, setEditingResult] = useState<Partial<Result>>({});
   const [formData, setFormData] = useState({
     matchStartDate: moment(),
     matchEndDate: moment(),
@@ -64,79 +59,35 @@ const ResultsPage: React.FC = () => {
     opponentScore: "",
     opponentTeamId: 0,
   });
-  const { user } = UseAuth();
-  const [users, setUsers] = useState<User[]>([]);
 
-  const fetchResults = async () => {
-    if (!seasonId || !teamId || resultsNotFound) {
+  const {
+    data: results,
+    isLoading,
+    isError,
+  } = useFetchResults(parseInt(seasonId!), parseInt(teamId!));
+  const { data: season } = useFetchSeason(parseInt(seasonId!));
+  const { data: team } = useFetchTeam(parseInt(seasonId!), parseInt(teamId!));
+  const { data: teams } = useFetchTeams(parseInt(seasonId!), parseInt(teamId!));
+  const { data: users = [] } = useFetchUsers();
+
+  const { mutateAsync: createResult } = useCreateResult(
+    parseInt(seasonId!),
+    parseInt(teamId!)
+  );
+  const { mutateAsync: updateResult } = useUpdateResult(
+    parseInt(seasonId!),
+    parseInt(teamId!)
+  );
+  const { mutateAsync: deleteResult } = useDeleteResult(
+    parseInt(seasonId!),
+    parseInt(teamId!)
+  );
+
+  useEffect(() => {
+    if (!isValidResult(seasonId, teamId)) {
       return;
     }
-
-    try {
-      const data = await getAllResults(parseInt(seasonId), parseInt(teamId));
-      setResults(data);
-    } catch (error) {
-      message.error("Failed to fetch results.");
-      console.error(error);
-      setResultsNotFound(true);
-    }
-  };
-
-  const fetchSeason = async () => {
-    if (!seasonId) {
-      return;
-    }
-
-    try {
-      const data = await getSeason(parseInt(seasonId));
-
-      setSeason(data);
-    } catch (error) {
-      console.error(error);
-      setResultsNotFound(true);
-    }
-  };
-
-  const fetchTeam = async () => {
-    if (!teamId || !seasonId) {
-      return;
-    }
-
-    try {
-      const data = await getTeam(parseInt(seasonId), parseInt(teamId));
-
-      setTeam(data);
-    } catch (error) {
-      console.error(error);
-      setResultsNotFound(true);
-    }
-  };
-
-  const fetchTeams = async () => {
-    if (!seasonId || resultsNotFound) {
-      return;
-    }
-
-    try {
-      const data = await getAllTeams(parseInt(seasonId));
-
-      setTeams(data);
-    } catch (error) {
-      message.error("Failed to fetch teams.");
-      console.error(error);
-      setResultsNotFound(true);
-    }
-  };
-
-  const fetchUsers = async () => {
-    try {
-      const data = await getAllUsers();
-      setUsers(data);
-    } catch (error) {
-      message.error("Failed to fetch users.");
-      console.error(error);
-    }
-  };
+  }, [seasonId, teamId]);
 
   const getUserById = (userId: string): User => {
     return (
@@ -148,45 +99,7 @@ const ResultsPage: React.FC = () => {
     );
   };
 
-  useEffect(() => {
-    if (!isValidResult(seasonId, teamId)) {
-      setResultsNotFound(true);
-      return;
-    }
-
-    setLoading(true);
-    fetchSeason();
-    fetchTeam();
-    fetchTeams();
-    fetchResults();
-    fetchUsers();
-    setLoading(false);
-  }, [seasonId, teamId, resultsNotFound]);
-
-  if (resultsNotFound) {
-    return (
-      <div style={{ padding: 20 }}>
-        <Typography.Title level={4}>Results not found</Typography.Title>
-      </div>
-    );
-  }
-
-  const openEditModal = (result: Result) => {
-    setIsEditing(true);
-    setEditingResult(result);
-    setFormData({
-      matchStartDate: moment(result.matchStartDate),
-      matchEndDate: moment(result.matchEndDate),
-      score: result.score,
-      opponentScore: result.opponentScore,
-      opponentTeamId: result.opponentTeamId,
-    });
-    setIsModalOpen(true);
-  };
-
   const openCreateModal = () => {
-    setIsEditing(false);
-    setEditingResult({});
     setFormData({
       matchStartDate: moment(),
       matchEndDate: moment(),
@@ -199,33 +112,23 @@ const ResultsPage: React.FC = () => {
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setEditingResult({});
-    setFormData({
-      matchStartDate: moment(),
-      matchEndDate: moment(),
-      score: "",
-      opponentScore: "",
-      opponentTeamId: 0,
-    });
   };
 
   const handleCreateOrEdit = async () => {
     try {
       if (isEditing && editingResult.id) {
-        await updateResult(
-          parseInt(seasonId!),
-          parseInt(teamId!),
-          editingResult.id,
-          {
+        await updateResult({
+          resultID: editingResult.id,
+          result: {
             matchStartDate: formData.matchStartDate.toDate(),
             matchEndDate: formData.matchEndDate.toDate(),
             score: formData.score,
             opponentScore: formData.opponentScore,
-          }
-        );
+          },
+        });
         message.success("Result updated successfully.");
       } else {
-        await createResult(parseInt(seasonId!), parseInt(teamId!), {
+        await createResult({
           matchStartDate: formData.matchStartDate.toDate(),
           matchEndDate: formData.matchEndDate.toDate(),
           score: formData.score,
@@ -234,8 +137,7 @@ const ResultsPage: React.FC = () => {
         });
         message.success("Result created successfully.");
       }
-      setIsModalOpen(false);
-      fetchResults();
+      closeModal();
     } catch (error) {
       message.error("Failed to save result.");
       console.error(error);
@@ -244,9 +146,8 @@ const ResultsPage: React.FC = () => {
 
   const handleDelete = async (resultID: number) => {
     try {
-      await deleteResult(parseInt(seasonId!), parseInt(teamId!), resultID);
+      await deleteResult(resultID);
       message.success("Result deleted successfully.");
-      fetchResults();
     } catch (error) {
       message.error("Failed to delete result.");
       console.error(error);
@@ -258,6 +159,14 @@ const ResultsPage: React.FC = () => {
     return team ? team.name : "Unknown Team";
   };
 
+  if (isError) {
+    return (
+      <div style={{ padding: 20 }}>
+        <Typography.Title level={4}>Results not found</Typography.Title>
+      </div>
+    );
+  }
+
   return (
     <div style={{ padding: 20, width: "50%", margin: "auto" }}>
       <Space
@@ -268,7 +177,7 @@ const ResultsPage: React.FC = () => {
         }}
       >
         <Typography.Title level={4}>
-          Results for Team "{team.name}" in Season "{season.name}"
+          Results for Team "{team?.name}" in Season "{season?.name}"
         </Typography.Title>
         <Button
           type="primary"
@@ -285,7 +194,7 @@ const ResultsPage: React.FC = () => {
       </Space>
 
       <List
-        loading={loading}
+        loading={isLoading}
         bordered
         dataSource={results}
         renderItem={(result) => (
@@ -297,9 +206,7 @@ const ResultsPage: React.FC = () => {
                 result.userUUID === user.id) ? (
                 <EditOutlined
                   key="edit"
-                  onClick={() => {
-                    openEditModal(result);
-                  }}
+                  onClick={() => openEditModal(result)}
                 />
               ) : null,
 
@@ -340,6 +247,7 @@ const ResultsPage: React.FC = () => {
         title={isEditing ? "Edit Result" : "Create Result"}
         open={isModalOpen}
         onCancel={closeModal}
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onOk={handleCreateOrEdit}
       >
         <DatePicker
@@ -393,6 +301,4 @@ const ResultsPage: React.FC = () => {
       </Modal>
     </div>
   );
-};
-
-export default ResultsPage;
+}
