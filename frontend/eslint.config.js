@@ -3,6 +3,7 @@ import importPlugin from "eslint-plugin-import";
 import eslintPluginReact from "eslint-plugin-react";
 import eslintPluginReactHooks from "eslint-plugin-react-hooks";
 import tseslint from "typescript-eslint";
+import pluginQuery from "@tanstack/eslint-plugin-query";
 
 export default tseslint.config(
   {
@@ -31,13 +32,13 @@ export default tseslint.config(
   {
     plugins: {
       "react-hooks": eslintPluginReactHooks,
+      "@tanstack/query": pluginQuery,
     },
     rules: eslintPluginReactHooks.configs.recommended.rules,
   },
   {
     rules: {
       curly: "error", // force use of curly brackts on if statements
-
       "spaced-comment": [
         "error",
         "always",
@@ -45,15 +46,10 @@ export default tseslint.config(
           markers: ["/"],
         },
       ], // force space after comments
-
       "prefer-template": "error", // prefer template strings over string appends
-
       "react/react-in-jsx-scope": "off", // react is always in scope with vite
-
       "import/named": "off", // fails to resolve imports from react-router-dom
-
       "import/no-unresolved": "off", // fails to resolve imports from local files
-
       "import/order": [
         "error",
         {
@@ -72,6 +68,10 @@ export default tseslint.config(
           ],
         },
       ],
+
+      // TODO: remove these rules when the code is fixed
+      "@typescript-eslint/no-unsafe-member-access": "off",
+      "@typescript-eslint/no-unsafe-argument": "off",
     },
   }
 );

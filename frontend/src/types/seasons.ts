@@ -5,11 +5,3 @@ export interface Season {
   endDate: Date;
   userUUID: string;
 }
-
-export interface SeasonsResponse {
-  seasons?: Season[];
-}
-
-export interface SeasonResponse {
-  season?: Season;
-}

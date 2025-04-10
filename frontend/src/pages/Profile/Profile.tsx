@@ -1,7 +1,7 @@
-import { UseAuth } from "../../components/Auth/AuthContext";
+import { useAuth } from "../../providers/AuthProvider";
 
 const Profile = () => {
-  const { user } = UseAuth();
+  const { user } = useAuth();
 
   return (
     <div>

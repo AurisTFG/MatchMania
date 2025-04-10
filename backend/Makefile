@@ -25,8 +25,8 @@ run-prod: build ## Runs the application in Production environment
 	@echo "[✔] Server stopped"
 
 .PHONY: lint
-lint: ## Runs the linter to check for code style and errors
-	@echo "[?] Running linter..."
+lint: ## Runs golangci-lint to check for code quality issues and fixes them
+	@echo "[?] Running linter and fixing issues..."
 	@golangci-lint run --fix
 	@echo "[✔] Lint completed without errors"
 

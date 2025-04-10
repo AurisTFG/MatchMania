@@ -19,7 +19,7 @@ func SetupRoutes(
 			auth.GET("/me", m.AuthMiddleware.RequireAuth, c.AuthController.GetMe)
 			auth.POST("/signup", c.AuthController.SignUp)
 			auth.POST("/login", c.AuthController.LogIn)
-			auth.POST("/logout", m.AuthMiddleware.RequireAuth, c.AuthController.LogOut)
+			auth.POST("/logout", c.AuthController.LogOut)
 			auth.POST("/refresh", c.AuthController.RefreshToken)
 		}
 

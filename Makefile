@@ -18,7 +18,7 @@ run-front: ## Starts the React development server
 	$(MAKE_CMD) $(FRONTEND_FOLDER) run-dev
 
 .PHONY: prepare
-prepare: ##	Prepares the code for pushing to the repository
+prepare: ## Prepares the code for pushing to the repository
 	$(MAKE_CMD) $(BACKEND_FOLDER) prepare
 	$(MAKE_CMD) $(FRONTEND_FOLDER) prepare
 

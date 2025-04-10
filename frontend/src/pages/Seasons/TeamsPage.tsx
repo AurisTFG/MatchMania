@@ -1,29 +1,25 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { Button, Input, List, Modal, Space, Typography, message } from "antd";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { getSeason } from "../../api/seasons.ts";
+import { useFetchSeason } from "../../api/hooks/seasonsHooks";
 import {
-  createTeam,
-  deleteTeam,
-  getAllTeams,
-  updateTeam,
-} from "../../api/teams.ts";
-import { getAllUsers } from "../../api/users.ts";
-import { UseAuth } from "../../components/Auth/AuthContext";
-import { Season, Team } from "../../types/index.ts";
-import { User } from "../../types/users.ts";
+  useCreateTeam,
+  useDeleteTeam,
+  useFetchTeams,
+  useUpdateTeam,
+} from "../../api/hooks/teamsHooks";
+import { useFetchUsers } from "../../api/hooks/usersHooks";
+import { useAuth } from "../../providers/AuthProvider";
+import { Team } from "../../types";
+import { User } from "../../types/users";
 
 const isValidTeam = (seasonId: string | undefined) => {
   return seasonId && !isNaN(Number(seasonId)) && Number(seasonId) > 0;
 };
 
-const TeamsPage: React.FC = () => {
+export default function TeamsPage() {
   const { seasonId } = useParams<{ seasonId: string }>();
-  const [season, setSeason] = useState<Partial<Season>>({});
-
-  const [teams, setTeams] = useState<Team[]>([]);
-  const [loading, setLoading] = useState(false);
   const [teamsNotFound, setTeamsNotFound] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -31,58 +27,21 @@ const TeamsPage: React.FC = () => {
   const [formData, setFormData] = useState({
     name: "",
   });
-  const { user } = UseAuth();
-  const [users, setUsers] = useState<User[]>([]);
+  const { user } = useAuth();
 
-  const fetchTeams = async () => {
-    if (!seasonId || teamsNotFound) {
-      return;
-    }
+  const seasonIdNumber = seasonId ? parseInt(seasonId) : 0;
 
-    try {
-      const data = await getAllTeams(parseInt(seasonId));
-
-      setTeams(data);
-    } catch (error) {
-      message.error("Failed to fetch teams.");
-      console.error(error);
-      setTeamsNotFound(true);
-    }
-  };
-
-  const fetchSeason = async () => {
-    if (!seasonId) {
-      return;
-    }
-
-    try {
-      const data = await getSeason(parseInt(seasonId));
-
-      setSeason(data);
-    } catch (error) {
-      console.error(error);
-      setTeamsNotFound(true);
-    }
-  };
-
-  const fetchUsers = async () => {
-    try {
-      const data = await getAllUsers();
-      setUsers(data);
-    } catch (error) {
-      message.error("Failed to fetch users.");
-      console.error(error);
-    }
-  };
+  const { data: season, isLoading: isSeasonsLoading } =
+    useFetchSeason(seasonIdNumber);
+  const { data: teams, isLoading: isTeamsLoading } =
+    useFetchTeams(seasonIdNumber);
+  const { data: users, isLoading: isUsersLoading } = useFetchUsers();
+  const { mutateAsync: createTeam } = useCreateTeam(seasonIdNumber);
+  const { mutateAsync: updateTeam } = useUpdateTeam(seasonIdNumber);
+  const { mutateAsync: deleteTeam } = useDeleteTeam(seasonIdNumber);
 
   const getUserById = (userId: string): User => {
-    return (
-      users.find((user) => user.id === userId) ||
-      ({
-        id: "",
-        username: "Unknown User",
-      } as User)
-    );
+    return users.find((user) => user.id === userId) || ({} as User);
   };
 
   useEffect(() => {
@@ -90,13 +49,15 @@ const TeamsPage: React.FC = () => {
       setTeamsNotFound(true);
       return;
     }
+  }, [seasonId]);
 
-    setLoading(true);
-    fetchSeason();
-    fetchTeams();
-    fetchUsers();
-    setLoading(false);
-  }, [seasonId, teamsNotFound]);
+  if (isSeasonsLoading || isTeamsLoading || isUsersLoading) {
+    return (
+      <div style={{ padding: 20 }}>
+        <Typography.Title level={4}>Loading...</Typography.Title>
+      </div>
+    );
+  }
 
   if (teamsNotFound) {
     return (
@@ -121,15 +82,14 @@ const TeamsPage: React.FC = () => {
   const handleCreateOrEdit = async () => {
     try {
       if (isEditing && editingTeam.id) {
-        await updateTeam(parseInt(seasonId!), editingTeam.id, formData);
+        await updateTeam({ teamID: editingTeam.id, team: formData });
         message.success("Team updated successfully.");
       } else {
-        await createTeam(parseInt(seasonId!), formData);
+        await createTeam(formData);
         message.success("Team created successfully.");
       }
       setIsModalOpen(false);
       setFormData({ name: "" });
-      fetchTeams();
     } catch (error) {
       message.error("Failed to save team.");
       console.error(error);
@@ -138,9 +98,8 @@ const TeamsPage: React.FC = () => {
 
   const handleDelete = async (teamID: number) => {
     try {
-      await deleteTeam(parseInt(seasonId!), teamID);
+      await deleteTeam(teamID);
       message.success("Team deleted successfully.");
-      fetchTeams();
     } catch (error) {
       message.error("Failed to delete team.");
       console.error(error);
@@ -163,7 +122,7 @@ const TeamsPage: React.FC = () => {
         }}
       >
         <Typography.Title level={4}>
-          Teams for Season "{season.name}"
+          Teams for Season &quot;{season.name}&quot;
         </Typography.Title>
         <Button
           type="primary"
@@ -177,12 +136,12 @@ const TeamsPage: React.FC = () => {
             cursor: user === null ? "not-allowed" : "pointer",
           }}
         >
-          Create Season
+          Create Team
         </Button>
       </Space>
 
       <List
-        loading={loading}
+        loading={isTeamsLoading}
         bordered
         dataSource={teams}
         renderItem={(team) => (
@@ -235,6 +194,7 @@ const TeamsPage: React.FC = () => {
         title={isEditing ? "Edit Team" : "Create Team"}
         open={isModalOpen}
         onCancel={closeModal}
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onOk={handleCreateOrEdit}
       >
         <Input
@@ -248,6 +208,4 @@ const TeamsPage: React.FC = () => {
       </Modal>
     </div>
   );
-};
-
-export default TeamsPage;
+}

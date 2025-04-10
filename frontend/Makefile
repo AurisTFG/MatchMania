@@ -44,7 +44,7 @@ clean: ## Cleans up built files and dependencies
 	@echo "[✔] Cleaned up node_modules and dist"
 	
 .PHONY: prepare
-prepare: install build lint test ##	Prepares the code for pushing to the repository
+prepare: install build lint test ## Prepares the code for pushing to the repository
 	@echo "[✔] Code prepared for pushing to the repository"
 
 .PHONY: help

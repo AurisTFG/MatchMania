@@ -1,7 +1,7 @@
 import { FaGithub, FaInstagram, FaPaypal, FaTwitter } from "react-icons/fa";
 import "./Footer.css";
 
-const Footer = () => {
+export default function Footer() {
   return (
     <footer className="footer">
       <div className="footer-text">
@@ -39,6 +39,4 @@ const Footer = () => {
       </div>
     </footer>
   );
-};
-
-export default Footer;
+}

@@ -12,28 +12,31 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { logout } from "../../api/auth";
-import { UseAuth } from "../Auth/AuthContext";
+import { useLogOut } from "../../api/hooks/authHooks";
+import { useAuth } from "../../providers/AuthProvider";
 
 export default function Header() {
-  const { user, setUser } = UseAuth();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const navigate = useNavigate();
   const location = useLocation();
   const isActive = (path: string) => location.pathname === path;
+  const { isLoggedIn } = useAuth();
 
-  const handleLogout = () => {
-    console.log("Logging out...");
+  const { mutateAsync: logoutMutation } = useLogOut();
+
+  const handleLogout = async () => {
     setAnchorEl(null);
-    logout();
-    setUser(null);
-    navigate("/");
+    try {
+      await logoutMutation();
+      await navigate("/");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
 
-  const handleProfile = () => {
-    console.log("Viewing profile...");
-    navigate("/profile");
+  const handleProfile = async () => {
+    await navigate("/profile");
   };
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -87,7 +90,9 @@ export default function Header() {
             sx={{ flexGrow: 1, mr: 10, display: { xs: "none", md: "flex" } }}
           >
             <Button
-              onClick={() => navigate("/")}
+              onClick={() => {
+                void navigate("/");
+              }}
               color="inherit"
               sx={{
                 mr: 1,
@@ -98,7 +103,7 @@ export default function Header() {
               Home
             </Button>
             <Button
-              onClick={() => navigate("/seasons")}
+              onClick={() => void navigate("/seasons")}
               color="inherit"
               sx={{
                 mr: 1,
@@ -111,7 +116,7 @@ export default function Header() {
           </Box>
         )}
 
-        {user && (
+        {isLoggedIn && (
           <div>
             <IconButton
               size="large"
@@ -138,8 +143,20 @@ export default function Header() {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              <MenuItem onClick={handleProfile}>Profile</MenuItem>
-              <MenuItem onClick={handleLogout}>Logout</MenuItem>
+              <MenuItem
+                onClick={() => {
+                  void handleProfile();
+                }}
+              >
+                Profile
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  void handleLogout();
+                }}
+              >
+                Logout
+              </MenuItem>
             </Menu>
           </div>
         )}
@@ -166,8 +183,8 @@ export default function Header() {
             <Button
               color="inherit"
               onClick={() => {
-                navigate("/");
                 setMobileMenuOpen(false);
+                void navigate("/");
               }}
             >
               Home
@@ -175,8 +192,8 @@ export default function Header() {
             <Button
               color="inherit"
               onClick={() => {
-                navigate("/seasons");
                 setMobileMenuOpen(false);
+                void navigate("/seasons");
               }}
             >
               Seasons

@@ -50,6 +50,12 @@ definitions:
     required:
     - name
     type: object
+  models.ErrorDto:
+    properties:
+      error:
+        example: Error message
+        type: string
+    type: object
   models.LoginDto:
     properties:
       email:
@@ -220,84 +226,6 @@ definitions:
         example: john_doe_123
         type: string
     type: object
-  responses.BadRequestResponse:
-    properties:
-      error:
-        example: JSON parsing error
-        type: string
-    type: object
-  responses.ForbiddenResponse:
-    properties:
-      error:
-        example: Forbidden
-        type: string
-    type: object
-  responses.NotFoundResponse:
-    properties:
-      error:
-        example: Resource was not found
-        type: string
-    type: object
-  responses.ResultResponse:
-    properties:
-      result:
-        $ref: '#/definitions/models.ResultDto'
-    type: object
-  responses.ResultsResponse:
-    properties:
-      results:
-        items:
-          $ref: '#/definitions/models.ResultDto'
-        type: array
-    type: object
-  responses.SeasonResponse:
-    properties:
-      season:
-        $ref: '#/definitions/models.SeasonDto'
-    type: object
-  responses.SeasonsResponse:
-    properties:
-      seasons:
-        items:
-          $ref: '#/definitions/models.SeasonDto'
-        type: array
-    type: object
-  responses.TeamResponse:
-    properties:
-      team:
-        $ref: '#/definitions/models.TeamDto'
-    type: object
-  responses.TeamsResponse:
-    properties:
-      teams:
-        items:
-          $ref: '#/definitions/models.TeamDto'
-        type: array
-    type: object
-  responses.UnauthorizedResponse:
-    properties:
-      error:
-        example: Unauthorized
-        type: string
-    type: object
-  responses.UnprocessableEntityResponse:
-    properties:
-      error:
-        example: Validation error
-        type: string
-    type: object
-  responses.UserResponse:
-    properties:
-      user:
-        $ref: '#/definitions/models.UserDto'
-    type: object
-  responses.UsersResponse:
-    properties:
-      users:
-        items:
-          $ref: '#/definitions/models.UserDto'
-        type: array
-    type: object
 externalDocs:
   description: OpenAPI
   url: https://swagger.io/resources/open-api/
@@ -325,16 +253,18 @@ paths:
       produces:
       - application/json
       responses:
-        "204":
-          description: No Content
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserDto'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responses.BadRequestResponse'
+            $ref: '#/definitions/models.ErrorDto'
         "422":
           description: Unprocessable Entity
           schema:
-            $ref: '#/definitions/responses.UnprocessableEntityResponse'
+            $ref: '#/definitions/models.ErrorDto'
       summary: Log in
       tags:
       - auth
@@ -347,7 +277,7 @@ paths:
         "422":
           description: Unprocessable Entity
           schema:
-            $ref: '#/definitions/responses.UnprocessableEntityResponse'
+            $ref: '#/definitions/models.ErrorDto'
       summary: Log out
       tags:
       - auth
@@ -358,11 +288,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/responses.UserResponse'
+            $ref: '#/definitions/models.UserDto'
         "422":
           description: Unprocessable Entity
           schema:
-            $ref: '#/definitions/responses.UnprocessableEntityResponse'
+            $ref: '#/definitions/models.ErrorDto'
       summary: Get current user
       tags:
       - auth
@@ -375,7 +305,7 @@ paths:
         "422":
           description: Unprocessable Entity
           schema:
-            $ref: '#/definitions/responses.UnprocessableEntityResponse'
+            $ref: '#/definitions/models.ErrorDto'
       summary: Refresh token
       tags:
       - auth
@@ -394,16 +324,18 @@ paths:
       produces:
       - application/json
       responses:
-        "204":
-          description: No Content
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.UserDto'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responses.BadRequestResponse'
+            $ref: '#/definitions/models.ErrorDto'
         "422":
           description: Unprocessable Entity
           schema:
-            $ref: '#/definitions/responses.UnprocessableEntityResponse'
+            $ref: '#/definitions/models.ErrorDto'
       summary: Sign up
       tags:
       - auth
@@ -418,7 +350,9 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/responses.SeasonsResponse'
+            items:
+              $ref: '#/definitions/models.SeasonDto'
+            type: array
       summary: Get all seasons
       tags:
       - seasons
@@ -439,19 +373,19 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/responses.SeasonResponse'
+            $ref: '#/definitions/models.SeasonDto'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responses.BadRequestResponse'
+            $ref: '#/definitions/models.ErrorDto'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/responses.UnauthorizedResponse'
+            $ref: '#/definitions/models.ErrorDto'
         "422":
           description: Unprocessable Entity
           schema:
-            $ref: '#/definitions/responses.UnprocessableEntityResponse'
+            $ref: '#/definitions/models.ErrorDto'
       summary: Create a season
       tags:
       - seasons
@@ -475,23 +409,23 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responses.BadRequestResponse'
+            $ref: '#/definitions/models.ErrorDto'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/responses.UnauthorizedResponse'
+            $ref: '#/definitions/models.ErrorDto'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/responses.ForbiddenResponse'
+            $ref: '#/definitions/models.ErrorDto'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/responses.NotFoundResponse'
+            $ref: '#/definitions/models.ErrorDto'
         "422":
           description: Unprocessable Entity
           schema:
-            $ref: '#/definitions/responses.UnprocessableEntityResponse'
+            $ref: '#/definitions/models.ErrorDto'
       summary: Delete a season
       tags:
       - seasons
@@ -512,15 +446,15 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/responses.SeasonResponse'
+            $ref: '#/definitions/models.SeasonDto'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responses.BadRequestResponse'
+            $ref: '#/definitions/models.ErrorDto'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/responses.NotFoundResponse'
+            $ref: '#/definitions/models.ErrorDto'
       summary: Get a season
       tags:
       - seasons
@@ -529,7 +463,7 @@ paths:
       - application/json
       description: Update a season
       parameters:
-      - default: "2"
+      - default: "1"
         description: Season ID
         in: path
         name: seasonId
@@ -547,27 +481,27 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/responses.SeasonResponse'
+            $ref: '#/definitions/models.SeasonDto'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responses.BadRequestResponse'
+            $ref: '#/definitions/models.ErrorDto'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/responses.UnauthorizedResponse'
+            $ref: '#/definitions/models.ErrorDto'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/responses.ForbiddenResponse'
+            $ref: '#/definitions/models.ErrorDto'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/responses.NotFoundResponse'
+            $ref: '#/definitions/models.ErrorDto'
         "422":
           description: Unprocessable Entity
           schema:
-            $ref: '#/definitions/responses.UnprocessableEntityResponse'
+            $ref: '#/definitions/models.ErrorDto'
       summary: Update a season
       tags:
       - seasons
@@ -577,7 +511,7 @@ paths:
       - application/json
       description: Get all teams
       parameters:
-      - default: "2"
+      - default: "1"
         description: Season ID
         in: path
         name: seasonId
@@ -589,15 +523,17 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/responses.TeamsResponse'
+            items:
+              $ref: '#/definitions/models.TeamDto'
+            type: array
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responses.BadRequestResponse'
+            $ref: '#/definitions/models.ErrorDto'
         "422":
           description: Unprocessable Entity
           schema:
-            $ref: '#/definitions/responses.UnprocessableEntityResponse'
+            $ref: '#/definitions/models.ErrorDto'
       summary: Get all teams
       tags:
       - teams
@@ -606,7 +542,7 @@ paths:
       - application/json
       description: Create a team
       parameters:
-      - default: "2"
+      - default: "1"
         description: Season ID
         in: path
         name: seasonId
@@ -624,23 +560,23 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/responses.TeamResponse'
+            $ref: '#/definitions/models.TeamDto'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responses.BadRequestResponse'
+            $ref: '#/definitions/models.ErrorDto'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/responses.UnauthorizedResponse'
+            $ref: '#/definitions/models.ErrorDto'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/responses.NotFoundResponse'
+            $ref: '#/definitions/models.ErrorDto'
         "422":
           description: Unprocessable Entity
           schema:
-            $ref: '#/definitions/responses.UnprocessableEntityResponse'
+            $ref: '#/definitions/models.ErrorDto'
       summary: Create a team
       tags:
       - teams
@@ -670,23 +606,23 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responses.BadRequestResponse'
+            $ref: '#/definitions/models.ErrorDto'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/responses.UnauthorizedResponse'
+            $ref: '#/definitions/models.ErrorDto'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/responses.ForbiddenResponse'
+            $ref: '#/definitions/models.ErrorDto'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/responses.NotFoundResponse'
+            $ref: '#/definitions/models.ErrorDto'
         "422":
           description: Unprocessable Entity
           schema:
-            $ref: '#/definitions/responses.UnprocessableEntityResponse'
+            $ref: '#/definitions/models.ErrorDto'
       summary: Delete a team
       tags:
       - teams
@@ -695,13 +631,13 @@ paths:
       - application/json
       description: Get a team
       parameters:
-      - default: "2"
+      - default: "1"
         description: Season ID
         in: path
         name: seasonId
         required: true
         type: string
-      - default: "2"
+      - default: "1"
         description: Team ID
         in: path
         name: teamId
@@ -713,15 +649,15 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/responses.TeamResponse'
+            $ref: '#/definitions/models.TeamDto'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responses.BadRequestResponse'
+            $ref: '#/definitions/models.ErrorDto'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/responses.NotFoundResponse'
+            $ref: '#/definitions/models.ErrorDto'
       summary: Get a team
       tags:
       - teams
@@ -730,13 +666,13 @@ paths:
       - application/json
       description: Update a team
       parameters:
-      - default: "2"
+      - default: "1"
         description: Season ID
         in: path
         name: seasonId
         required: true
         type: string
-      - default: "2"
+      - default: "1"
         description: Team ID
         in: path
         name: teamId
@@ -754,27 +690,27 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/responses.TeamResponse'
+            $ref: '#/definitions/models.TeamDto'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responses.BadRequestResponse'
+            $ref: '#/definitions/models.ErrorDto'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/responses.UnauthorizedResponse'
+            $ref: '#/definitions/models.ErrorDto'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/responses.ForbiddenResponse'
+            $ref: '#/definitions/models.ErrorDto'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/responses.NotFoundResponse'
+            $ref: '#/definitions/models.ErrorDto'
         "422":
           description: Unprocessable Entity
           schema:
-            $ref: '#/definitions/responses.UnprocessableEntityResponse'
+            $ref: '#/definitions/models.ErrorDto'
       summary: Update a team
       tags:
       - teams
@@ -784,13 +720,13 @@ paths:
       - application/json
       description: Get all results
       parameters:
-      - default: "2"
+      - default: "1"
         description: Season ID
         in: path
         name: seasonId
         required: true
         type: string
-      - default: "4"
+      - default: "1"
         description: Team ID
         in: path
         name: teamId
@@ -802,15 +738,17 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/responses.ResultsResponse'
+            items:
+              $ref: '#/definitions/models.ResultDto'
+            type: array
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responses.BadRequestResponse'
+            $ref: '#/definitions/models.ErrorDto'
         "422":
           description: Unprocessable Entity
           schema:
-            $ref: '#/definitions/responses.UnprocessableEntityResponse'
+            $ref: '#/definitions/models.ErrorDto'
       summary: Get all results
       tags:
       - results
@@ -819,13 +757,13 @@ paths:
       - application/json
       description: Create a result
       parameters:
-      - default: "2"
+      - default: "1"
         description: Season ID
         in: path
         name: seasonId
         required: true
         type: string
-      - default: "3"
+      - default: "1"
         description: Team ID
         in: path
         name: teamId
@@ -843,23 +781,23 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/responses.ResultResponse'
+            $ref: '#/definitions/models.ResultDto'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responses.BadRequestResponse'
+            $ref: '#/definitions/models.ErrorDto'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/responses.UnauthorizedResponse'
+            $ref: '#/definitions/models.ErrorDto'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/responses.NotFoundResponse'
+            $ref: '#/definitions/models.ErrorDto'
         "422":
           description: Unprocessable Entity
           schema:
-            $ref: '#/definitions/responses.UnprocessableEntityResponse'
+            $ref: '#/definitions/models.ErrorDto'
       summary: Create a result
       tags:
       - results
@@ -869,13 +807,13 @@ paths:
       - application/json
       description: Delete a result
       parameters:
-      - default: "2"
+      - default: "1"
         description: Season ID
         in: path
         name: seasonId
         required: true
         type: string
-      - default: "3"
+      - default: "1"
         description: Team ID
         in: path
         name: teamId
@@ -895,23 +833,23 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responses.BadRequestResponse'
+            $ref: '#/definitions/models.ErrorDto'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/responses.UnauthorizedResponse'
+            $ref: '#/definitions/models.ErrorDto'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/responses.ForbiddenResponse'
+            $ref: '#/definitions/models.ErrorDto'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/responses.NotFoundResponse'
+            $ref: '#/definitions/models.ErrorDto'
         "422":
           description: Unprocessable Entity
           schema:
-            $ref: '#/definitions/responses.UnprocessableEntityResponse'
+            $ref: '#/definitions/models.ErrorDto'
       summary: Delete a result
       tags:
       - results
@@ -920,19 +858,19 @@ paths:
       - application/json
       description: Get a result
       parameters:
-      - default: "2"
+      - default: "1"
         description: Season ID
         in: path
         name: seasonId
         required: true
         type: string
-      - default: "4"
+      - default: "1"
         description: Team ID
         in: path
         name: teamId
         required: true
         type: string
-      - default: "2"
+      - default: "1"
         description: Result ID
         in: path
         name: resultId
@@ -944,15 +882,17 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/responses.ResultResponse'
+            items:
+              $ref: '#/definitions/models.ResultDto'
+            type: array
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responses.BadRequestResponse'
+            $ref: '#/definitions/models.ErrorDto'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/responses.NotFoundResponse'
+            $ref: '#/definitions/models.ErrorDto'
       summary: Get a result
       tags:
       - results
@@ -961,19 +901,19 @@ paths:
       - application/json
       description: Update a result
       parameters:
-      - default: "2"
+      - default: "1"
         description: Season ID
         in: path
         name: seasonId
         required: true
         type: string
-      - default: "4"
+      - default: "1"
         description: Team ID
         in: path
         name: teamId
         required: true
         type: string
-      - default: "2"
+      - default: "1"
         description: Result ID
         in: path
         name: resultId
@@ -991,27 +931,27 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/responses.ResultResponse'
+            $ref: '#/definitions/models.ResultDto'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responses.BadRequestResponse'
+            $ref: '#/definitions/models.ErrorDto'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/responses.UnauthorizedResponse'
+            $ref: '#/definitions/models.ErrorDto'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/responses.ForbiddenResponse'
+            $ref: '#/definitions/models.ErrorDto'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/responses.NotFoundResponse'
+            $ref: '#/definitions/models.ErrorDto'
         "422":
           description: Unprocessable Entity
           schema:
-            $ref: '#/definitions/responses.UnprocessableEntityResponse'
+            $ref: '#/definitions/models.ErrorDto'
       summary: Update a result
       tags:
       - results
@@ -1026,7 +966,9 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/responses.UsersResponse'
+            items:
+              $ref: '#/definitions/models.UserDto'
+            type: array
       summary: Get all users
       tags:
       - users
@@ -1047,7 +989,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/responses.UserResponse'
+            $ref: '#/definitions/models.UserDto'
       summary: Get user by ID
       tags:
       - users

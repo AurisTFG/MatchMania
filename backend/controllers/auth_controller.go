@@ -37,9 +37,9 @@ func NewAuthController(
 // @Accept json
 // @Produce json
 // @Param signUpDto body models.SignUpDto true "Sign up details"
-// @Success 204
-// @Failure 400 {object} responses.BadRequestResponse
-// @Failure 422 {object} responses.UnprocessableEntityResponse
+// @Success 201 {object} models.UserDto
+// @Failure 400 {object} models.ErrorDto
+// @Failure 422 {object} models.ErrorDto
 // @Router /auth/signup [post]
 func (c *AuthController) SignUp(ctx *gin.Context) {
 	var bodyDto models.SignUpDto
@@ -60,7 +60,7 @@ func (c *AuthController) SignUp(ctx *gin.Context) {
 		return
 	}
 
-	r.Created(ctx, r.AuthSignUpResponse{User: user.ToDto()})
+	r.Created(ctx, user.ToDto())
 }
 
 // @Summary Log in
@@ -69,9 +69,9 @@ func (c *AuthController) SignUp(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param loginDto body models.LoginDto true "Log in details"
-// @Success 204
-// @Failure 400 {object} responses.BadRequestResponse
-// @Failure 422 {object} responses.UnprocessableEntityResponse
+// @Success 200 {object} models.UserDto
+// @Failure 400 {object} models.ErrorDto
+// @Failure 422 {object} models.ErrorDto
 // @Router /auth/login [post]
 func (c *AuthController) LogIn(ctx *gin.Context) {
 	var bodyDto models.LoginDto
@@ -117,44 +117,46 @@ func (c *AuthController) LogIn(ctx *gin.Context) {
 		return
 	}
 
-	c.authService.SetCookie(ctx, constants.AccessTokenName, accessToken)
-	c.authService.SetCookie(ctx, constants.RefreshTokenName, refreshToken)
+	c.authService.SetCookies(ctx, accessToken, refreshToken)
 
-	r.NoContent(ctx)
+	r.OK(ctx, user.ToDto())
 }
 
 // @Summary Log out
 // @Description Log out
 // @Tags auth
 // @Success 204
-// @Failure 422 {object} responses.UnprocessableEntityResponse
+// @Failure 422 {object} models.ErrorDto
 // @Router /auth/logout [post]
 func (c *AuthController) LogOut(ctx *gin.Context) {
 	tokenString, err := ctx.Cookie(constants.RefreshTokenName)
 	if err != nil {
-		r.UnprocessableEntity(ctx, "Refresh token not found")
+		r.UnprocessableEntity(ctx, "Already logged out")
+		c.authService.DeleteCookies(ctx)
 		return
 	}
 
 	_, sessionId, err := c.authService.VerifyRefreshToken(tokenString)
 	if err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
+		c.authService.DeleteCookies(ctx)
 		return
 	}
 
 	if !c.authService.IsSessionValid(sessionId, tokenString) {
 		r.UnprocessableEntity(ctx, "Session is not valid")
+		c.authService.DeleteCookies(ctx)
 		return
 	}
 
 	err = c.authService.InvalidateSession(sessionId)
 	if err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
+		c.authService.DeleteCookies(ctx)
 		return
 	}
 
-	c.authService.SetCookie(ctx, constants.AccessTokenName, "")
-	c.authService.SetCookie(ctx, constants.RefreshTokenName, "")
+	c.authService.DeleteCookies(ctx)
 
 	r.NoContent(ctx)
 }
@@ -163,7 +165,7 @@ func (c *AuthController) LogOut(ctx *gin.Context) {
 // @Description Refresh token
 // @Tags auth
 // @Success 204
-// @Failure 422 {object} responses.UnprocessableEntityResponse
+// @Failure 422 {object} models.ErrorDto
 // @Router /auth/refresh [post]
 func (c *AuthController) RefreshToken(ctx *gin.Context) {
 	tokenString, err := ctx.Cookie(constants.RefreshTokenName)
@@ -201,8 +203,7 @@ func (c *AuthController) RefreshToken(ctx *gin.Context) {
 		return
 	}
 
-	c.authService.SetCookie(ctx, constants.AccessTokenName, accessToken)
-	c.authService.SetCookie(ctx, constants.RefreshTokenName, refreshToken)
+	c.authService.SetCookies(ctx, accessToken, refreshToken)
 
 	r.NoContent(ctx)
 }
@@ -210,8 +211,8 @@ func (c *AuthController) RefreshToken(ctx *gin.Context) {
 // @Summary Get current user
 // @Description Get current user
 // @Tags auth
-// @Success 200 {object} responses.UserResponse
-// @Failure 422 {object} responses.UnprocessableEntityResponse
+// @Success 200 {object} models.UserDto
+// @Failure 422 {object} models.ErrorDto
 // @Router /auth/me [get]
 func (c *AuthController) GetMe(ctx *gin.Context) {
 	fmt.Println("GetMe called")
@@ -222,5 +223,5 @@ func (c *AuthController) GetMe(ctx *gin.Context) {
 		return
 	}
 
-	r.OK(ctx, r.UserResponse{User: user.ToDto()})
+	r.OK(ctx, user.ToDto())
 }

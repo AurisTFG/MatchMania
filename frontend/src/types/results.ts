@@ -9,11 +9,3 @@ export interface Result {
   opponentTeamId: number;
   userUUID: string;
 }
-
-export interface ResultsResponse {
-  results?: Result[];
-}
-
-export interface ResultResponse {
-  result?: Result;
-}

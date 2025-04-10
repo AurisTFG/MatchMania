@@ -12,7 +12,6 @@ FROM alpine:latest
 
 WORKDIR /root/
 
-COPY --from=builder /app/.env.development .
 COPY --from=builder /app/MatchManiaAPI .
 
 EXPOSE 8080

@@ -10,22 +10,21 @@ import {
   message,
 } from "antd";
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
-  createSeason,
-  deleteSeason,
-  getAllSeasons,
-  updateSeason,
-} from "../../api/seasons.ts";
-import { getAllUsers } from "../../api/users.ts";
-import { UseAuth } from "../../components/Auth/AuthContext";
+  useCreateSeason,
+  useDeleteSeason,
+  useFetchSeasons,
+  useUpdateSeason,
+} from "../../api/hooks/seasonsHooks.ts";
+import { useFetchUsers } from "../../api/hooks/usersHooks.ts";
+import { useAuth } from "../../providers/AuthProvider.tsx";
 import { Season } from "../../types/index.ts";
 import { User } from "../../types/users.ts";
 
-const SeasonsPage: React.FC = () => {
-  const [seasons, setSeasons] = useState<Season[]>([]);
-  const [loading, setLoading] = useState(false);
+export default function SeasonsPage() {
+  const { user } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editingSeason, setEditingSeason] = useState<Partial<Season>>({});
@@ -34,32 +33,16 @@ const SeasonsPage: React.FC = () => {
     startDate: moment(),
     endDate: moment(),
   });
-  const { user } = UseAuth();
-  const [users, setUsers] = useState<User[]>([]);
 
-  const fetchSeasons = async () => {
-    try {
-      const data = await getAllSeasons();
-      setSeasons(data);
-    } catch (error) {
-      message.error("Failed to fetch seasons.");
-      console.error(error);
-    }
-  };
-
-  const fetchUsers = async () => {
-    try {
-      const data = await getAllUsers();
-      setUsers(data);
-    } catch (error) {
-      message.error("Failed to fetch users.");
-      console.error(error);
-    }
-  };
+  const { data: seasons = [], isLoading: seasonsLoading } = useFetchSeasons();
+  const { data: users = [] } = useFetchUsers();
+  const { mutateAsync: createSeasonMutation } = useCreateSeason();
+  const { mutateAsync: updateSeasonMutation } = useUpdateSeason();
+  const { mutateAsync: deleteSeasonMutation } = useDeleteSeason();
 
   const getUserById = (userId: string): User => {
     return (
-      users.find((user) => user.id === userId) ||
+      users.find((user) => user.id === userId) ??
       ({
         id: "",
         username: "Unknown User",
@@ -67,25 +50,21 @@ const SeasonsPage: React.FC = () => {
     );
   };
 
-  useEffect(() => {
-    setLoading(true);
-    fetchSeasons();
-    fetchUsers();
-    setLoading(false);
-  }, [user]);
-
   const handleCreateOrEdit = async () => {
     try {
       if (isEditing && editingSeason.id) {
-        await updateSeason(editingSeason.id, {
-          ...formData,
-          startDate: formData.startDate.toDate(),
-          endDate: formData.endDate.toDate(),
+        await updateSeasonMutation({
+          seasonID: editingSeason.id,
+          season: {
+            ...formData,
+            startDate: formData.startDate.toDate(),
+            endDate: formData.endDate.toDate(),
+          },
         });
 
         message.success("Season updated successfully.");
       } else {
-        await createSeason({
+        await createSeasonMutation({
           ...formData,
           startDate: formData.startDate.toDate(),
           endDate: formData.endDate.toDate(),
@@ -94,7 +73,6 @@ const SeasonsPage: React.FC = () => {
         message.success("Season created successfully.");
       }
       setIsModalOpen(false);
-      fetchSeasons();
     } catch (error) {
       message.error("Failed to save season.");
       console.error(error);
@@ -103,9 +81,8 @@ const SeasonsPage: React.FC = () => {
 
   const handleDelete = async (seasonID: number) => {
     try {
-      await deleteSeason(seasonID);
+      await deleteSeasonMutation(seasonID);
       message.success("Season deleted successfully.");
-      fetchSeasons();
     } catch (error) {
       message.error("Failed to delete season.");
       console.error(error);
@@ -169,7 +146,7 @@ const SeasonsPage: React.FC = () => {
       </Space>
 
       <List
-        loading={loading}
+        loading={seasonsLoading}
         bordered
         dataSource={seasons}
         renderItem={(season) => (
@@ -222,6 +199,7 @@ const SeasonsPage: React.FC = () => {
         title={isEditing ? "Edit Season" : "Create Season"}
         open={isModalOpen}
         onCancel={closeModal}
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onOk={handleCreateOrEdit}
       >
         <Input
@@ -250,6 +228,4 @@ const SeasonsPage: React.FC = () => {
       </Modal>
     </div>
   );
-};
-
-export default SeasonsPage;
+}

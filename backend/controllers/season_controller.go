@@ -22,7 +22,7 @@ func NewSeasonController(seasonService services.SeasonService) SeasonController 
 // @Tags seasons
 // @Accept json
 // @Produce json
-// @Success 200 {object} responses.SeasonsResponse
+// @Success 200 {object} []models.SeasonDto
 // @Router /seasons [get]
 func (c *SeasonController) GetAllSeasons(ctx *gin.Context) {
 	seasons, err := c.seasonService.GetAllSeasons()
@@ -31,7 +31,7 @@ func (c *SeasonController) GetAllSeasons(ctx *gin.Context) {
 		return
 	}
 
-	r.OK(ctx, r.SeasonsResponse{Seasons: models.ToSeasonDtos(seasons)})
+	r.OK(ctx, models.ToSeasonDtos(seasons))
 }
 
 // @Summary Get a season
@@ -40,9 +40,9 @@ func (c *SeasonController) GetAllSeasons(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param seasonId path string true "Season ID" default(2)
-// @Success 200 {object} responses.SeasonResponse
-// @Failure 400 {object} responses.BadRequestResponse
-// @Failure 404 {object} responses.NotFoundResponse
+// @Success 200 {object} models.SeasonDto
+// @Failure 400 {object} models.ErrorDto
+// @Failure 404 {object} models.ErrorDto
 // @Router /seasons/{seasonId} [get]
 func (c *SeasonController) GetSeason(ctx *gin.Context) {
 	seasonID, err := utils.GetParamUint(ctx, "seasonId")
@@ -57,7 +57,7 @@ func (c *SeasonController) GetSeason(ctx *gin.Context) {
 		return
 	}
 
-	r.OK(ctx, r.SeasonResponse{Season: season.ToDto()})
+	r.OK(ctx, season.ToDto())
 }
 
 // @Summary Create a season
@@ -66,10 +66,10 @@ func (c *SeasonController) GetSeason(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param season body models.CreateSeasonDto true "Season object that needs to be created"
-// @Success 201 {object} responses.SeasonResponse
-// @Failure 400 {object} responses.BadRequestResponse
-// @Failure 401 {object} responses.UnauthorizedResponse
-// @Failure 422 {object} responses.UnprocessableEntityResponse
+// @Success 201 {object} models.SeasonDto
+// @Failure 400 {object} models.ErrorDto
+// @Failure 401 {object} models.ErrorDto
+// @Failure 422 {object} models.ErrorDto
 // @Router /seasons [post]
 func (c *SeasonController) CreateSeason(ctx *gin.Context) {
 	var bodyDto models.CreateSeasonDto
@@ -95,7 +95,7 @@ func (c *SeasonController) CreateSeason(ctx *gin.Context) {
 		return
 	}
 
-	r.Created(ctx, r.SeasonResponse{Season: newSeason.ToDto()})
+	r.Created(ctx, newSeason.ToDto())
 }
 
 // @Summary Update a season
@@ -103,14 +103,14 @@ func (c *SeasonController) CreateSeason(ctx *gin.Context) {
 // @Tags seasons
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID" default(2)
+// @Param seasonId path string true "Season ID" default(1)
 // @Param season body models.UpdateSeasonDto true "Season object that needs to be updated"
-// @Success 200 {object} responses.SeasonResponse
-// @Failure 400 {object} responses.BadRequestResponse
-// @Failure 401 {object} responses.UnauthorizedResponse
-// @Failure 404 {object} responses.NotFoundResponse
-// @Failure 403 {object} responses.ForbiddenResponse
-// @Failure 422 {object} responses.UnprocessableEntityResponse
+// @Success 200 {object} models.SeasonDto
+// @Failure 400 {object} models.ErrorDto
+// @Failure 401 {object} models.ErrorDto
+// @Failure 404 {object} models.ErrorDto
+// @Failure 403 {object} models.ErrorDto
+// @Failure 422 {object} models.ErrorDto
 // @Router /seasons/{seasonId} [patch]
 func (c *SeasonController) UpdateSeason(ctx *gin.Context) {
 	seasonID, err := utils.GetParamUint(ctx, "seasonId")
@@ -153,7 +153,7 @@ func (c *SeasonController) UpdateSeason(ctx *gin.Context) {
 		return
 	}
 
-	r.OK(ctx, r.SeasonResponse{Season: updatedSeason.ToDto()})
+	r.OK(ctx, updatedSeason.ToDto())
 }
 
 // @Summary Delete a season
@@ -163,11 +163,11 @@ func (c *SeasonController) UpdateSeason(ctx *gin.Context) {
 // @Produce json
 // @Param seasonId path string true "Season ID" default(1)
 // @Success 204
-// @Failure 400 {object} responses.BadRequestResponse
-// @Failure 401 {object} responses.UnauthorizedResponse
-// @Failure 403 {object} responses.ForbiddenResponse
-// @Failure 404 {object} responses.NotFoundResponse
-// @Failure 422 {object} responses.UnprocessableEntityResponse
+// @Failure 400 {object} models.ErrorDto
+// @Failure 401 {object} models.ErrorDto
+// @Failure 403 {object} models.ErrorDto
+// @Failure 404 {object} models.ErrorDto
+// @Failure 422 {object} models.ErrorDto
 // @Router /seasons/{seasonId} [delete]
 func (c *SeasonController) DeleteSeason(ctx *gin.Context) {
 	seasonID, err := utils.GetParamUint(ctx, "seasonId")
