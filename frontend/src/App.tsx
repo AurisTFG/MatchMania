@@ -1,10 +1,7 @@
-// filepath: c:\Dev\MatchMania\frontend\src\App.tsx
-import CssBaseline from "@mui/material/CssBaseline";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import styles from "./App.module.css";
 import Content from "./components/Content/Content.tsx";
 import Footer from "./components/Footer/Footer.tsx";
 import Header from "./components/Header/Header.tsx";
@@ -18,43 +15,36 @@ import ResultsPage from "./pages/Seasons/ResultsPage.tsx";
 import SeasonsPage from "./pages/Seasons/SeasonsPage.tsx";
 import TeamsPage from "./pages/Seasons/TeamsPage.tsx";
 import { AuthProvider } from "./providers/AuthProvider.tsx";
-
-const theme = createTheme({
-  typography: {
-    fontFamily: "'Lato'",
-  },
-});
+import theme from "./styles/theme.ts";
+import "./styles/global.css";
 
 export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          <CssBaseline />
-          <div className={styles.app}>
-            <BrowserRouter>
-              <Header />
-              <Content>
-                <Routes>
-                  <Route path="/" element={<HomePage />} />
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/signup" element={<Signup />} />
-                  <Route path="/profile" element={<Profile />} />
-                  <Route path="/seasons" element={<SeasonsPage />} />
-                  <Route
-                    path="/seasons/:seasonId/teams"
-                    element={<TeamsPage />}
-                  />
-                  <Route
-                    path="/seasons/:seasonId/teams/:teamId/results"
-                    element={<ResultsPage />}
-                  />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </Content>
-              <Footer />
-            </BrowserRouter>
-          </div>
+          <BrowserRouter>
+            <Header />
+            <Content>
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/seasons" element={<SeasonsPage />} />
+                <Route
+                  path="/seasons/:seasonId/teams"
+                  element={<TeamsPage />}
+                />
+                <Route
+                  path="/seasons/:seasonId/teams/:teamId/results"
+                  element={<ResultsPage />}
+                />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Content>
+            <Footer />
+          </BrowserRouter>
         </AuthProvider>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
