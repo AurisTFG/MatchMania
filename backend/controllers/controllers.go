@@ -1,8 +1,6 @@
 package controllers
 
 import (
-	"MatchManiaAPI/config"
-	"MatchManiaAPI/repositories"
 	"MatchManiaAPI/services"
 )
 
@@ -14,43 +12,14 @@ type Controllers struct {
 	ResultController ResultController
 }
 
-func NewControllers(
-	authController AuthController,
-	userController UserController,
-	seasonController SeasonController,
-	teamController TeamController,
-	resultController ResultController,
-) Controllers {
-	return Controllers{
-		AuthController:   authController,
-		UserController:   userController,
-		SeasonController: seasonController,
-		TeamController:   teamController,
-		ResultController: resultController,
-	}
-}
-
 func SetupControllers(
-	db *config.DB,
-	env *config.Env,
+	services *services.Services,
 ) *Controllers {
-	sessionRepository := repositories.NewSessionRepository(db)
-	userRepository := repositories.NewUserRepository(db)
-	seasonRepository := repositories.NewSeasonRepository(db)
-	teamRepository := repositories.NewTeamRepository(db)
-	resultRepository := repositories.NewResultRepository(db)
-
-	userService := services.NewUserService(userRepository)
-	authService := services.NewAuthService(sessionRepository, userRepository, env)
-	seasonService := services.NewSeasonService(seasonRepository)
-	teamService := services.NewTeamService(teamRepository)
-	resultService := services.NewResultService(resultRepository)
-
-	authController := NewAuthController(authService, userService, env)
-	userController := NewUserController(userService)
-	seasonController := NewSeasonController(seasonService)
-	teamController := NewTeamController(seasonService, teamService)
-	resultController := NewResultController(teamService, resultService)
+	authController := NewAuthController(services.AuthService, services.UserService)
+	userController := NewUserController(services.UserService)
+	seasonController := NewSeasonController(services.SeasonService)
+	teamController := NewTeamController(services.SeasonService, services.TeamService)
+	resultController := NewResultController(services.TeamService, services.ResultService)
 
 	return &Controllers{
 		AuthController:   authController,

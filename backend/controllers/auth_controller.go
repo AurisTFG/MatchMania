@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"MatchManiaAPI/config"
 	"MatchManiaAPI/constants"
 	"MatchManiaAPI/models"
 	r "MatchManiaAPI/responses"
@@ -16,18 +15,15 @@ import (
 type AuthController struct {
 	authService services.AuthService
 	userService services.UserService
-	env         *config.Env
 }
 
 func NewAuthController(
 	authService services.AuthService,
 	userService services.UserService,
-	env *config.Env,
 ) AuthController {
 	return AuthController{
 		authService: authService,
 		userService: userService,
-		env:         env,
 	}
 }
 

@@ -4,8 +4,10 @@ import (
 	"MatchManiaAPI/config"
 	"MatchManiaAPI/controllers"
 	"MatchManiaAPI/middlewares"
+	"MatchManiaAPI/repositories"
 	"MatchManiaAPI/routes"
 	"MatchManiaAPI/seeders"
+	"MatchManiaAPI/services"
 	"fmt"
 	"log"
 	"os"
@@ -71,8 +73,10 @@ func main() {
 
 	config.SetupSwagger(server, env)
 
-	controllers := controllers.SetupControllers(db, env)
-	middlewares := middlewares.SetupMiddlewares(db, env)
+	repositories := repositories.SetupRepositories(db)
+	services := services.SetupServices(repositories, env)
+	controllers := controllers.SetupControllers(services)
+	middlewares := middlewares.SetupMiddlewares(services)
 	routes.SetupRoutes(server, controllers, middlewares)
 
 	fmt.Println("(6/6) Starting server on " + env.ServerURL + " . . . ")
