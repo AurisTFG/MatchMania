@@ -27,6 +27,10 @@ clean: ## Cleans up temporary files in both frontend and backend
 	$(MAKE_CMD) $(BACKEND_FOLDER) clean
 	$(MAKE_CMD) $(FRONTEND_FOLDER) clean
 
+.PHONY: cloc
+cloc: ## Counts lines of code in both frontend and backend
+	@cloc $(BACKEND_FOLDER) $(FRONTEND_FOLDER) --by-file-by-lang --exclude-lang=YAML,JSON,make,Dockerfile,SVG --exclude-dir=bin,dist,node_modules,docs
+
 .PHONY: help
 help: ## Displays this help message
 	@echo "Master Makefile for React and Go Projects"
