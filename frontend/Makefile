@@ -47,6 +47,12 @@ clean: ## Cleans up built files and dependencies
 prepare: install build lint test ## Prepares the code for pushing to the repository
 	@echo "[✔] Code prepared for pushing to the repository"
 
+.PHONY: depcheck
+depcheck: ## Checks for unused dependencies
+	@echo "[?] Checking for unused dependencies..."
+	@pnpm depcheck
+	@echo "[✔] Dependency check completed"
+
 .PHONY: help
 help: ## Displays this help message
 	@echo "Makefile for MatchMania Frontend React Web Application"
