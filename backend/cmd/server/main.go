@@ -3,7 +3,6 @@ package main
 import (
 	"MatchManiaAPI/config"
 	"MatchManiaAPI/controllers"
-	"MatchManiaAPI/docs"
 	"MatchManiaAPI/middlewares"
 	"MatchManiaAPI/routes"
 	"MatchManiaAPI/seeders"
@@ -59,9 +58,7 @@ func init() {
 // @title MatchMania API
 // @version 0.1.0
 // @description Documentation for MatchMania API
-// @host localhost:8080
 // @BasePath /api/v1
-// @schemes http
 // @externalDocs.description  OpenAPI
 // @externalDocs.url          https://swagger.io/resources/open-api/
 // @contact.name AurisTFG
@@ -72,7 +69,7 @@ func main() {
 		log.Fatalf("Failed to setup server: %v", err)
 	}
 
-	docs.SetupSwagger(server, env)
+	config.SetupSwagger(server, env)
 
 	controllers := controllers.SetupControllers(db, env)
 	middlewares := middlewares.SetupMiddlewares(db, env)

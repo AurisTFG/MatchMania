@@ -1,16 +1,16 @@
-package docs
+package config
 
 import (
-	"MatchManiaAPI/config"
+	"MatchManiaAPI/docs"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-func SetupSwagger(server *gin.Engine, env *config.Env) {
+func SetupSwagger(server *gin.Engine, env *Env) {
 	if env.IsDev {
-		SwaggerInfo.Host = env.ServerURL
+		docs.SwaggerInfo.Host = env.ServerURL
 
 		server.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	}

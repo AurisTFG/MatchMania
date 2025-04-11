@@ -52,7 +52,7 @@ coverage: ## Generates a coverage report
 .PHONY: docs
 docs: ## Generates API documentation with Swagger
 	@echo "[?] Generating API documentation..."
-	@swag init -g $(MAIN_FILE)
+	@swag init -g $(MAIN_FILE) --outputTypes go
 	@echo "[✔] API documentation generated"
 
 .PHONY: clean
