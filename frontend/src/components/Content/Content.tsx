@@ -1,10 +1,6 @@
 import React from "react";
-import "./Content.css";
+import styles from "./Content.module.css";
 
-interface ContentProps {
-  children: React.ReactNode;
-}
-
-export default function Content({ children }: ContentProps) {
-  return <div className="content-container">{children}</div>;
+export default function Content({ children }: { children: React.ReactNode }) {
+  return <div className={styles.contentContainer}>{children}</div>;
 }

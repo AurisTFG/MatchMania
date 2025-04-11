@@ -1,8 +1,10 @@
+// filepath: c:\Dev\MatchMania\frontend\src\App.tsx
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import styles from "./App.module.css";
 import Content from "./components/Content/Content.tsx";
 import Footer from "./components/Footer/Footer.tsx";
 import Header from "./components/Header/Header.tsx";
@@ -16,7 +18,6 @@ import ResultsPage from "./pages/Seasons/ResultsPage.tsx";
 import SeasonsPage from "./pages/Seasons/SeasonsPage.tsx";
 import TeamsPage from "./pages/Seasons/TeamsPage.tsx";
 import { AuthProvider } from "./providers/AuthProvider.tsx";
-import "./App.css";
 
 const theme = createTheme({
   typography: {
@@ -30,7 +31,7 @@ export default function App() {
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <CssBaseline />
-          <div className="App">
+          <div className={styles.app}>
             <BrowserRouter>
               <Header />
               <Content>
