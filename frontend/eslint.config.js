@@ -68,5 +68,24 @@ export default ts.config(
       "@typescript-eslint/no-unsafe-argument": "off",
     },
   },
-  prettier
+  {
+    // Prettier rules go last to override conflicting ESLint rules
+    ...prettier,
+    rules: {
+      "prettier/prettier": [
+        "error",
+        {
+          // https://prettier.io/docs/options
+          endOfLine: "lf",
+          singleQuote: true,
+          trailingComma: "all",
+          printWidth: 80,
+          tabWidth: 2,
+          useTabs: false,
+          objectWrap: "preserve",
+          singleAttributePerLine: true,
+        },
+      ],
+    },
+  }
 );
