@@ -21,7 +21,7 @@ import {
 import { useFetchUsers } from '../../api/hooks/usersHooks.ts';
 import { useAuth } from '../../providers/AuthProvider.tsx';
 import { Season } from '../../types/index.ts';
-import { User } from '../../types/users.ts';
+import { User } from '../../types/userTypes.ts';
 
 export default function SeasonsPage() {
   const { user } = useAuth();
@@ -36,10 +36,10 @@ export default function SeasonsPage() {
 
   const { data: seasons = [], isLoading: seasonsLoading } = useFetchSeasons();
   const { data: users = [] } = useFetchUsers();
-  const { mutateAsync: createSeasonMutation } = useCreateSeason();
+  const { mutateAsync: createSeasonMutation, error } = useCreateSeason();
   const { mutateAsync: updateSeasonMutation } = useUpdateSeason();
   const { mutateAsync: deleteSeasonMutation } = useDeleteSeason();
-
+  console.log(error);
   const getUserById = (userId: string): User => {
     return (
       users.find((user) => user.id === userId) ??

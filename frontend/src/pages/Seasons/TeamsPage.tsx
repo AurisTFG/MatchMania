@@ -12,7 +12,7 @@ import {
 import { useFetchUsers } from '../../api/hooks/usersHooks';
 import { useAuth } from '../../providers/AuthProvider';
 import { Team } from '../../types';
-import { User } from '../../types/users';
+import { User } from '../../types/userTypes';
 
 const isValidTeam = (seasonId: string | undefined) => {
   return seasonId && !isNaN(Number(seasonId)) && Number(seasonId) > 0;
