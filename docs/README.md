@@ -43,11 +43,6 @@
 - **Makefile** – Automates build, run, test, clean and other tasks.
 - **Docker** – Containerizes the app for consistent and portable environments.
 
-## 📄 Documentation
-
-The OpenAPI Swagger specification is available at:  
-[backend/docs/swagger.yaml](../backend/docs/swagger.yaml)
-
 ## ▶️ How to Run
 
 1. **Clone the repository**:
