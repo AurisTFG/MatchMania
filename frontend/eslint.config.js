@@ -83,7 +83,7 @@ export default ts.config(
         "error",
         {
           // https://prettier.io/docs/options
-          endOfLine: "lf",
+          endOfLine: "auto",
           singleQuote: true,
           trailingComma: "all",
           printWidth: 80,
