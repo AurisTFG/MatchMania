@@ -1,3 +1,3 @@
-export * from './seasons';
-export * from './teams';
-export * from './results';
+export * from './seasonTypes';
+export * from './teamTypes';
+export * from './resultTypes';
