@@ -1,15 +1,16 @@
 import axios, { AxiosError } from 'axios';
+import { ErrorDto } from '../types';
 
 const axiosClient = axios.create({
   baseURL: import.meta.env.MATCHMANIA_API_BASE_URL as string,
   withCredentials: true,
 });
 
-const onFulfilled = <T>(response: { data: T }) => {
+const onSuccess = <T>(response: { data: T }) => {
   return response.data;
 };
 
-const onRejected = async (error: AxiosError) => {
+const onError = async (error: AxiosError) => {
   if (error.response?.status === 401) {
     console.log('Refreshing token...');
 
@@ -20,11 +21,15 @@ const onRejected = async (error: AxiosError) => {
     }
   }
 
-  return Promise.reject(
-    error instanceof Error ? error : new Error(String(error)),
-  );
+  const errorDto = error?.response?.data as ErrorDto;
+
+  if (errorDto && errorDto.error) {
+    return Promise.reject(new Error(errorDto.error));
+  } else {
+    return Promise.reject(new Error('An unknown error occurred.'));
+  }
 };
 
-axiosClient.interceptors.response.use(onFulfilled, onRejected);
+axiosClient.interceptors.response.use(onSuccess, onError);
 
 export default axiosClient;
