@@ -22,7 +22,7 @@ describe("HomePage Component", () => {
     render(
       <BrowserRouter>
         <HomePage />
-      </BrowserRouter>
+      </BrowserRouter>,
     );
 
     expect(screen.getByText(/Welcome to MatchMania/i)).toBeInTheDocument();
@@ -41,7 +41,7 @@ describe("HomePage Component", () => {
     render(
       <BrowserRouter>
         <HomePage />
-      </BrowserRouter>
+      </BrowserRouter>,
     );
 
     expect(screen.getByText(/Welcome to MatchMania/i)).toBeInTheDocument();

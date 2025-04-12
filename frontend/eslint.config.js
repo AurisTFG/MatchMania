@@ -1,51 +1,46 @@
-import eslint from "@eslint/js";
-import importPlugin from "eslint-plugin-import";
-import eslintPluginReact from "eslint-plugin-react";
-import eslintPluginReactHooks from "eslint-plugin-react-hooks";
-import tseslint from "typescript-eslint";
-import pluginQuery from "@tanstack/eslint-plugin-query";
+import ts from "typescript-eslint";
+import react from "eslint-plugin-react";
+import imports from "eslint-plugin-import";
+import reactHooks from "eslint-plugin-react-hooks";
+import tanstackQuery from "@tanstack/eslint-plugin-query";
+import prettier from "eslint-plugin-prettier/recommended";
 
-export default tseslint.config(
+export default ts.config(
   {
-    ignores: ["**/dist", "**/vite.config.ts", "eslint.config.js"],
+    ignores: ["**/dist", "**/vite.config.ts", "**/eslint.config.js"],
   },
+  ...ts.configs.recommended,
+  ...ts.configs.stylisticTypeChecked,
+  ...ts.configs.strictTypeChecked,
+  react.configs.flat.recommended,
+  imports.flatConfigs.recommended,
   {
+    settings: {
+      react: {
+        version: "detect",
+      },
+    },
     languageOptions: {
       parserOptions: {
         project: ["./tsconfig.app.json"],
         tsconfigRootDir: import.meta.dirname,
       },
     },
-
-    settings: {
-      react: {
-        version: "detect",
-      },
-    },
-  },
-  eslint.configs.recommended,
-  ...tseslint.configs.recommended,
-  ...tseslint.configs.stylisticTypeChecked,
-  ...tseslint.configs.strictTypeChecked,
-  importPlugin.flatConfigs.recommended,
-  eslintPluginReact.configs.flat.recommended,
-  {
     plugins: {
-      "react-hooks": eslintPluginReactHooks,
-      "@tanstack/query": pluginQuery,
+      "react-hooks": reactHooks,
+      "@tanstack/query": tanstackQuery,
     },
-    rules: eslintPluginReactHooks.configs.recommended.rules,
-  },
-  {
     rules: {
+      ...reactHooks.configs.recommended.rules,
       curly: "error", // force use of curly brackts on if statements
       "spaced-comment": [
+        // force space after comments
         "error",
         "always",
         {
           markers: ["/"],
         },
-      ], // force space after comments
+      ],
       "prefer-template": "error", // prefer template strings over string appends
       "react/react-in-jsx-scope": "off", // react is always in scope with vite
       "import/named": "off", // fails to resolve imports from react-router-dom
@@ -68,10 +63,10 @@ export default tseslint.config(
           ],
         },
       ],
-
       // TODO: remove these rules when the code is fixed
       "@typescript-eslint/no-unsafe-member-access": "off",
       "@typescript-eslint/no-unsafe-argument": "off",
     },
-  }
+  },
+  prettier
 );

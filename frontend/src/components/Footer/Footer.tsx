@@ -1,13 +1,13 @@
 import { FaGithub, FaInstagram, FaPaypal, FaTwitter } from "react-icons/fa";
-import "./Footer.css";
+import styles from "./Footer.module.css";
 
 export default function Footer() {
   return (
-    <footer className="footer">
-      <div className="footer-text">
+    <footer className={styles.footer}>
+      <div className={styles.footerText}>
         &copy; {new Date().getFullYear()}. AurisTFG - All Rights Reserved
       </div>
-      <div className="social-icons">
+      <div className={styles.socialIcons}>
         <a
           href="https://github.com/AurisTFG"
           target="_blank"

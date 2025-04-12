@@ -25,10 +25,10 @@ export const ENDPOINTS = {
     BY_ID: (
       seasonId: string | number,
       teamId: string | number,
-      resultId: string | number
+      resultId: string | number,
     ) =>
       `seasons/${String(seasonId)}/teams/${String(teamId)}/results/${String(
-        resultId
+        resultId,
       )}`,
   },
 };

@@ -19,7 +19,7 @@ export const useFetchResults = (seasonID: number, teamID: number) =>
 export const useFetchResult = (
   seasonID: number,
   teamID: number,
-  resultID: number
+  resultID: number,
 ) =>
   useQuery({
     queryKey: QUERY_KEYS.RESULTS.BY_ID(seasonID, teamID, resultID),
