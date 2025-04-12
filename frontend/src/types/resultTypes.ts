@@ -1,4 +1,4 @@
-export interface Result {
+export type Result = {
   id: number;
   matchStartDate: Date;
   matchEndDate: Date;
@@ -8,4 +8,4 @@ export interface Result {
   teamId: number;
   opponentTeamId: number;
   userUUID: string;
-}
+};

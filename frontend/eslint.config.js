@@ -70,6 +70,7 @@ export default ts.config(
           html: true,
         },
       ],
+      "@typescript-eslint/consistent-type-definitions": ["error", "type"],
       // TODO: remove these rules when the code is fixed
       "@typescript-eslint/no-unsafe-member-access": "off",
       "@typescript-eslint/no-unsafe-argument": "off",
