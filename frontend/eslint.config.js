@@ -63,6 +63,13 @@ export default ts.config(
           ],
         },
       ],
+      "react/self-closing-comp": [
+        "error",
+        {
+          component: true,
+          html: true,
+        },
+      ],
       // TODO: remove these rules when the code is fixed
       "@typescript-eslint/no-unsafe-member-access": "off",
       "@typescript-eslint/no-unsafe-argument": "off",
