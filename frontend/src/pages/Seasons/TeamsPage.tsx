@@ -1,18 +1,18 @@
-import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
-import { Button, Input, List, Modal, Space, Typography, message } from "antd";
-import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import { useFetchSeason } from "../../api/hooks/seasonsHooks";
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
+import { Button, Input, List, Modal, Space, Typography, message } from 'antd';
+import { useEffect, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import { useFetchSeason } from '../../api/hooks/seasonsHooks';
 import {
   useCreateTeam,
   useDeleteTeam,
   useFetchTeams,
   useUpdateTeam,
-} from "../../api/hooks/teamsHooks";
-import { useFetchUsers } from "../../api/hooks/usersHooks";
-import { useAuth } from "../../providers/AuthProvider";
-import { Team } from "../../types";
-import { User } from "../../types/users";
+} from '../../api/hooks/teamsHooks';
+import { useFetchUsers } from '../../api/hooks/usersHooks';
+import { useAuth } from '../../providers/AuthProvider';
+import { Team } from '../../types';
+import { User } from '../../types/users';
 
 const isValidTeam = (seasonId: string | undefined) => {
   return seasonId && !isNaN(Number(seasonId)) && Number(seasonId) > 0;
@@ -25,7 +25,7 @@ export default function TeamsPage() {
   const [isEditing, setIsEditing] = useState(false);
   const [editingTeam, setEditingTeam] = useState<Partial<Team>>({});
   const [formData, setFormData] = useState({
-    name: "",
+    name: '',
   });
   const { user } = useAuth();
 
@@ -74,7 +74,7 @@ export default function TeamsPage() {
       setFormData({ name: team.name });
     } else {
       setIsEditing(false);
-      setFormData({ name: "" });
+      setFormData({ name: '' });
     }
     setIsModalOpen(true);
   };
@@ -83,15 +83,15 @@ export default function TeamsPage() {
     try {
       if (isEditing && editingTeam.id) {
         await updateTeam({ teamID: editingTeam.id, team: formData });
-        message.success("Team updated successfully.");
+        message.success('Team updated successfully.');
       } else {
         await createTeam(formData);
-        message.success("Team created successfully.");
+        message.success('Team created successfully.');
       }
       setIsModalOpen(false);
-      setFormData({ name: "" });
+      setFormData({ name: '' });
     } catch (error) {
-      message.error("Failed to save team.");
+      message.error('Failed to save team.');
       console.error(error);
     }
   };
@@ -99,26 +99,26 @@ export default function TeamsPage() {
   const handleDelete = async (teamID: number) => {
     try {
       await deleteTeam(teamID);
-      message.success("Team deleted successfully.");
+      message.success('Team deleted successfully.');
     } catch (error) {
-      message.error("Failed to delete team.");
+      message.error('Failed to delete team.');
       console.error(error);
     }
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setFormData({ name: "" });
+    setFormData({ name: '' });
     setEditingTeam({});
   };
 
   return (
-    <div style={{ padding: 20, width: "50%", margin: "auto" }}>
+    <div style={{ padding: 20, width: '50%', margin: 'auto' }}>
       <Space
         style={{
           marginBottom: 16,
-          display: "flex",
-          justifyContent: "space-between",
+          display: 'flex',
+          justifyContent: 'space-between',
         }}
       >
         <Typography.Title level={4}>
@@ -132,8 +132,8 @@ export default function TeamsPage() {
           }}
           disabled={user === null}
           style={{
-            filter: user === null ? "blur(1px)" : "none",
-            cursor: user === null ? "not-allowed" : "pointer",
+            filter: user === null ? 'blur(1px)' : 'none',
+            cursor: user === null ? 'not-allowed' : 'pointer',
           }}
         >
           Create Team
@@ -148,8 +148,8 @@ export default function TeamsPage() {
           <List.Item
             actions={[
               user &&
-              (user.role === "moderator" ||
-                user.role === "admin" ||
+              (user.role === 'moderator' ||
+                user.role === 'admin' ||
                 team.userUUID === user.id) ? (
                 <EditOutlined
                   key="edit"
@@ -159,11 +159,11 @@ export default function TeamsPage() {
                 />
               ) : null,
 
-              user && (user.role === "admin" || team.userUUID === user.id) ? (
+              user && (user.role === 'admin' || team.userUUID === user.id) ? (
                 <DeleteOutlined
                   key="delete"
                   onClick={() => handleDelete(team.id)}
-                  style={{ color: "red" }}
+                  style={{ color: 'red' }}
                 />
               ) : null,
             ]}
@@ -191,7 +191,7 @@ export default function TeamsPage() {
       />
 
       <Modal
-        title={isEditing ? "Edit Team" : "Create Team"}
+        title={isEditing ? 'Edit Team' : 'Create Team'}
         open={isModalOpen}
         onCancel={closeModal}
         // eslint-disable-next-line @typescript-eslint/no-misused-promises

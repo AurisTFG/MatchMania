@@ -1,5 +1,5 @@
-import { FaGithub, FaInstagram, FaPaypal, FaTwitter } from "react-icons/fa";
-import styles from "./Footer.module.css";
+import { FaGithub, FaInstagram, FaPaypal, FaTwitter } from 'react-icons/fa';
+import styles from './Footer.module.css';
 
 export default function Footer() {
   return (

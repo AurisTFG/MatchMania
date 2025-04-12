@@ -1,6 +1,6 @@
-import { ReactNode, createContext, useContext } from "react";
-import { useFetchMe } from "../api/hooks/authHooks";
-import { User } from "../types/users";
+import { ReactNode, createContext, useContext } from 'react';
+import { useFetchMe } from '../api/hooks/authHooks';
+import { User } from '../types/users';
 
 interface AuthContextType {
   user: User | null;
@@ -27,7 +27,7 @@ export const useAuth = () => {
   const context = useContext(AuthContext);
 
   if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider component");
+    throw new Error('useAuth must be used within an AuthProvider component');
   }
 
   return context;

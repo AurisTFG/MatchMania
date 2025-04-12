@@ -1,12 +1,12 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ENDPOINTS } from "../../constants/endpoints";
-import { QUERY_KEYS } from "../../constants/queryKeys";
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { ENDPOINTS } from '../../constants/endpoints';
+import { QUERY_KEYS } from '../../constants/queryKeys';
 import {
   deleteRequest,
   getRequest,
   patchRequest,
   postRequest,
-} from "../httpRequests";
+} from '../httpRequests';
 
 export const useFetchSeasons = () =>
   useQuery({

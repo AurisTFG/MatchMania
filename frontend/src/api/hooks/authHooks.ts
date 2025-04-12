@@ -1,7 +1,7 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ENDPOINTS } from "../../constants/endpoints";
-import { QUERY_KEYS } from "../../constants/queryKeys";
-import { getRequest, postRequest } from "../httpRequests";
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { ENDPOINTS } from '../../constants/endpoints';
+import { QUERY_KEYS } from '../../constants/queryKeys';
+import { getRequest, postRequest } from '../httpRequests';
 
 export const useFetchMe = () =>
   useQuery({

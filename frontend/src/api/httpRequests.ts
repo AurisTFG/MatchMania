@@ -1,4 +1,4 @@
-import axiosClient from "../configs/axiosClient";
+import axiosClient from '../configs/axiosClient';
 
 export const getRequest = async <T>({ url }: { url: string }): Promise<T> => {
   const response = await axiosClient.get<T>(url);

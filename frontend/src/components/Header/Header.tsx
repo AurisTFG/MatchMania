@@ -1,19 +1,19 @@
-import AccountCircle from "@mui/icons-material/AccountCircle";
-import MenuIcon from "@mui/icons-material/Menu";
-import { useMediaQuery } from "@mui/material";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Drawer from "@mui/material/Drawer";
-import IconButton from "@mui/material/IconButton";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useLogOut } from "../../api/hooks/authHooks";
-import { useAuth } from "../../providers/AuthProvider";
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import MenuIcon from '@mui/icons-material/Menu';
+import { useMediaQuery } from '@mui/material';
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Drawer from '@mui/material/Drawer';
+import IconButton from '@mui/material/IconButton';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useLogOut } from '../../api/hooks/authHooks';
+import { useAuth } from '../../providers/AuthProvider';
 
 export default function Header() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -29,14 +29,14 @@ export default function Header() {
     setAnchorEl(null);
     try {
       await logoutMutation();
-      await navigate("/");
+      await navigate('/');
     } catch (error) {
-      console.error("Logout failed:", error);
+      console.error('Logout failed:', error);
     }
   };
 
   const handleProfile = async () => {
-    await navigate("/profile");
+    await navigate('/profile');
   };
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -47,13 +47,13 @@ export default function Header() {
     setAnchorEl(null);
   };
 
-  const isMobile = useMediaQuery("(max-width: 768px)");
+  const isMobile = useMediaQuery('(max-width: 768px)');
 
   return (
     <AppBar
       position="static"
       sx={{
-        background: "linear-gradient(to right,rgb(64, 112, 145), #9b59b6)",
+        background: 'linear-gradient(to right,rgb(64, 112, 145), #9b59b6)',
       }}
     >
       <Toolbar>
@@ -75,40 +75,40 @@ export default function Header() {
         <Typography
           variant="h6"
           component="div"
-          sx={{ flexGrow: 1, display: "flex", alignItems: "center" }}
+          sx={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}
         >
           <img
             src="/car_icon.svg"
             alt="Logo"
-            style={{ height: "40px", marginRight: "8px" }}
+            style={{ height: '40px', marginRight: '8px' }}
           />
           MatchMania
         </Typography>
 
         {!isMobile && (
           <Box
-            sx={{ flexGrow: 1, mr: 10, display: { xs: "none", md: "flex" } }}
+            sx={{ flexGrow: 1, mr: 10, display: { xs: 'none', md: 'flex' } }}
           >
             <Button
               onClick={() => {
-                void navigate("/");
+                void navigate('/');
               }}
               color="inherit"
               sx={{
                 mr: 1,
-                textDecoration: isActive("/") ? "underline" : "none",
-                fontSize: "1.20rem",
+                textDecoration: isActive('/') ? 'underline' : 'none',
+                fontSize: '1.20rem',
               }}
             >
               Home
             </Button>
             <Button
-              onClick={() => void navigate("/seasons")}
+              onClick={() => void navigate('/seasons')}
               color="inherit"
               sx={{
                 mr: 1,
-                textDecoration: isActive("/seasons") ? "underline" : "none",
-                fontSize: "1.20rem",
+                textDecoration: isActive('/seasons') ? 'underline' : 'none',
+                fontSize: '1.20rem',
               }}
             >
               Seasons
@@ -132,13 +132,13 @@ export default function Header() {
               id="menu-appbar"
               anchorEl={anchorEl}
               anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
+                vertical: 'top',
+                horizontal: 'right',
               }}
               keepMounted
               transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
+                vertical: 'top',
+                horizontal: 'right',
               }}
               open={Boolean(anchorEl)}
               onClose={handleClose}
@@ -169,22 +169,22 @@ export default function Header() {
             setMobileMenuOpen(false);
           }}
           sx={{
-            "& .MuiDrawer-paper": {
-              width: "250px",
-              height: "100vh",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              padding: "20px",
+            '& .MuiDrawer-paper': {
+              width: '250px',
+              height: '100vh',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              padding: '20px',
             },
           }}
         >
-          <Box sx={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <Button
               color="inherit"
               onClick={() => {
                 setMobileMenuOpen(false);
-                void navigate("/");
+                void navigate('/');
               }}
             >
               Home
@@ -193,7 +193,7 @@ export default function Header() {
               color="inherit"
               onClick={() => {
                 setMobileMenuOpen(false);
-                void navigate("/seasons");
+                void navigate('/seasons');
               }}
             >
               Seasons

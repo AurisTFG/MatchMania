@@ -1,4 +1,4 @@
-import axios, { AxiosError } from "axios";
+import axios, { AxiosError } from 'axios';
 
 const axiosClient = axios.create({
   baseURL: import.meta.env.MATCHMANIA_API_BASE_URL as string,
@@ -11,9 +11,9 @@ const onFulfilled = <T>(response: { data: T }) => {
 
 const onRejected = async (error: AxiosError) => {
   if (error.response?.status === 401) {
-    console.log("Refreshing token...");
+    console.log('Refreshing token...');
 
-    await axiosClient.post("/auth/refresh", null);
+    await axiosClient.post('/auth/refresh', null);
 
     if (error.config) {
       return axios.request(error.config);

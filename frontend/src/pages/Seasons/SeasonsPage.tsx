@@ -1,4 +1,4 @@
-import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import {
   Button,
   DatePicker,
@@ -8,20 +8,20 @@ import {
   Space,
   Typography,
   message,
-} from "antd";
-import moment from "moment";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+} from 'antd';
+import moment from 'moment';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
   useCreateSeason,
   useDeleteSeason,
   useFetchSeasons,
   useUpdateSeason,
-} from "../../api/hooks/seasonsHooks.ts";
-import { useFetchUsers } from "../../api/hooks/usersHooks.ts";
-import { useAuth } from "../../providers/AuthProvider.tsx";
-import { Season } from "../../types/index.ts";
-import { User } from "../../types/users.ts";
+} from '../../api/hooks/seasonsHooks.ts';
+import { useFetchUsers } from '../../api/hooks/usersHooks.ts';
+import { useAuth } from '../../providers/AuthProvider.tsx';
+import { Season } from '../../types/index.ts';
+import { User } from '../../types/users.ts';
 
 export default function SeasonsPage() {
   const { user } = useAuth();
@@ -29,7 +29,7 @@ export default function SeasonsPage() {
   const [isEditing, setIsEditing] = useState(false);
   const [editingSeason, setEditingSeason] = useState<Partial<Season>>({});
   const [formData, setFormData] = useState({
-    name: "",
+    name: '',
     startDate: moment(),
     endDate: moment(),
   });
@@ -44,8 +44,8 @@ export default function SeasonsPage() {
     return (
       users.find((user) => user.id === userId) ??
       ({
-        id: "",
-        username: "Unknown User",
+        id: '',
+        username: 'Unknown User',
       } as User)
     );
   };
@@ -62,7 +62,7 @@ export default function SeasonsPage() {
           },
         });
 
-        message.success("Season updated successfully.");
+        message.success('Season updated successfully.');
       } else {
         await createSeasonMutation({
           ...formData,
@@ -70,11 +70,11 @@ export default function SeasonsPage() {
           endDate: formData.endDate.toDate(),
         });
 
-        message.success("Season created successfully.");
+        message.success('Season created successfully.');
       }
       setIsModalOpen(false);
     } catch (error) {
-      message.error("Failed to save season.");
+      message.error('Failed to save season.');
       console.error(error);
     }
   };
@@ -82,9 +82,9 @@ export default function SeasonsPage() {
   const handleDelete = async (seasonID: number) => {
     try {
       await deleteSeasonMutation(seasonID);
-      message.success("Season deleted successfully.");
+      message.success('Season deleted successfully.');
     } catch (error) {
-      message.error("Failed to delete season.");
+      message.error('Failed to delete season.');
       console.error(error);
     }
   };
@@ -104,7 +104,7 @@ export default function SeasonsPage() {
     setIsEditing(false);
     setEditingSeason({});
     setFormData({
-      name: "",
+      name: '',
       startDate: moment(),
       endDate: moment(),
     });
@@ -115,19 +115,19 @@ export default function SeasonsPage() {
     setIsModalOpen(false);
     setEditingSeason({});
     setFormData({
-      name: "",
+      name: '',
       startDate: moment(),
       endDate: moment(),
     });
   };
 
   return (
-    <div style={{ padding: 20, width: "50%", margin: "auto" }}>
+    <div style={{ padding: 20, width: '50%', margin: 'auto' }}>
       <Space
         style={{
           marginBottom: 16,
-          display: "flex",
-          justifyContent: "space-between",
+          display: 'flex',
+          justifyContent: 'space-between',
         }}
       >
         <Typography.Title level={4}>Seasons</Typography.Title>
@@ -137,8 +137,8 @@ export default function SeasonsPage() {
           onClick={openCreateModal}
           disabled={user === null}
           style={{
-            filter: user === null ? "blur(1px)" : "none",
-            cursor: user === null ? "not-allowed" : "pointer",
+            filter: user === null ? 'blur(1px)' : 'none',
+            cursor: user === null ? 'not-allowed' : 'pointer',
           }}
         >
           Create Season
@@ -153,8 +153,8 @@ export default function SeasonsPage() {
           <List.Item
             actions={[
               user &&
-              (user.role === "moderator" ||
-                user.role === "admin" ||
+              (user.role === 'moderator' ||
+                user.role === 'admin' ||
                 season.userUUID === user.id) ? (
                 <EditOutlined
                   key="edit"
@@ -164,11 +164,11 @@ export default function SeasonsPage() {
                 />
               ) : null,
 
-              user && (user.role === "admin" || season.userUUID === user.id) ? (
+              user && (user.role === 'admin' || season.userUUID === user.id) ? (
                 <DeleteOutlined
                   key="delete"
                   onClick={() => handleDelete(season.id)}
-                  style={{ color: "red" }}
+                  style={{ color: 'red' }}
                 />
               ) : null,
             ]}
@@ -180,8 +180,8 @@ export default function SeasonsPage() {
               description={
                 <>
                   <Typography.Text>
-                    {`${season.startDate.toLocaleString().split("T")[0]} - ${
-                      season.endDate.toLocaleString().split("T")[0]
+                    {`${season.startDate.toLocaleString().split('T')[0]} - ${
+                      season.endDate.toLocaleString().split('T')[0]
                     }`}
                   </Typography.Text>
                   <br />
@@ -196,7 +196,7 @@ export default function SeasonsPage() {
       />
 
       <Modal
-        title={isEditing ? "Edit Season" : "Create Season"}
+        title={isEditing ? 'Edit Season' : 'Create Season'}
         open={isModalOpen}
         onCancel={closeModal}
         // eslint-disable-next-line @typescript-eslint/no-misused-promises

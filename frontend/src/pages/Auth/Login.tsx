@@ -1,23 +1,23 @@
-import { Box, Button, TextField } from "@mui/material";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useLogIn } from "../../api/hooks/authHooks";
+import { Box, Button, TextField } from '@mui/material';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useLogIn } from '../../api/hooks/authHooks';
 
 export default function Login() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const { mutateAsync: loginAsync, isPending: loginPending } = useLogIn();
 
   const handleLogin = async () => {
     await loginAsync({ email, password });
 
-    await navigate("/");
+    await navigate('/');
   };
 
   return (
-    <Box sx={{ maxWidth: 400, mx: "auto", mt: 5 }}>
+    <Box sx={{ maxWidth: 400, mx: 'auto', mt: 5 }}>
       <h1>Login</h1>
       <TextField
         fullWidth
@@ -46,7 +46,7 @@ export default function Login() {
         onClick={handleLogin}
         disabled={loginPending}
       >
-        {loginPending ? "Logging in..." : "Login"}
+        {loginPending ? 'Logging in...' : 'Login'}
       </Button>
     </Box>
   );
