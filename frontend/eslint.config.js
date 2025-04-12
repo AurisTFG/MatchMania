@@ -4,7 +4,7 @@ import eslintPluginReact from "eslint-plugin-react";
 import eslintPluginReactHooks from "eslint-plugin-react-hooks";
 import tseslint from "typescript-eslint";
 import pluginQuery from "@tanstack/eslint-plugin-query";
-import eslintConfigPrettier from "eslint-config-prettier/flat";
+import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
 
 export default tseslint.config([
   {
@@ -75,5 +75,5 @@ export default tseslint.config([
       "@typescript-eslint/no-unsafe-argument": "off",
     },
   },
-  eslintConfigPrettier,
+  eslintPluginPrettierRecommended,
 ]);

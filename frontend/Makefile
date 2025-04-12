@@ -28,7 +28,7 @@ run-prod: install ## Previews the built application
 .PHONY: lint
 lint: ## Runs the linter to check for code style and errors
 	@echo "[?] Running linter..."
-	@pnpm lint
+	@pnpm lint:fix
 	@echo "[✔] Linter completed"
 
 .PHONY: test

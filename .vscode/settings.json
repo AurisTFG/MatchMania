@@ -3,18 +3,7 @@
     "source.fixAll.eslint": "explicit",
     "source.addMissingImports.ts": "always"
   },
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.formatOnPaste": true,
-  "editor.formatOnType": false,
   "editor.formatOnSave": true,
-  "eslint.format.enable": true,
-  "eslint.enable": true,
-  "eslint.run": "onSave",
-  "eslint.useFlatConfig": true,
-  "eslint.workingDirectories": [
-    {
-      "mode": "auto",
-      "pattern": "./frontend/*"
-    }
-  ]
+  "editor.formatOnPaste": true,
+  "editor.formatOnType": false
 }
