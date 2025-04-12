@@ -30,7 +30,7 @@ const { Option } = Select;
 
 const isValidResult = (
   seasonId: string | undefined,
-  teamId: string | undefined
+  teamId: string | undefined,
 ) => {
   return (
     seasonId &&
@@ -73,15 +73,15 @@ export default function ResultsPage() {
 
   const { mutateAsync: createResult } = useCreateResult(
     parseInt(seasonId!),
-    parseInt(teamId!)
+    parseInt(teamId!),
   );
   const { mutateAsync: updateResult } = useUpdateResult(
     parseInt(seasonId!),
-    parseInt(teamId!)
+    parseInt(teamId!),
   );
   const { mutateAsync: deleteResult } = useDeleteResult(
     parseInt(seasonId!),
-    parseInt(teamId!)
+    parseInt(teamId!),
   );
 
   useEffect(() => {
@@ -247,7 +247,7 @@ export default function ResultsPage() {
           >
             <List.Item.Meta
               title={`${getTeamName(result.teamId)} vs ${getTeamName(
-                result.opponentTeamId
+                result.opponentTeamId,
               )}`}
               description={
                 <>

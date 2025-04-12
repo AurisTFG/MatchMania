@@ -42,7 +42,7 @@ export const QUERY_KEYS = {
     BY_ID: (
       seasonId: string | number,
       teamId: string | number,
-      resultId: string | number
+      resultId: string | number,
     ) => [
       "results",
       "byId",

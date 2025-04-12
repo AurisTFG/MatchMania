@@ -17,9 +17,9 @@ axiosClient.interceptors.response.use(
     }
 
     return Promise.reject(
-      error instanceof Error ? error : new Error(String(error))
+      error instanceof Error ? error : new Error(String(error)),
     );
-  }
+  },
 );
 
 export default axiosClient;
