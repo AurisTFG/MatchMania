@@ -23,8 +23,7 @@ import { useFetchSeason } from '../../api/hooks/seasonsHooks.ts';
 import { useFetchTeam, useFetchTeams } from '../../api/hooks/teamsHooks.ts';
 import { useFetchUsers } from '../../api/hooks/usersHooks.ts';
 import { useAuth } from '../../providers/AuthProvider.tsx';
-import { Result } from '../../types/resultTypes.ts';
-import { User } from '../../types/userTypes.ts';
+import { Result, User } from '../../types';
 
 const { Option } = Select;
 

@@ -21,8 +21,7 @@ import {
 import { useFetchUsers } from '../../api/hooks/usersHooks.ts';
 import StatusHandler from '../../components/StatusHandler/StatusHandler.tsx';
 import { useAuth } from '../../providers/AuthProvider.tsx';
-import { Season } from '../../types/index.ts';
-import { User } from '../../types/userTypes.ts';
+import { Season, User } from '../../types';
 
 export default function SeasonsPage() {
   const { user } = useAuth();
