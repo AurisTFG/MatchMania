@@ -19,6 +19,7 @@ import {
   useUpdateSeason,
 } from '../../api/hooks/seasonsHooks.ts';
 import { useFetchUsers } from '../../api/hooks/usersHooks.ts';
+import StatusHandler from '../../components/StatusHandler/StatusHandler.tsx';
 import { useAuth } from '../../providers/AuthProvider.tsx';
 import { Season } from '../../types/index.ts';
 import { User } from '../../types/userTypes.ts';
@@ -34,15 +35,19 @@ export default function SeasonsPage() {
     endDate: moment(),
   });
 
-  const { data: seasons = [], isLoading: seasonsLoading } = useFetchSeasons();
-  const { data: users = [] } = useFetchUsers();
-  const { mutateAsync: createSeasonMutation, error } = useCreateSeason();
+  const {
+    data: seasons,
+    isLoading: seasonsLoading,
+    error: seasonsError,
+  } = useFetchSeasons();
+  const { data: users } = useFetchUsers();
+  const { mutateAsync: createSeasonMutation } = useCreateSeason();
   const { mutateAsync: updateSeasonMutation } = useUpdateSeason();
   const { mutateAsync: deleteSeasonMutation } = useDeleteSeason();
-  console.log(error);
+
   const getUserById = (userId: string): User => {
     return (
-      users.find((user) => user.id === userId) ??
+      users?.find((user) => user.id === userId) ??
       ({
         id: '',
         username: 'Unknown User',
@@ -144,56 +149,63 @@ export default function SeasonsPage() {
           Create Season
         </Button>
       </Space>
+      <StatusHandler
+        isLoading={seasonsLoading}
+        error={seasonsError}
+        isEmpty={!seasons || seasons.length === 0}
+      >
+        <List
+          bordered
+          dataSource={seasons}
+          renderItem={(season) => (
+            <List.Item
+              actions={[
+                user &&
+                (user.role === 'moderator' ||
+                  user.role === 'admin' ||
+                  season.userUuid === user.id) ? (
+                  <EditOutlined
+                    key="edit"
+                    onClick={() => {
+                      openEditModal(season);
+                    }}
+                  />
+                ) : null,
 
-      <List
-        loading={seasonsLoading}
-        bordered
-        dataSource={seasons}
-        renderItem={(season) => (
-          <List.Item
-            actions={[
-              user &&
-              (user.role === 'moderator' ||
-                user.role === 'admin' ||
-                season.userUUID === user.id) ? (
-                <EditOutlined
-                  key="edit"
-                  onClick={() => {
-                    openEditModal(season);
-                  }}
-                />
-              ) : null,
-
-              user && (user.role === 'admin' || season.userUUID === user.id) ? (
-                <DeleteOutlined
-                  key="delete"
-                  onClick={() => handleDelete(season.id)}
-                  style={{ color: 'red' }}
-                />
-              ) : null,
-            ]}
-          >
-            <List.Item.Meta
-              title={
-                <Link to={`/seasons/${season.id}/teams`}>{season.name}</Link>
-              }
-              description={
-                <>
-                  <Typography.Text>
-                    {`${season.startDate.toLocaleString().split('T')[0]} - ${
-                      season.endDate.toLocaleString().split('T')[0]
-                    }`}
-                  </Typography.Text>
-                  <br />
-                  <Typography.Text type="secondary">
-                    {`By: ${getUserById(season.userUUID).username}`}
-                  </Typography.Text>
-                </>
-              }
-            />
-          </List.Item>
-        )}
-      />
+                user &&
+                (user.role === 'admin' || season.userUuid === user.id) ? (
+                  <DeleteOutlined
+                    key="delete"
+                    onClick={() => void handleDelete(season.id)}
+                    style={{ color: 'red' }}
+                  />
+                ) : null,
+              ]}
+            >
+              <List.Item.Meta
+                title={
+                  <Link to={`/seasons/${season.id.toString()}/teams`}>
+                    {season.name}
+                  </Link>
+                }
+                description={
+                  <>
+                    <Typography.Text>
+                      {`${season.startDate.toLocaleString().split('T')[0]} - ${
+                        season.endDate.toLocaleString().split('T')[0]
+                      }`}
+                    </Typography.Text>
+                    <br />
+                    <Typography.Text type="secondary">
+                      {`By: ${getUserById(season.userUuid).username}`}
+                    </Typography.Text>
+                  </>
+                }
+              />
+            </List.Item>
+          )}
+        />
+      </StatusHandler>
 
       <Modal
         title={isEditing ? 'Edit Season' : 'Create Season'}

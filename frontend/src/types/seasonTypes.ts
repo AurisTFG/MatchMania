@@ -3,5 +3,5 @@ export type Season = {
   name: string;
   startDate: Date;
   endDate: Date;
-  userUUID: string;
+  userUuid: string;
 };
