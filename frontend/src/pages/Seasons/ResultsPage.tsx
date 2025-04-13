@@ -48,6 +48,9 @@ export default function ResultsPage() {
     teamId: string;
   }>();
 
+  const seasonIdInteger = seasonId ? parseInt(seasonId) : 0;
+  const teamIdInteger = teamId ? parseInt(teamId) : 0;
+
   const { user } = useAuth();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -65,23 +68,23 @@ export default function ResultsPage() {
     data: results,
     isLoading,
     isError,
-  } = useFetchResults(parseInt(seasonId!), parseInt(teamId!));
-  const { data: season } = useFetchSeason(parseInt(seasonId!));
-  const { data: team } = useFetchTeam(parseInt(seasonId!), parseInt(teamId!));
-  const { data: teams } = useFetchTeams(parseInt(seasonId!));
-  const { data: users = [] } = useFetchUsers();
+  } = useFetchResults(seasonIdInteger, teamIdInteger);
+  const { data: season } = useFetchSeason(seasonIdInteger);
+  const { data: team } = useFetchTeam(seasonIdInteger, teamIdInteger);
+  const { data: teams } = useFetchTeams(seasonIdInteger);
+  const { data: users } = useFetchUsers();
 
   const { mutateAsync: createResult } = useCreateResult(
-    parseInt(seasonId!),
-    parseInt(teamId!),
+    seasonIdInteger,
+    teamIdInteger,
   );
   const { mutateAsync: updateResult } = useUpdateResult(
-    parseInt(seasonId!),
-    parseInt(teamId!),
+    seasonIdInteger,
+    teamIdInteger,
   );
   const { mutateAsync: deleteResult } = useDeleteResult(
-    parseInt(seasonId!),
-    parseInt(teamId!),
+    seasonIdInteger,
+    teamIdInteger,
   );
 
   useEffect(() => {
@@ -92,7 +95,7 @@ export default function ResultsPage() {
 
   const getUserById = (userId: string): User => {
     return (
-      users.find((user) => user.id === userId) ||
+      users?.find((user) => user.id === userId) ??
       ({
         id: '',
         username: 'Unknown User',
@@ -179,7 +182,7 @@ export default function ResultsPage() {
   };
 
   const getTeamName = (id: number) => {
-    const team = teams.find((team) => team.id === id);
+    const team = teams?.find((team) => team.id === id);
     return team ? team.name : 'Unknown Team';
   };
 
@@ -201,7 +204,8 @@ export default function ResultsPage() {
         }}
       >
         <Typography.Title level={4}>
-          Results for Team "{team?.name}" in Season "{season?.name}"
+          Results for Team &quot;{team?.name}&quot; in Season &quot;
+          {season?.name}&quot;
         </Typography.Title>
         <Button
           type="primary"
@@ -239,7 +243,7 @@ export default function ResultsPage() {
               user && (user.role === 'admin' || result.userUUID === user.id) ? (
                 <DeleteOutlined
                   key="delete"
-                  onClick={() => handleDelete(result.id)}
+                  onClick={() => void handleDelete(result.id)}
                   style={{ color: 'red' }}
                 />
               ) : null,
@@ -316,8 +320,8 @@ export default function ResultsPage() {
           }}
           style={{ width: '100%', marginBottom: 8 }}
         >
-          {teams
-            .filter((opponentTeam) => opponentTeam.id !== parseInt(teamId!))
+          {(teams ?? [])
+            .filter((opponentTeam) => opponentTeam.id !== teamIdInteger)
             .map((opponentTeam) => (
               <Option
                 key={opponentTeam.id}

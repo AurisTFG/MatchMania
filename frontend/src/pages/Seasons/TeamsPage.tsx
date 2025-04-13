@@ -41,7 +41,13 @@ export default function TeamsPage() {
   const { mutateAsync: deleteTeam } = useDeleteTeam(seasonIdNumber);
 
   const getUserById = (userId: string): User => {
-    return users.find((user) => user.id === userId) || ({} as User);
+    return (
+      users?.find((user) => user.id === userId) ??
+      ({
+        id: '',
+        username: 'Unknown User',
+      } as User)
+    );
   };
 
   useEffect(() => {
@@ -122,7 +128,7 @@ export default function TeamsPage() {
         }}
       >
         <Typography.Title level={4}>
-          Teams for Season &quot;{season.name}&quot;
+          Teams for Season &quot;{season?.name}&quot;
         </Typography.Title>
         <Button
           type="primary"
@@ -162,7 +168,7 @@ export default function TeamsPage() {
               user && (user.role === 'admin' || team.userUUID === user.id) ? (
                 <DeleteOutlined
                   key="delete"
-                  onClick={() => handleDelete(team.id)}
+                  onClick={() => void handleDelete(team.id)}
                   style={{ color: 'red' }}
                 />
               ) : null,
@@ -170,14 +176,16 @@ export default function TeamsPage() {
           >
             <List.Item.Meta
               title={
-                <Link to={`/seasons/${seasonId}/teams/${team.id}/results`}>
+                <Link
+                  to={`/seasons/${seasonId ?? ''}/teams/${String(team.id)}/results`}
+                >
                   {team.name}
                 </Link>
               }
               description={
                 <>
                   <Typography.Text type="secondary">
-                    {`Elo: ${team.elo}`}
+                    {`Elo: ${team.elo.toString()}`}
                   </Typography.Text>
                   <br />
                   <Typography.Text type="secondary">
