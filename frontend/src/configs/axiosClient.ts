@@ -1,8 +1,18 @@
 import axios, { AxiosError } from 'axios';
-import { ErrorDto } from '../types';
+import { getErrorFromAxiosError } from '../utils/axiosUtils';
+
+const baseURL = import.meta.env.MATCHMANIA_API_BASE_URL as string;
+if (!baseURL) {
+  throw new Error('Env var MATCHMANIA_API_BASE_URL is not defined');
+}
 
 const axiosClient = axios.create({
-  baseURL: import.meta.env.MATCHMANIA_API_BASE_URL as string,
+  baseURL: baseURL,
+  withCredentials: true,
+});
+
+const axiosClientWithInterceptors = axios.create({
+  baseURL: baseURL,
   withCredentials: true,
 });
 
@@ -10,26 +20,29 @@ const onSuccess = <T>(response: { data: T }) => {
   return response.data;
 };
 
-const onError = async (error: AxiosError) => {
-  if (error.response?.status === 401) {
-    console.log('Refreshing token...');
+const onError = async (axiosError: AxiosError) => {
+  if (axiosError.response?.status === 401) {
+    try {
+      await axiosClient.post('/auth/refresh', null);
 
-    await axiosClient.post('/auth/refresh', null);
+      if (axiosError.config) {
+        // Retry the original request
+        return await axiosClient.request(axiosError.config);
+      }
 
-    if (error.config) {
-      return axios.request(error.config);
+      return await Promise.reject(
+        new Error('Request configuration is undefined'),
+      );
+    } catch (newAxiosError) {
+      return Promise.reject(
+        getErrorFromAxiosError(newAxiosError as AxiosError),
+      );
     }
   }
 
-  const errorDto = error?.response?.data as ErrorDto;
-
-  if (errorDto && errorDto.error) {
-    return Promise.reject(new Error(errorDto.error));
-  } else {
-    return Promise.reject(new Error('An unknown error occurred.'));
-  }
+  return Promise.reject(getErrorFromAxiosError(axiosError));
 };
 
-axiosClient.interceptors.response.use(onSuccess, onError);
+axiosClientWithInterceptors.interceptors.response.use(onSuccess, onError);
 
-export default axiosClient;
+export default axiosClientWithInterceptors;
