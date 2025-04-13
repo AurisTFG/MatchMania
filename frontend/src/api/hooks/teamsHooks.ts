@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ENDPOINTS } from '../../constants/endpoints';
 import { QUERY_KEYS } from '../../constants/queryKeys';
+import { Team } from '../../types';
 import {
   deleteRequest,
   getRequest,
@@ -11,14 +12,15 @@ import {
 export const useFetchTeams = (seasonID: number) =>
   useQuery({
     queryKey: QUERY_KEYS.TEAMS.ALL(seasonID),
-    queryFn: () => getRequest({ url: ENDPOINTS.TEAMS.ROOT(seasonID) }),
+    queryFn: () => getRequest<Team[]>({ url: ENDPOINTS.TEAMS.ROOT(seasonID) }),
     enabled: !!seasonID,
   });
 
 export const useFetchTeam = (seasonID: number, teamID: number) =>
   useQuery({
     queryKey: QUERY_KEYS.TEAMS.BY_ID(seasonID, teamID),
-    queryFn: () => getRequest({ url: ENDPOINTS.TEAMS.BY_ID(seasonID, teamID) }),
+    queryFn: () =>
+      getRequest<Team>({ url: ENDPOINTS.TEAMS.BY_ID(seasonID, teamID) }),
     enabled: !!seasonID && !!teamID,
   });
 
@@ -27,10 +29,7 @@ export const useCreateTeam = (seasonID: number) => {
 
   return useMutation({
     mutationFn: (team: { name: string }) =>
-      postRequest({
-        url: ENDPOINTS.TEAMS.ROOT(seasonID),
-        body: team,
-      }),
+      postRequest<Team>({ url: ENDPOINTS.TEAMS.ROOT(seasonID), body: team }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.TEAMS.ALL(seasonID),
@@ -50,7 +49,7 @@ export const useUpdateTeam = (seasonID: number) => {
       teamID: number;
       team: { name: string };
     }) =>
-      patchRequest({
+      patchRequest<Team>({
         url: ENDPOINTS.TEAMS.BY_ID(seasonID, teamID),
         body: team,
       }),
@@ -70,9 +69,7 @@ export const useDeleteTeam = (seasonID: number) => {
 
   return useMutation({
     mutationFn: (teamID: number) =>
-      deleteRequest({
-        url: ENDPOINTS.TEAMS.BY_ID(seasonID, teamID),
-      }),
+      deleteRequest({ url: ENDPOINTS.TEAMS.BY_ID(seasonID, teamID) }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.TEAMS.ALL(seasonID),

@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ENDPOINTS } from '../../constants/endpoints';
 import { QUERY_KEYS } from '../../constants/queryKeys';
+import { Result } from '../../types';
 import {
   deleteRequest,
   getRequest,
@@ -12,7 +13,7 @@ export const useFetchResults = (seasonID: number, teamID: number) =>
   useQuery({
     queryKey: QUERY_KEYS.RESULTS.ALL(seasonID, teamID),
     queryFn: () =>
-      getRequest({ url: ENDPOINTS.RESULTS.ROOT(seasonID, teamID) }),
+      getRequest<Result[]>({ url: ENDPOINTS.RESULTS.ROOT(seasonID, teamID) }),
     enabled: !!seasonID && !!teamID,
   });
 
@@ -24,7 +25,7 @@ export const useFetchResult = (
   useQuery({
     queryKey: QUERY_KEYS.RESULTS.BY_ID(seasonID, teamID, resultID),
     queryFn: () =>
-      getRequest({
+      getRequest<Result>({
         url: ENDPOINTS.RESULTS.BY_ID(seasonID, teamID, resultID),
       }),
     enabled: !!seasonID && !!teamID && !!resultID,
@@ -41,7 +42,7 @@ export const useCreateResult = (seasonID: number, teamID: number) => {
       opponentScore: string;
       opponentTeamId: number;
     }) =>
-      postRequest({
+      postRequest<Result>({
         url: ENDPOINTS.RESULTS.ROOT(seasonID, teamID),
         body: result,
       }),
@@ -69,7 +70,7 @@ export const useUpdateResult = (seasonID: number, teamID: number) => {
         opponentScore: string;
       };
     }) =>
-      patchRequest({
+      patchRequest<Result>({
         url: ENDPOINTS.RESULTS.BY_ID(seasonID, teamID, resultID),
         body: result,
       }),
