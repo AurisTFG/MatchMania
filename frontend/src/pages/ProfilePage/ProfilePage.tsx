@@ -1,6 +1,6 @@
-import { useAuth } from '../../providers/AuthProvider';
+import { useAuth } from '../../providers/AuthProvider/AuthProvider';
 
-const Profile = () => {
+export default function ProfilePage() {
   const { user } = useAuth();
 
   return (
@@ -10,6 +10,4 @@ const Profile = () => {
       <p>Email: {user?.email}</p>
     </div>
   );
-};
-
-export default Profile;
+}

@@ -22,8 +22,8 @@ import {
 import { useFetchSeason } from '../../api/hooks/seasonsHooks.ts';
 import { useFetchTeam, useFetchTeams } from '../../api/hooks/teamsHooks.ts';
 import { useFetchUsers } from '../../api/hooks/usersHooks.ts';
-import { useAuth } from '../../providers/AuthProvider.tsx';
-import { Result, User } from '../../types';
+import { useAuth } from '../../providers/AuthProvider';
+import { Result, User } from '../../types/index.ts';
 
 const { Option } = Select;
 

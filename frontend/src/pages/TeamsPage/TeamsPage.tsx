@@ -10,7 +10,7 @@ import {
   useUpdateTeam,
 } from '../../api/hooks/teamsHooks';
 import { useFetchUsers } from '../../api/hooks/usersHooks';
-import { useAuth } from '../../providers/AuthProvider';
+import { useAuth } from '../../providers/AuthProvider/AuthProvider';
 import { Team, User } from '../../types';
 
 const isValidTeam = (seasonId: string | undefined) => {

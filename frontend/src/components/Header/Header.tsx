@@ -13,7 +13,7 @@ import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useLogOut } from '../../api/hooks/authHooks';
-import { useAuth } from '../../providers/AuthProvider';
+import { useAuth } from '../../providers/AuthProvider/AuthProvider';
 
 export default function Header() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);

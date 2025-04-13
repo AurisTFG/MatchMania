@@ -20,8 +20,8 @@ import {
 } from '../../api/hooks/seasonsHooks.ts';
 import { useFetchUsers } from '../../api/hooks/usersHooks.ts';
 import StatusHandler from '../../components/StatusHandler/StatusHandler.tsx';
-import { useAuth } from '../../providers/AuthProvider.tsx';
-import { Season, User } from '../../types';
+import { useAuth } from '../../providers/AuthProvider/AuthProvider.tsx';
+import { Season, User } from '../../types/index.ts';
 
 export default function SeasonsPage() {
   const { user } = useAuth();

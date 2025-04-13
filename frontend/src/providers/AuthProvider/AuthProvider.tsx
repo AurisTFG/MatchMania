@@ -1,6 +1,6 @@
 import { ReactNode, createContext, useContext } from 'react';
-import { useFetchMe } from '../api/hooks/authHooks';
-import { User } from '../types';
+import { useFetchMe } from '../../api/hooks/authHooks';
+import { User } from '../../types';
 
 type AuthContextType = {
   user: User | null;
@@ -10,10 +10,10 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
+export function AuthProvider({ children }: { children: ReactNode }) {
   const { data: fetchMeQuery, isLoading } = useFetchMe();
 
-  const user = fetchMeQuery as User | null;
+  const user = fetchMeQuery ?? null;
   const isLoggedIn = !!user?.id;
 
   return (
@@ -21,9 +21,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       {children}
     </AuthContext.Provider>
   );
-};
+}
 
-export const useAuth = () => {
+export function useAuth() {
   const context = useContext(AuthContext);
 
   if (!context) {
@@ -31,4 +31,4 @@ export const useAuth = () => {
   }
 
   return context;
-};
+}
