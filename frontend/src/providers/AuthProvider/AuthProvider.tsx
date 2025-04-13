@@ -10,6 +10,16 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+export function useAuth() {
+  const context = useContext(AuthContext);
+
+  if (!context) {
+    throw new Error('useAuth must be used within the AuthProvider component');
+  }
+
+  return context;
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const { data: fetchMeQuery, isLoading } = useFetchMe();
 
@@ -21,14 +31,4 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       {children}
     </AuthContext.Provider>
   );
-}
-
-export function useAuth() {
-  const context = useContext(AuthContext);
-
-  if (!context) {
-    throw new Error('useAuth must be used within the AuthProvider component');
-  }
-
-  return context;
 }
