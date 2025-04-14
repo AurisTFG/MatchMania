@@ -17,7 +17,6 @@ func ErrorMiddleware() gin.HandlerFunc {
 				fmt.Printf("[ERROR] Panic recovered: %v\n%s\n", err, string(stack))
 
 				if gin.Mode() == gin.DebugMode {
-					// TODO: Log the error and stack trace to a file or monitoring system
 					r.InternalServerError(c, "Internal Server Error: "+err.(string))
 				} else {
 					r.InternalServerError(c, "Internal Server Error")
