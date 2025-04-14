@@ -1,11 +1,11 @@
-import { Component, ErrorInfo, ReactNode } from 'react';
+import { Component, ReactNode } from 'react';
+import { toast } from 'sonner';
 
 type Props = {
   children: ReactNode;
 };
 
 type State = {
-  hasError: boolean;
   error: Error | null;
 };
 
@@ -13,29 +13,31 @@ export class ErrorBoundary extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      hasError: false,
       error: null,
     };
   }
 
   static getDerivedStateFromError(error: Error): State {
-    return { hasError: true, error };
+    return { error };
   }
 
-  componentDidCatch(error: Error, info: ErrorInfo) {
-    console.error('ErrorBoundary caught an error:', error, info);
+  componentDidCatch(error: Error) {
+    toast.error(`An error occurred: ${error.message}`);
   }
 
   render() {
-    if (this.state.hasError) {
+    const { error } = this.state;
+    const { children } = this.props;
+
+    if (error) {
       return (
         <div>
           <h2>Something went wrong.</h2>
-          <pre>{this.state.error?.message}</pre>
+          <pre>{error.message}</pre>
         </div>
       );
     }
 
-    return this.props.children;
+    return children;
   }
 }
