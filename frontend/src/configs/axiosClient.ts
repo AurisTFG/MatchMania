@@ -1,25 +1,13 @@
-import axios from "axios";
+import axios from 'axios';
+
+const baseURL = import.meta.env.MATCHMANIA_API_BASE_URL as string;
+if (!baseURL) {
+  throw new Error('Env var MATCHMANIA_API_BASE_URL is not defined');
+}
 
 const axiosClient = axios.create({
-  baseURL: import.meta.env.MATCHMANIA_API_BASE_URL as string,
+  baseURL: baseURL,
   withCredentials: true,
 });
-
-axiosClient.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    if (error.response?.status === 401) {
-      console.log("Refreshing token...");
-
-      await axiosClient.post("/auth/refresh", null);
-
-      return axios.request(error.config);
-    }
-
-    return Promise.reject(
-      error instanceof Error ? error : new Error(String(error)),
-    );
-  },
-);
 
 export default axiosClient;
