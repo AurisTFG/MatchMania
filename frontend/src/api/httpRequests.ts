@@ -3,7 +3,7 @@ import axiosClient from '../configs/axiosClient';
 export const getRequest = async <T>({ url }: { url: string }): Promise<T> => {
   const response = await axiosClient.get<T>(url);
 
-  return response as T;
+  return response.data;
 };
 
 export const postRequest = async <T>({
@@ -15,7 +15,7 @@ export const postRequest = async <T>({
 }): Promise<T> => {
   const response = await axiosClient.post<T>(url, body);
 
-  return response as T;
+  return response.data;
 };
 
 export const patchRequest = async <T>({
@@ -27,7 +27,7 @@ export const patchRequest = async <T>({
 }): Promise<T> => {
   const response = await axiosClient.patch<T>(url, body);
 
-  return response as T;
+  return response.data;
 };
 
 export const deleteRequest = async ({
