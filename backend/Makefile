@@ -55,15 +55,15 @@ docs: ## Generates API documentation with Swagger
 	@swag init -g $(MAIN_FILE) --outputTypes go
 	@echo "[✔] API documentation generated"
 
+.PHONY: prepare
+prepare: build tidy test docs lint  ## Prepares the code for pushing to the repository
+	@echo "[✔] Code prepared for pushing to the repository"
+
 .PHONY: clean
 clean: ## Cleans up the output directory
 	@echo "[?] Cleaning up output directory..."
 	@rm -rf $(BUILD_FOLDER)
 	@echo "[✔] Cleaned up output directory"
-
-.PHONY: prepare
-prepare: tidy test docs lint  ## Prepares the code for pushing to the repository
-	@echo "[✔] Code prepared for pushing to the repository"
 
 .PHONY: help
 help: ## Displays this help message
