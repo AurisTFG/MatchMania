@@ -7,7 +7,6 @@ import {
   Modal,
   Space,
   Typography,
-  message,
 } from 'antd';
 import moment from 'moment';
 import { useState } from 'react';
@@ -55,42 +54,27 @@ export default function SeasonsPage() {
   };
 
   const handleCreateOrEdit = async () => {
-    try {
-      if (isEditing && editingSeason.id) {
-        await updateSeasonMutation({
-          seasonID: editingSeason.id,
-          season: {
-            ...formData,
-            startDate: formData.startDate.toDate(),
-            endDate: formData.endDate.toDate(),
-          },
-        });
-
-        message.success('Season updated successfully.');
-      } else {
-        await createSeasonMutation({
+    if (isEditing && editingSeason.id) {
+      await updateSeasonMutation({
+        seasonID: editingSeason.id,
+        season: {
           ...formData,
           startDate: formData.startDate.toDate(),
           endDate: formData.endDate.toDate(),
-        });
-
-        message.success('Season created successfully.');
-      }
-      setIsModalOpen(false);
-    } catch (error) {
-      message.error('Failed to save season.');
-      console.error(error);
+        },
+      });
+    } else {
+      await createSeasonMutation({
+        ...formData,
+        startDate: formData.startDate.toDate(),
+        endDate: formData.endDate.toDate(),
+      });
     }
+    setIsModalOpen(false);
   };
 
   const handleDelete = async (seasonID: number) => {
-    try {
-      await deleteSeasonMutation(seasonID);
-      message.success('Season deleted successfully.');
-    } catch (error) {
-      message.error('Failed to delete season.');
-      console.error(error);
-    }
+    await deleteSeasonMutation(seasonID);
   };
 
   const openEditModal = (season: Season) => {
@@ -151,9 +135,10 @@ export default function SeasonsPage() {
       <StatusHandler
         isLoading={seasonsLoading}
         error={seasonsError}
-        isEmpty={!seasons || seasons.length === 0}
+        isEmpty={!seasons || (Array.isArray(seasons) && seasons.length === 0)}
       >
         <List
+          loading={seasonsLoading}
           bordered
           dataSource={seasons}
           renderItem={(season) => (

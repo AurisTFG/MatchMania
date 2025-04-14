@@ -1,5 +1,5 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Input, List, Modal, Space, Typography, message } from 'antd';
+import { Button, Input, List, Modal, Space, Typography } from 'antd';
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useFetchSeason } from '../../api/hooks/seasonsHooks';
@@ -85,30 +85,17 @@ export default function TeamsPage() {
   };
 
   const handleCreateOrEdit = async () => {
-    try {
-      if (isEditing && editingTeam.id) {
-        await updateTeam({ teamID: editingTeam.id, team: formData });
-        message.success('Team updated successfully.');
-      } else {
-        await createTeam(formData);
-        message.success('Team created successfully.');
-      }
-      setIsModalOpen(false);
-      setFormData({ name: '' });
-    } catch (error) {
-      message.error('Failed to save team.');
-      console.error(error);
+    if (isEditing && editingTeam.id) {
+      await updateTeam({ teamID: editingTeam.id, team: formData });
+    } else {
+      await createTeam(formData);
     }
+    setIsModalOpen(false);
+    setFormData({ name: '' });
   };
 
   const handleDelete = async (teamID: number) => {
-    try {
-      await deleteTeam(teamID);
-      message.success('Team deleted successfully.');
-    } catch (error) {
-      message.error('Failed to delete team.');
-      console.error(error);
-    }
+    await deleteTeam(teamID);
   };
 
   const closeModal = () => {

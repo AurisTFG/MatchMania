@@ -1,10 +1,12 @@
 import { Box, Button, TextField } from '@mui/material';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { toast } from 'sonner';
 import { useLogIn } from '../../api/hooks/authHooks';
 
 export default function LoginPage() {
-  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const errorMessage = searchParams.get('error');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -12,9 +14,13 @@ export default function LoginPage() {
 
   const handleLogin = async () => {
     await loginAsync({ email, password });
-
-    await navigate('/');
   };
+
+  useEffect(() => {
+    if (errorMessage) {
+      toast.error(errorMessage);
+    }
+  }, [errorMessage]);
 
   return (
     <Box sx={{ maxWidth: 400, mx: 'auto', mt: 5 }}>

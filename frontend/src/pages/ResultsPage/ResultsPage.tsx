@@ -8,7 +8,6 @@ import {
   Select,
   Space,
   Typography,
-  message,
 } from 'antd';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
@@ -141,43 +140,30 @@ export default function ResultsPage() {
   };
 
   const handleCreateOrEdit = async () => {
-    try {
-      if (isEditing && editingResult.id) {
-        await updateResult({
-          resultID: editingResult.id,
-          result: {
-            matchStartDate: formData.matchStartDate.toDate(),
-            matchEndDate: formData.matchEndDate.toDate(),
-            score: formData.score,
-            opponentScore: formData.opponentScore,
-          },
-        });
-        message.success('Result updated successfully.');
-      } else {
-        await createResult({
+    if (isEditing && editingResult.id) {
+      await updateResult({
+        resultID: editingResult.id,
+        result: {
           matchStartDate: formData.matchStartDate.toDate(),
           matchEndDate: formData.matchEndDate.toDate(),
           score: formData.score,
           opponentScore: formData.opponentScore,
-          opponentTeamId: formData.opponentTeamId,
-        });
-        message.success('Result created successfully.');
-      }
-      closeModal();
-    } catch (error) {
-      message.error('Failed to save result.');
-      console.error(error);
+        },
+      });
+    } else {
+      await createResult({
+        matchStartDate: formData.matchStartDate.toDate(),
+        matchEndDate: formData.matchEndDate.toDate(),
+        score: formData.score,
+        opponentScore: formData.opponentScore,
+        opponentTeamId: formData.opponentTeamId,
+      });
     }
+    closeModal();
   };
 
   const handleDelete = async (resultID: number) => {
-    try {
-      await deleteResult(resultID);
-      message.success('Result deleted successfully.');
-    } catch (error) {
-      message.error('Failed to delete result.');
-      console.error(error);
-    }
+    await deleteResult(resultID);
   };
 
   const getTeamName = (id: number) => {

@@ -13,6 +13,7 @@ import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useLogOut } from '../../api/hooks/authHooks';
+import { ROUTES } from '../../constants/routes';
 import { useAuth } from '../../providers/AuthProvider/AuthProvider';
 
 export default function Header() {
@@ -23,20 +24,15 @@ export default function Header() {
   const isActive = (path: string) => location.pathname === path;
   const { isLoggedIn } = useAuth();
 
-  const { mutateAsync: logoutMutation } = useLogOut();
+  const { mutateAsync: logoutAsync } = useLogOut();
 
   const handleLogout = async () => {
     setAnchorEl(null);
-    try {
-      await logoutMutation();
-      await navigate('/');
-    } catch (error) {
-      console.error('Logout failed:', error);
-    }
+    await logoutAsync();
   };
 
   const handleProfile = async () => {
-    await navigate('/profile');
+    await navigate(ROUTES.PROFILE);
   };
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -91,7 +87,7 @@ export default function Header() {
           >
             <Button
               onClick={() => {
-                void navigate('/');
+                void navigate(ROUTES.HOME);
               }}
               color="inherit"
               sx={{
@@ -103,11 +99,11 @@ export default function Header() {
               Home
             </Button>
             <Button
-              onClick={() => void navigate('/seasons')}
+              onClick={() => void navigate(ROUTES.SEASONS)}
               color="inherit"
               sx={{
                 mr: 1,
-                textDecoration: isActive('/seasons') ? 'underline' : 'none',
+                textDecoration: isActive(ROUTES.SEASONS) ? 'underline' : 'none',
                 fontSize: '1.20rem',
               }}
             >
@@ -184,7 +180,7 @@ export default function Header() {
               color="inherit"
               onClick={() => {
                 setMobileMenuOpen(false);
-                void navigate('/');
+                void navigate(ROUTES.HOME);
               }}
             >
               Home
@@ -193,7 +189,7 @@ export default function Header() {
               color="inherit"
               onClick={() => {
                 setMobileMenuOpen(false);
-                void navigate('/seasons');
+                void navigate(ROUTES.SEASONS);
               }}
             >
               Seasons
