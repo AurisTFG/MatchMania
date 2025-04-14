@@ -1,7 +1,7 @@
 import { Box, Button, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import withErrorBoundary from '../../hocs/withErrorBoundary';
-import { useAuth } from '../../providers/AuthProvider/AuthProvider';
+import { useAuth } from '../../providers/AuthProvider';
 
 function HomePage() {
   const { user } = useAuth();
