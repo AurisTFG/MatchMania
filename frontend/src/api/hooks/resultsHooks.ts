@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import { ENDPOINTS } from '../../constants/endpoints';
 import { QUERY_KEYS } from '../../constants/queryKeys';
 import { Result } from '../../types';
@@ -47,6 +48,8 @@ export const useCreateResult = (seasonID: number, teamID: number) => {
         body: result,
       }),
     onSuccess: async () => {
+      toast.success('Result created successfully');
+
       await queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.RESULTS.ALL(seasonID, teamID),
       });
@@ -75,6 +78,8 @@ export const useUpdateResult = (seasonID: number, teamID: number) => {
         body: result,
       }),
     onSuccess: async (_, { resultID }) => {
+      toast.success('Result updated successfully');
+
       await queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.RESULTS.BY_ID(seasonID, teamID, resultID),
       });
@@ -94,6 +99,8 @@ export const useDeleteResult = (seasonID: number, teamID: number) => {
         url: ENDPOINTS.RESULTS.BY_ID(seasonID, teamID, resultID),
       }),
     onSuccess: async () => {
+      toast.success('Result deleted successfully');
+
       await queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.RESULTS.ALL(seasonID, teamID),
       });

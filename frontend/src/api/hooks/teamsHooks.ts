@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import { ENDPOINTS } from '../../constants/endpoints';
 import { QUERY_KEYS } from '../../constants/queryKeys';
 import { Team } from '../../types';
@@ -31,6 +32,8 @@ export const useCreateTeam = (seasonID: number) => {
     mutationFn: (team: { name: string }) =>
       postRequest<Team>({ url: ENDPOINTS.TEAMS.ROOT(seasonID), body: team }),
     onSuccess: async () => {
+      toast.success('Team created successfully');
+
       await queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.TEAMS.ALL(seasonID),
       });
@@ -54,6 +57,8 @@ export const useUpdateTeam = (seasonID: number) => {
         body: team,
       }),
     onSuccess: async (_, { teamID }) => {
+      toast.success('Team updated successfully');
+
       await queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.TEAMS.BY_ID(seasonID, teamID),
       });
@@ -71,6 +76,8 @@ export const useDeleteTeam = (seasonID: number) => {
     mutationFn: (teamID: number) =>
       deleteRequest({ url: ENDPOINTS.TEAMS.BY_ID(seasonID, teamID) }),
     onSuccess: async () => {
+      toast.success('Team deleted successfully');
+
       await queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.TEAMS.ALL(seasonID),
       });
