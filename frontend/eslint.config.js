@@ -14,7 +14,9 @@ export default ts.config(
   ...ts.configs.stylisticTypeChecked,
   ...ts.configs.strictTypeChecked,
   react.configs.flat.recommended,
+  react.configs.flat["jsx-runtime"],
   imports.flatConfigs.recommended,
+  imports.flatConfigs.typescript,
   {
     settings: {
       react: {
@@ -37,10 +39,11 @@ export default ts.config(
 
       curly: "error", // force use of curly brackts on if statements
       "prefer-template": "error", // prefer template strings over string appends
-      "unused-imports/no-unused-imports": "error",
-      "@typescript-eslint/consistent-type-definitions": ["error", "type"],
-      "react/self-closing-comp": ["error", { component: true, html: true }],
-      "spaced-comment": ["error", "always", { markers: ["/"] }],
+      "unused-imports/no-unused-imports": "error", // remove unused imports
+      "@typescript-eslint/consistent-type-definitions": ["error", "type"], // prefer type over interface
+      "react/self-closing-comp": ["error", { component: true, html: true }], // force self closing tags for components and html elements
+      "spaced-comment": ["error", "always", { markers: ["/"] }], // force space after comment markers
+      "import/extensions": ["error", "never"], // do not require file extensions on imports
       "import/order": [
         "error",
         {
@@ -59,14 +62,6 @@ export default ts.config(
           ],
         },
       ],
-
-      "react/react-in-jsx-scope": "off", // react is always in scope with vite
-      "import/named": "off", // fails to resolve imports from react-router-dom
-      "import/no-unresolved": "off", // fails to resolve imports from local files
-
-      // TODO: turn these on when the code is fixed
-      "@typescript-eslint/no-unsafe-member-access": "off",
-      "@typescript-eslint/no-unsafe-argument": "off",
     },
   },
   {

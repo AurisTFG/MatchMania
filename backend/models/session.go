@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"crypto/rand"
 	"encoding/base64"
-	"fmt"
 	"time"
 
 	"github.com/google/uuid"
@@ -41,7 +40,6 @@ func (s *Session) HashToken() error {
 func (s *Session) CompareToken(newToken string) bool {
 	data, err := base64.StdEncoding.DecodeString(s.LastRefreshToken)
 	if err != nil {
-		fmt.Println("Error decoding token:", err)
 		return false
 	}
 

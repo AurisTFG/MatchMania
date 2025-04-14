@@ -16,11 +16,11 @@ import {
   useDeleteSeason,
   useFetchSeasons,
   useUpdateSeason,
-} from '../../api/hooks/seasonsHooks.ts';
-import { useFetchUsers } from '../../api/hooks/usersHooks.ts';
-import StatusHandler from '../../components/StatusHandler/StatusHandler.tsx';
-import { useAuth } from '../../providers/AuthProvider/AuthProvider.tsx';
-import { Season, User } from '../../types/index.ts';
+} from '../../api/hooks/seasonsHooks';
+import { useFetchUsers } from '../../api/hooks/usersHooks';
+import { StatusHandler } from '../../components/StatusHandler';
+import { useAuth } from '../../providers/AuthProvider';
+import { Season, User } from '../../types/index';
 
 export default function SeasonsPage() {
   const { user } = useAuth();

@@ -6,7 +6,6 @@ import (
 	r "MatchManiaAPI/responses"
 	"MatchManiaAPI/services"
 	"MatchManiaAPI/utils"
-	"fmt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -211,8 +210,6 @@ func (c *AuthController) RefreshToken(ctx *gin.Context) {
 // @Failure 422 {object} models.ErrorDto
 // @Router /auth/me [get]
 func (c *AuthController) GetMe(ctx *gin.Context) {
-	fmt.Println("GetMe called")
-
 	user := utils.GetAuthUser(ctx)
 	if user == nil {
 		r.Unauthorized(ctx, "User not found")

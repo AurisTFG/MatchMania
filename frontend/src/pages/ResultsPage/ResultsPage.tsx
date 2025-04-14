@@ -17,12 +17,12 @@ import {
   useDeleteResult,
   useFetchResults,
   useUpdateResult,
-} from '../../api/hooks/resultsHooks.ts';
-import { useFetchSeason } from '../../api/hooks/seasonsHooks.ts';
-import { useFetchTeam, useFetchTeams } from '../../api/hooks/teamsHooks.ts';
-import { useFetchUsers } from '../../api/hooks/usersHooks.ts';
+} from '../../api/hooks/resultsHooks';
+import { useFetchSeason } from '../../api/hooks/seasonsHooks';
+import { useFetchTeam, useFetchTeams } from '../../api/hooks/teamsHooks';
+import { useFetchUsers } from '../../api/hooks/usersHooks';
 import { useAuth } from '../../providers/AuthProvider';
-import { Result, User } from '../../types/index.ts';
+import { Result, User } from '../../types/index';
 
 const { Option } = Select;
 
