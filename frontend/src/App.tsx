@@ -3,6 +3,7 @@ import { Content } from './components/Content';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { Footer } from './components/Footer';
 import { Header } from './components/Header';
+import { ROUTES } from './constants/routes';
 import { HomePage } from './pages/HomePage';
 import { LoginPage } from './pages/LoginPage';
 import { NotFoundPage } from './pages/NotFoundPage';
@@ -18,44 +19,44 @@ export default function App() {
   return (
     <AllProviders>
       <Header />
-      <ErrorBoundary>
-        <Content>
+      <Content>
+        <ErrorBoundary>
           <Routes>
             <Route
-              path="/"
+              path={ROUTES.HOME}
               element={<HomePage />}
             />
             <Route
-              path="/login"
+              path={ROUTES.LOGIN}
               element={<LoginPage />}
             />
             <Route
-              path="/signup"
+              path={ROUTES.SIGNUP}
               element={<SignupPage />}
             />
             <Route
-              path="/profile"
+              path={ROUTES.PROFILE}
               element={<ProfilePage />}
             />
             <Route
-              path="/seasons"
+              path={ROUTES.SEASONS}
               element={<SeasonsPage />}
             />
             <Route
-              path="/seasons/:seasonId/teams"
+              path={ROUTES.TEAMS(':seasonId')}
               element={<TeamsPage />}
             />
             <Route
-              path="/seasons/:seasonId/teams/:teamId/results"
+              path={ROUTES.RESULTS(':seasonId', ':teamId')}
               element={<ResultsPage />}
             />
             <Route
-              path="*"
+              path={ROUTES.NOT_FOUND}
               element={<NotFoundPage />}
             />
           </Routes>
-        </Content>
-      </ErrorBoundary>
+        </ErrorBoundary>
+      </Content>
       <Footer />
     </AllProviders>
   );
