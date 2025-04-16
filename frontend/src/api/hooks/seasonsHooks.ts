@@ -2,7 +2,9 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { ENDPOINTS } from '../../constants/endpoints';
 import { QUERY_KEYS } from '../../constants/queryKeys';
-import { Season } from '../../types';
+import { CreateSeasonDto } from '../../types/dtos/requests/seasons/createSeasonDto';
+import { UpdateSeasonDto } from '../../types/dtos/requests/seasons/updateSeasonDto';
+import { SeasonDto } from '../../types/dtos/responses/seasons/seasonDto';
 import {
   deleteRequest,
   getRequest,
@@ -13,14 +15,14 @@ import {
 export const useFetchSeasons = () =>
   useQuery({
     queryKey: QUERY_KEYS.SEASONS.ALL,
-    queryFn: () => getRequest<Season[]>({ url: ENDPOINTS.SEASONS.ROOT }),
+    queryFn: () => getRequest<SeasonDto[]>({ url: ENDPOINTS.SEASONS.ROOT }),
   });
 
 export const useFetchSeason = (seasonID: number) =>
   useQuery({
     queryKey: QUERY_KEYS.SEASONS.BY_ID(seasonID),
     queryFn: () =>
-      getRequest<Season>({ url: ENDPOINTS.SEASONS.BY_ID(seasonID) }),
+      getRequest<SeasonDto>({ url: ENDPOINTS.SEASONS.BY_ID(seasonID) }),
     enabled: !!seasonID,
   });
 
@@ -28,8 +30,8 @@ export const useCreateSeason = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (season: { name: string; startDate: Date; endDate: Date }) =>
-      postRequest<Season>({ url: ENDPOINTS.SEASONS.ROOT, body: season }),
+    mutationFn: (payload: CreateSeasonDto) =>
+      postRequest<SeasonDto>({ url: ENDPOINTS.SEASONS.ROOT, body: payload }),
     onSuccess: async () => {
       toast.success('Season created successfully');
 
@@ -44,14 +46,14 @@ export const useUpdateSeason = () => {
   return useMutation({
     mutationFn: ({
       seasonID,
-      season,
+      payload,
     }: {
       seasonID: number;
-      season: { name: string; startDate: Date; endDate: Date };
+      payload: UpdateSeasonDto;
     }) =>
-      patchRequest<Season>({
+      patchRequest<SeasonDto>({
         url: ENDPOINTS.SEASONS.BY_ID(seasonID),
-        body: season,
+        body: payload,
       }),
     onSuccess: async (_, { seasonID }) => {
       toast.success('Season updated successfully');

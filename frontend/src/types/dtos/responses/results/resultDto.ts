@@ -1,4 +1,4 @@
-export type Result = {
+export type ResultDto = {
   id: number;
   matchStartDate: Date;
   matchEndDate: Date;
@@ -7,5 +7,5 @@ export type Result = {
   seasonId: number;
   teamId: number;
   opponentTeamId: number;
-  userUUID: string;
+  userUuid: string;
 };

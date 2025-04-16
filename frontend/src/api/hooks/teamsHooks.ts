@@ -2,7 +2,9 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { ENDPOINTS } from '../../constants/endpoints';
 import { QUERY_KEYS } from '../../constants/queryKeys';
-import { Team } from '../../types';
+import { CreateTeamDto } from '../../types/dtos/requests/teams/createTeamDto';
+import { UpdateTeamDto } from '../../types/dtos/requests/teams/updateTeamDto';
+import { TeamDto } from '../../types/dtos/responses/teams/teamDto';
 import {
   deleteRequest,
   getRequest,
@@ -13,7 +15,8 @@ import {
 export const useFetchTeams = (seasonID: number) =>
   useQuery({
     queryKey: QUERY_KEYS.TEAMS.ALL(seasonID),
-    queryFn: () => getRequest<Team[]>({ url: ENDPOINTS.TEAMS.ROOT(seasonID) }),
+    queryFn: () =>
+      getRequest<TeamDto[]>({ url: ENDPOINTS.TEAMS.ROOT(seasonID) }),
     enabled: !!seasonID,
   });
 
@@ -21,7 +24,7 @@ export const useFetchTeam = (seasonID: number, teamID: number) =>
   useQuery({
     queryKey: QUERY_KEYS.TEAMS.BY_ID(seasonID, teamID),
     queryFn: () =>
-      getRequest<Team>({ url: ENDPOINTS.TEAMS.BY_ID(seasonID, teamID) }),
+      getRequest<TeamDto>({ url: ENDPOINTS.TEAMS.BY_ID(seasonID, teamID) }),
     enabled: !!seasonID && !!teamID,
   });
 
@@ -29,8 +32,11 @@ export const useCreateTeam = (seasonID: number) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (team: { name: string }) =>
-      postRequest<Team>({ url: ENDPOINTS.TEAMS.ROOT(seasonID), body: team }),
+    mutationFn: (payload: CreateTeamDto) =>
+      postRequest<TeamDto>({
+        url: ENDPOINTS.TEAMS.ROOT(seasonID),
+        body: payload,
+      }),
     onSuccess: async () => {
       toast.success('Team created successfully');
 
@@ -47,14 +53,14 @@ export const useUpdateTeam = (seasonID: number) => {
   return useMutation({
     mutationFn: ({
       teamID,
-      team,
+      payload,
     }: {
       teamID: number;
-      team: { name: string };
+      payload: UpdateTeamDto;
     }) =>
-      patchRequest<Team>({
+      patchRequest<TeamDto>({
         url: ENDPOINTS.TEAMS.BY_ID(seasonID, teamID),
-        body: team,
+        body: payload,
       }),
     onSuccess: async (_, { teamID }) => {
       toast.success('Team updated successfully');

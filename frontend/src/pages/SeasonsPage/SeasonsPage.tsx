@@ -20,13 +20,14 @@ import {
 import { useFetchUsers } from '../../api/hooks/usersHooks';
 import { StatusHandler } from '../../components/StatusHandler';
 import { useAuth } from '../../providers/AuthProvider';
-import { Season, User } from '../../types/index';
+import { SeasonDto } from '../../types/dtos/responses/seasons/seasonDto';
+import { UserDto } from '../../types/dtos/responses/users/userDto';
 
 export default function SeasonsPage() {
   const { user } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [editingSeason, setEditingSeason] = useState<Partial<Season>>({});
+  const [editingSeason, setEditingSeason] = useState<Partial<SeasonDto>>({});
   const [formData, setFormData] = useState({
     name: '',
     startDate: moment(),
@@ -43,13 +44,13 @@ export default function SeasonsPage() {
   const { mutateAsync: updateSeasonMutation } = useUpdateSeason();
   const { mutateAsync: deleteSeasonMutation } = useDeleteSeason();
 
-  const getUserById = (userId: string): User => {
+  const getUserById = (userId: string): UserDto => {
     return (
       users?.find((user) => user.id === userId) ??
       ({
         id: '',
         username: 'Unknown User',
-      } as User)
+      } as UserDto)
     );
   };
 
@@ -57,7 +58,7 @@ export default function SeasonsPage() {
     if (isEditing && editingSeason.id) {
       await updateSeasonMutation({
         seasonID: editingSeason.id,
-        season: {
+        payload: {
           ...formData,
           startDate: formData.startDate.toDate(),
           endDate: formData.endDate.toDate(),
@@ -77,7 +78,7 @@ export default function SeasonsPage() {
     await deleteSeasonMutation(seasonID);
   };
 
-  const openEditModal = (season: Season) => {
+  const openEditModal = (season: SeasonDto) => {
     setIsEditing(true);
     setEditingSeason(season);
     setFormData({

@@ -1,64 +1,71 @@
-import { Box, Button, TextField } from '@mui/material';
-import { useState } from 'react';
+import { Box } from '@mui/material';
 import { useSignUp } from '../../api/hooks/authHooks';
+import { useAppForm } from '../../hooks/form/useAppForm';
+import { signupDtoValidator } from '../../validators/auth/signupDtoValidator';
 
 export default function SignupPage() {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const { mutateAsync: signupAsync } = useSignUp();
 
-  const { mutateAsync: signupAsync, isPending, error } = useSignUp();
-
-  const handleSignup = async () => {
-    await signupAsync({ username, email, password });
-  };
+  const form = useAppForm({
+    defaultValues: {
+      username: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
+    validators: {
+      onChange: signupDtoValidator,
+    },
+    onSubmit: async ({ value }) => {
+      await signupAsync(value);
+    },
+  });
 
   return (
     <Box sx={{ maxWidth: 400, mx: 'auto', mt: 5 }}>
-      <h1>Sign up</h1>
-      <TextField
-        fullWidth
-        label="Username"
-        value={username}
-        onChange={(e) => {
-          setUsername(e.target.value);
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          void form.handleSubmit();
         }}
-        margin="normal"
-      />
-      <TextField
-        fullWidth
-        label="Email"
-        value={email}
-        onChange={(e) => {
-          setEmail(e.target.value);
-        }}
-        margin="normal"
-      />
-      <TextField
-        fullWidth
-        label="Password"
-        type="password"
-        value={password}
-        onChange={(e) => {
-          setPassword(e.target.value);
-        }}
-        margin="normal"
-      />
-      <Button
-        fullWidth
-        variant="contained"
-        color="primary"
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
-        onClick={handleSignup}
-        disabled={isPending}
       >
-        {isPending ? 'Signing up...' : 'Sign up'}
-      </Button>
-      {error && (
-        <Box sx={{ color: 'red', mt: 2 }}>
-          <p>Signup failed: {error.message}</p>
-        </Box>
-      )}
+        <h1>Sign up</h1>
+
+        <form.AppField name="username">
+          {(field) => <field.TextField label="Username" />}
+        </form.AppField>
+
+        <form.AppField name="email">
+          {(field) => (
+            <field.TextField
+              label="Email"
+              type="email"
+            />
+          )}
+        </form.AppField>
+
+        <form.AppField name="password">
+          {(field) => (
+            <field.TextField
+              label="Password"
+              type="password"
+            />
+          )}
+        </form.AppField>
+
+        <form.AppField name="confirmPassword">
+          {(field) => (
+            <field.TextField
+              label="Confirm Password"
+              type="password"
+            />
+          )}
+        </form.AppField>
+
+        <form.AppForm>
+          <form.SubmitButton label="Sign up" />
+        </form.AppForm>
+      </form>
     </Box>
   );
 }

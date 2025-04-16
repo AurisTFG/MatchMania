@@ -4,13 +4,15 @@ import { toast } from 'sonner';
 import { ENDPOINTS } from '../../constants/endpoints';
 import { QUERY_KEYS } from '../../constants/queryKeys';
 import { ROUTES } from '../../constants/routes';
-import { User } from '../../types';
+import { LoginDto } from '../../types/dtos/requests/auth/loginDto';
+import { SignupDto } from '../../types/dtos/requests/auth/signupDto';
+import { UserDto } from '../../types/dtos/responses/users/userDto';
 import { getRequest, postRequest } from '../httpRequests';
 
 export const useFetchMe = () =>
   useQuery({
     queryKey: QUERY_KEYS.AUTH.ME,
-    queryFn: () => getRequest<User>({ url: ENDPOINTS.AUTH.ME }),
+    queryFn: () => getRequest<UserDto>({ url: ENDPOINTS.AUTH.ME }),
     staleTime: 0,
     gcTime: 0,
   });
@@ -20,8 +22,8 @@ export const useLogIn = () => {
   const navigation = useNavigate();
 
   return useMutation({
-    mutationFn: (data: { email: string; password: string }) =>
-      postRequest<User>({ url: ENDPOINTS.AUTH.LOGIN, body: data }),
+    mutationFn: (payload: LoginDto) =>
+      postRequest<UserDto>({ url: ENDPOINTS.AUTH.LOGIN, body: payload }),
     onSuccess: async () => {
       toast.success('Successfully logged in');
 
@@ -51,8 +53,8 @@ export const useSignUp = () => {
   const navigation = useNavigate();
 
   return useMutation({
-    mutationFn: (data: { username: string; email: string; password: string }) =>
-      postRequest<User>({ url: ENDPOINTS.AUTH.SIGNUP, body: data }),
+    mutationFn: (payload: SignupDto) =>
+      postRequest<UserDto>({ url: ENDPOINTS.AUTH.SIGNUP, body: payload }),
     onSuccess: async () => {
       toast.success('Successfully signed up');
 

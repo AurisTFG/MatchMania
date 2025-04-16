@@ -1,7 +1,7 @@
-export type Team = {
+export type TeamDto = {
   id: number;
   name: string;
   elo: number;
   seasonId: number;
-  userUUID: string;
+  userUuid: string;
 };

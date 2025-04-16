@@ -22,7 +22,8 @@ import { useFetchSeason } from '../../api/hooks/seasonsHooks';
 import { useFetchTeam, useFetchTeams } from '../../api/hooks/teamsHooks';
 import { useFetchUsers } from '../../api/hooks/usersHooks';
 import { useAuth } from '../../providers/AuthProvider';
-import { Result, User } from '../../types/index';
+import { ResultDto } from '../../types/dtos/responses/results/resultDto';
+import { UserDto } from '../../types/dtos/responses/users/userDto';
 
 const { Option } = Select;
 
@@ -53,7 +54,7 @@ export default function ResultsPage() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [editingResult, setEditingResult] = useState<Partial<Result>>({});
+  const [editingResult, setEditingResult] = useState<Partial<ResultDto>>({});
   const [formData, setFormData] = useState({
     matchStartDate: moment(),
     matchEndDate: moment(),
@@ -91,13 +92,13 @@ export default function ResultsPage() {
     }
   }, [seasonId, teamId]);
 
-  const getUserById = (userId: string): User => {
+  const getUserById = (userId: string): UserDto => {
     return (
       users?.find((user) => user.id === userId) ??
       ({
         id: '',
         username: 'Unknown User',
-      } as User)
+      } as UserDto)
     );
   };
 
@@ -126,7 +127,7 @@ export default function ResultsPage() {
     });
   };
 
-  const openEditModal = (result: Result) => {
+  const openEditModal = (result: ResultDto) => {
     setIsEditing(true);
     setEditingResult(result);
     setFormData({
@@ -143,7 +144,7 @@ export default function ResultsPage() {
     if (isEditing && editingResult.id) {
       await updateResult({
         resultID: editingResult.id,
-        result: {
+        payload: {
           matchStartDate: formData.matchStartDate.toDate(),
           matchEndDate: formData.matchEndDate.toDate(),
           score: formData.score,
@@ -216,7 +217,7 @@ export default function ResultsPage() {
               user &&
               (user.role === 'moderator' ||
                 user.role === 'admin' ||
-                result.userUUID === user.id) ? (
+                result.userUuid === user.id) ? (
                 <EditOutlined
                   key="edit"
                   onClick={() => {
@@ -225,7 +226,7 @@ export default function ResultsPage() {
                 />
               ) : null,
 
-              user && (user.role === 'admin' || result.userUUID === user.id) ? (
+              user && (user.role === 'admin' || result.userUuid === user.id) ? (
                 <DeleteOutlined
                   key="delete"
                   onClick={() => void handleDelete(result.id)}
@@ -249,7 +250,7 @@ export default function ResultsPage() {
                   </Typography.Text>
                   <br />
                   <Typography.Text type="secondary">
-                    {`By: ${getUserById(result.userUUID).username}`}
+                    {`By: ${getUserById(result.userUuid).username}`}
                   </Typography.Text>
                 </>
               }

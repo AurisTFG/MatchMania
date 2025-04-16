@@ -2,7 +2,9 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { ENDPOINTS } from '../../constants/endpoints';
 import { QUERY_KEYS } from '../../constants/queryKeys';
-import { Result } from '../../types';
+import { CreateResultDto } from '../../types/dtos/requests/results/createResultDto';
+import { UpdateResultDto } from '../../types/dtos/requests/results/updateResultDto';
+import { ResultDto } from '../../types/dtos/responses/results/resultDto';
 import {
   deleteRequest,
   getRequest,
@@ -14,7 +16,9 @@ export const useFetchResults = (seasonID: number, teamID: number) =>
   useQuery({
     queryKey: QUERY_KEYS.RESULTS.ALL(seasonID, teamID),
     queryFn: () =>
-      getRequest<Result[]>({ url: ENDPOINTS.RESULTS.ROOT(seasonID, teamID) }),
+      getRequest<ResultDto[]>({
+        url: ENDPOINTS.RESULTS.ROOT(seasonID, teamID),
+      }),
     enabled: !!seasonID && !!teamID,
   });
 
@@ -26,7 +30,7 @@ export const useFetchResult = (
   useQuery({
     queryKey: QUERY_KEYS.RESULTS.BY_ID(seasonID, teamID, resultID),
     queryFn: () =>
-      getRequest<Result>({
+      getRequest<ResultDto>({
         url: ENDPOINTS.RESULTS.BY_ID(seasonID, teamID, resultID),
       }),
     enabled: !!seasonID && !!teamID && !!resultID,
@@ -36,16 +40,10 @@ export const useCreateResult = (seasonID: number, teamID: number) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (result: {
-      matchStartDate: Date;
-      matchEndDate: Date;
-      score: string;
-      opponentScore: string;
-      opponentTeamId: number;
-    }) =>
-      postRequest<Result>({
+    mutationFn: (payload: CreateResultDto) =>
+      postRequest<ResultDto>({
         url: ENDPOINTS.RESULTS.ROOT(seasonID, teamID),
-        body: result,
+        body: payload,
       }),
     onSuccess: async () => {
       toast.success('Result created successfully');
@@ -63,19 +61,14 @@ export const useUpdateResult = (seasonID: number, teamID: number) => {
   return useMutation({
     mutationFn: ({
       resultID,
-      result,
+      payload,
     }: {
       resultID: number;
-      result: {
-        matchStartDate: Date;
-        matchEndDate: Date;
-        score: string;
-        opponentScore: string;
-      };
+      payload: UpdateResultDto;
     }) =>
-      patchRequest<Result>({
+      patchRequest<ResultDto>({
         url: ENDPOINTS.RESULTS.BY_ID(seasonID, teamID, resultID),
-        body: result,
+        body: payload,
       }),
     onSuccess: async (_, { resultID }) => {
       toast.success('Result updated successfully');

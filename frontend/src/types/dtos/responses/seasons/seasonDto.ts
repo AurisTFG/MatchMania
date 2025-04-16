@@ -1,4 +1,4 @@
-export type Season = {
+export type SeasonDto = {
   id: number;
   name: string;
   startDate: Date;

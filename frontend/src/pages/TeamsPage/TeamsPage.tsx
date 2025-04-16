@@ -11,7 +11,8 @@ import {
 } from '../../api/hooks/teamsHooks';
 import { useFetchUsers } from '../../api/hooks/usersHooks';
 import { useAuth } from '../../providers/AuthProvider/AuthProvider';
-import { Team, User } from '../../types';
+import { TeamDto } from '../../types/dtos/responses/teams/teamDto';
+import { UserDto } from '../../types/dtos/responses/users/userDto';
 
 const isValidTeam = (seasonId: string | undefined) => {
   return seasonId && !isNaN(Number(seasonId)) && Number(seasonId) > 0;
@@ -22,7 +23,7 @@ export default function TeamsPage() {
   const [teamsNotFound, setTeamsNotFound] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [editingTeam, setEditingTeam] = useState<Partial<Team>>({});
+  const [editingTeam, setEditingTeam] = useState<Partial<TeamDto>>({});
   const [formData, setFormData] = useState({
     name: '',
   });
@@ -39,13 +40,13 @@ export default function TeamsPage() {
   const { mutateAsync: updateTeam } = useUpdateTeam(seasonIdNumber);
   const { mutateAsync: deleteTeam } = useDeleteTeam(seasonIdNumber);
 
-  const getUserById = (userId: string): User => {
+  const getUserById = (userId: string): UserDto => {
     return (
       users?.find((user) => user.id === userId) ??
       ({
         id: '',
         username: 'Unknown User',
-      } as User)
+      } as UserDto)
     );
   };
 
@@ -72,7 +73,7 @@ export default function TeamsPage() {
     );
   }
 
-  const openModal = (team?: Team) => {
+  const openModal = (team?: TeamDto) => {
     if (team) {
       setIsEditing(true);
       setEditingTeam(team);
@@ -86,7 +87,7 @@ export default function TeamsPage() {
 
   const handleCreateOrEdit = async () => {
     if (isEditing && editingTeam.id) {
-      await updateTeam({ teamID: editingTeam.id, team: formData });
+      await updateTeam({ teamID: editingTeam.id, payload: formData });
     } else {
       await createTeam(formData);
     }
@@ -142,7 +143,7 @@ export default function TeamsPage() {
               user &&
               (user.role === 'moderator' ||
                 user.role === 'admin' ||
-                team.userUUID === user.id) ? (
+                team.userUuid === user.id) ? (
                 <EditOutlined
                   key="edit"
                   onClick={() => {
@@ -151,7 +152,7 @@ export default function TeamsPage() {
                 />
               ) : null,
 
-              user && (user.role === 'admin' || team.userUUID === user.id) ? (
+              user && (user.role === 'admin' || team.userUuid === user.id) ? (
                 <DeleteOutlined
                   key="delete"
                   onClick={() => void handleDelete(team.id)}
@@ -175,7 +176,7 @@ export default function TeamsPage() {
                   </Typography.Text>
                   <br />
                   <Typography.Text type="secondary">
-                    {`By: ${getUserById(team.userUUID).username}`}
+                    {`By: ${getUserById(team.userUuid).username}`}
                   </Typography.Text>
                 </>
               }
