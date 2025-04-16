@@ -55,7 +55,7 @@ type UserDto struct {
 type SignUpDto struct {
 	Username string `example:"john_doe_123"       json:"username" validate:"required,min=3,max=100"`
 	Email    string `example:"email@example.com"  json:"email"    validate:"required,email"`
-	Password string `example:"VeryStrongPassword" json:"password" validate:"required,min=8,max=255"`
+	Password string `example:"VeryStrongPassword" json:"password" validate:"required,min=8,max=100"`
 }
 
 type LoginDto struct {
@@ -66,7 +66,7 @@ type LoginDto struct {
 type UpdateUserDto struct {
 	Username string `example:"john_doe_123"       json:"username" validate:"omitempty,min=3,max=100"`
 	Email    string `example:"email@example.com"  json:"email"    validate:"omitempty,email"`
-	Password string `example:"VeryStrongPassword" json:"password" validate:"omitempty,min=8,max=255"`
+	Password string `example:"VeryStrongPassword" json:"password" validate:"omitempty,min=8,max=100"`
 }
 
 func (dto *SignUpDto) ToUser() User {
@@ -160,7 +160,7 @@ func userValidationErrorHandler(err error) error {
 			case "required":
 				errorMessage = "Password is required."
 			case "min":
-				errorMessage = "Password must be at least 3 characters long."
+				errorMessage = "Password must be at least 8 characters long."
 			case "max":
 				errorMessage = "Password can be up to 100 characters long."
 			}
