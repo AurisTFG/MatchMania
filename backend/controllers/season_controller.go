@@ -3,13 +3,13 @@ package controllers
 import (
 	requests "MatchManiaAPI/models/dtos/requests/seasons"
 	responses "MatchManiaAPI/models/dtos/responses/seasons"
-	"MatchManiaAPI/models/enums"
 	"MatchManiaAPI/services"
 	"MatchManiaAPI/utils"
 	r "MatchManiaAPI/utils/httpResponses"
 	"MatchManiaAPI/validators"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/jinzhu/copier"
 )
 
@@ -93,13 +93,13 @@ func (c *SeasonController) CreateSeason(ctx *gin.Context) {
 		return
 	}
 
-	user := utils.GetAuthUser(ctx)
-	if user == nil {
-		r.Unauthorized(ctx, "User not found")
+	userId := utils.GetAuthUserId(ctx)
+	if userId == uuid.Nil {
+		r.Unauthorized(ctx)
 		return
 	}
 
-	_, err := c.seasonService.CreateSeason(&bodyDto, user.Id)
+	_, err := c.seasonService.CreateSeason(&bodyDto, userId)
 	if err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
@@ -140,20 +140,9 @@ func (c *SeasonController) UpdateSeason(ctx *gin.Context) {
 		return
 	}
 
-	user := utils.GetAuthUser(ctx)
-	if user == nil {
-		r.Unauthorized(ctx, "User not found")
-		return
-	}
-
 	currentSeason, err := c.seasonService.GetSeasonById(seasonId)
 	if err != nil {
 		r.NotFound(ctx, "Season not found")
-		return
-	}
-
-	if user.Role != enums.AdminRole && user.Role != enums.ModeratorRole && user.Id != currentSeason.UserId {
-		r.Forbidden(ctx, "This action is forbidden")
 		return
 	}
 
@@ -186,20 +175,9 @@ func (c *SeasonController) DeleteSeason(ctx *gin.Context) {
 		return
 	}
 
-	user := utils.GetAuthUser(ctx)
-	if user == nil {
-		r.Unauthorized(ctx, "User not found")
-		return
-	}
-
 	season, err := c.seasonService.GetSeasonById(seasonId)
 	if err != nil {
 		r.NotFound(ctx, "Season not found")
-		return
-	}
-
-	if user.Role != enums.AdminRole && user.Id != season.UserId {
-		r.Forbidden(ctx, "This action is forbidden")
 		return
 	}
 

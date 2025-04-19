@@ -3,13 +3,13 @@ package controllers
 import (
 	requests "MatchManiaAPI/models/dtos/requests/results"
 	responses "MatchManiaAPI/models/dtos/responses/results"
-	"MatchManiaAPI/models/enums"
 	"MatchManiaAPI/services"
 	"MatchManiaAPI/utils"
 	r "MatchManiaAPI/utils/httpResponses"
 	"MatchManiaAPI/validators"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/jinzhu/copier"
 )
 
@@ -156,13 +156,13 @@ func (c *ResultController) CreateResult(ctx *gin.Context) {
 		return
 	}
 
-	user := utils.GetAuthUser(ctx)
-	if user == nil {
-		r.Unauthorized(ctx, "User not found")
+	userId := utils.GetAuthUserId(ctx)
+	if userId == uuid.Nil {
+		r.Unauthorized(ctx)
 		return
 	}
 
-	_, err = c.resultService.CreateResult(&bodyDto, team.SeasonId, team.Id, user.Id)
+	_, err = c.resultService.CreateResult(&bodyDto, team.SeasonId, team.Id, userId)
 	if err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
@@ -217,20 +217,9 @@ func (c *ResultController) UpdateResult(ctx *gin.Context) {
 		return
 	}
 
-	user := utils.GetAuthUser(ctx)
-	if user == nil {
-		r.Unauthorized(ctx, "User not found")
-		return
-	}
-
 	currentResult, err := c.resultService.GetResultById(seasonId, teamId, resultId)
 	if err != nil {
 		r.NotFound(ctx, "Result not found in given team and season")
-		return
-	}
-
-	if user.Role != enums.AdminRole && user.Role != enums.ModeratorRole && user.Id != currentResult.UserId {
-		r.Forbidden(ctx, "This action is forbidden")
 		return
 	}
 
@@ -277,20 +266,9 @@ func (c *ResultController) DeleteResult(ctx *gin.Context) {
 		return
 	}
 
-	user := utils.GetAuthUser(ctx)
-	if user == nil {
-		r.Unauthorized(ctx, "User not found")
-		return
-	}
-
 	resultModel, err := c.resultService.GetResultById(seasonId, teamId, resultId)
 	if err != nil {
 		r.NotFound(ctx, "Result not found in given team and season")
-		return
-	}
-
-	if user.Role != enums.AdminRole && user.Id != resultModel.UserId {
-		r.Forbidden(ctx, "This action is forbidden")
 		return
 	}
 

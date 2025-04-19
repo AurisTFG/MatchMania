@@ -19,16 +19,16 @@ func NewAuthMiddleware(authService services.AuthService) AuthMiddleware {
 func (m *AuthMiddleware) RequireAuth(ctx *gin.Context) {
 	accessToken, err := ctx.Cookie(constants.AccessTokenName)
 	if err != nil || accessToken == "" {
-		r.Unauthorized(ctx, "Access token not found in cookies")
+		r.Unauthorized(ctx)
 		return
 	}
 
 	user, err := m.authService.VerifyAccessToken(accessToken)
 	if err != nil {
-		r.Unauthorized(ctx, err.Error())
+		r.Unauthorized(ctx)
 		return
 	}
 
-	ctx.Set("user", user)
+	ctx.Set("userId", user.Id)
 	ctx.Next()
 }

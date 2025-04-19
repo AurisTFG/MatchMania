@@ -36,14 +36,20 @@ func NewAuthController(
 // @Failure 422 {object} responses.ErrorDto
 // @Router /auth/me [get]
 func (c *AuthController) GetMe(ctx *gin.Context) {
-	user := utils.GetAuthUser(ctx)
-	if user == nil {
-		r.Unauthorized(ctx, "User not found")
+	userId := utils.GetAuthUserId(ctx)
+	if userId == uuid.Nil {
+		r.Unauthorized(ctx)
+		return
+	}
+
+	user, err := c.userService.GetUserById(userId)
+	if err != nil {
+		r.NotFound(ctx, err.Error())
 		return
 	}
 
 	var userDto responses.UserDto
-	copier.Copy(&user, userDto)
+	copier.Copy(&userDto, user)
 
 	r.OK(ctx, userDto)
 }
@@ -54,7 +60,7 @@ func (c *AuthController) GetMe(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param signUpDto body requests.SignUpDto true "Sign up details"
-// @Success 201 {object} responses.UserDto
+// @Success 204
 // @Failure 400 {object} responses.ErrorDto
 // @Failure 422 {object} responses.ErrorDto
 // @Router /auth/signup [post]

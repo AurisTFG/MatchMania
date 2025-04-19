@@ -115,7 +115,17 @@ func (s *authService) VerifyAccessToken(accessToken string) (*models.User, error
 		return nil, errors.New("access token expiration date is invalid")
 	}
 
-	user, err := s.userRepo.FindById(claims["sub"].(uuid.UUID))
+	subStr, ok := claims["sub"].(string)
+	if !ok {
+		return nil, errors.New("invalid sub claim type")
+	}
+
+	userId, err := uuid.Parse(subStr)
+	if err != nil {
+		return nil, errors.New("invalid sub claim value")
+	}
+
+	user, err := s.userRepo.FindById(userId)
 	if err != nil {
 		return nil, errors.New("invalid user")
 	}
@@ -168,7 +178,17 @@ func (s *authService) VerifyRefreshToken(refreshToken string) (*models.User, uui
 		return nil, uuid.Nil, errors.New("refresh token expiration date is invalid")
 	}
 
-	user, err := s.userRepo.FindById(claims["sub"].(uuid.UUID))
+	subStr, ok := claims["sub"].(string)
+	if !ok {
+		return nil, uuid.Nil, errors.New("invalid sub claim type")
+	}
+
+	userId, err := uuid.Parse(subStr)
+	if err != nil {
+		return nil, uuid.Nil, errors.New("invalid sub claim value")
+	}
+
+	user, err := s.userRepo.FindById(userId)
 	if err != nil {
 		return nil, uuid.Nil, errors.New("invalid user")
 	}
@@ -178,7 +198,17 @@ func (s *authService) VerifyRefreshToken(refreshToken string) (*models.User, uui
 		return nil, uuid.Nil, errors.New("user role mismatch")
 	}
 
-	return user, claims["sessionId"].(uuid.UUID), nil
+	sessionIdStr, ok := claims["sessionId"].(string)
+	if !ok {
+		return nil, uuid.Nil, errors.New("invalid sessionId claim type")
+	}
+
+	sessionId, err := uuid.Parse(sessionIdStr)
+	if err != nil {
+		return nil, uuid.Nil, errors.New("invalid sessionId claim value")
+	}
+
+	return user, sessionId, nil
 }
 
 func (s *authService) CreateSession(sessionId uuid.UUID, userId uuid.UUID, refreshToken string) error {

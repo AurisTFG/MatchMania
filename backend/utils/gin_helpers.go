@@ -1,8 +1,6 @@
 package utils
 
 import (
-	"MatchManiaAPI/models"
-
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
@@ -16,16 +14,16 @@ func GetParamId(ctx *gin.Context, paramName string) (uuid.UUID, error) {
 	return id, nil
 }
 
-func GetAuthUser(ctx *gin.Context) *models.User {
-	user, ok := ctx.Get("user")
+func GetAuthUserId(ctx *gin.Context) uuid.UUID {
+	userId, ok := ctx.Get("userId")
 	if !ok {
-		return nil
+		return uuid.Nil
 	}
 
-	userObj, ok := user.(*models.User)
+	userIdObj, ok := userId.(uuid.UUID)
 	if !ok {
-		return nil
+		return uuid.Nil
 	}
 
-	return userObj
+	return userIdObj
 }

@@ -149,11 +149,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/responses.UserDto"
-                        }
+                    "204": {
+                        "description": "No Content"
                     },
                     "400": {
                         "description": "Bad Request",
@@ -1114,7 +1111,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/responses.UserDto"
+                            "$ref": "#/definitions/responses.UserMinimalDto"
                         }
                     }
                 }
@@ -1322,8 +1319,8 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "id": {
-                    "type": "integer",
-                    "example": 7
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
                 },
                 "matchEndDate": {
                     "type": "string",
@@ -1367,8 +1364,8 @@ const docTemplate = `{
                     "example": "2025-08-31T00:00:00Z"
                 },
                 "id": {
-                    "type": "integer",
-                    "example": 5
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
                 },
                 "name": {
                     "type": "string",
@@ -1392,8 +1389,8 @@ const docTemplate = `{
                     "example": 1200
                 },
                 "id": {
-                    "type": "integer",
-                    "example": 6
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
                 },
                 "name": {
                     "type": "string",

@@ -23,8 +23,8 @@ func BadRequest(c *gin.Context, errorMessage string) { // 400
 	c.JSON(http.StatusBadRequest, dtos.ErrorDto{Message: errorMessage})
 }
 
-func Unauthorized(c *gin.Context, errorMessage string) { // 401
-	c.JSON(http.StatusUnauthorized, dtos.ErrorDto{Message: errorMessage})
+func Unauthorized(c *gin.Context) { // 401
+	c.JSON(http.StatusUnauthorized, dtos.ErrorDto{Message: "Unauthorized"})
 	c.Abort()
 }
 

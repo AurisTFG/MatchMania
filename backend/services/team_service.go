@@ -48,7 +48,10 @@ func (s *teamService) CreateTeam(
 	return s.repo.Create(&newTeam)
 }
 
-func (s *teamService) UpdateTeam(currentTeam *models.Team, updatedTeamDto *requests.UpdateTeamDto) (*models.Team, error) {
+func (s *teamService) UpdateTeam(
+	currentTeam *models.Team,
+	updatedTeamDto *requests.UpdateTeamDto,
+) (*models.Team, error) {
 	var updatedTeam models.Team
 
 	copier.Copy(&updatedTeam, updatedTeamDto)

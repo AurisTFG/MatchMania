@@ -44,7 +44,7 @@ func (c *UserController) GetAllUsers(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param id path string true "User ID"
-// @Success 200 {object} responses.UserDto
+// @Success 200 {object} responses.UserMinimalDto
 // @Router /users/{id} [get]
 func (c *UserController) GetUserById(ctx *gin.Context) {
 	userId, err := utils.GetParamId(ctx, "userId")
@@ -59,7 +59,7 @@ func (c *UserController) GetUserById(ctx *gin.Context) {
 		return
 	}
 
-	var userDto responses.UserDto
+	var userDto responses.UserMinimalDto
 	copier.Copy(&userDto, user)
 
 	r.OK(ctx, userDto)

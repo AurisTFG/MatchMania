@@ -3,13 +3,13 @@ package controllers
 import (
 	requests "MatchManiaAPI/models/dtos/requests/teams"
 	responses "MatchManiaAPI/models/dtos/responses/teams"
-	"MatchManiaAPI/models/enums"
 	"MatchManiaAPI/services"
 	"MatchManiaAPI/utils"
 	r "MatchManiaAPI/utils/httpResponses"
 	"MatchManiaAPI/validators"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/jinzhu/copier"
 )
 
@@ -124,13 +124,13 @@ func (c *TeamController) CreateTeam(ctx *gin.Context) {
 		return
 	}
 
-	user := utils.GetAuthUser(ctx)
-	if user == nil {
-		r.Unauthorized(ctx, "User not found")
+	userId := utils.GetAuthUserId(ctx)
+	if userId == uuid.Nil {
+		r.Unauthorized(ctx)
 		return
 	}
 
-	_, err = c.teamService.CreateTeam(&bodyDto, season.Id, user.Id)
+	_, err = c.teamService.CreateTeam(&bodyDto, season.Id, userId)
 	if err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
@@ -179,20 +179,9 @@ func (c *TeamController) UpdateTeam(ctx *gin.Context) {
 		return
 	}
 
-	user := utils.GetAuthUser(ctx)
-	if user == nil {
-		r.Unauthorized(ctx, "User not found")
-		return
-	}
-
 	currentTeam, err := c.teamService.GetTeamById(seasonId, teamId)
 	if err != nil {
 		r.NotFound(ctx, "Team not found in season")
-		return
-	}
-
-	if user.Role != enums.AdminRole && user.Role != enums.ModeratorRole && user.Id != currentTeam.UserId {
-		r.Forbidden(ctx, "This action is forbidden")
 		return
 	}
 
@@ -232,20 +221,9 @@ func (c *TeamController) DeleteTeam(ctx *gin.Context) {
 		return
 	}
 
-	user := utils.GetAuthUser(ctx)
-	if user == nil {
-		r.Unauthorized(ctx, "User not found")
-		return
-	}
-
 	team, err := c.teamService.GetTeamById(seasonId, teamId)
 	if err != nil {
 		r.NotFound(ctx, "Team not found in season")
-		return
-	}
-
-	if user.Role != enums.AdminRole && user.Id != team.UserId {
-		r.Forbidden(ctx, "This action is forbidden")
 		return
 	}
 

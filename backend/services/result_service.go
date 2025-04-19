@@ -29,7 +29,11 @@ func (s *resultService) GetAllResults(seasonId uuid.UUID, teamId uuid.UUID) ([]m
 	return s.repo.FindAllBySeasonIDAndTeamID(seasonId, teamId)
 }
 
-func (s *resultService) GetResultById(seasonId uuid.UUID, teamId uuid.UUID, resultId uuid.UUID) (*models.Result, error) {
+func (s *resultService) GetResultById(
+	seasonId uuid.UUID,
+	teamId uuid.UUID,
+	resultId uuid.UUID,
+) (*models.Result, error) {
 	return s.repo.FindByIdAndSeasonIDAndTeamID(seasonId, teamId, resultId)
 }
 
