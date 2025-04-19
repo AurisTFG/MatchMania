@@ -2,8 +2,8 @@ package middlewares
 
 import (
 	"MatchManiaAPI/constants"
-	r "MatchManiaAPI/responses"
 	"MatchManiaAPI/services"
+	r "MatchManiaAPI/utils/httpResponses"
 
 	"github.com/gin-gonic/gin"
 )

@@ -3,11 +3,13 @@ package repositories
 import (
 	"MatchManiaAPI/config"
 	"MatchManiaAPI/models"
+
+	"github.com/google/uuid"
 )
 
 type SessionRepository interface {
 	FindAll() ([]models.Session, error)
-	FindByID(string) (*models.Session, error)
+	FindById(uuid.UUID) (*models.Session, error)
 	Create(*models.Session) (*models.Session, error)
 	Update(*models.Session) (*models.Session, error)
 	Delete(*models.Session) error
@@ -29,10 +31,10 @@ func (r *sessionRepository) FindAll() ([]models.Session, error) {
 	return sessions, result.Error
 }
 
-func (r *sessionRepository) FindByID(sessionID string) (*models.Session, error) {
+func (r *sessionRepository) FindById(sessionId uuid.UUID) (*models.Session, error) {
 	var session models.Session
 
-	result := r.db.First(&session, "uuid = ?", sessionID)
+	result := r.db.First(&session, "id = ?", sessionId)
 
 	return &session, result.Error
 }
@@ -44,7 +46,7 @@ func (r *sessionRepository) Create(session *models.Session) (*models.Session, er
 }
 
 func (r *sessionRepository) Update(session *models.Session) (*models.Session, error) {
-	result := r.db.Model(&models.Session{}).Where("uuid = ?", session.UUID).Updates(session)
+	result := r.db.Model(&models.Session{}).Where("id = ?", session.Id).Updates(session)
 
 	return session, result.Error
 }

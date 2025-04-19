@@ -12,90 +12,90 @@ import {
   postRequest,
 } from '../httpRequests';
 
-export const useFetchResults = (seasonID: number, teamID: number) =>
+export const useFetchResults = (seasonId: number, teamId: number) =>
   useQuery({
-    queryKey: QUERY_KEYS.RESULTS.ALL(seasonID, teamID),
+    queryKey: QUERY_KEYS.RESULTS.ALL(seasonId, teamId),
     queryFn: () =>
       getRequest<ResultDto[]>({
-        url: ENDPOINTS.RESULTS.ROOT(seasonID, teamID),
+        url: ENDPOINTS.RESULTS.ROOT(seasonId, teamId),
       }),
-    enabled: !!seasonID && !!teamID,
+    enabled: !!seasonId && !!teamId,
   });
 
 export const useFetchResult = (
-  seasonID: number,
-  teamID: number,
-  resultID: number,
+  seasonId: number,
+  teamId: number,
+  resultId: number,
 ) =>
   useQuery({
-    queryKey: QUERY_KEYS.RESULTS.BY_ID(seasonID, teamID, resultID),
+    queryKey: QUERY_KEYS.RESULTS.BY_ID(seasonId, teamId, resultId),
     queryFn: () =>
       getRequest<ResultDto>({
-        url: ENDPOINTS.RESULTS.BY_ID(seasonID, teamID, resultID),
+        url: ENDPOINTS.RESULTS.BY_ID(seasonId, teamId, resultId),
       }),
-    enabled: !!seasonID && !!teamID && !!resultID,
+    enabled: !!seasonId && !!teamId && !!resultId,
   });
 
-export const useCreateResult = (seasonID: number, teamID: number) => {
+export const useCreateResult = (seasonId: number, teamId: number) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (payload: CreateResultDto) =>
       postRequest<ResultDto>({
-        url: ENDPOINTS.RESULTS.ROOT(seasonID, teamID),
+        url: ENDPOINTS.RESULTS.ROOT(seasonId, teamId),
         body: payload,
       }),
     onSuccess: async () => {
       toast.success('Result created successfully');
 
       await queryClient.invalidateQueries({
-        queryKey: QUERY_KEYS.RESULTS.ALL(seasonID, teamID),
+        queryKey: QUERY_KEYS.RESULTS.ALL(seasonId, teamId),
       });
     },
   });
 };
 
-export const useUpdateResult = (seasonID: number, teamID: number) => {
+export const useUpdateResult = (seasonId: number, teamId: number) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: ({
-      resultID,
+      resultId,
       payload,
     }: {
-      resultID: number;
+      resultId: number;
       payload: UpdateResultDto;
     }) =>
       patchRequest<ResultDto>({
-        url: ENDPOINTS.RESULTS.BY_ID(seasonID, teamID, resultID),
+        url: ENDPOINTS.RESULTS.BY_ID(seasonId, teamId, resultId),
         body: payload,
       }),
-    onSuccess: async (_, { resultID }) => {
+    onSuccess: async (_, { resultId }) => {
       toast.success('Result updated successfully');
 
       await queryClient.invalidateQueries({
-        queryKey: QUERY_KEYS.RESULTS.BY_ID(seasonID, teamID, resultID),
+        queryKey: QUERY_KEYS.RESULTS.BY_ID(seasonId, teamId, resultId),
       });
       await queryClient.invalidateQueries({
-        queryKey: QUERY_KEYS.RESULTS.ALL(seasonID, teamID),
+        queryKey: QUERY_KEYS.RESULTS.ALL(seasonId, teamId),
       });
     },
   });
 };
 
-export const useDeleteResult = (seasonID: number, teamID: number) => {
+export const useDeleteResult = (seasonId: number, teamId: number) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (resultID: number) =>
+    mutationFn: (resultId: number) =>
       deleteRequest({
-        url: ENDPOINTS.RESULTS.BY_ID(seasonID, teamID, resultID),
+        url: ENDPOINTS.RESULTS.BY_ID(seasonId, teamId, resultId),
       }),
     onSuccess: async () => {
       toast.success('Result deleted successfully');
 
       await queryClient.invalidateQueries({
-        queryKey: QUERY_KEYS.RESULTS.ALL(seasonID, teamID),
+        queryKey: QUERY_KEYS.RESULTS.ALL(seasonId, teamId),
       });
     },
   });

@@ -14,7 +14,7 @@ export default function SignupPage() {
       confirmPassword: '',
     },
     validators: {
-      onChange: signupDtoValidator,
+      onSubmit: signupDtoValidator,
     },
     onSubmit: async ({ value }) => {
       await signupAsync(value);
@@ -36,12 +36,7 @@ export default function SignupPage() {
         </form.AppField>
 
         <form.AppField name="email">
-          {(field) => (
-            <field.TextField
-              label="Email"
-              type="email"
-            />
-          )}
+          {(field) => <field.TextField label="Email" />}
         </form.AppField>
 
         <form.AppField name="password">

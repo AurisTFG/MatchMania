@@ -1,7 +1,7 @@
-package responses
+package httpResponses
 
 import (
-	"MatchManiaAPI/models"
+	dtos "MatchManiaAPI/models/dtos/responses/errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -20,26 +20,26 @@ func NoContent(c *gin.Context) { // 204
 }
 
 func BadRequest(c *gin.Context, errorMessage string) { // 400
-	c.JSON(http.StatusBadRequest, models.ErrorDto{Error: errorMessage})
+	c.JSON(http.StatusBadRequest, dtos.ErrorDto{Message: errorMessage})
 }
 
 func Unauthorized(c *gin.Context, errorMessage string) { // 401
-	c.JSON(http.StatusUnauthorized, models.ErrorDto{Error: errorMessage})
+	c.JSON(http.StatusUnauthorized, dtos.ErrorDto{Message: errorMessage})
 	c.Abort()
 }
 
 func Forbidden(c *gin.Context, errorMessage string) { // 403
-	c.JSON(http.StatusForbidden, models.ErrorDto{Error: errorMessage})
+	c.JSON(http.StatusForbidden, dtos.ErrorDto{Message: errorMessage})
 }
 
 func NotFound(c *gin.Context, errorMessage string) { // 404
-	c.JSON(http.StatusNotFound, models.ErrorDto{Error: errorMessage})
+	c.JSON(http.StatusNotFound, dtos.ErrorDto{Message: errorMessage})
 }
 
 func UnprocessableEntity(c *gin.Context, errorMessage string) { // 422
-	c.JSON(http.StatusUnprocessableEntity, models.ErrorDto{Error: errorMessage})
+	c.JSON(http.StatusUnprocessableEntity, dtos.ErrorDto{Message: errorMessage})
 }
 
 func InternalServerError(c *gin.Context, errorMessage string) { // 500
-	c.JSON(http.StatusInternalServerError, models.ErrorDto{Error: errorMessage})
+	c.JSON(http.StatusInternalServerError, dtos.ErrorDto{Message: errorMessage})
 }

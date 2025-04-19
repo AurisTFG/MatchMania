@@ -25,8 +25,8 @@ func SetupRoutes(
 
 		users := v1.Group("/users")
 		{
-			users.GET("", m.AuthMiddleware.RequireAuth, c.UserController.GetAllUsers)
-			users.GET(":userId", m.AuthMiddleware.RequireAuth, c.UserController.GetUserByID)
+			users.GET("", c.UserController.GetAllUsers)
+			users.GET(":userId", c.UserController.GetUserById)
 		}
 
 		seasons := v1.Group("/seasons")

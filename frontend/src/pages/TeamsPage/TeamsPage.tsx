@@ -87,7 +87,7 @@ export default function TeamsPage() {
 
   const handleCreateOrEdit = async () => {
     if (isEditing && editingTeam.id) {
-      await updateTeam({ teamID: editingTeam.id, payload: formData });
+      await updateTeam({ teamId: editingTeam.id, payload: formData });
     } else {
       await createTeam(formData);
     }
@@ -95,8 +95,8 @@ export default function TeamsPage() {
     setFormData({ name: '' });
   };
 
-  const handleDelete = async (teamID: number) => {
-    await deleteTeam(teamID);
+  const handleDelete = async (teamId: number) => {
+    await deleteTeam(teamId);
   };
 
   const closeModal = () => {

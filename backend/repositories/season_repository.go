@@ -3,11 +3,14 @@ package repositories
 import (
 	"MatchManiaAPI/config"
 	"MatchManiaAPI/models"
+	"fmt"
+
+	"github.com/google/uuid"
 )
 
 type SeasonRepository interface {
 	FindAll() ([]models.Season, error)
-	FindByID(uint) (*models.Season, error)
+	FindById(uuid.UUID) (*models.Season, error)
 	Create(*models.Season) (*models.Season, error)
 	Update(*models.Season, *models.Season) (*models.Season, error)
 	Delete(*models.Season) error
@@ -24,15 +27,17 @@ func NewSeasonRepository(db *config.DB) SeasonRepository {
 func (r *seasonRepository) FindAll() ([]models.Season, error) {
 	var seasons []models.Season
 
-	result := r.db.Find(&seasons)
+	result := r.db.Preload("User").Find(&seasons)
+
+	fmt.Println("Seasons found:", seasons)
 
 	return seasons, result.Error
 }
 
-func (r *seasonRepository) FindByID(seasonID uint) (*models.Season, error) {
+func (r *seasonRepository) FindById(seasonId uuid.UUID) (*models.Season, error) {
 	var season models.Season
 
-	result := r.db.First(&season, seasonID)
+	result := r.db.First(&season, seasonId)
 
 	return &season, result.Error
 }

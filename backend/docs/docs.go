@@ -38,27 +38,24 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.LoginDto"
+                            "$ref": "#/definitions/requests.LoginDto"
                         }
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.UserDto"
-                        }
+                    "204": {
+                        "description": "No Content"
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     },
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     }
                 }
@@ -78,7 +75,7 @@ const docTemplate = `{
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     }
                 }
@@ -95,13 +92,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.UserDto"
+                            "$ref": "#/definitions/responses.UserDto"
                         }
                     },
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     }
                 }
@@ -121,7 +118,7 @@ const docTemplate = `{
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     }
                 }
@@ -147,7 +144,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.SignUpDto"
+                            "$ref": "#/definitions/requests.SignUpDto"
                         }
                     }
                 ],
@@ -155,19 +152,19 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/models.UserDto"
+                            "$ref": "#/definitions/responses.UserDto"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     },
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     }
                 }
@@ -192,7 +189,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.SeasonDto"
+                                "$ref": "#/definitions/responses.SeasonDto"
                             }
                         }
                     }
@@ -217,33 +214,30 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.CreateSeasonDto"
+                            "$ref": "#/definitions/requests.CreateSeasonDto"
                         }
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/models.SeasonDto"
-                        }
+                    "204": {
+                        "description": "No Content"
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     },
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     }
                 }
@@ -276,19 +270,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.SeasonDto"
+                            "$ref": "#/definitions/responses.SeasonDto"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     }
                 }
@@ -322,31 +316,31 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     },
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     }
                 }
@@ -378,45 +372,42 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.UpdateSeasonDto"
+                            "$ref": "#/definitions/requests.UpdateSeasonDto"
                         }
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.SeasonDto"
-                        }
+                    "204": {
+                        "description": "No Content"
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     },
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     }
                 }
@@ -451,20 +442,20 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.TeamDto"
+                                "$ref": "#/definitions/responses.TeamDto"
                             }
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     },
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     }
                 }
@@ -496,39 +487,36 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.CreateTeamDto"
+                            "$ref": "#/definitions/requests.CreateTeamDto"
                         }
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/models.TeamDto"
-                        }
+                    "204": {
+                        "description": "No Content"
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     },
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     }
                 }
@@ -569,19 +557,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.TeamDto"
+                            "$ref": "#/definitions/responses.TeamDto"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     }
                 }
@@ -623,31 +611,31 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     },
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     }
                 }
@@ -687,45 +675,42 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.UpdateTeamDto"
+                            "$ref": "#/definitions/requests.UpdateTeamDto"
                         }
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.TeamDto"
-                        }
+                    "204": {
+                        "description": "No Content"
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     },
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     }
                 }
@@ -768,20 +753,20 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.ResultDto"
+                                "$ref": "#/definitions/responses.ResultDto"
                             }
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     },
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     }
                 }
@@ -821,39 +806,36 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.CreateResultDto"
+                            "$ref": "#/definitions/requests.CreateResultDto"
                         }
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResultDto"
-                        }
+                    "204": {
+                        "description": "No Content"
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     },
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     }
                 }
@@ -904,20 +886,20 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.ResultDto"
+                                "$ref": "#/definitions/responses.ResultDto"
                             }
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     }
                 }
@@ -967,31 +949,31 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     },
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     }
                 }
@@ -1039,45 +1021,42 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.UpdateResultDto"
+                            "$ref": "#/definitions/requests.UpdateResultDto"
                         }
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResultDto"
-                        }
+                    "204": {
+                        "description": "No Content"
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     },
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorDto"
+                            "$ref": "#/definitions/responses.ErrorDto"
                         }
                     }
                 }
@@ -1102,7 +1081,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.UserDto"
+                                "$ref": "#/definitions/responses.UserMinimalDto"
                             }
                         }
                     }
@@ -1135,7 +1114,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.UserDto"
+                            "$ref": "#/definitions/responses.UserDto"
                         }
                     }
                 }
@@ -1143,7 +1122,20 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "models.CreateResultDto": {
+        "enums.Role": {
+            "type": "string",
+            "enum": [
+                "admin",
+                "moderator",
+                "user"
+            ],
+            "x-enum-varnames": [
+                "AdminRole",
+                "ModeratorRole",
+                "UserRole"
+            ]
+        },
+        "requests.CreateResultDto": {
             "type": "object",
             "required": [
                 "matchEndDate",
@@ -1164,8 +1156,8 @@ const docTemplate = `{
                     "example": "14"
                 },
                 "opponentTeamId": {
-                    "type": "integer",
-                    "example": 4
+                    "type": "string",
+                    "example": "4"
                 },
                 "score": {
                     "type": "string",
@@ -1173,7 +1165,7 @@ const docTemplate = `{
                 }
             }
         },
-        "models.CreateSeasonDto": {
+        "requests.CreateSeasonDto": {
             "type": "object",
             "required": [
                 "endDate",
@@ -1197,7 +1189,7 @@ const docTemplate = `{
                 }
             }
         },
-        "models.CreateTeamDto": {
+        "requests.CreateTeamDto": {
             "type": "object",
             "required": [
                 "name"
@@ -1211,16 +1203,7 @@ const docTemplate = `{
                 }
             }
         },
-        "models.ErrorDto": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "type": "string",
-                    "example": "Error message"
-                }
-            }
-        },
-        "models.LoginDto": {
+        "requests.LoginDto": {
             "type": "object",
             "required": [
                 "email",
@@ -1237,86 +1220,7 @@ const docTemplate = `{
                 }
             }
         },
-        "models.ResultDto": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer",
-                    "example": 7
-                },
-                "matchEndDate": {
-                    "type": "string",
-                    "example": "2025-06-01T00:40:00Z"
-                },
-                "matchStartDate": {
-                    "type": "string",
-                    "example": "2025-06-01T00:00:00Z"
-                },
-                "opponentScore": {
-                    "type": "string",
-                    "example": "14"
-                },
-                "opponentTeamId": {
-                    "type": "integer",
-                    "example": 7
-                },
-                "score": {
-                    "type": "string",
-                    "example": "16"
-                },
-                "seasonId": {
-                    "type": "integer",
-                    "example": 5
-                },
-                "teamId": {
-                    "type": "integer",
-                    "example": 6
-                },
-                "userUuid": {
-                    "type": "string",
-                    "example": "550e8400-e29b-41d4-a716-446655440000"
-                }
-            }
-        },
-        "models.Role": {
-            "type": "string",
-            "enum": [
-                "admin",
-                "moderator",
-                "user"
-            ],
-            "x-enum-varnames": [
-                "AdminRole",
-                "ModeratorRole",
-                "UserRole"
-            ]
-        },
-        "models.SeasonDto": {
-            "type": "object",
-            "properties": {
-                "endDate": {
-                    "type": "string",
-                    "example": "2025-08-31T00:00:00Z"
-                },
-                "id": {
-                    "type": "integer",
-                    "example": 5
-                },
-                "name": {
-                    "type": "string",
-                    "example": "Summer 2025"
-                },
-                "startDate": {
-                    "type": "string",
-                    "example": "2025-06-01T00:00:00Z"
-                },
-                "userUuid": {
-                    "type": "string",
-                    "example": "550e8400-e29b-41d4-a716-446655440000"
-                }
-            }
-        },
-        "models.SignUpDto": {
+        "requests.SignUpDto": {
             "type": "object",
             "required": [
                 "email",
@@ -1330,7 +1234,7 @@ const docTemplate = `{
                 },
                 "password": {
                     "type": "string",
-                    "maxLength": 255,
+                    "maxLength": 100,
                     "minLength": 8,
                     "example": "VeryStrongPassword"
                 },
@@ -1342,32 +1246,7 @@ const docTemplate = `{
                 }
             }
         },
-        "models.TeamDto": {
-            "type": "object",
-            "properties": {
-                "elo": {
-                    "type": "integer",
-                    "example": 1200
-                },
-                "id": {
-                    "type": "integer",
-                    "example": 6
-                },
-                "name": {
-                    "type": "string",
-                    "example": "BIG Clan"
-                },
-                "seasonId": {
-                    "type": "integer",
-                    "example": 5
-                },
-                "userUuid": {
-                    "type": "string",
-                    "example": "550e8400-e29b-41d4-a716-446655440000"
-                }
-            }
-        },
-        "models.UpdateResultDto": {
+        "requests.UpdateResultDto": {
             "type": "object",
             "required": [
                 "matchEndDate",
@@ -1392,7 +1271,7 @@ const docTemplate = `{
                 }
             }
         },
-        "models.UpdateSeasonDto": {
+        "requests.UpdateSeasonDto": {
             "type": "object",
             "required": [
                 "endDate",
@@ -1416,7 +1295,7 @@ const docTemplate = `{
                 }
             }
         },
-        "models.UpdateTeamDto": {
+        "requests.UpdateTeamDto": {
             "type": "object",
             "required": [
                 "name"
@@ -1430,7 +1309,107 @@ const docTemplate = `{
                 }
             }
         },
-        "models.UserDto": {
+        "responses.ErrorDto": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Error message"
+                }
+            }
+        },
+        "responses.ResultDto": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "example": 7
+                },
+                "matchEndDate": {
+                    "type": "string",
+                    "example": "2025-06-01T00:40:00Z"
+                },
+                "matchStartDate": {
+                    "type": "string",
+                    "example": "2025-06-01T00:00:00Z"
+                },
+                "opponentScore": {
+                    "type": "string",
+                    "example": "14"
+                },
+                "opponentTeamId": {
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                },
+                "score": {
+                    "type": "string",
+                    "example": "16"
+                },
+                "seasonId": {
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                },
+                "teamId": {
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                },
+                "userId": {
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                }
+            }
+        },
+        "responses.SeasonDto": {
+            "type": "object",
+            "properties": {
+                "endDate": {
+                    "type": "string",
+                    "example": "2025-08-31T00:00:00Z"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 5
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Summer 2025"
+                },
+                "startDate": {
+                    "type": "string",
+                    "example": "2025-06-01T00:00:00Z"
+                },
+                "userId": {
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                }
+            }
+        },
+        "responses.TeamDto": {
+            "type": "object",
+            "properties": {
+                "elo": {
+                    "type": "integer",
+                    "example": 1200
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 6
+                },
+                "name": {
+                    "type": "string",
+                    "example": "BIG Clan"
+                },
+                "seasonId": {
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                },
+                "userId": {
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                }
+            }
+        },
+        "responses.UserDto": {
             "type": "object",
             "properties": {
                 "email": {
@@ -1444,10 +1423,23 @@ const docTemplate = `{
                 "role": {
                     "allOf": [
                         {
-                            "$ref": "#/definitions/models.Role"
+                            "$ref": "#/definitions/enums.Role"
                         }
                     ],
                     "example": "admin"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "john_doe_123"
+                }
+            }
+        },
+        "responses.UserMinimalDto": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "example": "526432ea-822b-4b5b-b1b3-34e8ab453e03"
                 },
                 "username": {
                     "type": "string",

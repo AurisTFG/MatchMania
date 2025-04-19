@@ -4,6 +4,7 @@ import (
 	"MatchManiaAPI/config"
 	"MatchManiaAPI/constants"
 	"MatchManiaAPI/models"
+	"MatchManiaAPI/models/enums"
 	"MatchManiaAPI/repositories"
 	"errors"
 	"net/http"
@@ -16,13 +17,13 @@ import (
 
 type AuthService interface {
 	CreateAccessToken(user *models.User) (string, error)
-	CreateRefreshToken(sessionUUID string, user *models.User) (string, error)
+	CreateRefreshToken(sessionId uuid.UUID, user *models.User) (string, error)
 	VerifyAccessToken(token string) (*models.User, error)
-	VerifyRefreshToken(token string) (user *models.User, sessionID string, err error)
-	CreateSession(sessionUUID uuid.UUID, userUUID uuid.UUID, refreshToken string) error
-	ExtendSession(sessionUUID string, refreshToken string) error
-	InvalidateSession(sessionUUID string) error
-	IsSessionValid(sessionUUID string, refreshToken string) bool
+	VerifyRefreshToken(token string) (user *models.User, sessionID uuid.UUID, err error)
+	CreateSession(sessionId uuid.UUID, UserId uuid.UUID, refreshToken string) error
+	ExtendSession(sessionId uuid.UUID, refreshToken string) error
+	InvalidateSession(sessionId uuid.UUID) error
+	IsSessionValid(sessionId uuid.UUID, refreshToken string) bool
 	SetCookies(ctx *gin.Context, accessToken string, refreshToken string)
 	DeleteCookies(ctx *gin.Context)
 }
@@ -47,7 +48,7 @@ func NewAuthService(
 
 func (s *authService) CreateAccessToken(user *models.User) (string, error) {
 	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"sub":  user.UUID,
+		"sub":  user.Id,
 		"role": user.Role,
 		"iss":  s.env.JWTIssuer,
 		"aud":  s.env.JWTAudience,
@@ -61,10 +62,10 @@ func (s *authService) CreateAccessToken(user *models.User) (string, error) {
 	return accessTokenString, err
 }
 
-func (s *authService) CreateRefreshToken(sessionUUID string, user *models.User) (string, error) {
+func (s *authService) CreateRefreshToken(sessionId uuid.UUID, user *models.User) (string, error) {
 	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"sessionId": sessionUUID,
-		"sub":       user.UUID,
+		"sessionId": sessionId,
+		"sub":       user.Id,
 		"role":      user.Role,
 		"iss":       s.env.JWTIssuer,
 		"aud":       s.env.JWTAudience,
@@ -114,12 +115,12 @@ func (s *authService) VerifyAccessToken(accessToken string) (*models.User, error
 		return nil, errors.New("access token expiration date is invalid")
 	}
 
-	user, err := s.userRepo.FindByID(claims["sub"].(string))
+	user, err := s.userRepo.FindById(claims["sub"].(uuid.UUID))
 	if err != nil {
 		return nil, errors.New("invalid user")
 	}
 
-	roleClaim := models.Role(claims["role"].(string))
+	roleClaim := enums.Role(claims["role"].(string))
 	if user.Role != roleClaim {
 		return nil, errors.New("user role mismatch")
 	}
@@ -127,7 +128,7 @@ func (s *authService) VerifyAccessToken(accessToken string) (*models.User, error
 	return user, nil
 }
 
-func (s *authService) VerifyRefreshToken(refreshToken string) (*models.User, string, error) {
+func (s *authService) VerifyRefreshToken(refreshToken string) (*models.User, uuid.UUID, error) {
 	token, err := jwt.Parse(refreshToken, func(token *jwt.Token) (any, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, jwt.ErrSignatureInvalid
@@ -135,55 +136,55 @@ func (s *authService) VerifyRefreshToken(refreshToken string) (*models.User, str
 		return []byte(s.env.JWTRefreshTokenSecret), nil
 	})
 	if err != nil || !token.Valid {
-		return nil, "", errors.New("invalid refresh token")
+		return nil, uuid.Nil, errors.New("invalid refresh token")
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
-		return nil, "", errors.New("invalid refresh token claims")
+		return nil, uuid.Nil, errors.New("invalid refresh token claims")
 	}
 
 	if claims["jti"] == "" {
-		return nil, "", errors.New("invalid session id")
+		return nil, uuid.Nil, errors.New("invalid session id")
 	}
 
 	if claims["aud"] != s.env.JWTAudience {
-		return nil, "", errors.New("invalid audience")
+		return nil, uuid.Nil, errors.New("invalid audience")
 	}
 
 	if claims["iss"] != s.env.JWTIssuer {
-		return nil, "", errors.New("invalid issuer")
+		return nil, uuid.Nil, errors.New("invalid issuer")
 	}
 
 	if float64(time.Now().Unix()) > claims["exp"].(float64) {
-		return nil, "", errors.New("refresh token expired")
+		return nil, uuid.Nil, errors.New("refresh token expired")
 	}
 
 	if claims["nbf"].(float64) > float64(time.Now().Unix()) {
-		return nil, "", errors.New("refresh token not valid yet")
+		return nil, uuid.Nil, errors.New("refresh token not valid yet")
 	}
 
 	if claims["exp"].(float64)-claims["iat"].(float64) != s.env.JWTRefreshTokenDuration.Seconds() {
-		return nil, "", errors.New("refresh token expiration date is invalid")
+		return nil, uuid.Nil, errors.New("refresh token expiration date is invalid")
 	}
 
-	user, err := s.userRepo.FindByID(claims["sub"].(string))
+	user, err := s.userRepo.FindById(claims["sub"].(uuid.UUID))
 	if err != nil {
-		return nil, "", errors.New("invalid user")
+		return nil, uuid.Nil, errors.New("invalid user")
 	}
 
-	roleClaim := models.Role(claims["role"].(string))
+	roleClaim := enums.Role(claims["role"].(string))
 	if user.Role != roleClaim {
-		return nil, "", errors.New("user role mismatch")
+		return nil, uuid.Nil, errors.New("user role mismatch")
 	}
 
-	return user, claims["sessionId"].(string), nil
+	return user, claims["sessionId"].(uuid.UUID), nil
 }
 
-func (s *authService) CreateSession(sessionUUID uuid.UUID, userUUID uuid.UUID, refreshToken string) error {
+func (s *authService) CreateSession(sessionId uuid.UUID, userId uuid.UUID, refreshToken string) error {
 	session := &models.Session{
-		UUID:             sessionUUID,
-		UserUUID:         userUUID,
+		BaseModel:        models.BaseModel{Id: sessionId},
+		UserId:           userId,
 		LastRefreshToken: refreshToken,
 		ExpiresAt:        time.Now().Add(s.env.JWTRefreshTokenDuration),
 		InitiatedAt:      time.Now(),
@@ -202,8 +203,8 @@ func (s *authService) CreateSession(sessionUUID uuid.UUID, userUUID uuid.UUID, r
 	return nil
 }
 
-func (s *authService) ExtendSession(sessionUUID string, refreshToken string) error {
-	session, err := s.sessionRepo.FindByID(sessionUUID)
+func (s *authService) ExtendSession(sessionId uuid.UUID, refreshToken string) error {
+	session, err := s.sessionRepo.FindById(sessionId)
 	if err != nil {
 		return err
 	}
@@ -223,8 +224,8 @@ func (s *authService) ExtendSession(sessionUUID string, refreshToken string) err
 	return nil
 }
 
-func (s *authService) InvalidateSession(sessionUUID string) error {
-	session, err := s.sessionRepo.FindByID(sessionUUID)
+func (s *authService) InvalidateSession(sessionId uuid.UUID) error {
+	session, err := s.sessionRepo.FindById(sessionId)
 	if err != nil {
 		return err
 	}
@@ -239,8 +240,8 @@ func (s *authService) InvalidateSession(sessionUUID string) error {
 	return nil
 }
 
-func (s *authService) IsSessionValid(sessionUUID string, refreshToken string) bool {
-	session, err := s.sessionRepo.FindByID(sessionUUID)
+func (s *authService) IsSessionValid(sessionId uuid.UUID, refreshToken string) bool {
+	session, err := s.sessionRepo.FindById(sessionId)
 	if err != nil {
 		return false
 	}

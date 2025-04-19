@@ -143,7 +143,7 @@ export default function ResultsPage() {
   const handleCreateOrEdit = async () => {
     if (isEditing && editingResult.id) {
       await updateResult({
-        resultID: editingResult.id,
+        resultId: editingResult.id,
         payload: {
           matchStartDate: formData.matchStartDate.toDate(),
           matchEndDate: formData.matchEndDate.toDate(),
@@ -163,8 +163,8 @@ export default function ResultsPage() {
     closeModal();
   };
 
-  const handleDelete = async (resultID: number) => {
-    await deleteResult(resultID);
+  const handleDelete = async (resultId: number) => {
+    await deleteResult(resultId);
   };
 
   const getTeamName = (id: number) => {

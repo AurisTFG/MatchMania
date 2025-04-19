@@ -5,15 +5,15 @@ export default function SubmitButton({ label }: { label: string }) {
   const form = useFormContext();
 
   return (
-    <form.Subscribe selector={(state) => state.isSubmitting}>
-      {(isSubmitting) => (
+    <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
+      {([canSubmit, isSubmitting]) => (
         <Button
           type="submit"
-          disabled={isSubmitting}
+          disabled={!canSubmit}
           variant="contained"
           color="primary"
         >
-          {label}
+          {isSubmitting ? '...' : label}
         </Button>
       )}
     </form.Subscribe>

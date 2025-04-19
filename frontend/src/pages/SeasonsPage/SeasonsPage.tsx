@@ -57,7 +57,7 @@ export default function SeasonsPage() {
   const handleCreateOrEdit = async () => {
     if (isEditing && editingSeason.id) {
       await updateSeasonMutation({
-        seasonID: editingSeason.id,
+        seasonId: editingSeason.id,
         payload: {
           ...formData,
           startDate: formData.startDate.toDate(),
@@ -74,8 +74,8 @@ export default function SeasonsPage() {
     setIsModalOpen(false);
   };
 
-  const handleDelete = async (seasonID: number) => {
-    await deleteSeasonMutation(seasonID);
+  const handleDelete = async (seasonId: number) => {
+    await deleteSeasonMutation(seasonId);
   };
 
   const openEditModal = (season: SeasonDto) => {

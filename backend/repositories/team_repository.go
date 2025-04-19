@@ -4,14 +4,15 @@ import (
 	"MatchManiaAPI/config"
 	"MatchManiaAPI/models"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm/clause"
 )
 
 type TeamRepository interface {
 	FindAll() ([]models.Team, error)
-	FindAllBySeasonID(uint) ([]models.Team, error)
-	FindByID(uint) (*models.Team, error)
-	FindByIDAndSeasonID(uint, uint) (*models.Team, error)
+	FindAllBySeasonID(uuid.UUID) ([]models.Team, error)
+	FindById(uuid.UUID) (*models.Team, error)
+	FindByIdAndSeasonID(uuid.UUID, uuid.UUID) (*models.Team, error)
 	Create(*models.Team) (*models.Team, error)
 	Update(*models.Team, *models.Team) (*models.Team, error)
 	Delete(*models.Team) error
@@ -33,26 +34,26 @@ func (r *teamRepository) FindAll() ([]models.Team, error) {
 	return teams, result.Error
 }
 
-func (r *teamRepository) FindAllBySeasonID(seasonID uint) ([]models.Team, error) {
+func (r *teamRepository) FindAllBySeasonID(seasonId uuid.UUID) ([]models.Team, error) {
 	var teams []models.Team
 
-	result := r.db.Where("season_id = ?", seasonID).Find(&teams)
+	result := r.db.Where("season_id = ?", seasonId).Find(&teams)
 
 	return teams, result.Error
 }
 
-func (r *teamRepository) FindByID(teamID uint) (*models.Team, error) {
+func (r *teamRepository) FindById(teamId uuid.UUID) (*models.Team, error) {
 	var team models.Team
 
-	result := r.db.First(&team, teamID)
+	result := r.db.First(&team, teamId)
 
 	return &team, result.Error
 }
 
-func (r *teamRepository) FindByIDAndSeasonID(teamID uint, seasonID uint) (*models.Team, error) {
+func (r *teamRepository) FindByIdAndSeasonID(teamId uuid.UUID, seasonId uuid.UUID) (*models.Team, error) {
 	var team models.Team
 
-	result := r.db.Where("season_id = ? AND id = ?", seasonID, teamID).First(&team)
+	result := r.db.Where("season_id = ? AND id = ?", seasonId, teamId).First(&team)
 
 	return &team, result.Error
 }

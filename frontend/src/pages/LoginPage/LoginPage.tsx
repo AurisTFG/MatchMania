@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -18,7 +18,7 @@ export default function LoginPage() {
       password: '',
     },
     validators: {
-      onChange: loginDtoValidator,
+      onSubmit: loginDtoValidator,
     },
     onSubmit: async ({ value }) => {
       await loginAsync(value);
@@ -39,11 +39,20 @@ export default function LoginPage() {
           void form.handleSubmit();
         }}
       >
-        <h1>Login</h1>
+        <Typography
+          variant="h4"
+          sx={{
+            mb: 3,
+            fontWeight: 'bold',
+          }}
+        >
+          Login
+        </Typography>
 
         <form.AppField name="email">
           {(field) => <field.TextField label="Email" />}
         </form.AppField>
+
         <form.AppField name="password">
           {(field) => (
             <field.TextField
@@ -52,6 +61,7 @@ export default function LoginPage() {
             />
           )}
         </form.AppField>
+
         <form.AppForm>
           <form.SubmitButton label="Login" />
         </form.AppForm>

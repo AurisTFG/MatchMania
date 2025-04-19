@@ -1,31 +1,27 @@
 package models
 
 import (
+	"MatchManiaAPI/models/enums"
 	"errors"
 	"fmt"
-	"time"
 
 	"github.com/go-playground/validator/v10"
-	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
-	"gorm.io/gorm"
 )
 
 type User struct {
-	UUID      uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4();primaryKey"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt `gorm:"index"`
-	Username  string         `gorm:"unique"`
-	Email     string         `gorm:"unique"`
+	BaseModel
+
+	Username string `gorm:"unique"`
+	Email    string `gorm:"unique"`
 	// Country   string // TODO: Add country to user
-	Role     Role `gorm:"type:role;default:'user'"`
+	Role     enums.Role `gorm:"type:role;default:'user'"`
 	Password string
 
-	Sessions []Session `gorm:"foreignKey:UserUUID"`
-	Seasons  []Season  `gorm:"foreignKey:UserUUID"`
-	Teams    []Team    `gorm:"foreignKey:UserUUID"`
-	Results  []Result  `gorm:"foreignKey:UserUUID"`
+	Sessions []Session `gorm:"constraint:OnDelete:CASCADE;"`
+	Seasons  []Season  `gorm:"constraint:OnDelete:CASCADE;"`
+	Teams    []Team    `gorm:"constraint:OnDelete:CASCADE;"`
+	Results  []Result  `gorm:"constraint:OnDelete:CASCADE;"`
 }
 
 func (u *User) HashPassword() error {
@@ -45,82 +41,23 @@ func (u *User) ComparePassword(password string) bool {
 	return err == nil
 }
 
-type UserDto struct {
-	UUID     uuid.UUID `example:"526432ea-822b-4b5b-b1b3-34e8ab453e03" json:"id"`
-	Username string    `example:"john_doe_123"                         json:"username"`
-	Email    string    `example:"email@example.com"                    json:"email"`
-	Role     Role      `example:"admin"                                json:"role"`
-}
+// func (dto *SignUpDto) Validate() error {
+// 	var validate = validator.New()
 
-type SignUpDto struct {
-	Username string `example:"john_doe_123"       json:"username" validate:"required,min=3,max=100"`
-	Email    string `example:"email@example.com"  json:"email"    validate:"required,email"`
-	Password string `example:"VeryStrongPassword" json:"password" validate:"required,min=8,max=100"`
-}
+// 	return userValidationErrorHandler(validate.Struct(dto))
+// }
 
-type LoginDto struct {
-	Email    string `example:"email@example.com"  json:"email"    validate:"required,email"`
-	Password string `example:"VeryStrongPassword" json:"password" validate:"required"`
-}
+// func (dto *LoginDto) Validate() error {
+// 	var validate = validator.New()
 
-type UpdateUserDto struct {
-	Username string `example:"john_doe_123"       json:"username" validate:"omitempty,min=3,max=100"`
-	Email    string `example:"email@example.com"  json:"email"    validate:"omitempty,email"`
-	Password string `example:"VeryStrongPassword" json:"password" validate:"omitempty,min=8,max=100"`
-}
+// 	return userValidationErrorHandler(validate.Struct(dto))
+// }
 
-func (dto *SignUpDto) ToUser() User {
-	return User{
-		Username: dto.Username,
-		Email:    dto.Email,
-		Password: dto.Password,
-	}
-}
+// func (dto *UpdateUserDto) Validate() error {
+// 	var validate = validator.New()
 
-func (dto *UpdateUserDto) ToUser() User {
-	return User{
-		Username: dto.Username,
-		Email:    dto.Email,
-		Password: dto.Password,
-	}
-}
-
-func (u *User) ToDto() UserDto {
-	return UserDto{
-		UUID:     u.UUID,
-		Username: u.Username,
-		Role:     u.Role,
-		Email:    u.Email,
-	}
-}
-
-func ToUserDtos(users []User) []UserDto {
-	userDtos := make([]UserDto, len(users))
-
-	for i, user := range users {
-		userDtos[i] = user.ToDto()
-	}
-
-	return userDtos
-}
-
-func (dto *SignUpDto) Validate() error {
-	var validate = validator.New()
-
-	return userValidationErrorHandler(validate.Struct(dto))
-}
-
-func (dto *LoginDto) Validate() error {
-	var validate = validator.New()
-
-	return userValidationErrorHandler(validate.Struct(dto))
-}
-
-func (dto *UpdateUserDto) Validate() error {
-	var validate = validator.New()
-
-	return userValidationErrorHandler(validate.Struct(dto))
-}
+// 	return userValidationErrorHandler(validate.Struct(dto))
+// }
 
 func userValidationErrorHandler(err error) error {
 	if err == nil {

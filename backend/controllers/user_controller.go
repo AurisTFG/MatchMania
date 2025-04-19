@@ -1,12 +1,13 @@
 package controllers
 
 import (
-	"MatchManiaAPI/models"
-	r "MatchManiaAPI/responses"
+	responses "MatchManiaAPI/models/dtos/responses/users"
 	"MatchManiaAPI/services"
 	"MatchManiaAPI/utils"
+	r "MatchManiaAPI/utils/httpResponses"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/copier"
 )
 
 type UserController struct {
@@ -22,7 +23,7 @@ func NewUserController(userService services.UserService) UserController {
 // @Tags users
 // @Accept json
 // @Produce json
-// @Success 200 {object} []models.UserDto
+// @Success 200 {object} []responses.UserMinimalDto
 // @Router /users [get]
 func (c *UserController) GetAllUsers(ctx *gin.Context) {
 	users, err := c.userService.GetAllUsers()
@@ -31,7 +32,10 @@ func (c *UserController) GetAllUsers(ctx *gin.Context) {
 		return
 	}
 
-	r.OK(ctx, models.ToUserDtos(users))
+	var usersDto []responses.UserMinimalDto
+	copier.Copy(&usersDto, users)
+
+	r.OK(ctx, usersDto)
 }
 
 // @Summary Get user by ID
@@ -40,16 +44,23 @@ func (c *UserController) GetAllUsers(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param id path string true "User ID"
-// @Success 200 {object} models.UserDto
+// @Success 200 {object} responses.UserDto
 // @Router /users/{id} [get]
-func (c *UserController) GetUserByID(ctx *gin.Context) {
-	userID := utils.GetParamString(ctx, "userId")
+func (c *UserController) GetUserById(ctx *gin.Context) {
+	userId, err := utils.GetParamId(ctx, "userId")
+	if err != nil {
+		r.BadRequest(ctx, err.Error())
+		return
+	}
 
-	user, err := c.userService.GetUserByID(userID)
+	user, err := c.userService.GetUserById(userId)
 	if err != nil {
 		r.NotFound(ctx, err.Error())
 		return
 	}
 
-	r.OK(ctx, user.ToDto())
+	var userDto responses.UserDto
+	copier.Copy(&userDto, user)
+
+	r.OK(ctx, userDto)
 }

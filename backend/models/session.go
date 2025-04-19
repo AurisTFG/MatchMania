@@ -11,13 +11,14 @@ import (
 )
 
 type Session struct {
-	UUID             uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4();primaryKey"`
+	BaseModel
+
 	LastRefreshToken string    `gorm:"not null"`
 	InitiatedAt      time.Time `gorm:"not null"`
 	ExpiresAt        time.Time `gorm:"not null"`
 	IsRevoked        bool      `gorm:"not null"`
 
-	UserUUID uuid.UUID `gorm:"type:uuid;not null"`
+	UserId uuid.UUID `gorm:"not null"`
 }
 
 func (s *Session) HashToken() error {

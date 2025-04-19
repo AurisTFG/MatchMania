@@ -1,0 +1,12 @@
+.errorContainer {
+  margin-top: -5px;
+  margin-bottom: 10px;
+  width: 100%;
+  text-align: left;
+}
+
+.errorMessage {
+  color: #d32f2f;
+  font-size: 0.75rem;
+  margin-left: 14px;
+}

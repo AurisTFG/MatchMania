@@ -1,5 +1,6 @@
 import { TextField as MuiTextField } from '@mui/material';
 import { useFieldContext } from '../../../hooks/form/useAppForm';
+import FormErrors from '../Helpers/FormErrors';
 
 export default function TextField({
   label,
@@ -28,29 +29,7 @@ export default function TextField({
         fullWidth
         margin="normal"
       />
-      {errorMessages.length > 0 && (
-        <div
-          style={{
-            marginTop: '-5px',
-            marginBottom: '10px',
-            width: '100%',
-            textAlign: 'left',
-          }}
-        >
-          {errorMessages.map((message, index) => (
-            <div
-              key={index}
-              style={{
-                color: '#d32f2f',
-                fontSize: '0.75rem',
-                marginLeft: '14px',
-              }}
-            >
-              {message}
-            </div>
-          ))}
-        </div>
-      )}
+      <FormErrors messages={errorMessages} />
     </>
   );
 }
