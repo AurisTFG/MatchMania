@@ -12,7 +12,7 @@ import {
   postRequest,
 } from '../httpRequests';
 
-export const useFetchTeams = (seasonId: number) =>
+export const useFetchTeams = (seasonId: string) =>
   useQuery({
     queryKey: QUERY_KEYS.TEAMS.ALL(seasonId),
     queryFn: () =>
@@ -20,7 +20,7 @@ export const useFetchTeams = (seasonId: number) =>
     enabled: !!seasonId,
   });
 
-export const useFetchTeam = (seasonId: number, teamId: number) =>
+export const useFetchTeam = (seasonId: string, teamId: string) =>
   useQuery({
     queryKey: QUERY_KEYS.TEAMS.BY_ID(seasonId, teamId),
     queryFn: () =>
@@ -28,12 +28,12 @@ export const useFetchTeam = (seasonId: number, teamId: number) =>
     enabled: !!seasonId && !!teamId,
   });
 
-export const useCreateTeam = (seasonId: number) => {
+export const useCreateTeam = (seasonId: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (payload: CreateTeamDto) =>
-      postRequest<TeamDto>({
+      postRequest({
         url: ENDPOINTS.TEAMS.ROOT(seasonId),
         body: payload,
       }),
@@ -47,7 +47,7 @@ export const useCreateTeam = (seasonId: number) => {
   });
 };
 
-export const useUpdateTeam = (seasonId: number) => {
+export const useUpdateTeam = (seasonId: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -55,10 +55,10 @@ export const useUpdateTeam = (seasonId: number) => {
       teamId,
       payload,
     }: {
-      teamId: number;
+      teamId: string;
       payload: UpdateTeamDto;
     }) =>
-      patchRequest<TeamDto>({
+      patchRequest({
         url: ENDPOINTS.TEAMS.BY_ID(seasonId, teamId),
         body: payload,
       }),
@@ -75,11 +75,11 @@ export const useUpdateTeam = (seasonId: number) => {
   });
 };
 
-export const useDeleteTeam = (seasonId: number) => {
+export const useDeleteTeam = (seasonId: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (teamId: number) =>
+    mutationFn: (teamId: string) =>
       deleteRequest({ url: ENDPOINTS.TEAMS.BY_ID(seasonId, teamId) }),
     onSuccess: async () => {
       toast.success('Team deleted successfully');

@@ -7,19 +7,19 @@ export const QUERY_KEYS = {
   USERS: {
     ROOT: ['users'],
     ALL: ['users', 'all'],
-    BY_ID: (id: string | number) => ['users', 'byId', id],
+    BY_ID: (id: string) => ['users', 'byId', id],
   },
 
   SEASONS: {
     ROOT: ['seasons'],
     ALL: ['seasons', 'all'],
-    BY_ID: (id: string | number) => ['seasons', 'byId', id],
+    BY_ID: (id: string) => ['seasons', 'byId', id],
   },
 
   TEAMS: {
     ROOT: ['teams'],
-    ALL: (seasonId: string | number) => ['teams', 'all', 'season', seasonId],
-    BY_ID: (seasonId: string | number, teamId: string | number) => [
+    ALL: (seasonId: string) => ['teams', 'all', 'season', seasonId],
+    BY_ID: (seasonId: string, teamId: string) => [
       'teams',
       'byId',
       'season',
@@ -31,7 +31,7 @@ export const QUERY_KEYS = {
 
   RESULTS: {
     ROOT: ['results'],
-    ALL: (seasonId: string | number, teamId: string | number) => [
+    ALL: (seasonId: string, teamId: string) => [
       'results',
       'all',
       'season',
@@ -39,11 +39,7 @@ export const QUERY_KEYS = {
       'team',
       teamId,
     ],
-    BY_ID: (
-      seasonId: string | number,
-      teamId: string | number,
-      resultId: string | number,
-    ) => [
+    BY_ID: (seasonId: string, teamId: string, resultId: string) => [
       'results',
       'byId',
       'season',

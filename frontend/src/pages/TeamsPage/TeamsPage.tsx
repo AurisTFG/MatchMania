@@ -1,6 +1,6 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Input, List, Modal, Space, Typography } from 'antd';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useFetchSeason } from '../../api/hooks/seasonsHooks';
 import {
@@ -12,15 +12,10 @@ import {
 import { useFetchUsers } from '../../api/hooks/usersHooks';
 import { useAuth } from '../../providers/AuthProvider/AuthProvider';
 import { TeamDto } from '../../types/dtos/responses/teams/teamDto';
-import { UserDto } from '../../types/dtos/responses/users/userDto';
-
-const isValidTeam = (seasonId: string | undefined) => {
-  return seasonId && !isNaN(Number(seasonId)) && Number(seasonId) > 0;
-};
+import { UserMinimalDto } from '../../types/dtos/responses/users/userMinimalDto';
 
 export default function TeamsPage() {
-  const { seasonId } = useParams<{ seasonId: string }>();
-  const [teamsNotFound, setTeamsNotFound] = useState(false);
+  const { seasonId = '' } = useParams<{ seasonId: string }>();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editingTeam, setEditingTeam] = useState<Partial<TeamDto>>({});
@@ -29,46 +24,28 @@ export default function TeamsPage() {
   });
   const { user } = useAuth();
 
-  const seasonIdNumber = seasonId ? parseInt(seasonId) : 0;
-
   const { data: season, isLoading: isSeasonsLoading } =
-    useFetchSeason(seasonIdNumber);
-  const { data: teams, isLoading: isTeamsLoading } =
-    useFetchTeams(seasonIdNumber);
+    useFetchSeason(seasonId);
+  const { data: teams, isLoading: isTeamsLoading } = useFetchTeams(seasonId);
   const { data: users, isLoading: isUsersLoading } = useFetchUsers();
-  const { mutateAsync: createTeam } = useCreateTeam(seasonIdNumber);
-  const { mutateAsync: updateTeam } = useUpdateTeam(seasonIdNumber);
-  const { mutateAsync: deleteTeam } = useDeleteTeam(seasonIdNumber);
+  const { mutateAsync: createTeam } = useCreateTeam(seasonId);
+  const { mutateAsync: updateTeam } = useUpdateTeam(seasonId);
+  const { mutateAsync: deleteTeam } = useDeleteTeam(seasonId);
 
-  const getUserById = (userId: string): UserDto => {
+  const getUserById = (userId: string): UserMinimalDto => {
     return (
       users?.find((user) => user.id === userId) ??
       ({
         id: '',
         username: 'Unknown User',
-      } as UserDto)
+      } as UserMinimalDto)
     );
   };
-
-  useEffect(() => {
-    if (!isValidTeam(seasonId)) {
-      setTeamsNotFound(true);
-      return;
-    }
-  }, [seasonId]);
 
   if (isSeasonsLoading || isTeamsLoading || isUsersLoading) {
     return (
       <div style={{ padding: 20 }}>
         <Typography.Title level={4}>Loading...</Typography.Title>
-      </div>
-    );
-  }
-
-  if (teamsNotFound) {
-    return (
-      <div style={{ padding: 20 }}>
-        <Typography.Title level={4}>Teams not found</Typography.Title>
       </div>
     );
   }
@@ -95,7 +72,7 @@ export default function TeamsPage() {
     setFormData({ name: '' });
   };
 
-  const handleDelete = async (teamId: number) => {
+  const handleDelete = async (teamId: string) => {
     await deleteTeam(teamId);
   };
 
@@ -143,7 +120,7 @@ export default function TeamsPage() {
               user &&
               (user.role === 'moderator' ||
                 user.role === 'admin' ||
-                team.userUuid === user.id) ? (
+                team.userId === user.id) ? (
                 <EditOutlined
                   key="edit"
                   onClick={() => {
@@ -152,7 +129,7 @@ export default function TeamsPage() {
                 />
               ) : null,
 
-              user && (user.role === 'admin' || team.userUuid === user.id) ? (
+              user && (user.role === 'admin' || team.userId === user.id) ? (
                 <DeleteOutlined
                   key="delete"
                   onClick={() => void handleDelete(team.id)}
@@ -163,9 +140,7 @@ export default function TeamsPage() {
           >
             <List.Item.Meta
               title={
-                <Link
-                  to={`/seasons/${seasonId ?? ''}/teams/${String(team.id)}/results`}
-                >
+                <Link to={`/seasons/${seasonId}/teams/${team.id}/results`}>
                   {team.name}
                 </Link>
               }
@@ -176,7 +151,7 @@ export default function TeamsPage() {
                   </Typography.Text>
                   <br />
                   <Typography.Text type="secondary">
-                    {`By: ${getUserById(team.userUuid).username}`}
+                    {`By: ${getUserById(team.userId).username}`}
                   </Typography.Text>
                 </>
               }

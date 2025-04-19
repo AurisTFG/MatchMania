@@ -1,7 +1,7 @@
 export type TeamDto = {
-  id: number;
+  id: string;
   name: string;
   elo: number;
-  seasonId: number;
-  userUuid: string;
+  seasonId: string;
+  userId: string;
 };

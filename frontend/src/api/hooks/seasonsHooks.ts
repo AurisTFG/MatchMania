@@ -18,7 +18,7 @@ export const useFetchSeasons = () =>
     queryFn: () => getRequest<SeasonDto[]>({ url: ENDPOINTS.SEASONS.ROOT }),
   });
 
-export const useFetchSeason = (seasonId: number) =>
+export const useFetchSeason = (seasonId: string) =>
   useQuery({
     queryKey: QUERY_KEYS.SEASONS.BY_ID(seasonId),
     queryFn: () =>
@@ -31,7 +31,7 @@ export const useCreateSeason = () => {
 
   return useMutation({
     mutationFn: (payload: CreateSeasonDto) =>
-      postRequest<SeasonDto>({ url: ENDPOINTS.SEASONS.ROOT, body: payload }),
+      postRequest({ url: ENDPOINTS.SEASONS.ROOT, body: payload }),
     onSuccess: async () => {
       toast.success('Season created successfully');
 
@@ -48,10 +48,10 @@ export const useUpdateSeason = () => {
       seasonId,
       payload,
     }: {
-      seasonId: number;
+      seasonId: string;
       payload: UpdateSeasonDto;
     }) =>
-      patchRequest<SeasonDto>({
+      patchRequest({
         url: ENDPOINTS.SEASONS.BY_ID(seasonId),
         body: payload,
       }),
@@ -70,7 +70,7 @@ export const useDeleteSeason = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (seasonId: number) =>
+    mutationFn: (seasonId: string) =>
       deleteRequest({ url: ENDPOINTS.SEASONS.BY_ID(seasonId) }),
     onSuccess: async () => {
       toast.success('Season deleted successfully');

@@ -23,7 +23,7 @@ import { useFetchTeam, useFetchTeams } from '../../api/hooks/teamsHooks';
 import { useFetchUsers } from '../../api/hooks/usersHooks';
 import { useAuth } from '../../providers/AuthProvider';
 import { ResultDto } from '../../types/dtos/responses/results/resultDto';
-import { UserDto } from '../../types/dtos/responses/users/userDto';
+import { UserMinimalDto } from '../../types/dtos/responses/users/userMinimalDto';
 
 const { Option } = Select;
 
@@ -42,13 +42,10 @@ const isValidResult = (
 };
 
 export default function ResultsPage() {
-  const { seasonId, teamId } = useParams<{
+  const { seasonId = '', teamId = '' } = useParams<{
     seasonId: string;
     teamId: string;
   }>();
-
-  const seasonIdInteger = seasonId ? parseInt(seasonId) : 0;
-  const teamIdInteger = teamId ? parseInt(teamId) : 0;
 
   const { user } = useAuth();
 
@@ -60,31 +57,22 @@ export default function ResultsPage() {
     matchEndDate: moment(),
     score: '',
     opponentScore: '',
-    opponentTeamId: 0,
+    opponentTeamId: '',
   });
 
   const {
     data: results,
     isLoading,
     isError,
-  } = useFetchResults(seasonIdInteger, teamIdInteger);
-  const { data: season } = useFetchSeason(seasonIdInteger);
-  const { data: team } = useFetchTeam(seasonIdInteger, teamIdInteger);
-  const { data: teams } = useFetchTeams(seasonIdInteger);
+  } = useFetchResults(seasonId, teamId);
+  const { data: season } = useFetchSeason(seasonId);
+  const { data: team } = useFetchTeam(seasonId, teamId);
+  const { data: teams } = useFetchTeams(seasonId);
   const { data: users } = useFetchUsers();
 
-  const { mutateAsync: createResult } = useCreateResult(
-    seasonIdInteger,
-    teamIdInteger,
-  );
-  const { mutateAsync: updateResult } = useUpdateResult(
-    seasonIdInteger,
-    teamIdInteger,
-  );
-  const { mutateAsync: deleteResult } = useDeleteResult(
-    seasonIdInteger,
-    teamIdInteger,
-  );
+  const { mutateAsync: createResult } = useCreateResult(seasonId, teamId);
+  const { mutateAsync: updateResult } = useUpdateResult(seasonId, teamId);
+  const { mutateAsync: deleteResult } = useDeleteResult(seasonId, teamId);
 
   useEffect(() => {
     if (!isValidResult(seasonId, teamId)) {
@@ -92,13 +80,13 @@ export default function ResultsPage() {
     }
   }, [seasonId, teamId]);
 
-  const getUserById = (userId: string): UserDto => {
+  const getUserById = (userId: string): UserMinimalDto => {
     return (
       users?.find((user) => user.id === userId) ??
       ({
         id: '',
         username: 'Unknown User',
-      } as UserDto)
+      } as UserMinimalDto)
     );
   };
 
@@ -110,7 +98,7 @@ export default function ResultsPage() {
       matchEndDate: moment(),
       score: '',
       opponentScore: '',
-      opponentTeamId: 0,
+      opponentTeamId: '',
     });
     setIsModalOpen(true);
   };
@@ -123,7 +111,7 @@ export default function ResultsPage() {
       matchEndDate: moment(),
       score: '',
       opponentScore: '',
-      opponentTeamId: 0,
+      opponentTeamId: '',
     });
   };
 
@@ -163,11 +151,11 @@ export default function ResultsPage() {
     closeModal();
   };
 
-  const handleDelete = async (resultId: number) => {
+  const handleDelete = async (resultId: string) => {
     await deleteResult(resultId);
   };
 
-  const getTeamName = (id: number) => {
+  const getTeamName = (id: string) => {
     const team = teams?.find((team) => team.id === id);
     return team ? team.name : 'Unknown Team';
   };
@@ -217,7 +205,7 @@ export default function ResultsPage() {
               user &&
               (user.role === 'moderator' ||
                 user.role === 'admin' ||
-                result.userUuid === user.id) ? (
+                result.userId === user.id) ? (
                 <EditOutlined
                   key="edit"
                   onClick={() => {
@@ -226,7 +214,7 @@ export default function ResultsPage() {
                 />
               ) : null,
 
-              user && (user.role === 'admin' || result.userUuid === user.id) ? (
+              user && (user.role === 'admin' || result.userId === user.id) ? (
                 <DeleteOutlined
                   key="delete"
                   onClick={() => void handleDelete(result.id)}
@@ -250,7 +238,7 @@ export default function ResultsPage() {
                   </Typography.Text>
                   <br />
                   <Typography.Text type="secondary">
-                    {`By: ${getUserById(result.userUuid).username}`}
+                    {`By: ${getUserById(result.userId).username}`}
                   </Typography.Text>
                 </>
               }
@@ -307,7 +295,7 @@ export default function ResultsPage() {
           style={{ width: '100%', marginBottom: 8 }}
         >
           {(teams ?? [])
-            .filter((opponentTeam) => opponentTeam.id !== teamIdInteger)
+            .filter((opponentTeam) => opponentTeam.id !== teamId)
             .map((opponentTeam) => (
               <Option
                 key={opponentTeam.id}

@@ -12,7 +12,7 @@ import {
   postRequest,
 } from '../httpRequests';
 
-export const useFetchResults = (seasonId: number, teamId: number) =>
+export const useFetchResults = (seasonId: string, teamId: string) =>
   useQuery({
     queryKey: QUERY_KEYS.RESULTS.ALL(seasonId, teamId),
     queryFn: () =>
@@ -23,9 +23,9 @@ export const useFetchResults = (seasonId: number, teamId: number) =>
   });
 
 export const useFetchResult = (
-  seasonId: number,
-  teamId: number,
-  resultId: number,
+  seasonId: string,
+  teamId: string,
+  resultId: string,
 ) =>
   useQuery({
     queryKey: QUERY_KEYS.RESULTS.BY_ID(seasonId, teamId, resultId),
@@ -36,12 +36,12 @@ export const useFetchResult = (
     enabled: !!seasonId && !!teamId && !!resultId,
   });
 
-export const useCreateResult = (seasonId: number, teamId: number) => {
+export const useCreateResult = (seasonId: string, teamId: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (payload: CreateResultDto) =>
-      postRequest<ResultDto>({
+      postRequest({
         url: ENDPOINTS.RESULTS.ROOT(seasonId, teamId),
         body: payload,
       }),
@@ -55,7 +55,7 @@ export const useCreateResult = (seasonId: number, teamId: number) => {
   });
 };
 
-export const useUpdateResult = (seasonId: number, teamId: number) => {
+export const useUpdateResult = (seasonId: string, teamId: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -63,10 +63,10 @@ export const useUpdateResult = (seasonId: number, teamId: number) => {
       resultId,
       payload,
     }: {
-      resultId: number;
+      resultId: string;
       payload: UpdateResultDto;
     }) =>
-      patchRequest<ResultDto>({
+      patchRequest({
         url: ENDPOINTS.RESULTS.BY_ID(seasonId, teamId, resultId),
         body: payload,
       }),
@@ -83,11 +83,11 @@ export const useUpdateResult = (seasonId: number, teamId: number) => {
   });
 };
 
-export const useDeleteResult = (seasonId: number, teamId: number) => {
+export const useDeleteResult = (seasonId: string, teamId: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (resultId: number) =>
+    mutationFn: (resultId: string) =>
       deleteRequest({
         url: ENDPOINTS.RESULTS.BY_ID(seasonId, teamId, resultId),
       }),

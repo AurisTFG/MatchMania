@@ -37,11 +37,9 @@ export const createResultDtoValidator = z
       { message: 'Opponent Score must be between 0 and 100.' },
     ),
 
-    opponentTeamId: z
-      .number()
-      .int()
-      .positive()
-      .min(1, { message: 'Opponent Team ID is required.' }),
+    opponentTeamId: z.string().uuid({
+      message: 'Opponent Team ID must be a valid UUID.',
+    }),
   })
   .refine(
     (data) => {

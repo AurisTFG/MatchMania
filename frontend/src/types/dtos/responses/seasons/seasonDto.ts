@@ -1,7 +1,7 @@
 export type SeasonDto = {
-  id: number;
+  id: string;
   name: string;
   startDate: Date;
   endDate: Date;
-  userUuid: string;
+  userId: string;
 };

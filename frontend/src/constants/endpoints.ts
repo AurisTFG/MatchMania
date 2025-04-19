@@ -8,27 +8,21 @@ export const ENDPOINTS = {
   },
   USERS: {
     ROOT: `users`,
-    BY_ID: (id: string | number) => `users/${String(id)}`,
+    BY_ID: (id: string) => `users/${id}`,
   },
   SEASONS: {
     ROOT: `seasons`,
-    BY_ID: (id: string | number) => `seasons/${String(id)}`,
+    BY_ID: (id: string) => `seasons/${id}`,
   },
   TEAMS: {
-    ROOT: (seasonId: string | number) => `seasons/${String(seasonId)}/teams`,
-    BY_ID: (seasonId: string | number, teamId: string | number) =>
-      `seasons/${String(seasonId)}/teams/${String(teamId)}`,
+    ROOT: (seasonId: string) => `seasons/${seasonId}/teams`,
+    BY_ID: (seasonId: string, teamId: string) =>
+      `seasons/${seasonId}/teams/${teamId}`,
   },
   RESULTS: {
-    ROOT: (seasonId: string | number, teamId: string | number) =>
-      `seasons/${String(seasonId)}/teams/${String(teamId)}/results`,
-    BY_ID: (
-      seasonId: string | number,
-      teamId: string | number,
-      resultId: string | number,
-    ) =>
-      `seasons/${String(seasonId)}/teams/${String(teamId)}/results/${String(
-        resultId,
-      )}`,
+    ROOT: (seasonId: string, teamId: string) =>
+      `seasons/${seasonId}/teams/${teamId}/results`,
+    BY_ID: (seasonId: string, teamId: string, resultId: string) =>
+      `seasons/${seasonId}/teams/${teamId}/results/${resultId}`,
   },
 };

@@ -21,7 +21,7 @@ import { useFetchUsers } from '../../api/hooks/usersHooks';
 import { StatusHandler } from '../../components/StatusHandler';
 import { useAuth } from '../../providers/AuthProvider';
 import { SeasonDto } from '../../types/dtos/responses/seasons/seasonDto';
-import { UserDto } from '../../types/dtos/responses/users/userDto';
+import { UserMinimalDto } from '../../types/dtos/responses/users/userMinimalDto';
 
 export default function SeasonsPage() {
   const { user } = useAuth();
@@ -44,13 +44,13 @@ export default function SeasonsPage() {
   const { mutateAsync: updateSeasonMutation } = useUpdateSeason();
   const { mutateAsync: deleteSeasonMutation } = useDeleteSeason();
 
-  const getUserById = (userId: string): UserDto => {
+  const getUserById = (userId: string): UserMinimalDto => {
     return (
       users?.find((user) => user.id === userId) ??
       ({
         id: '',
         username: 'Unknown User',
-      } as UserDto)
+      } as UserMinimalDto)
     );
   };
 
@@ -74,7 +74,7 @@ export default function SeasonsPage() {
     setIsModalOpen(false);
   };
 
-  const handleDelete = async (seasonId: number) => {
+  const handleDelete = async (seasonId: string) => {
     await deleteSeasonMutation(seasonId);
   };
 
@@ -148,7 +148,7 @@ export default function SeasonsPage() {
                 user &&
                 (user.role === 'moderator' ||
                   user.role === 'admin' ||
-                  season.userUuid === user.id) ? (
+                  season.userId === user.id) ? (
                   <EditOutlined
                     key="edit"
                     onClick={() => {
@@ -157,8 +157,7 @@ export default function SeasonsPage() {
                   />
                 ) : null,
 
-                user &&
-                (user.role === 'admin' || season.userUuid === user.id) ? (
+                user && (user.role === 'admin' || season.userId === user.id) ? (
                   <DeleteOutlined
                     key="delete"
                     onClick={() => void handleDelete(season.id)}
@@ -182,7 +181,7 @@ export default function SeasonsPage() {
                     </Typography.Text>
                     <br />
                     <Typography.Text type="secondary">
-                      {`By: ${getUserById(season.userUuid).username}`}
+                      {`By: ${getUserById(season.userId).username}`}
                     </Typography.Text>
                   </>
                 }

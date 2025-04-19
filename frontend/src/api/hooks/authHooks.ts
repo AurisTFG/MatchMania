@@ -23,7 +23,7 @@ export const useLogIn = () => {
 
   return useMutation({
     mutationFn: (payload: LoginDto) =>
-      postRequest<UserDto>({ url: ENDPOINTS.AUTH.LOGIN, body: payload }),
+      postRequest({ url: ENDPOINTS.AUTH.LOGIN, body: payload }),
     onSuccess: async () => {
       toast.success('Successfully logged in');
 
@@ -38,7 +38,7 @@ export const useLogOut = () => {
   const navigation = useNavigate();
 
   return useMutation({
-    mutationFn: () => postRequest<unknown>({ url: ENDPOINTS.AUTH.LOGOUT }),
+    mutationFn: () => postRequest({ url: ENDPOINTS.AUTH.LOGOUT }),
     onSuccess: async () => {
       toast.success('Successfully logged out');
 
@@ -54,7 +54,7 @@ export const useSignUp = () => {
 
   return useMutation({
     mutationFn: (payload: SignupDto) =>
-      postRequest<UserDto>({ url: ENDPOINTS.AUTH.SIGNUP, body: payload }),
+      postRequest({ url: ENDPOINTS.AUTH.SIGNUP, body: payload }),
     onSuccess: async () => {
       toast.success('Successfully signed up');
 
@@ -66,5 +66,5 @@ export const useSignUp = () => {
 
 export const useRefreshToken = () =>
   useMutation({
-    mutationFn: () => postRequest<unknown>({ url: ENDPOINTS.AUTH.REFRESH }),
+    mutationFn: () => postRequest({ url: ENDPOINTS.AUTH.REFRESH }),
   });
