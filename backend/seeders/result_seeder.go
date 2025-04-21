@@ -35,8 +35,8 @@ func SeedResults(db *config.DB, env *config.Env) error {
 	results := []models.Result{
 		{
 			UserId:         user.Id,
-			MatchStartDate: time.Now(),
-			MatchEndDate:   time.Now().Add(40 * time.Minute),
+			StartDate:      time.Now(),
+			EndDate:        time.Now().Add(40 * time.Minute),
 			Score:          "19",
 			OpponentScore:  "9",
 			TeamId:         teams[0].Id,
@@ -45,8 +45,8 @@ func SeedResults(db *config.DB, env *config.Env) error {
 		},
 		{
 			UserId:         user.Id,
-			MatchStartDate: time.Now(),
-			MatchEndDate:   time.Now().Add(40 * time.Minute),
+			StartDate:      time.Now(),
+			EndDate:        time.Now().Add(40 * time.Minute),
 			Score:          "15",
 			OpponentScore:  "5",
 			TeamId:         teams[0].Id,
@@ -55,8 +55,8 @@ func SeedResults(db *config.DB, env *config.Env) error {
 		},
 		{
 			UserId:         user.Id,
-			MatchStartDate: time.Now(),
-			MatchEndDate:   time.Now().Add(40 * time.Minute),
+			StartDate:      time.Now(),
+			EndDate:        time.Now().Add(40 * time.Minute),
 			Score:          "16",
 			OpponentScore:  "13",
 			TeamId:         teams[0].Id,
@@ -65,8 +65,8 @@ func SeedResults(db *config.DB, env *config.Env) error {
 		},
 		{
 			UserId:         user.Id,
-			MatchStartDate: time.Now(),
-			MatchEndDate:   time.Now().Add(40 * time.Minute),
+			StartDate:      time.Now(),
+			EndDate:        time.Now().Add(40 * time.Minute),
 			Score:          "8",
 			OpponentScore:  "6",
 			TeamId:         teams[0].Id,
@@ -75,8 +75,8 @@ func SeedResults(db *config.DB, env *config.Env) error {
 		},
 		{
 			UserId:         user.Id,
-			MatchStartDate: time.Now(),
-			MatchEndDate:   time.Now().Add(40 * time.Minute),
+			StartDate:      time.Now(),
+			EndDate:        time.Now().Add(40 * time.Minute),
 			Score:          "11",
 			OpponentScore:  "2",
 			TeamId:         teams[0].Id,
@@ -85,8 +85,8 @@ func SeedResults(db *config.DB, env *config.Env) error {
 		},
 		{
 			UserId:         user.Id,
-			MatchStartDate: time.Now(),
-			MatchEndDate:   time.Now().Add(40 * time.Minute),
+			StartDate:      time.Now(),
+			EndDate:        time.Now().Add(40 * time.Minute),
 			Score:          "7",
 			OpponentScore:  "8",
 			TeamId:         teams[0].Id,
@@ -95,8 +95,8 @@ func SeedResults(db *config.DB, env *config.Env) error {
 		},
 		{
 			UserId:         user.Id,
-			MatchStartDate: time.Now(),
-			MatchEndDate:   time.Now().Add(40 * time.Minute),
+			StartDate:      time.Now(),
+			EndDate:        time.Now().Add(40 * time.Minute),
 			Score:          "12",
 			OpponentScore:  "15",
 			TeamId:         teams[0].Id,

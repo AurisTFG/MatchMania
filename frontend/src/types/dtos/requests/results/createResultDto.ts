@@ -1,6 +1,6 @@
 export type CreateResultDto = {
-  matchStartDate: Date;
-  matchEndDate: Date;
+  startDate: Date;
+  endDate: Date;
   score: string;
   opponentScore: string;
   opponentTeamId: string;

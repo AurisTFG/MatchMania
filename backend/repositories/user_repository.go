@@ -11,8 +11,8 @@ type UserRepository interface {
 	FindAll() ([]models.User, error)
 	FindById(uuid.UUID) (*models.User, error)
 	FindByEmail(string) (*models.User, error)
-	Create(*models.User) (*models.User, error)
-	Update(*models.User, *models.User) (*models.User, error)
+	Create(*models.User) error
+	Update(*models.User, *models.User) error
 	Delete(*models.User) error
 }
 
@@ -48,24 +48,24 @@ func (r *userRepository) FindByEmail(email string) (*models.User, error) {
 	return &user, result.Error
 }
 
-func (r *userRepository) Create(user *models.User) (*models.User, error) {
+func (r *userRepository) Create(user *models.User) error {
 	if err := user.HashPassword(); err != nil {
-		return nil, err
+		return err
 	}
 
 	result := r.db.Create(user)
 
-	return user, result.Error
+	return result.Error
 }
 
-func (r *userRepository) Update(currentUser *models.User, updatedUser *models.User) (*models.User, error) {
+func (r *userRepository) Update(currentUser *models.User, updatedUser *models.User) error {
 	if err := updatedUser.HashPassword(); err != nil {
-		return nil, err
+		return err
 	}
 
 	result := r.db.Model(currentUser).Updates(updatedUser)
 
-	return currentUser, result.Error
+	return result.Error
 }
 
 func (r *userRepository) Delete(user *models.User) error {

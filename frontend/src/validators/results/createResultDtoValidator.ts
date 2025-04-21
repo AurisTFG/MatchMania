@@ -13,11 +13,11 @@ const isWithinTwoDays = (date: Date) => {
 
 export const createResultDtoValidator = z
   .object({
-    matchStartDate: z.date().refine((date) => isWithinTwoDays(date), {
+    startDate: z.date().refine((date) => isWithinTwoDays(date), {
       message: 'Match Start Date must be within 2 days from now.',
     }),
 
-    matchEndDate: z.date().refine((date) => isWithinTwoDays(date), {
+    endDate: z.date().refine((date) => isWithinTwoDays(date), {
       message: 'Match End Date must be within 2 days from now.',
     }),
 
@@ -43,8 +43,8 @@ export const createResultDtoValidator = z
   })
   .refine(
     (data) => {
-      const startDate = new Date(data.matchStartDate);
-      const endDate = new Date(data.matchEndDate);
+      const startDate = new Date(data.startDate);
+      const endDate = new Date(data.endDate);
       const diffInHours =
         (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60);
       return diffInHours >= 3;
@@ -52,15 +52,15 @@ export const createResultDtoValidator = z
     {
       message:
         'Match End Date must be at least 3 hours later than the Match Start Date.',
-      path: ['matchEndDate'],
+      path: ['endDate'],
     },
   )
   .refine(
     (data) => {
-      return new Date(data.matchEndDate) > new Date(data.matchStartDate);
+      return new Date(data.endDate) > new Date(data.startDate);
     },
     {
       message: 'Match End Date must be later than the Match Start Date.',
-      path: ['matchEndDate'],
+      path: ['endDate'],
     },
   ) satisfies z.ZodType<CreateResultDto>;

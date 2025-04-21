@@ -1,6 +1,6 @@
 export type UpdateResultDto = {
-  matchStartDate: Date;
-  matchEndDate: Date;
+  startDate: Date;
+  endDate: Date;
   score: string;
   opponentScore: string;
 };

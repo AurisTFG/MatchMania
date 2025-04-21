@@ -1,16 +1,15 @@
 package controllers
 
 import (
-	requests "MatchManiaAPI/models/dtos/requests/teams"
-	responses "MatchManiaAPI/models/dtos/responses/teams"
+	"MatchManiaAPI/models/dtos/requests"
+	"MatchManiaAPI/models/dtos/responses"
 	"MatchManiaAPI/services"
 	"MatchManiaAPI/utils"
-	r "MatchManiaAPI/utils/httpResponses"
+	r "MatchManiaAPI/utils/httpresponses"
 	"MatchManiaAPI/validators"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/jinzhu/copier"
 )
 
 type TeamController struct {
@@ -27,7 +26,7 @@ func NewTeamController(seasonService services.SeasonService, teamService service
 // @Tags teams
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID" default(1)
+// @Param seasonId path string true "Season ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
 // @Success 200 {object} []responses.TeamDto
 // @Failure 400 {object} responses.ErrorDto
 // @Failure 422 {object} responses.ErrorDto
@@ -45,10 +44,9 @@ func (c *TeamController) GetAllTeams(ctx *gin.Context) {
 		return
 	}
 
-	var teamsDto []responses.TeamDto
-	copier.Copy(&teamsDto, teams)
+	dto := utils.CopyOrPanic[[]responses.TeamDto](teams)
 
-	r.OK(ctx, teamsDto)
+	r.OK(ctx, dto)
 }
 
 // @Summary Get a team
@@ -56,8 +54,8 @@ func (c *TeamController) GetAllTeams(ctx *gin.Context) {
 // @Tags teams
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID" default(1)
-// @Param teamId path string true "Team ID" default(1)
+// @Param seasonId path string true "Season ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
+// @Param teamId path string true "Team ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
 // @Success 200 {object} responses.TeamDto
 // @Failure 400 {object} responses.ErrorDto
 // @Failure 404 {object} responses.ErrorDto
@@ -81,10 +79,9 @@ func (c *TeamController) GetTeam(ctx *gin.Context) {
 		return
 	}
 
-	var teamDto responses.TeamDto
-	copier.Copy(&teamDto, team)
+	dto := utils.CopyOrPanic[responses.TeamDto](team)
 
-	r.OK(ctx, teamDto)
+	r.OK(ctx, dto)
 }
 
 // @Summary Create a team
@@ -92,7 +89,7 @@ func (c *TeamController) GetTeam(ctx *gin.Context) {
 // @Tags teams
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID" default(1)
+// @Param seasonId path string true "Season ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
 // @Param team body requests.CreateTeamDto true "Team object that needs to be created"
 // @Success 204
 // @Failure 400 {object} responses.ErrorDto
@@ -130,8 +127,7 @@ func (c *TeamController) CreateTeam(ctx *gin.Context) {
 		return
 	}
 
-	_, err = c.teamService.CreateTeam(&bodyDto, season.Id, userId)
-	if err != nil {
+	if err = c.teamService.CreateTeam(&bodyDto, season.Id, userId); err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
 	}
@@ -144,8 +140,8 @@ func (c *TeamController) CreateTeam(ctx *gin.Context) {
 // @Tags teams
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID" default(1)
-// @Param teamId path string true "Team ID" default(1)
+// @Param seasonId path string true "Season ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
+// @Param teamId path string true "Team ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
 // @Param team body requests.UpdateTeamDto true "Team object that needs to be updated"
 // @Success 204
 // @Failure 400 {object} responses.ErrorDto
@@ -185,8 +181,7 @@ func (c *TeamController) UpdateTeam(ctx *gin.Context) {
 		return
 	}
 
-	_, err = c.teamService.UpdateTeam(currentTeam, &bodyDto)
-	if err != nil {
+	if err = c.teamService.UpdateTeam(currentTeam, &bodyDto); err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
 	}
@@ -199,8 +194,8 @@ func (c *TeamController) UpdateTeam(ctx *gin.Context) {
 // @Tags teams
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID" default(1)
-// @Param teamId path string true "Team ID" default(1)
+// @Param seasonId path string true "Season ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
+// @Param teamId path string true "Team ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
 // @Success 204
 // @Failure 400 {object} responses.ErrorDto
 // @Failure 401 {object} responses.ErrorDto

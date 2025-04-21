@@ -1,4 +1,4 @@
-package responses
+package users
 
 import (
 	"MatchManiaAPI/models/enums"

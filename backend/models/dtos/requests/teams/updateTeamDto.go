@@ -1,5 +1,5 @@
-package requests
+package teams
 
 type UpdateTeamDto struct {
-	Name string `example:"BIG Clan" json:"name" validate:"required,min=3,max=100"`
+	CreateTeamDto
 }

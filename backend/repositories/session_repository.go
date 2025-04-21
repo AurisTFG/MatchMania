@@ -10,8 +10,8 @@ import (
 type SessionRepository interface {
 	FindAll() ([]models.Session, error)
 	FindById(uuid.UUID) (*models.Session, error)
-	Create(*models.Session) (*models.Session, error)
-	Update(*models.Session) (*models.Session, error)
+	Create(*models.Session) error
+	Update(*models.Session) error
 	Delete(*models.Session) error
 }
 
@@ -39,16 +39,16 @@ func (r *sessionRepository) FindById(sessionId uuid.UUID) (*models.Session, erro
 	return &session, result.Error
 }
 
-func (r *sessionRepository) Create(session *models.Session) (*models.Session, error) {
+func (r *sessionRepository) Create(session *models.Session) error {
 	result := r.db.Create(session)
 
-	return session, result.Error
+	return result.Error
 }
 
-func (r *sessionRepository) Update(session *models.Session) (*models.Session, error) {
+func (r *sessionRepository) Update(session *models.Session) error {
 	result := r.db.Model(&models.Session{}).Where("id = ?", session.Id).Updates(session)
 
-	return session, result.Error
+	return result.Error
 }
 
 func (r *sessionRepository) Delete(session *models.Session) error {

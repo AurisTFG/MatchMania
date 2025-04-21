@@ -2,16 +2,15 @@ package controllers
 
 import (
 	"MatchManiaAPI/constants"
-	requests "MatchManiaAPI/models/dtos/requests/auth"
-	responses "MatchManiaAPI/models/dtos/responses/users"
+	"MatchManiaAPI/models/dtos/requests"
+	"MatchManiaAPI/models/dtos/responses"
 	"MatchManiaAPI/services"
 	"MatchManiaAPI/utils"
-	r "MatchManiaAPI/utils/httpResponses"
+	r "MatchManiaAPI/utils/httpresponses"
 	"MatchManiaAPI/validators"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/jinzhu/copier"
 )
 
 type AuthController struct {
@@ -48,10 +47,9 @@ func (c *AuthController) GetMe(ctx *gin.Context) {
 		return
 	}
 
-	var userDto responses.UserDto
-	copier.Copy(&userDto, user)
+	dto := utils.CopyOrPanic[responses.UserDto](user)
 
-	r.OK(ctx, userDto)
+	r.OK(ctx, dto)
 }
 
 // @Summary Sign up
@@ -59,13 +57,13 @@ func (c *AuthController) GetMe(ctx *gin.Context) {
 // @Tags auth
 // @Accept json
 // @Produce json
-// @Param signUpDto body requests.SignUpDto true "Sign up details"
+// @Param signUpDto body requests.SignupDto true "Sign up details"
 // @Success 204
 // @Failure 400 {object} responses.ErrorDto
 // @Failure 422 {object} responses.ErrorDto
 // @Router /auth/signup [post]
 func (c *AuthController) SignUp(ctx *gin.Context) {
-	var bodyDto requests.SignUpDto
+	var bodyDto requests.SignupDto
 
 	if err := ctx.ShouldBindJSON(&bodyDto); err != nil {
 		r.BadRequest(ctx, err.Error())
@@ -77,8 +75,7 @@ func (c *AuthController) SignUp(ctx *gin.Context) {
 		return
 	}
 
-	_, err := c.userService.CreateUser(&bodyDto)
-	if err != nil {
+	if err := c.userService.CreateUser(&bodyDto); err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
 	}

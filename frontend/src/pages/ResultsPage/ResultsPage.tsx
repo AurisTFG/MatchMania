@@ -10,7 +10,7 @@ import {
   Typography,
 } from 'antd';
 import moment from 'moment';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   useCreateResult,
@@ -20,26 +20,10 @@ import {
 } from '../../api/hooks/resultsHooks';
 import { useFetchSeason } from '../../api/hooks/seasonsHooks';
 import { useFetchTeam, useFetchTeams } from '../../api/hooks/teamsHooks';
-import { useFetchUsers } from '../../api/hooks/usersHooks';
 import { useAuth } from '../../providers/AuthProvider';
 import { ResultDto } from '../../types/dtos/responses/results/resultDto';
-import { UserMinimalDto } from '../../types/dtos/responses/users/userMinimalDto';
 
 const { Option } = Select;
-
-const isValidResult = (
-  seasonId: string | undefined,
-  teamId: string | undefined,
-) => {
-  return (
-    seasonId &&
-    !isNaN(Number(seasonId)) &&
-    Number(seasonId) > 0 &&
-    teamId &&
-    !isNaN(Number(teamId)) &&
-    Number(teamId) > 0
-  );
-};
 
 export default function ResultsPage() {
   const { seasonId = '', teamId = '' } = useParams<{
@@ -53,8 +37,8 @@ export default function ResultsPage() {
   const [isEditing, setIsEditing] = useState(false);
   const [editingResult, setEditingResult] = useState<Partial<ResultDto>>({});
   const [formData, setFormData] = useState({
-    matchStartDate: moment(),
-    matchEndDate: moment(),
+    startDate: moment(),
+    endDate: moment(),
     score: '',
     opponentScore: '',
     opponentTeamId: '',
@@ -66,36 +50,19 @@ export default function ResultsPage() {
     isError,
   } = useFetchResults(seasonId, teamId);
   const { data: season } = useFetchSeason(seasonId);
-  const { data: team } = useFetchTeam(seasonId, teamId);
   const { data: teams } = useFetchTeams(seasonId);
-  const { data: users } = useFetchUsers();
+  const { data: team } = useFetchTeam(seasonId, teamId);
 
   const { mutateAsync: createResult } = useCreateResult(seasonId, teamId);
   const { mutateAsync: updateResult } = useUpdateResult(seasonId, teamId);
   const { mutateAsync: deleteResult } = useDeleteResult(seasonId, teamId);
 
-  useEffect(() => {
-    if (!isValidResult(seasonId, teamId)) {
-      return;
-    }
-  }, [seasonId, teamId]);
-
-  const getUserById = (userId: string): UserMinimalDto => {
-    return (
-      users?.find((user) => user.id === userId) ??
-      ({
-        id: '',
-        username: 'Unknown User',
-      } as UserMinimalDto)
-    );
-  };
-
   const openCreateModal = () => {
     setIsEditing(false);
     setEditingResult({});
     setFormData({
-      matchStartDate: moment(),
-      matchEndDate: moment(),
+      startDate: moment(),
+      endDate: moment(),
       score: '',
       opponentScore: '',
       opponentTeamId: '',
@@ -107,8 +74,8 @@ export default function ResultsPage() {
     setIsModalOpen(false);
     setEditingResult({});
     setFormData({
-      matchStartDate: moment(),
-      matchEndDate: moment(),
+      startDate: moment(),
+      endDate: moment(),
       score: '',
       opponentScore: '',
       opponentTeamId: '',
@@ -119,11 +86,11 @@ export default function ResultsPage() {
     setIsEditing(true);
     setEditingResult(result);
     setFormData({
-      matchStartDate: moment(result.matchStartDate),
-      matchEndDate: moment(result.matchEndDate),
+      startDate: moment(result.startDate),
+      endDate: moment(result.endDate),
       score: result.score,
       opponentScore: result.opponentScore,
-      opponentTeamId: result.opponentTeamId,
+      opponentTeamId: result.opponentTeam.id,
     });
     setIsModalOpen(true);
   };
@@ -133,16 +100,16 @@ export default function ResultsPage() {
       await updateResult({
         resultId: editingResult.id,
         payload: {
-          matchStartDate: formData.matchStartDate.toDate(),
-          matchEndDate: formData.matchEndDate.toDate(),
+          startDate: formData.startDate.toDate(),
+          endDate: formData.endDate.toDate(),
           score: formData.score,
           opponentScore: formData.opponentScore,
         },
       });
     } else {
       await createResult({
-        matchStartDate: formData.matchStartDate.toDate(),
-        matchEndDate: formData.matchEndDate.toDate(),
+        startDate: formData.startDate.toDate(),
+        endDate: formData.endDate.toDate(),
         score: formData.score,
         opponentScore: formData.opponentScore,
         opponentTeamId: formData.opponentTeamId,
@@ -153,11 +120,6 @@ export default function ResultsPage() {
 
   const handleDelete = async (resultId: string) => {
     await deleteResult(resultId);
-  };
-
-  const getTeamName = (id: string) => {
-    const team = teams?.find((team) => team.id === id);
-    return team ? team.name : 'Unknown Team';
   };
 
   if (isError) {
@@ -205,7 +167,7 @@ export default function ResultsPage() {
               user &&
               (user.role === 'moderator' ||
                 user.role === 'admin' ||
-                result.userId === user.id) ? (
+                result.user.id === user.id) ? (
                 <EditOutlined
                   key="edit"
                   onClick={() => {
@@ -214,7 +176,7 @@ export default function ResultsPage() {
                 />
               ) : null,
 
-              user && (user.role === 'admin' || result.userId === user.id) ? (
+              user && (user.role === 'admin' || result.user.id === user.id) ? (
                 <DeleteOutlined
                   key="delete"
                   onClick={() => void handleDelete(result.id)}
@@ -224,9 +186,7 @@ export default function ResultsPage() {
             ]}
           >
             <List.Item.Meta
-              title={`${getTeamName(result.teamId)} vs ${getTeamName(
-                result.opponentTeamId,
-              )}`}
+              title={`${result.team.name} vs ${result.opponentTeam.name}`}
               description={
                 <>
                   <Typography.Text>
@@ -234,11 +194,11 @@ export default function ResultsPage() {
                   </Typography.Text>
                   <br />
                   <Typography.Text type="secondary">
-                    {new Date(result.matchStartDate).toLocaleDateString()}
+                    {new Date(result.startDate).toLocaleDateString()}
                   </Typography.Text>
                   <br />
                   <Typography.Text type="secondary">
-                    {`By: ${getUserById(result.userId).username}`}
+                    {`By: ${result.user.username}`}
                   </Typography.Text>
                 </>
               }
@@ -256,17 +216,17 @@ export default function ResultsPage() {
       >
         <DatePicker
           placeholder="Match Start Date"
-          value={formData.matchStartDate}
+          value={formData.startDate}
           onChange={(date) => {
-            setFormData({ ...formData, matchStartDate: date });
+            setFormData({ ...formData, startDate: date });
           }}
           style={{ marginBottom: 8 }}
         />
         <DatePicker
           placeholder="Match End Date"
-          value={formData.matchEndDate}
+          value={formData.endDate}
           onChange={(date) => {
-            setFormData({ ...formData, matchEndDate: date });
+            setFormData({ ...formData, endDate: date });
           }}
           style={{ marginBottom: 8 }}
         />

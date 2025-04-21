@@ -1,16 +1,15 @@
 package controllers
 
 import (
-	requests "MatchManiaAPI/models/dtos/requests/seasons"
-	responses "MatchManiaAPI/models/dtos/responses/seasons"
+	"MatchManiaAPI/models/dtos/requests"
+	"MatchManiaAPI/models/dtos/responses"
 	"MatchManiaAPI/services"
 	"MatchManiaAPI/utils"
-	r "MatchManiaAPI/utils/httpResponses"
+	r "MatchManiaAPI/utils/httpresponses"
 	"MatchManiaAPI/validators"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/jinzhu/copier"
 )
 
 type SeasonController struct {
@@ -35,10 +34,9 @@ func (c *SeasonController) GetAllSeasons(ctx *gin.Context) {
 		return
 	}
 
-	var seasonsDto []responses.SeasonDto
-	copier.Copy(&seasonsDto, seasons)
+	dto := utils.CopyOrPanic[[]responses.SeasonDto](seasons)
 
-	r.OK(ctx, seasonsDto)
+	r.OK(ctx, dto)
 }
 
 // @Summary Get a season
@@ -46,7 +44,7 @@ func (c *SeasonController) GetAllSeasons(ctx *gin.Context) {
 // @Tags seasons
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID" default(2)
+// @Param seasonId path string true "Season ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
 // @Success 200 {object} responses.SeasonDto
 // @Failure 400 {object} responses.ErrorDto
 // @Failure 404 {object} responses.ErrorDto
@@ -64,10 +62,9 @@ func (c *SeasonController) GetSeason(ctx *gin.Context) {
 		return
 	}
 
-	var seasonDto responses.SeasonDto
-	copier.Copy(&seasonDto, season)
+	dto := utils.CopyOrPanic[responses.SeasonDto](season)
 
-	r.OK(ctx, seasonDto)
+	r.OK(ctx, dto)
 }
 
 // @Summary Create a season
@@ -99,8 +96,7 @@ func (c *SeasonController) CreateSeason(ctx *gin.Context) {
 		return
 	}
 
-	_, err := c.seasonService.CreateSeason(&bodyDto, userId)
-	if err != nil {
+	if err := c.seasonService.CreateSeason(&bodyDto, userId); err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
 	}
@@ -113,7 +109,7 @@ func (c *SeasonController) CreateSeason(ctx *gin.Context) {
 // @Tags seasons
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID" default(1)
+// @Param seasonId path string true "Season ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
 // @Param season body requests.UpdateSeasonDto true "Season object that needs to be updated"
 // @Success 204
 // @Failure 400 {object} responses.ErrorDto
@@ -146,8 +142,7 @@ func (c *SeasonController) UpdateSeason(ctx *gin.Context) {
 		return
 	}
 
-	_, err = c.seasonService.UpdateSeason(currentSeason, &bodyDto)
-	if err != nil {
+	if err = c.seasonService.UpdateSeason(currentSeason, &bodyDto); err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
 	}
@@ -160,7 +155,7 @@ func (c *SeasonController) UpdateSeason(ctx *gin.Context) {
 // @Tags seasons
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID" default(1)
+// @Param seasonId path string true "Season ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
 // @Success 204
 // @Failure 400 {object} responses.ErrorDto
 // @Failure 401 {object} responses.ErrorDto

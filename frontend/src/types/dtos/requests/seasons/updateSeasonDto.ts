@@ -1,5 +1,3 @@
-export type UpdateSeasonDto = {
-  name: string;
-  startDate: Date;
-  endDate: Date;
-};
+import { CreateSeasonDto } from './createSeasonDto';
+
+export type UpdateSeasonDto = CreateSeasonDto & {};

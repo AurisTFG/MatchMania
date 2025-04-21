@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"runtime/debug"
 
-	r "MatchManiaAPI/utils/httpResponses"
+	r "MatchManiaAPI/utils/httpresponses"
 
 	"github.com/gin-gonic/gin"
 )

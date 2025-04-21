@@ -4,16 +4,16 @@ import (
 	"MatchManiaAPI/models"
 	requests "MatchManiaAPI/models/dtos/requests/auth"
 	"MatchManiaAPI/repositories"
+	"MatchManiaAPI/utils"
 
 	"github.com/google/uuid"
-	"github.com/jinzhu/copier"
 )
 
 type UserService interface {
 	GetAllUsers() ([]models.User, error)
 	GetUserById(uuid.UUID) (*models.User, error)
 	GetUserByEmail(string) (*models.User, error)
-	CreateUser(signUpDto *requests.SignUpDto) (*models.User, error)
+	CreateUser(signUpDto *requests.SignupDto) error
 	DeleteUser(*models.User) error
 }
 
@@ -37,12 +37,10 @@ func (s *userService) GetUserByEmail(email string) (*models.User, error) {
 	return s.repo.FindByEmail(email)
 }
 
-func (s *userService) CreateUser(signUpDto *requests.SignUpDto) (*models.User, error) {
-	var newUser models.User
+func (s *userService) CreateUser(signUpDto *requests.SignupDto) error {
+	newUser := utils.CopyOrPanic[models.User](signUpDto)
 
-	copier.Copy(&newUser, signUpDto)
-
-	return s.repo.Create(&newUser)
+	return s.repo.Create(newUser)
 }
 
 func (s *userService) DeleteUser(user *models.User) error {

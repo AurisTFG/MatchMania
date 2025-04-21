@@ -17,11 +17,9 @@ import {
   useFetchSeasons,
   useUpdateSeason,
 } from '../../api/hooks/seasonsHooks';
-import { useFetchUsers } from '../../api/hooks/usersHooks';
 import { StatusHandler } from '../../components/StatusHandler';
 import { useAuth } from '../../providers/AuthProvider';
 import { SeasonDto } from '../../types/dtos/responses/seasons/seasonDto';
-import { UserMinimalDto } from '../../types/dtos/responses/users/userMinimalDto';
 
 export default function SeasonsPage() {
   const { user } = useAuth();
@@ -39,20 +37,9 @@ export default function SeasonsPage() {
     isLoading: seasonsLoading,
     error: seasonsError,
   } = useFetchSeasons();
-  const { data: users } = useFetchUsers();
   const { mutateAsync: createSeasonMutation } = useCreateSeason();
   const { mutateAsync: updateSeasonMutation } = useUpdateSeason();
   const { mutateAsync: deleteSeasonMutation } = useDeleteSeason();
-
-  const getUserById = (userId: string): UserMinimalDto => {
-    return (
-      users?.find((user) => user.id === userId) ??
-      ({
-        id: '',
-        username: 'Unknown User',
-      } as UserMinimalDto)
-    );
-  };
 
   const handleCreateOrEdit = async () => {
     if (isEditing && editingSeason.id) {
@@ -148,7 +135,7 @@ export default function SeasonsPage() {
                 user &&
                 (user.role === 'moderator' ||
                   user.role === 'admin' ||
-                  season.userId === user.id) ? (
+                  season.user.id === user.id) ? (
                   <EditOutlined
                     key="edit"
                     onClick={() => {
@@ -157,7 +144,8 @@ export default function SeasonsPage() {
                   />
                 ) : null,
 
-                user && (user.role === 'admin' || season.userId === user.id) ? (
+                user &&
+                (user.role === 'admin' || season.user.id === user.id) ? (
                   <DeleteOutlined
                     key="delete"
                     onClick={() => void handleDelete(season.id)}
@@ -181,7 +169,7 @@ export default function SeasonsPage() {
                     </Typography.Text>
                     <br />
                     <Typography.Text type="secondary">
-                      {`By: ${getUserById(season.userId).username}`}
+                      {`By: ${season.user.username}`}
                     </Typography.Text>
                   </>
                 }

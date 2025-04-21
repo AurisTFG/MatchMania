@@ -225,8 +225,7 @@ func (s *authService) CreateSession(sessionId uuid.UUID, userId uuid.UUID, refre
 		return err
 	}
 
-	_, err := s.sessionRepo.Create(session)
-	if err != nil {
+	if err := s.sessionRepo.Create(session); err != nil {
 		return err
 	}
 
@@ -246,8 +245,7 @@ func (s *authService) ExtendSession(sessionId uuid.UUID, refreshToken string) er
 		return err
 	}
 
-	_, err = s.sessionRepo.Update(session)
-	if err != nil {
+	if err = s.sessionRepo.Update(session); err != nil {
 		return err
 	}
 
@@ -262,8 +260,7 @@ func (s *authService) InvalidateSession(sessionId uuid.UUID) error {
 
 	session.IsRevoked = true
 
-	_, err = s.sessionRepo.Update(session)
-	if err != nil {
+	if err = s.sessionRepo.Update(session); err != nil {
 		return err
 	}
 

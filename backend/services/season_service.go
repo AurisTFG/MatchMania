@@ -4,16 +4,16 @@ import (
 	"MatchManiaAPI/models"
 	requests "MatchManiaAPI/models/dtos/requests/seasons"
 	"MatchManiaAPI/repositories"
+	"MatchManiaAPI/utils"
 
 	"github.com/google/uuid"
-	"github.com/jinzhu/copier"
 )
 
 type SeasonService interface {
 	GetAllSeasons() ([]models.Season, error)
 	GetSeasonById(uuid.UUID) (*models.Season, error)
-	CreateSeason(*requests.CreateSeasonDto, uuid.UUID) (*models.Season, error)
-	UpdateSeason(*models.Season, *requests.UpdateSeasonDto) (*models.Season, error)
+	CreateSeason(*requests.CreateSeasonDto, uuid.UUID) error
+	UpdateSeason(*models.Season, *requests.UpdateSeasonDto) error
 	DeleteSeason(*models.Season) error
 }
 
@@ -33,23 +33,20 @@ func (s *seasonService) GetSeasonById(seasonId uuid.UUID) (*models.Season, error
 	return s.repo.FindById(seasonId)
 }
 
-func (s *seasonService) CreateSeason(seasonDto *requests.CreateSeasonDto, userId uuid.UUID) (*models.Season, error) {
-	var newSeason models.Season
+func (s *seasonService) CreateSeason(seasonDto *requests.CreateSeasonDto, userId uuid.UUID) error {
+	newSeason := utils.CopyOrPanic[models.Season](seasonDto)
+	newSeason.UserId = userId
 
-	copier.Copy(&newSeason, seasonDto)
-
-	return s.repo.Create(&newSeason)
+	return s.repo.Create(newSeason)
 }
 
 func (s *seasonService) UpdateSeason(
 	currentSeason *models.Season,
 	updatedSeasonDto *requests.UpdateSeasonDto,
-) (*models.Season, error) {
-	var updatedSeason models.Season
+) error {
+	updatedSeason := utils.CopyOrPanic[models.Season](updatedSeasonDto)
 
-	copier.Copy(&updatedSeason, updatedSeasonDto)
-
-	return s.repo.Update(currentSeason, &updatedSeason)
+	return s.repo.Update(currentSeason, updatedSeason)
 }
 
 func (s *seasonService) DeleteSeason(season *models.Season) error {

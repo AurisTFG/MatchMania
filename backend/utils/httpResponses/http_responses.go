@@ -1,4 +1,4 @@
-package httpResponses
+package httpresponses
 
 import (
 	dtos "MatchManiaAPI/models/dtos/responses/errors"

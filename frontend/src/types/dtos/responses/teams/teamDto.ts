@@ -1,7 +1,9 @@
+import { UserMinimalDto } from '../users/userMinimalDto';
+
 export type TeamDto = {
   id: string;
   name: string;
   elo: number;
-  seasonId: string;
-  userId: string;
+
+  user: UserMinimalDto;
 };

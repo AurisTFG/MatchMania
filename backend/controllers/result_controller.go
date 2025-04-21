@@ -1,16 +1,15 @@
 package controllers
 
 import (
-	requests "MatchManiaAPI/models/dtos/requests/results"
-	responses "MatchManiaAPI/models/dtos/responses/results"
+	"MatchManiaAPI/models/dtos/requests"
+	"MatchManiaAPI/models/dtos/responses"
 	"MatchManiaAPI/services"
 	"MatchManiaAPI/utils"
-	r "MatchManiaAPI/utils/httpResponses"
+	r "MatchManiaAPI/utils/httpresponses"
 	"MatchManiaAPI/validators"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/jinzhu/copier"
 )
 
 type ResultController struct {
@@ -27,8 +26,8 @@ func NewResultController(teamService services.TeamService, resultService service
 // @Tags results
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID" default(1)
-// @Param teamId path string true "Team ID" default(1)
+// @Param seasonId path string true "Season ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
+// @Param teamId path string true "Team ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
 // @Success 200 {object} []responses.ResultDto
 // @Failure 400 {object} responses.ErrorDto
 // @Failure 422 {object} responses.ErrorDto
@@ -52,10 +51,9 @@ func (c *ResultController) GetAllResults(ctx *gin.Context) {
 		return
 	}
 
-	var resultsDto []responses.ResultDto
-	copier.Copy(&resultsDto, results)
+	dto := utils.CopyOrPanic[[]responses.ResultDto](results)
 
-	r.OK(ctx, resultsDto)
+	r.OK(ctx, dto)
 }
 
 // @Summary Get a result
@@ -63,9 +61,9 @@ func (c *ResultController) GetAllResults(ctx *gin.Context) {
 // @Tags results
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID" default(1)
-// @Param teamId path string true "Team ID" default(1)
-// @Param resultId path string true "Result ID" default(1)
+// @Param seasonId path string true "Season ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
+// @Param teamId path string true "Team ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
+// @Param resultId path string true "Result ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
 // @Success 200 {object} []responses.ResultDto
 // @Failure 400 {object} responses.ErrorDto
 // @Failure 404 {object} responses.ErrorDto
@@ -95,10 +93,9 @@ func (c *ResultController) GetResult(ctx *gin.Context) {
 		return
 	}
 
-	var resultDto responses.ResultDto
-	copier.Copy(&resultDto, result)
+	dto := utils.CopyOrPanic[responses.ResultDto](result)
 
-	r.OK(ctx, resultDto)
+	r.OK(ctx, dto)
 }
 
 // @Summary Create a result
@@ -106,8 +103,8 @@ func (c *ResultController) GetResult(ctx *gin.Context) {
 // @Tags results
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID" default(1)
-// @Param teamId path string true "Team ID" default(1)
+// @Param seasonId path string true "Season ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
+// @Param teamId path string true "Team ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
 // @Param result body requests.CreateResultDto true "Result object that needs to be created"
 // @Success 204
 // @Failure 400 {object} responses.ErrorDto
@@ -162,8 +159,7 @@ func (c *ResultController) CreateResult(ctx *gin.Context) {
 		return
 	}
 
-	_, err = c.resultService.CreateResult(&bodyDto, team.SeasonId, team.Id, userId)
-	if err != nil {
+	if err = c.resultService.CreateResult(&bodyDto, team.SeasonId, team.Id, userId); err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
 	}
@@ -176,9 +172,9 @@ func (c *ResultController) CreateResult(ctx *gin.Context) {
 // @Tags results
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID" default(1)
-// @Param teamId path string true "Team ID" default(1)
-// @Param resultId path string true "Result ID" default(1)
+// @Param seasonId path string true "Season ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
+// @Param teamId path string true "Team ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
+// @Param resultId path string true "Result ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
 // @Param result body requests.UpdateResultDto true "Result object that needs to be updated"
 // @Success 204
 // @Failure 400 {object} responses.ErrorDto
@@ -223,8 +219,7 @@ func (c *ResultController) UpdateResult(ctx *gin.Context) {
 		return
 	}
 
-	_, err = c.resultService.UpdateResult(currentResult, &bodyDto)
-	if err != nil {
+	if err = c.resultService.UpdateResult(currentResult, &bodyDto); err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
 	}
@@ -237,9 +232,9 @@ func (c *ResultController) UpdateResult(ctx *gin.Context) {
 // @Tags results
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID" default(1)
-// @Param teamId path string true "Team ID" default(1)
-// @Param resultId path string true "Result ID" default(1)
+// @Param seasonId path string true "Season ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
+// @Param teamId path string true "Team ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
+// @Param resultId path string true "Result ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
 // @Success 204
 // @Failure 400 {object} responses.ErrorDto
 // @Failure 401 {object} responses.ErrorDto

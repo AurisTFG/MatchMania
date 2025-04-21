@@ -13,8 +13,8 @@ type TeamRepository interface {
 	FindAllBySeasonID(uuid.UUID) ([]models.Team, error)
 	FindById(uuid.UUID) (*models.Team, error)
 	FindByIdAndSeasonID(uuid.UUID, uuid.UUID) (*models.Team, error)
-	Create(*models.Team) (*models.Team, error)
-	Update(*models.Team, *models.Team) (*models.Team, error)
+	Create(*models.Team) error
+	Update(*models.Team, *models.Team) error
 	Delete(*models.Team) error
 }
 
@@ -29,7 +29,7 @@ func NewTeamRepository(db *config.DB) TeamRepository {
 func (r *teamRepository) FindAll() ([]models.Team, error) {
 	var teams []models.Team
 
-	result := r.db.Find(&teams)
+	result := r.db.Joins("User").Find(&teams)
 
 	return teams, result.Error
 }
@@ -37,7 +37,7 @@ func (r *teamRepository) FindAll() ([]models.Team, error) {
 func (r *teamRepository) FindAllBySeasonID(seasonId uuid.UUID) ([]models.Team, error) {
 	var teams []models.Team
 
-	result := r.db.Where("season_id = ?", seasonId).Find(&teams)
+	result := r.db.Joins("User").Where("season_id = ?", seasonId).Find(&teams)
 
 	return teams, result.Error
 }
@@ -45,29 +45,29 @@ func (r *teamRepository) FindAllBySeasonID(seasonId uuid.UUID) ([]models.Team, e
 func (r *teamRepository) FindById(teamId uuid.UUID) (*models.Team, error) {
 	var team models.Team
 
-	result := r.db.First(&team, teamId)
+	result := r.db.Joins("User").First(&team, teamId)
 
 	return &team, result.Error
 }
 
-func (r *teamRepository) FindByIdAndSeasonID(teamId uuid.UUID, seasonId uuid.UUID) (*models.Team, error) {
+func (r *teamRepository) FindByIdAndSeasonID(seasonId uuid.UUID, teamId uuid.UUID) (*models.Team, error) {
 	var team models.Team
 
-	result := r.db.Where("season_id = ? AND id = ?", seasonId, teamId).First(&team)
+	result := r.db.Joins("User").Where("season_id = ? AND \"teams\".\"id\" = ?", seasonId, teamId).First(&team)
 
 	return &team, result.Error
 }
 
-func (r *teamRepository) Create(team *models.Team) (*models.Team, error) {
+func (r *teamRepository) Create(team *models.Team) error {
 	result := r.db.Create(team)
 
-	return team, result.Error
+	return result.Error
 }
 
-func (r *teamRepository) Update(currentTeam *models.Team, updatedTeam *models.Team) (*models.Team, error) {
+func (r *teamRepository) Update(currentTeam *models.Team, updatedTeam *models.Team) error {
 	result := r.db.Model(currentTeam).Updates(updatedTeam)
 
-	return currentTeam, result.Error
+	return result.Error
 }
 
 func (r *teamRepository) Delete(team *models.Team) error {

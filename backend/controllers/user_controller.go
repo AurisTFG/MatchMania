@@ -1,13 +1,12 @@
 package controllers
 
 import (
-	responses "MatchManiaAPI/models/dtos/responses/users"
+	"MatchManiaAPI/models/dtos/responses"
 	"MatchManiaAPI/services"
 	"MatchManiaAPI/utils"
-	r "MatchManiaAPI/utils/httpResponses"
+	r "MatchManiaAPI/utils/httpresponses"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/copier"
 )
 
 type UserController struct {
@@ -32,10 +31,9 @@ func (c *UserController) GetAllUsers(ctx *gin.Context) {
 		return
 	}
 
-	var usersDto []responses.UserMinimalDto
-	copier.Copy(&usersDto, users)
+	dto := utils.CopyOrPanic[[]responses.UserMinimalDto](users)
 
-	r.OK(ctx, usersDto)
+	r.OK(ctx, dto)
 }
 
 // @Summary Get user by ID
@@ -59,8 +57,7 @@ func (c *UserController) GetUserById(ctx *gin.Context) {
 		return
 	}
 
-	var userDto responses.UserMinimalDto
-	copier.Copy(&userDto, user)
+	dto := utils.CopyOrPanic[responses.UserMinimalDto](user)
 
-	r.OK(ctx, userDto)
+	r.OK(ctx, dto)
 }

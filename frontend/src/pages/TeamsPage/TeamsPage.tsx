@@ -9,10 +9,8 @@ import {
   useFetchTeams,
   useUpdateTeam,
 } from '../../api/hooks/teamsHooks';
-import { useFetchUsers } from '../../api/hooks/usersHooks';
 import { useAuth } from '../../providers/AuthProvider/AuthProvider';
 import { TeamDto } from '../../types/dtos/responses/teams/teamDto';
-import { UserMinimalDto } from '../../types/dtos/responses/users/userMinimalDto';
 
 export default function TeamsPage() {
   const { seasonId = '' } = useParams<{ seasonId: string }>();
@@ -27,22 +25,11 @@ export default function TeamsPage() {
   const { data: season, isLoading: isSeasonsLoading } =
     useFetchSeason(seasonId);
   const { data: teams, isLoading: isTeamsLoading } = useFetchTeams(seasonId);
-  const { data: users, isLoading: isUsersLoading } = useFetchUsers();
   const { mutateAsync: createTeam } = useCreateTeam(seasonId);
   const { mutateAsync: updateTeam } = useUpdateTeam(seasonId);
   const { mutateAsync: deleteTeam } = useDeleteTeam(seasonId);
 
-  const getUserById = (userId: string): UserMinimalDto => {
-    return (
-      users?.find((user) => user.id === userId) ??
-      ({
-        id: '',
-        username: 'Unknown User',
-      } as UserMinimalDto)
-    );
-  };
-
-  if (isSeasonsLoading || isTeamsLoading || isUsersLoading) {
+  if (isSeasonsLoading || isTeamsLoading) {
     return (
       <div style={{ padding: 20 }}>
         <Typography.Title level={4}>Loading...</Typography.Title>
@@ -120,7 +107,7 @@ export default function TeamsPage() {
               user &&
               (user.role === 'moderator' ||
                 user.role === 'admin' ||
-                team.userId === user.id) ? (
+                team.user.id === user.id) ? (
                 <EditOutlined
                   key="edit"
                   onClick={() => {
@@ -129,7 +116,7 @@ export default function TeamsPage() {
                 />
               ) : null,
 
-              user && (user.role === 'admin' || team.userId === user.id) ? (
+              user && (user.role === 'admin' || team.user.id === user.id) ? (
                 <DeleteOutlined
                   key="delete"
                   onClick={() => void handleDelete(team.id)}
@@ -151,7 +138,7 @@ export default function TeamsPage() {
                   </Typography.Text>
                   <br />
                   <Typography.Text type="secondary">
-                    {`By: ${getUserById(team.userId).username}`}
+                    {`By: ${team.user.username}`}
                   </Typography.Text>
                 </>
               }
