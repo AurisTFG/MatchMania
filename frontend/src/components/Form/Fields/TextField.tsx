@@ -1,14 +1,20 @@
-import { TextField as MuiTextField } from '@mui/material';
+import { SxProps, TextField as MuiTextField, Theme } from '@mui/material';
 import { useFieldContext } from '../../../hooks/form/useAppForm';
 import FormErrors from '../Helpers/FormErrors';
+
+type TextFieldProps = {
+  label: string;
+  type?: string;
+  placeholder?: string;
+  sx?: SxProps<Theme>;
+};
 
 export default function TextField({
   label,
   type = 'text',
-}: {
-  label: string;
-  type?: string;
-}) {
+  placeholder,
+  sx,
+}: TextFieldProps) {
   const field = useFieldContext<string>();
 
   const errorMessages = field.state.meta.errors.map(
@@ -19,15 +25,16 @@ export default function TextField({
     <>
       <MuiTextField
         label={label}
-        placeholder={label}
+        placeholder={placeholder ?? label}
         type={type}
         value={field.state.value}
         onChange={(e) => {
           field.handleChange(e.target.value);
         }}
         error={errorMessages.length > 0}
-        fullWidth
+        sx={sx}
         margin="normal"
+        fullWidth
       />
       <FormErrors messages={errorMessages} />
     </>
