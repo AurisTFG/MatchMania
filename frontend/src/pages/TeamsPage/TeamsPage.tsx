@@ -1,5 +1,5 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Input, List, Modal, Space, Typography } from 'antd';
+import { Button, List, Modal, Space, Typography } from 'antd';
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useFetchSeason } from '../../api/hooks/seasonsHooks';
@@ -9,17 +9,16 @@ import {
   useFetchTeams,
   useUpdateTeam,
 } from '../../api/hooks/teamsHooks';
+import { useAppForm } from '../../hooks/form/useAppForm';
 import { useAuth } from '../../providers/AuthProvider/AuthProvider';
 import { TeamDto } from '../../types/dtos/responses/teams/teamDto';
+import { createTeamDtoValidator } from '../../validators/teams/createTeamDtoValidator';
 
 export default function TeamsPage() {
   const { seasonId = '' } = useParams<{ seasonId: string }>();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editingTeam, setEditingTeam] = useState<Partial<TeamDto>>({});
-  const [formData, setFormData] = useState({
-    name: '',
-  });
   const { user } = useAuth();
 
   const { data: season, isLoading: isSeasonsLoading } =
@@ -28,6 +27,24 @@ export default function TeamsPage() {
   const { mutateAsync: createTeam } = useCreateTeam(seasonId);
   const { mutateAsync: updateTeam } = useUpdateTeam(seasonId);
   const { mutateAsync: deleteTeam } = useDeleteTeam(seasonId);
+
+  const form = useAppForm({
+    defaultValues: {
+      name: '',
+    },
+    validators: {
+      onSubmit: createTeamDtoValidator,
+    },
+    onSubmit: async ({ value }) => {
+      if (isEditing && editingTeam.id) {
+        await updateTeam({ teamId: editingTeam.id, payload: value });
+      } else {
+        await createTeam(value);
+      }
+
+      closeModal();
+    },
+  });
 
   if (isSeasonsLoading || isTeamsLoading) {
     return (
@@ -41,32 +58,22 @@ export default function TeamsPage() {
     if (team) {
       setIsEditing(true);
       setEditingTeam(team);
-      setFormData({ name: team.name });
+      form.setFieldValue('name', team.name);
     } else {
       setIsEditing(false);
-      setFormData({ name: '' });
+      form.reset();
     }
     setIsModalOpen(true);
   };
 
-  const handleCreateOrEdit = async () => {
-    if (isEditing && editingTeam.id) {
-      await updateTeam({ teamId: editingTeam.id, payload: formData });
-    } else {
-      await createTeam(formData);
-    }
+  const closeModal = () => {
     setIsModalOpen(false);
-    setFormData({ name: '' });
+    form.reset();
+    setEditingTeam({});
   };
 
   const handleDelete = async (teamId: string) => {
     await deleteTeam(teamId);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setFormData({ name: '' });
-    setEditingTeam({});
   };
 
   return (
@@ -151,17 +158,11 @@ export default function TeamsPage() {
         title={isEditing ? 'Edit Team' : 'Create Team'}
         open={isModalOpen}
         onCancel={closeModal}
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
-        onOk={handleCreateOrEdit}
+        onOk={() => void form.handleSubmit()}
       >
-        <Input
-          placeholder="Team Name"
-          value={formData.name}
-          onChange={(e) => {
-            setFormData({ ...formData, name: e.target.value });
-          }}
-          style={{ marginBottom: 8 }}
-        />
+        <form.AppField name="name">
+          {(field) => <field.Text label="Team Name" />}
+        </form.AppField>
       </Modal>
     </div>
   );

@@ -32,16 +32,16 @@ export default function SignupPage() {
         <h1>Sign up</h1>
 
         <form.AppField name="username">
-          {(field) => <field.TextField label="Username" />}
+          {(field) => <field.Text label="Username" />}
         </form.AppField>
 
         <form.AppField name="email">
-          {(field) => <field.TextField label="Email" />}
+          {(field) => <field.Text label="Email" />}
         </form.AppField>
 
         <form.AppField name="password">
           {(field) => (
-            <field.TextField
+            <field.Text
               label="Password"
               type="password"
             />
@@ -50,7 +50,7 @@ export default function SignupPage() {
 
         <form.AppField name="confirmPassword">
           {(field) => (
-            <field.TextField
+            <field.Text
               label="Confirm Password"
               type="password"
             />

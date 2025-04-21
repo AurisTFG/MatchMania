@@ -1,14 +1,7 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
-import {
-  Button,
-  DatePicker,
-  Input,
-  List,
-  Modal,
-  Space,
-  Typography,
-} from 'antd';
-import moment from 'moment';
+import { Grid } from '@mui/material';
+import { Button, List, Modal, Space, Typography } from 'antd';
+import dayjs from 'dayjs';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -18,19 +11,17 @@ import {
   useUpdateSeason,
 } from '../../api/hooks/seasonsHooks';
 import { StatusHandler } from '../../components/StatusHandler';
+import { useAppForm } from '../../hooks/form/useAppForm';
 import { useAuth } from '../../providers/AuthProvider';
 import { SeasonDto } from '../../types/dtos/responses/seasons/seasonDto';
+import { getStartOfDay } from '../../utils/dateUtils';
+import { seasonDtoValidator } from '../../validators/seasons/seasonDtoValidator';
 
 export default function SeasonsPage() {
   const { user } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [editingSeason, setEditingSeason] = useState<Partial<SeasonDto>>({});
-  const [formData, setFormData] = useState({
-    name: '',
-    startDate: moment(),
-    endDate: moment(),
-  });
+  const [editingSeasonId, setEditingSeasonId] = useState<string | null>(null);
 
   const {
     data: seasons,
@@ -41,60 +32,52 @@ export default function SeasonsPage() {
   const { mutateAsync: updateSeasonMutation } = useUpdateSeason();
   const { mutateAsync: deleteSeasonMutation } = useDeleteSeason();
 
-  const handleCreateOrEdit = async () => {
-    if (isEditing && editingSeason.id) {
-      await updateSeasonMutation({
-        seasonId: editingSeason.id,
-        payload: {
-          ...formData,
-          startDate: formData.startDate.toDate(),
-          endDate: formData.endDate.toDate(),
-        },
-      });
-    } else {
-      await createSeasonMutation({
-        ...formData,
-        startDate: formData.startDate.toDate(),
-        endDate: formData.endDate.toDate(),
-      });
-    }
-    setIsModalOpen(false);
-  };
+  const form = useAppForm({
+    defaultValues: {
+      name: '',
+      startDate: getStartOfDay(),
+      endDate: getStartOfDay(7),
+    },
+    validators: {
+      onSubmit: seasonDtoValidator,
+    },
+    onSubmit: async ({ value }) => {
+      if (isEditing && editingSeasonId) {
+        await updateSeasonMutation({
+          seasonId: editingSeasonId,
+          payload: value,
+        });
+      } else {
+        await createSeasonMutation(value);
+      }
 
-  const handleDelete = async (seasonId: string) => {
-    await deleteSeasonMutation(seasonId);
-  };
+      closeModal();
+    },
+  });
 
   const openEditModal = (season: SeasonDto) => {
     setIsEditing(true);
-    setEditingSeason(season);
-    setFormData({
-      name: season.name,
-      startDate: moment(season.startDate),
-      endDate: moment(season.endDate),
-    });
+    setEditingSeasonId(season.id);
+    form.setFieldValue('name', season.name);
+    form.setFieldValue('startDate', season.startDate);
+    form.setFieldValue('endDate', season.endDate);
     setIsModalOpen(true);
   };
 
   const openCreateModal = () => {
     setIsEditing(false);
-    setEditingSeason({});
-    setFormData({
-      name: '',
-      startDate: moment(),
-      endDate: moment(),
-    });
+    form.reset();
     setIsModalOpen(true);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setEditingSeason({});
-    setFormData({
-      name: '',
-      startDate: moment(),
-      endDate: moment(),
-    });
+    form.reset();
+    setEditingSeasonId(null);
+  };
+
+  const handleDelete = async (seasonId: string) => {
+    await deleteSeasonMutation(seasonId);
   };
 
   return (
@@ -163,9 +146,9 @@ export default function SeasonsPage() {
                 description={
                   <>
                     <Typography.Text>
-                      {`${season.startDate.toLocaleString().split('T')[0]} - ${
-                        season.endDate.toLocaleString().split('T')[0]
-                      }`}
+                      {`${dayjs(season.startDate).format('YYYY-MM-DD')} - ${dayjs(
+                        season.endDate,
+                      ).format('YYYY-MM-DD')}`}
                     </Typography.Text>
                     <br />
                     <Typography.Text type="secondary">
@@ -183,32 +166,27 @@ export default function SeasonsPage() {
         title={isEditing ? 'Edit Season' : 'Create Season'}
         open={isModalOpen}
         onCancel={closeModal}
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
-        onOk={handleCreateOrEdit}
+        onOk={() => void form.handleSubmit()}
       >
-        <Input
-          placeholder="Name"
-          value={formData.name}
-          onChange={(e) => {
-            setFormData({ ...formData, name: e.target.value });
-          }}
-          style={{ marginBottom: 8 }}
-        />
-        <DatePicker
-          placeholder="Start Date"
-          value={formData.startDate}
-          onChange={(date) => {
-            setFormData({ ...formData, startDate: date });
-          }}
-          style={{ marginBottom: 8 }}
-        />
-        <DatePicker
-          placeholder="End Date"
-          value={formData.endDate}
-          onChange={(date) => {
-            setFormData({ ...formData, endDate: date });
-          }}
-        />
+        <form.AppField name="name">
+          {(field) => <field.Text label="Season Name" />}
+        </form.AppField>
+
+        <Grid
+          container
+          spacing={2}
+        >
+          <Grid size={6}>
+            <form.AppField name="startDate">
+              {(field) => <field.DatePicker label="Start Date" />}
+            </form.AppField>
+          </Grid>
+          <Grid size={6}>
+            <form.AppField name="endDate">
+              {(field) => <field.DatePicker label="End Date" />}
+            </form.AppField>
+          </Grid>
+        </Grid>
       </Modal>
     </div>
   );

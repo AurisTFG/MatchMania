@@ -50,12 +50,12 @@ export default function LoginPage() {
         </Typography>
 
         <form.AppField name="email">
-          {(field) => <field.TextField label="Email" />}
+          {(field) => <field.Text label="Email" />}
         </form.AppField>
 
         <form.AppField name="password">
           {(field) => (
-            <field.TextField
+            <field.Text
               label="Password"
               type="password"
             />

@@ -1,7 +1,8 @@
 import { createFormHook, createFormHookContexts } from '@tanstack/react-form';
 import { lazy } from 'react';
 
-const TextField = lazy(() => import('../../components/Form/Fields/TextField'));
+const Text = lazy(() => import('../../components/Form/Fields/Text'));
+const Select = lazy(() => import('../../components/Form/Fields/Select'));
 const DatePicker = lazy(
   () => import('../../components/Form/Fields/DatePicker'),
 );
@@ -15,7 +16,8 @@ export const { fieldContext, useFieldContext, formContext, useFormContext } =
 
 export const { useAppForm } = createFormHook({
   fieldComponents: {
-    TextField,
+    Text,
+    Select,
     DatePicker,
   },
   formComponents: {

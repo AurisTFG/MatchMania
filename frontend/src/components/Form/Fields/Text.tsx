@@ -9,7 +9,7 @@ type TextFieldProps = {
   sx?: SxProps<Theme>;
 };
 
-export default function TextField({
+export default function Text({
   label,
   type = 'text',
   placeholder,
