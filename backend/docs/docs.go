@@ -1142,7 +1142,7 @@ const docTemplate = `{
             "properties": {
                 "endDate": {
                     "type": "string",
-                    "example": "2025-06-01"
+                    "example": "2025-08-31T00:00:000Z"
                 },
                 "opponentScore": {
                     "type": "string",
@@ -1150,7 +1150,7 @@ const docTemplate = `{
                 },
                 "opponentTeamId": {
                     "type": "string",
-                    "example": "4"
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
                 },
                 "score": {
                     "type": "string",
@@ -1158,7 +1158,7 @@ const docTemplate = `{
                 },
                 "startDate": {
                     "type": "string",
-                    "example": "2025-06-01"
+                    "example": "2025-06-01T00:00:000Z"
                 }
             }
         },
@@ -1172,7 +1172,7 @@ const docTemplate = `{
             "properties": {
                 "endDate": {
                     "type": "string",
-                    "example": "2025-08-31T00:00:00Z"
+                    "example": "2025-08-31T00:00:000Z"
                 },
                 "name": {
                     "type": "string",
@@ -1182,7 +1182,7 @@ const docTemplate = `{
                 },
                 "startDate": {
                     "type": "string",
-                    "example": "2025-06-01T00:00:00Z"
+                    "example": "2025-06-01T00:00:000Z"
                 }
             }
         },
@@ -1253,7 +1253,7 @@ const docTemplate = `{
             "properties": {
                 "endDate": {
                     "type": "string",
-                    "example": "2025-06-01"
+                    "example": "2025-08-31T00:00:000Z"
                 },
                 "opponentScore": {
                     "type": "string",
@@ -1261,7 +1261,7 @@ const docTemplate = `{
                 },
                 "opponentTeamId": {
                     "type": "string",
-                    "example": "4"
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
                 },
                 "score": {
                     "type": "string",
@@ -1269,7 +1269,7 @@ const docTemplate = `{
                 },
                 "startDate": {
                     "type": "string",
-                    "example": "2025-06-01"
+                    "example": "2025-06-01T00:00:000Z"
                 }
             }
         },
@@ -1283,7 +1283,7 @@ const docTemplate = `{
             "properties": {
                 "endDate": {
                     "type": "string",
-                    "example": "2025-08-31T00:00:00Z"
+                    "example": "2025-08-31T00:00:000Z"
                 },
                 "name": {
                     "type": "string",
@@ -1293,7 +1293,7 @@ const docTemplate = `{
                 },
                 "startDate": {
                     "type": "string",
-                    "example": "2025-06-01T00:00:00Z"
+                    "example": "2025-06-01T00:00:000Z"
                 }
             }
         },
