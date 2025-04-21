@@ -1,3 +1,3 @@
-export type UpdateTeamDto = {
-  name: string;
-};
+import { CreateTeamDto } from './createTeamDto';
+
+export type UpdateTeamDto = CreateTeamDto & {};

@@ -1,6 +1,3 @@
-export type UpdateResultDto = {
-  startDate: Date;
-  endDate: Date;
-  score: string;
-  opponentScore: string;
-};
+import { CreateResultDto } from './createResultDto';
+
+export type UpdateResultDto = CreateResultDto & {};
