@@ -3,8 +3,7 @@ package seeders
 import (
 	"MatchManiaAPI/config"
 	"MatchManiaAPI/models"
-
-	"github.com/google/uuid"
+	"MatchManiaAPI/models/enums"
 )
 
 func SeedUsers(db *config.DB, env *config.Env) error {
@@ -18,27 +17,9 @@ func SeedUsers(db *config.DB, env *config.Env) error {
 	}
 
 	users := []models.User{
-		{
-			UUID:     uuid.New(),
-			Username: "Admin",
-			Email:    env.AdminEmail,
-			Password: env.AdminPassword,
-			Role:     models.AdminRole,
-		},
-		{
-			UUID:     uuid.New(),
-			Username: "Moderator",
-			Email:    env.ModeratorEmail,
-			Password: env.ModeratorPassword,
-			Role:     models.ModeratorRole,
-		},
-		{
-			UUID:     uuid.New(),
-			Username: "User",
-			Email:    env.UserEmail,
-			Password: env.UserPassword,
-			Role:     models.UserRole,
-		},
+		{Username: "Admin", Email: env.AdminEmail, Password: env.AdminPassword, Role: enums.AdminRole},
+		{Username: "Moderator", Email: env.ModeratorEmail, Password: env.ModeratorPassword, Role: enums.ModeratorRole},
+		{Username: "User", Email: env.UserEmail, Password: env.UserPassword, Role: enums.UserRole},
 	}
 
 	for _, user := range users {

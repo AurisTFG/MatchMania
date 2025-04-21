@@ -2,7 +2,9 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { ENDPOINTS } from '../../constants/endpoints';
 import { QUERY_KEYS } from '../../constants/queryKeys';
-import { Result } from '../../types';
+import { CreateResultDto } from '../../types/dtos/requests/results/createResultDto';
+import { UpdateResultDto } from '../../types/dtos/requests/results/updateResultDto';
+import { ResultDto } from '../../types/dtos/responses/results/resultDto';
 import {
   deleteRequest,
   getRequest,
@@ -10,99 +12,90 @@ import {
   postRequest,
 } from '../httpRequests';
 
-export const useFetchResults = (seasonID: number, teamID: number) =>
+export const useFetchResults = (seasonId: string, teamId: string) =>
   useQuery({
-    queryKey: QUERY_KEYS.RESULTS.ALL(seasonID, teamID),
+    queryKey: QUERY_KEYS.RESULTS.ALL(seasonId, teamId),
     queryFn: () =>
-      getRequest<Result[]>({ url: ENDPOINTS.RESULTS.ROOT(seasonID, teamID) }),
-    enabled: !!seasonID && !!teamID,
+      getRequest<ResultDto[]>({
+        url: ENDPOINTS.RESULTS.ROOT(seasonId, teamId),
+      }),
+    enabled: !!seasonId && !!teamId,
   });
 
 export const useFetchResult = (
-  seasonID: number,
-  teamID: number,
-  resultID: number,
+  seasonId: string,
+  teamId: string,
+  resultId: string,
 ) =>
   useQuery({
-    queryKey: QUERY_KEYS.RESULTS.BY_ID(seasonID, teamID, resultID),
+    queryKey: QUERY_KEYS.RESULTS.BY_ID(seasonId, teamId, resultId),
     queryFn: () =>
-      getRequest<Result>({
-        url: ENDPOINTS.RESULTS.BY_ID(seasonID, teamID, resultID),
+      getRequest<ResultDto>({
+        url: ENDPOINTS.RESULTS.BY_ID(seasonId, teamId, resultId),
       }),
-    enabled: !!seasonID && !!teamID && !!resultID,
+    enabled: !!seasonId && !!teamId && !!resultId,
   });
 
-export const useCreateResult = (seasonID: number, teamID: number) => {
+export const useCreateResult = (seasonId: string, teamId: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (result: {
-      matchStartDate: Date;
-      matchEndDate: Date;
-      score: string;
-      opponentScore: string;
-      opponentTeamId: number;
-    }) =>
-      postRequest<Result>({
-        url: ENDPOINTS.RESULTS.ROOT(seasonID, teamID),
-        body: result,
+    mutationFn: (payload: CreateResultDto) =>
+      postRequest({
+        url: ENDPOINTS.RESULTS.ROOT(seasonId, teamId),
+        body: payload,
       }),
     onSuccess: async () => {
       toast.success('Result created successfully');
 
       await queryClient.invalidateQueries({
-        queryKey: QUERY_KEYS.RESULTS.ALL(seasonID, teamID),
+        queryKey: QUERY_KEYS.RESULTS.ALL(seasonId, teamId),
       });
     },
   });
 };
 
-export const useUpdateResult = (seasonID: number, teamID: number) => {
+export const useUpdateResult = (seasonId: string, teamId: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: ({
-      resultID,
-      result,
+      resultId,
+      payload,
     }: {
-      resultID: number;
-      result: {
-        matchStartDate: Date;
-        matchEndDate: Date;
-        score: string;
-        opponentScore: string;
-      };
+      resultId: string;
+      payload: UpdateResultDto;
     }) =>
-      patchRequest<Result>({
-        url: ENDPOINTS.RESULTS.BY_ID(seasonID, teamID, resultID),
-        body: result,
+      patchRequest({
+        url: ENDPOINTS.RESULTS.BY_ID(seasonId, teamId, resultId),
+        body: payload,
       }),
-    onSuccess: async (_, { resultID }) => {
+    onSuccess: async (_, { resultId }) => {
       toast.success('Result updated successfully');
 
       await queryClient.invalidateQueries({
-        queryKey: QUERY_KEYS.RESULTS.BY_ID(seasonID, teamID, resultID),
+        queryKey: QUERY_KEYS.RESULTS.BY_ID(seasonId, teamId, resultId),
       });
       await queryClient.invalidateQueries({
-        queryKey: QUERY_KEYS.RESULTS.ALL(seasonID, teamID),
+        queryKey: QUERY_KEYS.RESULTS.ALL(seasonId, teamId),
       });
     },
   });
 };
 
-export const useDeleteResult = (seasonID: number, teamID: number) => {
+export const useDeleteResult = (seasonId: string, teamId: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (resultID: number) =>
+    mutationFn: (resultId: string) =>
       deleteRequest({
-        url: ENDPOINTS.RESULTS.BY_ID(seasonID, teamID, resultID),
+        url: ENDPOINTS.RESULTS.BY_ID(seasonId, teamId, resultId),
       }),
     onSuccess: async () => {
       toast.success('Result deleted successfully');
 
       await queryClient.invalidateQueries({
-        queryKey: QUERY_KEYS.RESULTS.ALL(seasonID, teamID),
+        queryKey: QUERY_KEYS.RESULTS.ALL(seasonId, teamId),
       });
     },
   });

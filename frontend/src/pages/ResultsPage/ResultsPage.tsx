@@ -1,16 +1,7 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
-import {
-  Button,
-  DatePicker,
-  Input,
-  List,
-  Modal,
-  Select,
-  Space,
-  Typography,
-} from 'antd';
-import moment from 'moment';
-import { useEffect, useState } from 'react';
+import { Grid } from '@mui/material';
+import { Button, List, Modal, Space, Typography } from 'antd';
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   useCreateResult,
@@ -20,155 +11,86 @@ import {
 } from '../../api/hooks/resultsHooks';
 import { useFetchSeason } from '../../api/hooks/seasonsHooks';
 import { useFetchTeam, useFetchTeams } from '../../api/hooks/teamsHooks';
-import { useFetchUsers } from '../../api/hooks/usersHooks';
+import { useAppForm } from '../../hooks/form/useAppForm';
 import { useAuth } from '../../providers/AuthProvider';
-import { Result, User } from '../../types/index';
-
-const { Option } = Select;
-
-const isValidResult = (
-  seasonId: string | undefined,
-  teamId: string | undefined,
-) => {
-  return (
-    seasonId &&
-    !isNaN(Number(seasonId)) &&
-    Number(seasonId) > 0 &&
-    teamId &&
-    !isNaN(Number(teamId)) &&
-    Number(teamId) > 0
-  );
-};
+import { ResultDto } from '../../types/dtos/responses/results/resultDto';
+import { getStartOfDay } from '../../utils/dateUtils';
+import { resultDtoValidator } from '../../validators/results/resultDtoValidator';
 
 export default function ResultsPage() {
-  const { seasonId, teamId } = useParams<{
+  const { seasonId = '', teamId = '' } = useParams<{
     seasonId: string;
     teamId: string;
   }>();
-
-  const seasonIdInteger = seasonId ? parseInt(seasonId) : 0;
-  const teamIdInteger = teamId ? parseInt(teamId) : 0;
 
   const { user } = useAuth();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [editingResult, setEditingResult] = useState<Partial<Result>>({});
-  const [formData, setFormData] = useState({
-    matchStartDate: moment(),
-    matchEndDate: moment(),
-    score: '',
-    opponentScore: '',
-    opponentTeamId: 0,
-  });
+  const [editingResult, setEditingResult] = useState<Partial<ResultDto>>({});
 
   const {
     data: results,
     isLoading,
     isError,
-  } = useFetchResults(seasonIdInteger, teamIdInteger);
-  const { data: season } = useFetchSeason(seasonIdInteger);
-  const { data: team } = useFetchTeam(seasonIdInteger, teamIdInteger);
-  const { data: teams } = useFetchTeams(seasonIdInteger);
-  const { data: users } = useFetchUsers();
+  } = useFetchResults(seasonId, teamId);
+  const { data: season } = useFetchSeason(seasonId);
+  const { data: teams } = useFetchTeams(seasonId);
+  const { data: team } = useFetchTeam(seasonId, teamId);
 
-  const { mutateAsync: createResult } = useCreateResult(
-    seasonIdInteger,
-    teamIdInteger,
-  );
-  const { mutateAsync: updateResult } = useUpdateResult(
-    seasonIdInteger,
-    teamIdInteger,
-  );
-  const { mutateAsync: deleteResult } = useDeleteResult(
-    seasonIdInteger,
-    teamIdInteger,
-  );
+  const { mutateAsync: createResult } = useCreateResult(seasonId, teamId);
+  const { mutateAsync: updateResult } = useUpdateResult(seasonId, teamId);
+  const { mutateAsync: deleteResult } = useDeleteResult(seasonId, teamId);
 
-  useEffect(() => {
-    if (!isValidResult(seasonId, teamId)) {
-      return;
-    }
-  }, [seasonId, teamId]);
-
-  const getUserById = (userId: string): User => {
-    return (
-      users?.find((user) => user.id === userId) ??
-      ({
-        id: '',
-        username: 'Unknown User',
-      } as User)
-    );
-  };
+  const form = useAppForm({
+    defaultValues: {
+      startDate: getStartOfDay(),
+      endDate: getStartOfDay(),
+      score: '',
+      opponentScore: '',
+      opponentTeamId: '',
+    },
+    validators: {
+      onSubmit: resultDtoValidator,
+    },
+    onSubmit: async ({ value }) => {
+      if (isEditing && editingResult.id) {
+        await updateResult({
+          resultId: editingResult.id,
+          payload: value,
+        });
+      } else {
+        await createResult(value);
+      }
+      closeModal();
+    },
+  });
 
   const openCreateModal = () => {
     setIsEditing(false);
-    setEditingResult({});
-    setFormData({
-      matchStartDate: moment(),
-      matchEndDate: moment(),
-      score: '',
-      opponentScore: '',
-      opponentTeamId: 0,
-    });
+    form.reset();
+    setIsModalOpen(true);
+  };
+
+  const openEditModal = (result: ResultDto) => {
+    setIsEditing(true);
+    setEditingResult(result);
+    form.setFieldValue('startDate', result.startDate);
+    form.setFieldValue('endDate', result.endDate);
+    form.setFieldValue('score', result.score);
+    form.setFieldValue('opponentScore', result.opponentScore);
+    form.setFieldValue('opponentTeamId', result.opponentTeam.id);
     setIsModalOpen(true);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
+    form.reset();
     setEditingResult({});
-    setFormData({
-      matchStartDate: moment(),
-      matchEndDate: moment(),
-      score: '',
-      opponentScore: '',
-      opponentTeamId: 0,
-    });
   };
 
-  const openEditModal = (result: Result) => {
-    setIsEditing(true);
-    setEditingResult(result);
-    setFormData({
-      matchStartDate: moment(result.matchStartDate),
-      matchEndDate: moment(result.matchEndDate),
-      score: result.score,
-      opponentScore: result.opponentScore,
-      opponentTeamId: result.opponentTeamId,
-    });
-    setIsModalOpen(true);
-  };
-
-  const handleCreateOrEdit = async () => {
-    if (isEditing && editingResult.id) {
-      await updateResult({
-        resultID: editingResult.id,
-        result: {
-          matchStartDate: formData.matchStartDate.toDate(),
-          matchEndDate: formData.matchEndDate.toDate(),
-          score: formData.score,
-          opponentScore: formData.opponentScore,
-        },
-      });
-    } else {
-      await createResult({
-        matchStartDate: formData.matchStartDate.toDate(),
-        matchEndDate: formData.matchEndDate.toDate(),
-        score: formData.score,
-        opponentScore: formData.opponentScore,
-        opponentTeamId: formData.opponentTeamId,
-      });
-    }
-    closeModal();
-  };
-
-  const handleDelete = async (resultID: number) => {
-    await deleteResult(resultID);
-  };
-
-  const getTeamName = (id: number) => {
-    const team = teams?.find((team) => team.id === id);
-    return team ? team.name : 'Unknown Team';
+  const handleDelete = async (resultId: string) => {
+    await deleteResult(resultId);
   };
 
   if (isError) {
@@ -216,7 +138,7 @@ export default function ResultsPage() {
               user &&
               (user.role === 'moderator' ||
                 user.role === 'admin' ||
-                result.userUUID === user.id) ? (
+                result.user.id === user.id) ? (
                 <EditOutlined
                   key="edit"
                   onClick={() => {
@@ -225,7 +147,7 @@ export default function ResultsPage() {
                 />
               ) : null,
 
-              user && (user.role === 'admin' || result.userUUID === user.id) ? (
+              user && (user.role === 'admin' || result.user.id === user.id) ? (
                 <DeleteOutlined
                   key="delete"
                   onClick={() => void handleDelete(result.id)}
@@ -235,9 +157,7 @@ export default function ResultsPage() {
             ]}
           >
             <List.Item.Meta
-              title={`${getTeamName(result.teamId)} vs ${getTeamName(
-                result.opponentTeamId,
-              )}`}
+              title={`${result.team.name} vs ${result.opponentTeam.name}`}
               description={
                 <>
                   <Typography.Text>
@@ -245,11 +165,11 @@ export default function ResultsPage() {
                   </Typography.Text>
                   <br />
                   <Typography.Text type="secondary">
-                    {new Date(result.matchStartDate).toLocaleDateString()}
+                    {new Date(result.startDate).toLocaleDateString()}
                   </Typography.Text>
                   <br />
                   <Typography.Text type="secondary">
-                    {`By: ${getUserById(result.userUUID).username}`}
+                    {`By: ${result.user.username}`}
                   </Typography.Text>
                 </>
               }
@@ -262,60 +182,45 @@ export default function ResultsPage() {
         title={isEditing ? 'Edit Result' : 'Create Result'}
         open={isModalOpen}
         onCancel={closeModal}
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
-        onOk={handleCreateOrEdit}
+        onOk={() => void form.handleSubmit()}
       >
-        <DatePicker
-          placeholder="Match Start Date"
-          value={formData.matchStartDate}
-          onChange={(date) => {
-            setFormData({ ...formData, matchStartDate: date });
-          }}
-          style={{ marginBottom: 8 }}
-        />
-        <DatePicker
-          placeholder="Match End Date"
-          value={formData.matchEndDate}
-          onChange={(date) => {
-            setFormData({ ...formData, matchEndDate: date });
-          }}
-          style={{ marginBottom: 8 }}
-        />
-        <Input
-          placeholder="Score"
-          value={formData.score}
-          onChange={(e) => {
-            setFormData({ ...formData, score: e.target.value });
-          }}
-          style={{ marginBottom: 8 }}
-        />
-        <Input
-          placeholder="Opponent Score"
-          value={formData.opponentScore}
-          onChange={(e) => {
-            setFormData({ ...formData, opponentScore: e.target.value });
-          }}
-          style={{ marginBottom: 8 }}
-        />
-        <Select
-          placeholder="Select Opponent Team"
-          value={formData.opponentTeamId}
-          onChange={(value) => {
-            setFormData({ ...formData, opponentTeamId: value });
-          }}
-          style={{ width: '100%', marginBottom: 8 }}
+        <Grid
+          container
+          spacing={2}
         >
-          {(teams ?? [])
-            .filter((opponentTeam) => opponentTeam.id !== teamIdInteger)
-            .map((opponentTeam) => (
-              <Option
-                key={opponentTeam.id}
-                value={opponentTeam.id}
-              >
-                {opponentTeam.name}
-              </Option>
-            ))}
-        </Select>
+          <Grid size={6}>
+            <form.AppField name="startDate">
+              {(field) => <field.DatePicker label="Match Start Date" />}
+            </form.AppField>
+          </Grid>
+          <Grid size={6}>
+            <form.AppField name="endDate">
+              {(field) => <field.DatePicker label="Match End Date" />}
+            </form.AppField>
+          </Grid>
+        </Grid>
+
+        <form.AppField name="score">
+          {(field) => <field.Text label="Score" />}
+        </form.AppField>
+
+        <form.AppField name="opponentScore">
+          {(field) => <field.Text label="Opponent Score" />}
+        </form.AppField>
+
+        <form.AppField name="opponentTeamId">
+          {(field) => (
+            <field.Select
+              label="Select Opponent Team"
+              options={(teams ?? [])
+                .filter((opponentTeam) => opponentTeam.id !== teamId)
+                .map((opponentTeam) => ({
+                  value: opponentTeam.id,
+                  label: opponentTeam.name,
+                }))}
+            />
+          )}
+        </form.AppField>
       </Modal>
     </div>
   );

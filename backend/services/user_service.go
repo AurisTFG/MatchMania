@@ -2,15 +2,18 @@ package services
 
 import (
 	"MatchManiaAPI/models"
+	requests "MatchManiaAPI/models/dtos/requests/auth"
 	"MatchManiaAPI/repositories"
+	"MatchManiaAPI/utils"
+
+	"github.com/google/uuid"
 )
 
 type UserService interface {
 	GetAllUsers() ([]models.User, error)
-	GetUserByID(string) (*models.User, error)
+	GetUserById(uuid.UUID) (*models.User, error)
 	GetUserByEmail(string) (*models.User, error)
-	CreateUser(signUpDto *models.SignUpDto) (*models.User, error)
-	UpdateUser(*models.User, *models.UpdateUserDto) (*models.User, error)
+	CreateUser(signUpDto *requests.SignupDto) error
 	DeleteUser(*models.User) error
 }
 
@@ -26,24 +29,18 @@ func (s *userService) GetAllUsers() ([]models.User, error) {
 	return s.repo.FindAll()
 }
 
-func (s *userService) GetUserByID(userID string) (*models.User, error) {
-	return s.repo.FindByID(userID)
+func (s *userService) GetUserById(userId uuid.UUID) (*models.User, error) {
+	return s.repo.FindById(userId)
 }
 
 func (s *userService) GetUserByEmail(email string) (*models.User, error) {
 	return s.repo.FindByEmail(email)
 }
 
-func (s *userService) CreateUser(signUpDto *models.SignUpDto) (*models.User, error) {
-	newUser := signUpDto.ToUser()
+func (s *userService) CreateUser(signUpDto *requests.SignupDto) error {
+	newUser := utils.MustCopy[models.User](signUpDto)
 
-	return s.repo.Create(&newUser)
-}
-
-func (s *userService) UpdateUser(currentUser *models.User, updatedUserDto *models.UpdateUserDto) (*models.User, error) {
-	updatedUser := updatedUserDto.ToUser()
-
-	return s.repo.Update(currentUser, &updatedUser)
+	return s.repo.Create(newUser)
 }
 
 func (s *userService) DeleteUser(user *models.User) error {

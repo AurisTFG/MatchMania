@@ -1,10 +1,12 @@
 package controllers
 
 import (
-	"MatchManiaAPI/models"
-	r "MatchManiaAPI/responses"
+	"MatchManiaAPI/models/dtos/requests"
+	"MatchManiaAPI/models/dtos/responses"
 	"MatchManiaAPI/services"
 	"MatchManiaAPI/utils"
+	r "MatchManiaAPI/utils/httpresponses"
+	"MatchManiaAPI/validators"
 
 	"github.com/gin-gonic/gin"
 )
@@ -22,7 +24,7 @@ func NewSeasonController(seasonService services.SeasonService) SeasonController 
 // @Tags seasons
 // @Accept json
 // @Produce json
-// @Success 200 {object} []models.SeasonDto
+// @Success 200 {object} []responses.SeasonDto
 // @Router /seasons [get]
 func (c *SeasonController) GetAllSeasons(ctx *gin.Context) {
 	seasons, err := c.seasonService.GetAllSeasons()
@@ -31,7 +33,9 @@ func (c *SeasonController) GetAllSeasons(ctx *gin.Context) {
 		return
 	}
 
-	r.OK(ctx, models.ToSeasonDtos(seasons))
+	dto := utils.MustCopy[[]responses.SeasonDto](seasons)
+
+	r.OK(ctx, dto)
 }
 
 // @Summary Get a season
@@ -39,25 +43,27 @@ func (c *SeasonController) GetAllSeasons(ctx *gin.Context) {
 // @Tags seasons
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID" default(2)
-// @Success 200 {object} models.SeasonDto
-// @Failure 400 {object} models.ErrorDto
-// @Failure 404 {object} models.ErrorDto
+// @Param seasonId path string true "Season ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
+// @Success 200 {object} responses.SeasonDto
+// @Failure 400 {object} responses.ErrorDto
+// @Failure 404 {object} responses.ErrorDto
 // @Router /seasons/{seasonId} [get]
 func (c *SeasonController) GetSeason(ctx *gin.Context) {
-	seasonID, err := utils.GetParamUint(ctx, "seasonId")
+	seasonId, err := utils.GetParamId(ctx, "seasonId")
 	if err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
 	}
 
-	season, err := c.seasonService.GetSeasonByID(seasonID)
+	season, err := c.seasonService.GetSeasonById(seasonId)
 	if err != nil {
 		r.NotFound(ctx, "Season not found")
 		return
 	}
 
-	r.OK(ctx, season.ToDto())
+	dto := utils.MustCopy[responses.SeasonDto](season)
+
+	r.OK(ctx, dto)
 }
 
 // @Summary Create a season
@@ -65,37 +71,32 @@ func (c *SeasonController) GetSeason(ctx *gin.Context) {
 // @Tags seasons
 // @Accept json
 // @Produce json
-// @Param season body models.CreateSeasonDto true "Season object that needs to be created"
-// @Success 201 {object} models.SeasonDto
-// @Failure 400 {object} models.ErrorDto
-// @Failure 401 {object} models.ErrorDto
-// @Failure 422 {object} models.ErrorDto
+// @Param season body requests.CreateSeasonDto true "Season object that needs to be created"
+// @Success 204
+// @Failure 400 {object} responses.ErrorDto
+// @Failure 401 {object} responses.ErrorDto
+// @Failure 422 {object} responses.ErrorDto
 // @Router /seasons [post]
 func (c *SeasonController) CreateSeason(ctx *gin.Context) {
-	var bodyDto models.CreateSeasonDto
+	var bodyDto requests.CreateSeasonDto
 	if err := ctx.ShouldBindJSON(&bodyDto); err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
 	}
 
-	if err := bodyDto.Validate(); err != nil {
+	if err := validators.Validate(&bodyDto); err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
 	}
 
-	user := utils.GetAuthUser(ctx)
-	if user == nil {
-		r.Unauthorized(ctx, "User not found")
-		return
-	}
+	userId := utils.MustGetRequestingUserId(ctx)
 
-	newSeason, err := c.seasonService.CreateSeason(&bodyDto, user.UUID)
-	if err != nil {
+	if err := c.seasonService.CreateSeason(&bodyDto, userId); err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
 	}
 
-	r.Created(ctx, newSeason.ToDto())
+	r.NoContent(ctx)
 }
 
 // @Summary Update a season
@@ -103,57 +104,45 @@ func (c *SeasonController) CreateSeason(ctx *gin.Context) {
 // @Tags seasons
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID" default(1)
-// @Param season body models.UpdateSeasonDto true "Season object that needs to be updated"
-// @Success 200 {object} models.SeasonDto
-// @Failure 400 {object} models.ErrorDto
-// @Failure 401 {object} models.ErrorDto
-// @Failure 404 {object} models.ErrorDto
-// @Failure 403 {object} models.ErrorDto
-// @Failure 422 {object} models.ErrorDto
+// @Param seasonId path string true "Season ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
+// @Param season body requests.UpdateSeasonDto true "Season object that needs to be updated"
+// @Success 204
+// @Failure 400 {object} responses.ErrorDto
+// @Failure 401 {object} responses.ErrorDto
+// @Failure 404 {object} responses.ErrorDto
+// @Failure 403 {object} responses.ErrorDto
+// @Failure 422 {object} responses.ErrorDto
 // @Router /seasons/{seasonId} [patch]
 func (c *SeasonController) UpdateSeason(ctx *gin.Context) {
-	seasonID, err := utils.GetParamUint(ctx, "seasonId")
+	seasonId, err := utils.GetParamId(ctx, "seasonId")
 	if err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
 	}
 
-	var bodyDto models.UpdateSeasonDto
+	var bodyDto requests.UpdateSeasonDto
 	if err = ctx.ShouldBindJSON(&bodyDto); err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
 	}
 
-	if err = bodyDto.Validate(); err != nil {
+	if err = validators.Validate(&bodyDto); err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
 	}
 
-	user := utils.GetAuthUser(ctx)
-	if user == nil {
-		r.Unauthorized(ctx, "User not found")
-		return
-	}
-
-	currentSeason, err := c.seasonService.GetSeasonByID(seasonID)
+	currentSeason, err := c.seasonService.GetSeasonById(seasonId)
 	if err != nil {
 		r.NotFound(ctx, "Season not found")
 		return
 	}
 
-	if user.Role != models.AdminRole && user.Role != models.ModeratorRole && user.UUID != currentSeason.UserUUID {
-		r.Forbidden(ctx, "This action is forbidden")
-		return
-	}
-
-	updatedSeason, err := c.seasonService.UpdateSeason(currentSeason, &bodyDto)
-	if err != nil {
+	if err = c.seasonService.UpdateSeason(currentSeason, &bodyDto); err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
 	}
 
-	r.OK(ctx, updatedSeason.ToDto())
+	r.NoContent(ctx)
 }
 
 // @Summary Delete a season
@@ -161,35 +150,24 @@ func (c *SeasonController) UpdateSeason(ctx *gin.Context) {
 // @Tags seasons
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID" default(1)
+// @Param seasonId path string true "Season ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
 // @Success 204
-// @Failure 400 {object} models.ErrorDto
-// @Failure 401 {object} models.ErrorDto
-// @Failure 403 {object} models.ErrorDto
-// @Failure 404 {object} models.ErrorDto
-// @Failure 422 {object} models.ErrorDto
+// @Failure 400 {object} responses.ErrorDto
+// @Failure 401 {object} responses.ErrorDto
+// @Failure 403 {object} responses.ErrorDto
+// @Failure 404 {object} responses.ErrorDto
+// @Failure 422 {object} responses.ErrorDto
 // @Router /seasons/{seasonId} [delete]
 func (c *SeasonController) DeleteSeason(ctx *gin.Context) {
-	seasonID, err := utils.GetParamUint(ctx, "seasonId")
+	seasonId, err := utils.GetParamId(ctx, "seasonId")
 	if err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
 	}
 
-	user := utils.GetAuthUser(ctx)
-	if user == nil {
-		r.Unauthorized(ctx, "User not found")
-		return
-	}
-
-	season, err := c.seasonService.GetSeasonByID(seasonID)
+	season, err := c.seasonService.GetSeasonById(seasonId)
 	if err != nil {
 		r.NotFound(ctx, "Season not found")
-		return
-	}
-
-	if user.Role != models.AdminRole && user.UUID != season.UserUUID {
-		r.Forbidden(ctx, "This action is forbidden")
 		return
 	}
 

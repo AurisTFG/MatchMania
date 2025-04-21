@@ -1,10 +1,10 @@
 package controllers
 
 import (
-	"MatchManiaAPI/models"
-	r "MatchManiaAPI/responses"
+	"MatchManiaAPI/models/dtos/responses"
 	"MatchManiaAPI/services"
 	"MatchManiaAPI/utils"
+	r "MatchManiaAPI/utils/httpresponses"
 
 	"github.com/gin-gonic/gin"
 )
@@ -22,7 +22,7 @@ func NewUserController(userService services.UserService) UserController {
 // @Tags users
 // @Accept json
 // @Produce json
-// @Success 200 {object} []models.UserDto
+// @Success 200 {object} []responses.UserMinimalDto
 // @Router /users [get]
 func (c *UserController) GetAllUsers(ctx *gin.Context) {
 	users, err := c.userService.GetAllUsers()
@@ -31,7 +31,9 @@ func (c *UserController) GetAllUsers(ctx *gin.Context) {
 		return
 	}
 
-	r.OK(ctx, models.ToUserDtos(users))
+	dto := utils.MustCopy[[]responses.UserMinimalDto](users)
+
+	r.OK(ctx, dto)
 }
 
 // @Summary Get user by ID
@@ -40,16 +42,22 @@ func (c *UserController) GetAllUsers(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param id path string true "User ID"
-// @Success 200 {object} models.UserDto
+// @Success 200 {object} responses.UserMinimalDto
 // @Router /users/{id} [get]
-func (c *UserController) GetUserByID(ctx *gin.Context) {
-	userID := utils.GetParamString(ctx, "userId")
+func (c *UserController) GetUserById(ctx *gin.Context) {
+	userId, err := utils.GetParamId(ctx, "userId")
+	if err != nil {
+		r.BadRequest(ctx, err.Error())
+		return
+	}
 
-	user, err := c.userService.GetUserByID(userID)
+	user, err := c.userService.GetUserById(userId)
 	if err != nil {
 		r.NotFound(ctx, err.Error())
 		return
 	}
 
-	r.OK(ctx, user.ToDto())
+	dto := utils.MustCopy[responses.UserMinimalDto](user)
+
+	r.OK(ctx, dto)
 }

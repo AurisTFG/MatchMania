@@ -1,10 +1,12 @@
 package controllers
 
 import (
-	"MatchManiaAPI/models"
-	r "MatchManiaAPI/responses"
+	"MatchManiaAPI/models/dtos/requests"
+	"MatchManiaAPI/models/dtos/responses"
 	"MatchManiaAPI/services"
 	"MatchManiaAPI/utils"
+	r "MatchManiaAPI/utils/httpresponses"
+	"MatchManiaAPI/validators"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,25 +25,27 @@ func NewTeamController(seasonService services.SeasonService, teamService service
 // @Tags teams
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID" default(1)
-// @Success 200 {object} []models.TeamDto
-// @Failure 400 {object} models.ErrorDto
-// @Failure 422 {object} models.ErrorDto
+// @Param seasonId path string true "Season ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
+// @Success 200 {object} []responses.TeamDto
+// @Failure 400 {object} responses.ErrorDto
+// @Failure 422 {object} responses.ErrorDto
 // @Router /seasons/{seasonId}/teams [get]
 func (c *TeamController) GetAllTeams(ctx *gin.Context) {
-	seasonID, err := utils.GetParamUint(ctx, "seasonId")
+	seasonId, err := utils.GetParamId(ctx, "seasonId")
 	if err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
 	}
 
-	teams, err := c.teamService.GetAllTeams(seasonID)
+	teams, err := c.teamService.GetAllTeams(seasonId)
 	if err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
 	}
 
-	r.OK(ctx, models.ToTeamDtos(teams))
+	dto := utils.MustCopy[[]responses.TeamDto](teams)
+
+	r.OK(ctx, dto)
 }
 
 // @Summary Get a team
@@ -49,32 +53,34 @@ func (c *TeamController) GetAllTeams(ctx *gin.Context) {
 // @Tags teams
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID" default(1)
-// @Param teamId path string true "Team ID" default(1)
-// @Success 200 {object} models.TeamDto
-// @Failure 400 {object} models.ErrorDto
-// @Failure 404 {object} models.ErrorDto
+// @Param seasonId path string true "Season ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
+// @Param teamId path string true "Team ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
+// @Success 200 {object} responses.TeamDto
+// @Failure 400 {object} responses.ErrorDto
+// @Failure 404 {object} responses.ErrorDto
 // @Router /seasons/{seasonId}/teams/{teamId} [get]
 func (c *TeamController) GetTeam(ctx *gin.Context) {
-	seasonID, err := utils.GetParamUint(ctx, "seasonId")
+	seasonId, err := utils.GetParamId(ctx, "seasonId")
 	if err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
 	}
 
-	teamID, err := utils.GetParamUint(ctx, "teamId")
+	teamId, err := utils.GetParamId(ctx, "teamId")
 	if err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
 	}
 
-	team, err := c.teamService.GetTeamByID(seasonID, teamID)
+	team, err := c.teamService.GetTeamById(seasonId, teamId)
 	if err != nil {
 		r.NotFound(ctx, "Team not found in season")
 		return
 	}
 
-	r.OK(ctx, team.ToDto())
+	dto := utils.MustCopy[responses.TeamDto](team)
+
+	r.OK(ctx, dto)
 }
 
 // @Summary Create a team
@@ -82,51 +88,46 @@ func (c *TeamController) GetTeam(ctx *gin.Context) {
 // @Tags teams
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID" default(1)
-// @Param team body models.CreateTeamDto true "Team object that needs to be created"
-// @Success 201 {object} models.TeamDto
-// @Failure 400 {object} models.ErrorDto
-// @Failure 401 {object} models.ErrorDto
-// @Failure 404 {object} models.ErrorDto
-// @Failure 422 {object} models.ErrorDto
+// @Param seasonId path string true "Season ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
+// @Param team body requests.CreateTeamDto true "Team object that needs to be created"
+// @Success 204
+// @Failure 400 {object} responses.ErrorDto
+// @Failure 401 {object} responses.ErrorDto
+// @Failure 404 {object} responses.ErrorDto
+// @Failure 422 {object} responses.ErrorDto
 // @Router /seasons/{seasonId}/teams [post]
 func (c *TeamController) CreateTeam(ctx *gin.Context) {
-	seasonID, err := utils.GetParamUint(ctx, "seasonId")
+	seasonId, err := utils.GetParamId(ctx, "seasonId")
 	if err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
 	}
 
-	var bodyDto models.CreateTeamDto
+	var bodyDto requests.CreateTeamDto
 	if err = ctx.ShouldBindJSON(&bodyDto); err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
 	}
 
-	if err = bodyDto.Validate(); err != nil {
+	if err = validators.Validate(&bodyDto); err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
 	}
 
-	season, err := c.seasonService.GetSeasonByID(seasonID)
+	season, err := c.seasonService.GetSeasonById(seasonId)
 	if err != nil {
 		r.NotFound(ctx, "Season not found")
 		return
 	}
 
-	user := utils.GetAuthUser(ctx)
-	if user == nil {
-		r.Unauthorized(ctx, "User not found")
-		return
-	}
+	userId := utils.MustGetRequestingUserId(ctx)
 
-	newTeam, err := c.teamService.CreateTeam(&bodyDto, season.ID, user.UUID)
-	if err != nil {
+	if err = c.teamService.CreateTeam(&bodyDto, season.Id, userId); err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
 	}
 
-	r.Created(ctx, newTeam.ToDto())
+	r.NoContent(ctx)
 }
 
 // @Summary Update a team
@@ -134,65 +135,53 @@ func (c *TeamController) CreateTeam(ctx *gin.Context) {
 // @Tags teams
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID" default(1)
-// @Param teamId path string true "Team ID" default(1)
-// @Param team body models.UpdateTeamDto true "Team object that needs to be updated"
-// @Success 200 {object} models.TeamDto
-// @Failure 400 {object} models.ErrorDto
-// @Failure 401 {object} models.ErrorDto
-// @Failure 403 {object} models.ErrorDto
-// @Failure 404 {object} models.ErrorDto
-// @Failure 422 {object} models.ErrorDto
+// @Param seasonId path string true "Season ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
+// @Param teamId path string true "Team ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
+// @Param team body requests.UpdateTeamDto true "Team object that needs to be updated"
+// @Success 204
+// @Failure 400 {object} responses.ErrorDto
+// @Failure 401 {object} responses.ErrorDto
+// @Failure 403 {object} responses.ErrorDto
+// @Failure 404 {object} responses.ErrorDto
+// @Failure 422 {object} responses.ErrorDto
 // @Router /seasons/{seasonId}/teams/{teamId} [patch]
 func (c *TeamController) UpdateTeam(ctx *gin.Context) {
-	seasonID, err := utils.GetParamUint(ctx, "seasonId")
+	seasonId, err := utils.GetParamId(ctx, "seasonId")
 	if err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
 	}
 
-	teamID, err := utils.GetParamUint(ctx, "teamId")
+	teamId, err := utils.GetParamId(ctx, "teamId")
 	if err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
 	}
 
-	var bodyDto models.UpdateTeamDto
+	var bodyDto requests.UpdateTeamDto
 
 	if err = ctx.ShouldBindJSON(&bodyDto); err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
 	}
 
-	if err = bodyDto.Validate(); err != nil {
+	if err = validators.Validate(&bodyDto); err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
 	}
 
-	user := utils.GetAuthUser(ctx)
-	if user == nil {
-		r.Unauthorized(ctx, "User not found")
-		return
-	}
-
-	currentTeam, err := c.teamService.GetTeamByID(seasonID, teamID)
+	currentTeam, err := c.teamService.GetTeamById(seasonId, teamId)
 	if err != nil {
 		r.NotFound(ctx, "Team not found in season")
 		return
 	}
 
-	if user.Role != models.AdminRole && user.Role != models.ModeratorRole && user.UUID != currentTeam.UserUUID {
-		r.Forbidden(ctx, "This action is forbidden")
-		return
-	}
-
-	updatedTeam, err := c.teamService.UpdateTeam(currentTeam, &bodyDto)
-	if err != nil {
+	if err = c.teamService.UpdateTeam(currentTeam, &bodyDto); err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
 	}
 
-	r.OK(ctx, updatedTeam.ToDto())
+	r.NoContent(ctx)
 }
 
 // @Summary Delete a team
@@ -200,42 +189,31 @@ func (c *TeamController) UpdateTeam(ctx *gin.Context) {
 // @Tags teams
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID" default(1)
-// @Param teamId path string true "Team ID" default(1)
+// @Param seasonId path string true "Season ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
+// @Param teamId path string true "Team ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
 // @Success 204
-// @Failure 400 {object} models.ErrorDto
-// @Failure 401 {object} models.ErrorDto
-// @Failure 403 {object} models.ErrorDto
-// @Failure 404 {object} models.ErrorDto
-// @Failure 422 {object} models.ErrorDto
+// @Failure 400 {object} responses.ErrorDto
+// @Failure 401 {object} responses.ErrorDto
+// @Failure 403 {object} responses.ErrorDto
+// @Failure 404 {object} responses.ErrorDto
+// @Failure 422 {object} responses.ErrorDto
 // @Router /seasons/{seasonId}/teams/{teamId} [delete]
 func (c *TeamController) DeleteTeam(ctx *gin.Context) {
-	seasonID, err := utils.GetParamUint(ctx, "seasonId")
+	seasonId, err := utils.GetParamId(ctx, "seasonId")
 	if err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
 	}
 
-	teamID, err := utils.GetParamUint(ctx, "teamId")
+	teamId, err := utils.GetParamId(ctx, "teamId")
 	if err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
 	}
 
-	user := utils.GetAuthUser(ctx)
-	if user == nil {
-		r.Unauthorized(ctx, "User not found")
-		return
-	}
-
-	team, err := c.teamService.GetTeamByID(seasonID, teamID)
+	team, err := c.teamService.GetTeamById(seasonId, teamId)
 	if err != nil {
 		r.NotFound(ctx, "Team not found in season")
-		return
-	}
-
-	if user.Role != models.AdminRole && user.UUID != team.UserUUID {
-		r.Forbidden(ctx, "This action is forbidden")
 		return
 	}
 

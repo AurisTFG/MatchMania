@@ -6,28 +6,24 @@ export const getRequest = async <T>({ url }: { url: string }): Promise<T> => {
   return response.data;
 };
 
-export const postRequest = async <T>({
+export const postRequest = async ({
   url,
   body,
 }: {
   url: string;
   body?: unknown;
-}): Promise<T> => {
-  const response = await axiosClient.post<T>(url, body);
-
-  return response.data;
+}): Promise<void> => {
+  await axiosClient.post(url, body);
 };
 
-export const patchRequest = async <T>({
+export const patchRequest = async ({
   url,
   body,
 }: {
   url: string;
   body?: unknown;
-}): Promise<T> => {
-  const response = await axiosClient.patch<T>(url, body);
-
-  return response.data;
+}): Promise<void> => {
+  await axiosClient.patch(url, body);
 };
 
 export const deleteRequest = async ({

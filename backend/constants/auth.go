@@ -1,6 +1,8 @@
 package constants
 
 const (
-	RefreshTokenName = "refreshToken"
 	AccessTokenName  = "accessToken"
+	RefreshTokenName = "refreshToken"
+
+	RequestingUserIdKey = "requestingUserId"
 )

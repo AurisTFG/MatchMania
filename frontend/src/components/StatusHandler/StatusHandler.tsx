@@ -1,4 +1,4 @@
-import { Typography } from 'antd';
+import { Typography } from '@mui/material';
 import { ReactNode } from 'react';
 
 type StatusHandlerProps = {
@@ -21,7 +21,12 @@ export default function StatusHandler({
   if (isLoading) {
     return (
       <div style={{ padding: 20 }}>
-        <Typography.Title level={4}>Loading...</Typography.Title>
+        <Typography
+          variant="h5"
+          component="div"
+        >
+          Loading...
+        </Typography>
       </div>
     );
   }
@@ -29,9 +34,13 @@ export default function StatusHandler({
   if (error) {
     return (
       <div style={{ padding: 20 }}>
-        <Typography.Title level={4}>
+        <Typography
+          variant="h5"
+          component="div"
+          color="error"
+        >
           {`${errorMessage}: ${error.message}`}
-        </Typography.Title>
+        </Typography>
       </div>
     );
   }
@@ -39,7 +48,12 @@ export default function StatusHandler({
   if (isEmpty) {
     return (
       <div style={{ padding: 20 }}>
-        <Typography.Title level={4}>{emptyMessage}</Typography.Title>
+        <Typography
+          variant="h5"
+          component="div"
+        >
+          {emptyMessage}
+        </Typography>
       </div>
     );
   }

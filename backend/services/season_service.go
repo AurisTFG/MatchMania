@@ -2,16 +2,18 @@ package services
 
 import (
 	"MatchManiaAPI/models"
+	requests "MatchManiaAPI/models/dtos/requests/seasons"
 	"MatchManiaAPI/repositories"
+	"MatchManiaAPI/utils"
 
 	"github.com/google/uuid"
 )
 
 type SeasonService interface {
 	GetAllSeasons() ([]models.Season, error)
-	GetSeasonByID(uint) (*models.Season, error)
-	CreateSeason(*models.CreateSeasonDto, uuid.UUID) (*models.Season, error)
-	UpdateSeason(*models.Season, *models.UpdateSeasonDto) (*models.Season, error)
+	GetSeasonById(uuid.UUID) (*models.Season, error)
+	CreateSeason(*requests.CreateSeasonDto, uuid.UUID) error
+	UpdateSeason(*models.Season, *requests.UpdateSeasonDto) error
 	DeleteSeason(*models.Season) error
 }
 
@@ -27,24 +29,24 @@ func (s *seasonService) GetAllSeasons() ([]models.Season, error) {
 	return s.repo.FindAll()
 }
 
-func (s *seasonService) GetSeasonByID(seasonID uint) (*models.Season, error) {
-	return s.repo.FindByID(seasonID)
+func (s *seasonService) GetSeasonById(seasonId uuid.UUID) (*models.Season, error) {
+	return s.repo.FindById(seasonId)
 }
 
-func (s *seasonService) CreateSeason(seasonDto *models.CreateSeasonDto, userUUID uuid.UUID) (*models.Season, error) {
-	newSeason := seasonDto.ToSeason()
-	newSeason.UserUUID = userUUID
+func (s *seasonService) CreateSeason(seasonDto *requests.CreateSeasonDto, userId uuid.UUID) error {
+	newSeason := utils.MustCopy[models.Season](seasonDto)
+	newSeason.UserId = userId
 
-	return s.repo.Create(&newSeason)
+	return s.repo.Create(newSeason)
 }
 
 func (s *seasonService) UpdateSeason(
 	currentSeason *models.Season,
-	updatedSeasonDto *models.UpdateSeasonDto,
-) (*models.Season, error) {
-	updatedSeason := updatedSeasonDto.ToSeason()
+	updatedSeasonDto *requests.UpdateSeasonDto,
+) error {
+	updatedSeason := utils.MustCopy[models.Season](updatedSeasonDto)
 
-	return s.repo.Update(currentSeason, &updatedSeason)
+	return s.repo.Update(currentSeason, updatedSeason)
 }
 
 func (s *seasonService) DeleteSeason(season *models.Season) error {

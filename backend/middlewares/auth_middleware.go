@@ -2,8 +2,9 @@ package middlewares
 
 import (
 	"MatchManiaAPI/constants"
-	r "MatchManiaAPI/responses"
 	"MatchManiaAPI/services"
+	"MatchManiaAPI/utils"
+	r "MatchManiaAPI/utils/httpresponses"
 
 	"github.com/gin-gonic/gin"
 )
@@ -19,16 +20,17 @@ func NewAuthMiddleware(authService services.AuthService) AuthMiddleware {
 func (m *AuthMiddleware) RequireAuth(ctx *gin.Context) {
 	accessToken, err := ctx.Cookie(constants.AccessTokenName)
 	if err != nil || accessToken == "" {
-		r.Unauthorized(ctx, "Access token not found in cookies")
+		r.Unauthorized(ctx)
 		return
 	}
 
 	user, err := m.authService.VerifyAccessToken(accessToken)
 	if err != nil {
-		r.Unauthorized(ctx, err.Error())
+		r.Unauthorized(ctx)
 		return
 	}
 
-	ctx.Set("user", user)
+	utils.SetRequestingUserId(ctx, user.Id)
+
 	ctx.Next()
 }

@@ -1,8 +1,8 @@
 import { Route, Routes } from 'react-router-dom';
-import { Content } from './components/Content';
 import { ErrorBoundary } from './components/ErrorBoundary';
-import { Footer } from './components/Footer';
-import { Header } from './components/Header';
+import { Content } from './components/Layout/Content';
+import { Footer } from './components/Layout/Footer';
+import { Header } from './components/Layout/Header';
 import { ROUTES } from './constants/routes';
 import { HomePage } from './pages/HomePage';
 import { LoginPage } from './pages/LoginPage';

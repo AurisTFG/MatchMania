@@ -2,10 +2,12 @@ package controllers
 
 import (
 	"MatchManiaAPI/constants"
-	"MatchManiaAPI/models"
-	r "MatchManiaAPI/responses"
+	"MatchManiaAPI/models/dtos/requests"
+	"MatchManiaAPI/models/dtos/responses"
 	"MatchManiaAPI/services"
 	"MatchManiaAPI/utils"
+	r "MatchManiaAPI/utils/httpresponses"
+	"MatchManiaAPI/validators"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -26,36 +28,55 @@ func NewAuthController(
 	}
 }
 
+// @Summary Get current user
+// @Description Get current user
+// @Tags auth
+// @Success 200 {object} responses.UserDto
+// @Failure 422 {object} responses.ErrorDto
+// @Router /auth/me [get]
+func (c *AuthController) GetMe(ctx *gin.Context) {
+	userId := utils.MustGetRequestingUserId(ctx)
+
+	user, err := c.userService.GetUserById(userId)
+	if err != nil {
+		r.NotFound(ctx, err.Error())
+		return
+	}
+
+	dto := utils.MustCopy[responses.UserDto](user)
+
+	r.OK(ctx, dto)
+}
+
 // @Summary Sign up
 // @Description Sign up
 // @Tags auth
 // @Accept json
 // @Produce json
-// @Param signUpDto body models.SignUpDto true "Sign up details"
-// @Success 201 {object} models.UserDto
-// @Failure 400 {object} models.ErrorDto
-// @Failure 422 {object} models.ErrorDto
+// @Param signUpDto body requests.SignupDto true "Sign up details"
+// @Success 204
+// @Failure 400 {object} responses.ErrorDto
+// @Failure 422 {object} responses.ErrorDto
 // @Router /auth/signup [post]
 func (c *AuthController) SignUp(ctx *gin.Context) {
-	var bodyDto models.SignUpDto
+	var bodyDto requests.SignupDto
 
 	if err := ctx.ShouldBindJSON(&bodyDto); err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
 	}
 
-	if err := bodyDto.Validate(); err != nil {
+	if err := validators.Validate(&bodyDto); err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
 	}
 
-	user, err := c.userService.CreateUser(&bodyDto)
-	if err != nil {
+	if err := c.userService.CreateUser(&bodyDto); err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
 	}
 
-	r.Created(ctx, user.ToDto())
+	r.NoContent(ctx)
 }
 
 // @Summary Log in
@@ -63,20 +84,20 @@ func (c *AuthController) SignUp(ctx *gin.Context) {
 // @Tags auth
 // @Accept json
 // @Produce json
-// @Param loginDto body models.LoginDto true "Log in details"
-// @Success 200 {object} models.UserDto
-// @Failure 400 {object} models.ErrorDto
-// @Failure 422 {object} models.ErrorDto
+// @Param loginDto body requests.LoginDto true "Log in details"
+// @Success 204
+// @Failure 400 {object} responses.ErrorDto
+// @Failure 422 {object} responses.ErrorDto
 // @Router /auth/login [post]
 func (c *AuthController) LogIn(ctx *gin.Context) {
-	var bodyDto models.LoginDto
+	var bodyDto requests.LoginDto
 
 	if err := ctx.ShouldBindJSON(&bodyDto); err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
 	}
 
-	if err := bodyDto.Validate(); err != nil {
+	if err := validators.Validate(&bodyDto); err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
 	}
@@ -92,7 +113,7 @@ func (c *AuthController) LogIn(ctx *gin.Context) {
 		return
 	}
 
-	sessionUUID := uuid.New()
+	sessionId := uuid.New()
 
 	accessToken, err := c.authService.CreateAccessToken(user)
 	if err != nil {
@@ -100,13 +121,13 @@ func (c *AuthController) LogIn(ctx *gin.Context) {
 		return
 	}
 
-	refreshToken, err := c.authService.CreateRefreshToken(sessionUUID.String(), user)
+	refreshToken, err := c.authService.CreateRefreshToken(sessionId, user)
 	if err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
 	}
 
-	err = c.authService.CreateSession(sessionUUID, user.UUID, refreshToken)
+	err = c.authService.CreateSession(sessionId, user.Id, refreshToken)
 	if err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
@@ -114,14 +135,14 @@ func (c *AuthController) LogIn(ctx *gin.Context) {
 
 	c.authService.SetCookies(ctx, accessToken, refreshToken)
 
-	r.OK(ctx, user.ToDto())
+	r.NoContent(ctx)
 }
 
 // @Summary Log out
 // @Description Log out
 // @Tags auth
 // @Success 204
-// @Failure 422 {object} models.ErrorDto
+// @Failure 422 {object} responses.ErrorDto
 // @Router /auth/logout [post]
 func (c *AuthController) LogOut(ctx *gin.Context) {
 	tokenString, err := ctx.Cookie(constants.RefreshTokenName)
@@ -160,7 +181,7 @@ func (c *AuthController) LogOut(ctx *gin.Context) {
 // @Description Refresh token
 // @Tags auth
 // @Success 204
-// @Failure 422 {object} models.ErrorDto
+// @Failure 422 {object} responses.ErrorDto
 // @Router /auth/refresh [post]
 func (c *AuthController) RefreshToken(ctx *gin.Context) {
 	tokenString, err := ctx.Cookie(constants.RefreshTokenName)
@@ -201,20 +222,4 @@ func (c *AuthController) RefreshToken(ctx *gin.Context) {
 	c.authService.SetCookies(ctx, accessToken, refreshToken)
 
 	r.NoContent(ctx)
-}
-
-// @Summary Get current user
-// @Description Get current user
-// @Tags auth
-// @Success 200 {object} models.UserDto
-// @Failure 422 {object} models.ErrorDto
-// @Router /auth/me [get]
-func (c *AuthController) GetMe(ctx *gin.Context) {
-	user := utils.GetAuthUser(ctx)
-	if user == nil {
-		r.Unauthorized(ctx, "User not found")
-		return
-	}
-
-	r.OK(ctx, user.ToDto())
 }

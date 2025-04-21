@@ -1,5 +1,7 @@
 import { CssBaseline } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ReactNode } from 'react';
@@ -16,6 +18,7 @@ export default function AllProviders({ children }: { children: ReactNode }) {
       <CssBaseline />
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
           <Toaster
             richColors
             visibleToasts={4}
@@ -24,6 +27,7 @@ export default function AllProviders({ children }: { children: ReactNode }) {
           <BrowserRouter>
             {children}
           </BrowserRouter>
+          </LocalizationProvider>
         </AuthProvider>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
