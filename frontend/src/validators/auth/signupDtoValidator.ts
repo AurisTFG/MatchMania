@@ -17,7 +17,9 @@ export const signupDtoValidator = z
       .min(8, { message: 'Password must be at least 8 characters long.' })
       .max(100, { message: 'Password must be at most 100 characters long.' }),
 
-    confirmPassword: z.string(),
+    confirmPassword: z
+      .string()
+      .min(1, { message: 'Password confirmation is required.' }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Passwords do not match.',
