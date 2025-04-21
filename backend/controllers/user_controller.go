@@ -31,7 +31,7 @@ func (c *UserController) GetAllUsers(ctx *gin.Context) {
 		return
 	}
 
-	dto := utils.CopyOrPanic[[]responses.UserMinimalDto](users)
+	dto := utils.MustCopy[[]responses.UserMinimalDto](users)
 
 	r.OK(ctx, dto)
 }
@@ -57,7 +57,7 @@ func (c *UserController) GetUserById(ctx *gin.Context) {
 		return
 	}
 
-	dto := utils.CopyOrPanic[responses.UserMinimalDto](user)
+	dto := utils.MustCopy[responses.UserMinimalDto](user)
 
 	r.OK(ctx, dto)
 }

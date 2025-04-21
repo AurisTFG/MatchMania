@@ -9,7 +9,6 @@ import (
 	"MatchManiaAPI/validators"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 )
 
 type ResultController struct {
@@ -51,7 +50,7 @@ func (c *ResultController) GetAllResults(ctx *gin.Context) {
 		return
 	}
 
-	dto := utils.CopyOrPanic[[]responses.ResultDto](results)
+	dto := utils.MustCopy[[]responses.ResultDto](results)
 
 	r.OK(ctx, dto)
 }
@@ -93,7 +92,7 @@ func (c *ResultController) GetResult(ctx *gin.Context) {
 		return
 	}
 
-	dto := utils.CopyOrPanic[responses.ResultDto](result)
+	dto := utils.MustCopy[responses.ResultDto](result)
 
 	r.OK(ctx, dto)
 }
@@ -153,11 +152,7 @@ func (c *ResultController) CreateResult(ctx *gin.Context) {
 		return
 	}
 
-	userId := utils.GetAuthUserId(ctx)
-	if userId == uuid.Nil {
-		r.Unauthorized(ctx)
-		return
-	}
+	userId := utils.MustGetRequestingUserId(ctx)
 
 	if err = c.resultService.CreateResult(&bodyDto, team.SeasonId, team.Id, userId); err != nil {
 		r.UnprocessableEntity(ctx, err.Error())

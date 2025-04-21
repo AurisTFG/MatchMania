@@ -34,7 +34,7 @@ func (s *seasonService) GetSeasonById(seasonId uuid.UUID) (*models.Season, error
 }
 
 func (s *seasonService) CreateSeason(seasonDto *requests.CreateSeasonDto, userId uuid.UUID) error {
-	newSeason := utils.CopyOrPanic[models.Season](seasonDto)
+	newSeason := utils.MustCopy[models.Season](seasonDto)
 	newSeason.UserId = userId
 
 	return s.repo.Create(newSeason)
@@ -44,7 +44,7 @@ func (s *seasonService) UpdateSeason(
 	currentSeason *models.Season,
 	updatedSeasonDto *requests.UpdateSeasonDto,
 ) error {
-	updatedSeason := utils.CopyOrPanic[models.Season](updatedSeasonDto)
+	updatedSeason := utils.MustCopy[models.Season](updatedSeasonDto)
 
 	return s.repo.Update(currentSeason, updatedSeason)
 }

@@ -43,7 +43,7 @@ func (s *resultService) CreateResult(
 	teamId uuid.UUID,
 	userId uuid.UUID,
 ) error {
-	newResult := utils.CopyOrPanic[models.Result](resultDto)
+	newResult := utils.MustCopy[models.Result](resultDto)
 	newResult.SeasonId = seasonId
 	newResult.TeamId = teamId
 	newResult.UserId = userId
@@ -55,7 +55,7 @@ func (s *resultService) UpdateResult(
 	currentResult *models.Result,
 	updatedResultDto *requests.UpdateResultDto,
 ) error {
-	updatedResult := utils.CopyOrPanic[models.Result](updatedResultDto)
+	updatedResult := utils.MustCopy[models.Result](updatedResultDto)
 
 	return s.repo.Update(currentResult, updatedResult)
 }

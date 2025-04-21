@@ -6,7 +6,7 @@ import (
 	"github.com/jinzhu/copier"
 )
 
-func CopyOrPanic[T any](src any) *T {
+func MustCopy[T any](src any) *T {
 	var dest T
 
 	if err := copier.Copy(&dest, src); err != nil {

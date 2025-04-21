@@ -3,6 +3,7 @@ package middlewares
 import (
 	"MatchManiaAPI/constants"
 	"MatchManiaAPI/services"
+	"MatchManiaAPI/utils"
 	r "MatchManiaAPI/utils/httpresponses"
 
 	"github.com/gin-gonic/gin"
@@ -29,6 +30,7 @@ func (m *AuthMiddleware) RequireAuth(ctx *gin.Context) {
 		return
 	}
 
-	ctx.Set("userId", user.Id)
+	utils.SetRequestingUserId(ctx, user.Id)
+
 	ctx.Next()
 }

@@ -9,7 +9,6 @@ import (
 	"MatchManiaAPI/validators"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 )
 
 type SeasonController struct {
@@ -34,7 +33,7 @@ func (c *SeasonController) GetAllSeasons(ctx *gin.Context) {
 		return
 	}
 
-	dto := utils.CopyOrPanic[[]responses.SeasonDto](seasons)
+	dto := utils.MustCopy[[]responses.SeasonDto](seasons)
 
 	r.OK(ctx, dto)
 }
@@ -62,7 +61,7 @@ func (c *SeasonController) GetSeason(ctx *gin.Context) {
 		return
 	}
 
-	dto := utils.CopyOrPanic[responses.SeasonDto](season)
+	dto := utils.MustCopy[responses.SeasonDto](season)
 
 	r.OK(ctx, dto)
 }
@@ -90,11 +89,7 @@ func (c *SeasonController) CreateSeason(ctx *gin.Context) {
 		return
 	}
 
-	userId := utils.GetAuthUserId(ctx)
-	if userId == uuid.Nil {
-		r.Unauthorized(ctx)
-		return
-	}
+	userId := utils.MustGetRequestingUserId(ctx)
 
 	if err := c.seasonService.CreateSeason(&bodyDto, userId); err != nil {
 		r.UnprocessableEntity(ctx, err.Error())

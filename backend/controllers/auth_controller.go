@@ -35,11 +35,7 @@ func NewAuthController(
 // @Failure 422 {object} responses.ErrorDto
 // @Router /auth/me [get]
 func (c *AuthController) GetMe(ctx *gin.Context) {
-	userId := utils.GetAuthUserId(ctx)
-	if userId == uuid.Nil {
-		r.Unauthorized(ctx)
-		return
-	}
+	userId := utils.MustGetRequestingUserId(ctx)
 
 	user, err := c.userService.GetUserById(userId)
 	if err != nil {
@@ -47,7 +43,7 @@ func (c *AuthController) GetMe(ctx *gin.Context) {
 		return
 	}
 
-	dto := utils.CopyOrPanic[responses.UserDto](user)
+	dto := utils.MustCopy[responses.UserDto](user)
 
 	r.OK(ctx, dto)
 }

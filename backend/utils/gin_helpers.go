@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"MatchManiaAPI/constants"
+
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
@@ -14,16 +16,20 @@ func GetParamId(ctx *gin.Context, paramName string) (uuid.UUID, error) {
 	return id, nil
 }
 
-func GetAuthUserId(ctx *gin.Context) uuid.UUID {
-	userId, ok := ctx.Get("userId")
-	if !ok {
-		return uuid.Nil
+func MustGetRequestingUserId(ctx *gin.Context) uuid.UUID {
+	userIdObj, exists := ctx.Get(constants.RequestingUserIdKey)
+	if !exists {
+		panic("Requesting user ID not found in context")
 	}
 
-	userIdObj, ok := userId.(uuid.UUID)
+	userId, ok := userIdObj.(uuid.UUID)
 	if !ok {
-		return uuid.Nil
+		panic("Requesting user ID is not of type uuid.UUID")
 	}
 
-	return userIdObj
+	return userId
+}
+
+func SetRequestingUserId(ctx *gin.Context, userId uuid.UUID) {
+	ctx.Set(constants.RequestingUserIdKey, userId)
 }

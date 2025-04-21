@@ -38,7 +38,7 @@ func (s *userService) GetUserByEmail(email string) (*models.User, error) {
 }
 
 func (s *userService) CreateUser(signUpDto *requests.SignupDto) error {
-	newUser := utils.CopyOrPanic[models.User](signUpDto)
+	newUser := utils.MustCopy[models.User](signUpDto)
 
 	return s.repo.Create(newUser)
 }

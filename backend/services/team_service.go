@@ -38,7 +38,7 @@ func (s *teamService) CreateTeam(
 	seasonId uuid.UUID,
 	userId uuid.UUID,
 ) error {
-	newTeam := utils.CopyOrPanic[models.Team](teamDto)
+	newTeam := utils.MustCopy[models.Team](teamDto)
 	newTeam.Elo = 1000
 	newTeam.SeasonId = seasonId
 	newTeam.UserId = userId
@@ -50,7 +50,7 @@ func (s *teamService) UpdateTeam(
 	currentTeam *models.Team,
 	updatedTeamDto *requests.UpdateTeamDto,
 ) error {
-	updatedTeam := utils.CopyOrPanic[models.Team](updatedTeamDto)
+	updatedTeam := utils.MustCopy[models.Team](updatedTeamDto)
 
 	return s.repo.Update(currentTeam, updatedTeam)
 }
