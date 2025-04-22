@@ -51,6 +51,14 @@ export const QUERY_KEYS = {
     ],
   },
 
+  TRACKMANIA: {
+    ROOT: ['trackmania'],
+    OAUTH: {
+      ROOT: ['trackmania', 'oauth'],
+      URL: ['trackmania', 'oauth', 'url'],
+    },
+  },
+
   MATCHMAKING: {
     ROOT: ['matchmaking'],
     QUEUE_TEAMS_COUNT: (seasonId: string) => [

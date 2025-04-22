@@ -3,6 +3,7 @@ package repositories
 import (
 	"MatchManiaAPI/config"
 	"MatchManiaAPI/models"
+	"fmt"
 
 	"github.com/google/uuid"
 )
@@ -13,6 +14,7 @@ type UserRepository interface {
 	FindByEmail(string) (*models.User, error)
 	Create(*models.User) error
 	Update(*models.User, *models.User) error
+	Save(*models.User) error
 	Delete(*models.User) error
 }
 
@@ -35,8 +37,8 @@ func (r *userRepository) FindAll() ([]models.User, error) {
 func (r *userRepository) FindById(userId uuid.UUID) (*models.User, error) {
 	var user models.User
 
-	result := r.db.First(&user, "id = ?", userId)
-
+	result := r.db.Preload("TrackmaniaOauthTracks").First(&user, "id = ?", userId)
+	fmt.Println("res", result)
 	return &user, result.Error
 }
 
@@ -64,6 +66,12 @@ func (r *userRepository) Update(currentUser *models.User, updatedUser *models.Us
 	}
 
 	result := r.db.Model(currentUser).Updates(updatedUser)
+
+	return result.Error
+}
+
+func (r *userRepository) Save(user *models.User) error {
+	result := r.db.Save(user)
 
 	return result.Error
 }

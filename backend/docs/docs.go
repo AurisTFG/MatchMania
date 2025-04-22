@@ -1225,6 +1225,65 @@ const docTemplate = `{
                 }
             }
         },
+        "/trackmania/oauth/callback": {
+            "get": {
+                "description": "Handle Trackmania OAuth callback",
+                "tags": [
+                    "trackmania"
+                ],
+                "summary": "Handle Trackmania OAuth callback",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization code",
+                        "name": "code",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "State parameter",
+                        "name": "state",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "302": {
+                        "description": "Found"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    }
+                }
+            }
+        },
+        "/trackmania/oauth/url": {
+            "get": {
+                "description": "Start Trackmania OAuth flow",
+                "tags": [
+                    "trackmania"
+                ],
+                "summary": "Start Trackmania OAuth flow",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TrackmaniaOAuthUrlDto"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    }
+                }
+            }
+        },
         "/users": {
             "get": {
                 "description": "Get all users",
@@ -1610,9 +1669,21 @@ const docTemplate = `{
                 }
             }
         },
+        "responses.TrackmaniaOAuthUrlDto": {
+            "type": "object",
+            "properties": {
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
         "responses.UserDto": {
             "type": "object",
             "properties": {
+                "country": {
+                    "type": "string",
+                    "example": "FR"
+                },
                 "email": {
                     "type": "string",
                     "example": "email@example.com"
@@ -1628,6 +1699,14 @@ const docTemplate = `{
                         }
                     ],
                     "example": "admin"
+                },
+                "trackmaniaId": {
+                    "type": "string",
+                    "example": "526432ea-822b-4b5b-b1b3-34e8ab453e03"
+                },
+                "trackmaniaName": {
+                    "type": "string",
+                    "example": "JohnDoe"
                 },
                 "username": {
                     "type": "string",

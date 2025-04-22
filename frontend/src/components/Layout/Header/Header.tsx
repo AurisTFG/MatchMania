@@ -170,7 +170,6 @@ export default function Header() {
           </div>
         )}
 
-        {/* Mobile Menu Drawer */}
         <Drawer
           anchor="left"
           open={mobileMenuOpen}

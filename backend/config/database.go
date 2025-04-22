@@ -44,6 +44,8 @@ func MigrateDatabase(db *DB) error {
 		&models.Season{},
 		&models.Team{},
 		&models.Result{},
+		&models.TrackmaniaOauthState{},
+		&models.TrackmaniaOauthTrack{},
 	)
 	if err != nil {
 		return fmt.Errorf("failed to migrate database: %w", err)

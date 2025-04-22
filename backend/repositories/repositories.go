@@ -3,19 +3,23 @@ package repositories
 import "MatchManiaAPI/config"
 
 type Repositories struct {
-	SessionRepository SessionRepository
-	UserRepository    UserRepository
-	SeasonRepository  SeasonRepository
-	TeamRepository    TeamRepository
-	ResultRepository  ResultRepository
+	SessionRepository              SessionRepository
+	UserRepository                 UserRepository
+	SeasonRepository               SeasonRepository
+	TeamRepository                 TeamRepository
+	ResultRepository               ResultRepository
+	TrackmaniaOAuthStateRepository TrackmaniaOAuthStateRepository
+	TrackmaniaOAuthTrackRepository TrackmaniaOAuthTrackRepository
 }
 
 func SetupRepositories(db *config.DB) *Repositories {
 	return &Repositories{
-		SessionRepository: NewSessionRepository(db),
-		UserRepository:    NewUserRepository(db),
-		SeasonRepository:  NewSeasonRepository(db),
-		TeamRepository:    NewTeamRepository(db),
-		ResultRepository:  NewResultRepository(db),
+		SessionRepository:              NewSessionRepository(db),
+		UserRepository:                 NewUserRepository(db),
+		SeasonRepository:               NewSeasonRepository(db),
+		TeamRepository:                 NewTeamRepository(db),
+		ResultRepository:               NewResultRepository(db),
+		TrackmaniaOAuthStateRepository: NewTrackmaniaOAuthStateRepository(db),
+		TrackmaniaOAuthTrackRepository: NewTrackmaniaOAuthTrackRepository(db),
 	}
 }

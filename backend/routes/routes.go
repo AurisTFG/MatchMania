@@ -29,6 +29,15 @@ func SetupRoutes(
 			users.GET(":userId", c.UserController.GetUserById)
 		}
 
+		trackmania := v1.Group("/trackmania")
+		{
+			oauth := trackmania.Group("/oauth")
+			{
+				oauth.GET("/url", m.AuthMiddleware.RequireAuth, c.TrackmaniaOAuthController.GetAuthUrl)
+				oauth.GET("/callback", c.TrackmaniaOAuthController.HandleCallback)
+			}
+		}
+
 		matchmaking := v1.Group("/matchmaking")
 		{
 			queue := matchmaking.Group("/queue")

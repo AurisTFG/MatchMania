@@ -1,7 +1,8 @@
 import {
+  AccountCircle as AccountCircleIcon,
   Edit as EditIcon,
   Mail as MailIcon,
-  Person as PersonIcon,
+  SportsEsports as SportsEsportsIcon,
 } from '@mui/icons-material';
 import {
   Avatar,
@@ -10,15 +11,26 @@ import {
   Card,
   CardActions,
   CircularProgress,
+  Divider,
   Stack,
   Typography,
 } from '@mui/material';
+import { useState } from 'react';
 import { useFetchMe } from '../../api/hooks/authHooks';
+import { useGetTrackmaniaOAuthUrl } from '../../api/hooks/trackmaniaOauthHooks';
 
 export default function ProfilePage() {
   const { data: user, isLoading, error, refetch } = useFetchMe();
+  const [connecting, setConnecting] = useState(false);
+  const { data: urlDto, isLoading: isUrlLoading } = useGetTrackmaniaOAuthUrl();
 
-  if (isLoading) {
+  const handleConnectTrackmania = () => {
+    setConnecting(true);
+    window.location.href = urlDto?.url ?? '';
+    setConnecting(false);
+  };
+
+  if (isLoading || isUrlLoading) {
     return (
       <Box
         display="flex"
@@ -64,26 +76,20 @@ export default function ProfilePage() {
     >
       <Card
         sx={{
-          width: 400,
+          width: 420,
           borderRadius: 4,
           boxShadow: 6,
-          p: 3,
+          p: 4,
           bgcolor: 'background.paper',
         }}
       >
         <Stack
-          spacing={3}
+          direction="column"
           alignItems="center"
+          spacing={2}
         >
-          <Avatar
-            sx={{
-              width: 96,
-              height: 96,
-              bgcolor: 'primary.main',
-              fontSize: 48,
-            }}
-          >
-            <PersonIcon fontSize="inherit" />
+          <Avatar sx={{ width: 80, height: 80, bgcolor: 'primary.main' }}>
+            <AccountCircleIcon sx={{ fontSize: 60 }} />
           </Avatar>
           <Typography
             variant="h5"
@@ -91,6 +97,25 @@ export default function ProfilePage() {
           >
             {user?.username}
           </Typography>
+          {user?.role && (
+            <Typography
+              variant="body2"
+              sx={{
+                color: 'primary.main',
+                bgcolor: 'primary.50',
+                px: 2,
+                py: 0.5,
+                borderRadius: 2,
+                fontWeight: 500,
+                letterSpacing: 0.8,
+                textTransform: 'uppercase',
+                mt: -0.5,
+                mb: 1,
+              }}
+            >
+              {user.role}
+            </Typography>
+          )}
           <Stack
             direction="row"
             alignItems="center"
@@ -98,39 +123,52 @@ export default function ProfilePage() {
           >
             <MailIcon color="action" />
             <Typography
-              variant="body1"
+              variant="body2"
               color="text.secondary"
             >
               {user?.email}
             </Typography>
           </Stack>
-          {user?.role && (
+          {user?.trackmaniaName && (
             <Typography
               variant="body2"
-              color="primary"
-              sx={{
-                bgcolor: 'primary.50',
-                px: 2,
-                py: 0.5,
-                borderRadius: 2,
-                fontWeight: 500,
-                mt: 1,
-                letterSpacing: 1,
-                textTransform: 'uppercase',
-              }}
+              color="text.secondary"
             >
-              {user.role}
+              <strong>Trackmania Name:</strong> {user.trackmaniaName}
+            </Typography>
+          )}
+          {user?.trackmaniaId && (
+            <Typography
+              variant="body2"
+              color="text.secondary"
+            >
+              <strong>Trackmania ID:</strong> {user.trackmaniaId}
             </Typography>
           )}
         </Stack>
-        <CardActions sx={{ justifyContent: 'center', mt: 3 }}>
+
+        <Divider sx={{ my: 3 }} />
+
+        <CardActions
+          sx={{ justifyContent: 'center', gap: 2, flexWrap: 'wrap' }}
+        >
           <Button
             variant="contained"
             startIcon={<EditIcon />}
             size="large"
-            sx={{ borderRadius: 2, px: 4 }}
+            sx={{ borderRadius: 2, px: 4, minWidth: 180 }}
           >
             Edit Profile
+          </Button>
+          <Button
+            variant="outlined"
+            startIcon={<SportsEsportsIcon />}
+            size="large"
+            sx={{ borderRadius: 2, px: 3, minWidth: 220 }}
+            onClick={handleConnectTrackmania}
+            disabled={connecting}
+          >
+            Sync Trackmania Account
           </Button>
         </CardActions>
       </Card>
