@@ -7,10 +7,11 @@ import (
 	"MatchManiaAPI/models/dtos/responses"
 	"MatchManiaAPI/repositories"
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
-	"math/rand"
+	"math/rand/v2"
 	"net/http"
 	"net/url"
 
@@ -49,7 +50,7 @@ func (s *trackmaniaOAuthService) GenerateRandomState() string {
 	b := make([]rune, 32)
 
 	for i := range b {
-		b[i] = letters[rand.Intn(len(letters))]
+		b[i] = letters[rand.IntN(len(letters))]
 	}
 
 	return string(b)
@@ -117,7 +118,12 @@ func (s *trackmaniaOAuthService) GetAccessToken(code string) (*responses.Trackma
 	form.Set("redirect_uri", s.env.TrackmaniaOAuthRedirectURL)
 	form.Set("code", code)
 
-	req, err := http.NewRequest("POST", baseUrl, bytes.NewBufferString(form.Encode()))
+	req, err := http.NewRequestWithContext(
+		context.Background(),
+		http.MethodPost,
+		baseUrl,
+		bytes.NewBufferString(form.Encode()),
+	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -130,7 +136,11 @@ func (s *trackmaniaOAuthService) GetAccessToken(code string) (*responses.Trackma
 		return nil, fmt.Errorf("failed to send request: %w", err)
 	}
 
-	defer response.Body.Close()
+	defer func() {
+		if cerr := response.Body.Close(); cerr != nil {
+			fmt.Printf("warning: failed to close response body: %v\n", cerr)
+		}
+	}()
 
 	body, err := io.ReadAll(response.Body)
 	if err != nil {
@@ -159,7 +169,7 @@ func (s *trackmaniaOAuthService) GetProfilePageUrl() string {
 }
 
 func (s *trackmaniaOAuthService) GetUserInfo(accessToken string) (*responses.TrackmaniaOAuthUserDto, error) {
-	req, err := http.NewRequest("GET", constants.TrackmaniaOAuthUserURL, nil)
+	req, err := http.NewRequestWithContext(context.Background(), http.MethodGet, constants.TrackmaniaOAuthUserURL, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -169,14 +179,18 @@ func (s *trackmaniaOAuthService) GetUserInfo(accessToken string) (*responses.Tra
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if cerr := resp.Body.Close(); cerr != nil {
+			fmt.Printf("warning: failed to close response body: %v\n", cerr)
+		}
+	}()
 
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("unexpected status: %s", resp.Status)
 	}
 
 	var user responses.TrackmaniaOAuthUserDto
-	if err := json.NewDecoder(resp.Body).Decode(&user); err != nil {
+	if err = json.NewDecoder(resp.Body).Decode(&user); err != nil {
 		return nil, err
 	}
 
@@ -184,8 +198,12 @@ func (s *trackmaniaOAuthService) GetUserInfo(accessToken string) (*responses.Tra
 }
 
 func (s *trackmaniaOAuthService) GetUserFavoriteMaps(accessToken string) ([]responses.TrackmaniaOAuthTracksDto, error) {
-
-	req, err := http.NewRequest("GET", constants.TrackmaniaOAuthFavoritesURL, nil)
+	req, err := http.NewRequestWithContext(
+		context.Background(),
+		http.MethodGet,
+		constants.TrackmaniaOAuthFavoritesURL,
+		nil,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -195,7 +213,11 @@ func (s *trackmaniaOAuthService) GetUserFavoriteMaps(accessToken string) ([]resp
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if cerr := resp.Body.Close(); cerr != nil {
+			fmt.Printf("warning: failed to close response body: %v\n", cerr)
+		}
+	}()
 
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("unexpected status: %s", resp.Status)
@@ -204,7 +226,7 @@ func (s *trackmaniaOAuthService) GetUserFavoriteMaps(accessToken string) ([]resp
 	var favoritesWrapper struct {
 		List []responses.TrackmaniaOAuthTracksDto `json:"list"`
 	}
-	if err := json.NewDecoder(resp.Body).Decode(&favoritesWrapper); err != nil {
+	if err = json.NewDecoder(resp.Body).Decode(&favoritesWrapper); err != nil {
 		return nil, err
 	}
 

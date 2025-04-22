@@ -44,7 +44,11 @@ func SetupRoutes(
 			{
 				queue.POST("/join", m.AuthMiddleware.RequireAuth, c.MatchmakingController.JoinQueue)
 				queue.POST("/leave", m.AuthMiddleware.RequireAuth, c.MatchmakingController.LeaveQueue)
-				queue.GET("/teams-count/:seasonId", m.AuthMiddleware.RequireAuth, c.MatchmakingController.GetQueueTeamsCount)
+				queue.GET(
+					"/teams-count/:seasonId",
+					m.AuthMiddleware.RequireAuth,
+					c.MatchmakingController.GetQueueTeamsCount,
+				)
 				queue.GET("/status/:teamId", m.AuthMiddleware.RequireAuth, c.MatchmakingController.CheckMatchStatus)
 			}
 		}

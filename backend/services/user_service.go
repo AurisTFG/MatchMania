@@ -54,7 +54,10 @@ func (s *userService) DeleteUser(user *models.User) error {
 	return s.repo.Delete(user)
 }
 
-func (s *userService) UpdateUserWithTrackmaniaUser(userId uuid.UUID, trackmaniaUser *responses.TrackmaniaOAuthUserDto) error {
+func (s *userService) UpdateUserWithTrackmaniaUser(
+	userId uuid.UUID,
+	trackmaniaUser *responses.TrackmaniaOAuthUserDto,
+) error {
 	user, err := s.repo.FindById(userId)
 	if err != nil {
 		return err
@@ -63,14 +66,17 @@ func (s *userService) UpdateUserWithTrackmaniaUser(userId uuid.UUID, trackmaniaU
 	user.TrackmaniaId = trackmaniaUser.AccountId
 	user.TrackmaniaName = trackmaniaUser.DisplayName
 
-	if err := s.repo.Save(user); err != nil {
+	if err = s.repo.Save(user); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (s *userService) UpdateUserWithTrackmaniaTracks(userId uuid.UUID, tracksDto []responses.TrackmaniaOAuthTracksDto) error {
+func (s *userService) UpdateUserWithTrackmaniaTracks(
+	userId uuid.UUID,
+	tracksDto []responses.TrackmaniaOAuthTracksDto,
+) error {
 	tracks := utils.MustCopy[[]models.TrackmaniaOauthTrack](tracksDto)
 
 	if err := s.trackRepo.DeleteAllTracksByUserId(userId); err != nil {

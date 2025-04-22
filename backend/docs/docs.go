@@ -1708,6 +1708,12 @@ const docTemplate = `{
                     "type": "string",
                     "example": "JohnDoe"
                 },
+                "tracks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/trackmanioauth.TrackmaniaOAuthTracksDto"
+                    }
+                },
                 "username": {
                     "type": "string",
                     "example": "john_doe_123"
@@ -1737,6 +1743,23 @@ const docTemplate = `{
                 "name": {
                     "type": "string",
                     "example": "BIG Clan"
+                }
+            }
+        },
+        "trackmanioauth.TrackmaniaOAuthTracksDto": {
+            "type": "object",
+            "properties": {
+                "author": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "thumbnailUrl": {
+                    "type": "string"
+                },
+                "uid": {
+                    "type": "string"
                 }
             }
         },

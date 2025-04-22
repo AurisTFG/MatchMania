@@ -99,7 +99,6 @@ func (c *TrackmaniaOAuthController) HandleCallback(ctx *gin.Context) {
 	if err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
-
 	}
 
 	err = c.userService.UpdateUserWithTrackmaniaTracks(userId, tracks)

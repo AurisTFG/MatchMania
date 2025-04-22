@@ -28,7 +28,10 @@ func (r *trackmaniaOAuthTrackRepository) GetAllTracks() ([]models.TrackmaniaOaut
 	return tracks, result.Error
 }
 
-func (r *trackmaniaOAuthTrackRepository) InsertAllTracksForUser(userId uuid.UUID, tracks []models.TrackmaniaOauthTrack) error {
+func (r *trackmaniaOAuthTrackRepository) InsertAllTracksForUser(
+	userId uuid.UUID,
+	tracks []models.TrackmaniaOauthTrack,
+) error {
 	for i := range tracks {
 		tracks[i].UserId = userId
 	}

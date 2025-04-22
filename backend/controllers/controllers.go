@@ -23,7 +23,11 @@ func SetupControllers(
 	teamController := NewTeamController(services.SeasonService, services.TeamService)
 	resultController := NewResultController(services.TeamService, services.ResultService)
 	trackmaniaOAuthController := NewTrackmaniaOAuthController(services.TrackmaniaOAuthService, services.UserService)
-	matchmakingController := NewMatchmakingController(services.MatchmakingService, services.UserService, services.TeamService)
+	matchmakingController := NewMatchmakingController(
+		services.MatchmakingService,
+		services.UserService,
+		services.TeamService,
+	)
 
 	return &Controllers{
 		AuthController:            authController,
