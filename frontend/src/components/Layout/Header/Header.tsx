@@ -109,6 +109,19 @@ export default function Header() {
             >
               Seasons
             </Button>
+            <Button
+              onClick={() => void navigate(ROUTES.MATCHMAKING.QUEUE)}
+              color="inherit"
+              sx={{
+                mr: 1,
+                textDecoration: isActive(ROUTES.MATCHMAKING.QUEUE)
+                  ? 'underline'
+                  : 'none',
+                fontSize: '1.20rem',
+              }}
+            >
+              Matchmaking Queue
+            </Button>
           </Box>
         )}
 

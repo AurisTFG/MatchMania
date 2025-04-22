@@ -2,6 +2,7 @@ package requests
 
 import (
 	"MatchManiaAPI/models/dtos/requests/auth"
+	"MatchManiaAPI/models/dtos/requests/matchmaking"
 	"MatchManiaAPI/models/dtos/requests/results"
 	"MatchManiaAPI/models/dtos/requests/seasons"
 	"MatchManiaAPI/models/dtos/requests/teams"
@@ -15,3 +16,5 @@ type CreateSeasonDto = seasons.CreateSeasonDto
 type UpdateSeasonDto = seasons.UpdateSeasonDto
 type CreateTeamDto = teams.CreateTeamDto
 type UpdateTeamDto = teams.UpdateTeamDto
+type JoinQueueDto = matchmaking.JoinQueueDto
+type LeaveQueueDto = matchmaking.LeaveQueueDto

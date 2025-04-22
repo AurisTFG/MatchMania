@@ -29,6 +29,17 @@ func SetupRoutes(
 			users.GET(":userId", c.UserController.GetUserById)
 		}
 
+		matchmaking := v1.Group("/matchmaking")
+		{
+			queue := matchmaking.Group("/queue")
+			{
+				queue.POST("/join", m.AuthMiddleware.RequireAuth, c.MatchmakingController.JoinQueue)
+				queue.POST("/leave", m.AuthMiddleware.RequireAuth, c.MatchmakingController.LeaveQueue)
+				queue.GET("/teams-count/:seasonId", m.AuthMiddleware.RequireAuth, c.MatchmakingController.GetQueueTeamsCount)
+				queue.GET("/status/:teamId", m.AuthMiddleware.RequireAuth, c.MatchmakingController.CheckMatchStatus)
+			}
+		}
+
 		seasons := v1.Group("/seasons")
 		{
 			seasons.GET("", c.SeasonController.GetAllSeasons)

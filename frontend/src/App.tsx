@@ -6,6 +6,7 @@ import { Header } from './components/Layout/Header';
 import { ROUTES } from './constants/routes';
 import { HomePage } from './pages/HomePage';
 import { LoginPage } from './pages/LoginPage';
+import { MatchmakingQueuePage } from './pages/MatchmakingQueuePage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { ResultsPage } from './pages/ResultsPage';
@@ -49,6 +50,10 @@ export default function App() {
             <Route
               path={ROUTES.RESULTS(':seasonId', ':teamId')}
               element={<ResultsPage />}
+            />
+            <Route
+              path={ROUTES.MATCHMAKING.QUEUE}
+              element={<MatchmakingQueuePage />}
             />
             <Route
               path={ROUTES.NOT_FOUND}

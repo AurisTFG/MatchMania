@@ -167,6 +167,172 @@ const docTemplate = `{
                 }
             }
         },
+        "/matchmaking/queue/join": {
+            "post": {
+                "description": "Join matchmaking queue",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "matchmaking"
+                ],
+                "summary": "Join matchmaking queue",
+                "parameters": [
+                    {
+                        "description": "Join Queue DTO",
+                        "name": "result",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/requests.JoinQueueDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    }
+                }
+            }
+        },
+        "/matchmaking/queue/leave": {
+            "post": {
+                "description": "Leave matchmaking queue",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "matchmaking"
+                ],
+                "summary": "Leave matchmaking queue",
+                "parameters": [
+                    {
+                        "description": "Leave Queue DTO",
+                        "name": "result",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/requests.LeaveQueueDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    }
+                }
+            }
+        },
+        "/matchmaking/queue/status/{teamId}": {
+            "get": {
+                "description": "Check match status",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "matchmaking"
+                ],
+                "summary": "Check match status",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "0deecf6a-289b-49a0-8f1b-9bc4185f99df",
+                        "description": "Team ID",
+                        "name": "teamId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.MatchStatusDto"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    }
+                }
+            }
+        },
+        "/matchmaking/queue/teams-count/{seasonId}": {
+            "get": {
+                "description": "Get matchmaking queue",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "matchmaking"
+                ],
+                "summary": "Get matchmaking queue",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.QueueTeamsCountDto"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    }
+                }
+            }
+        },
         "/seasons": {
             "get": {
                 "description": "Get all seasons",
@@ -1200,6 +1366,36 @@ const docTemplate = `{
                 }
             }
         },
+        "requests.JoinQueueDto": {
+            "type": "object",
+            "required": [
+                "seasonId",
+                "teamId"
+            ],
+            "properties": {
+                "seasonId": {
+                    "type": "string"
+                },
+                "teamId": {
+                    "type": "string"
+                }
+            }
+        },
+        "requests.LeaveQueueDto": {
+            "type": "object",
+            "required": [
+                "seasonId",
+                "teamId"
+            ],
+            "properties": {
+                "seasonId": {
+                    "type": "string"
+                },
+                "teamId": {
+                    "type": "string"
+                }
+            }
+        },
         "requests.LoginDto": {
             "type": "object",
             "required": [
@@ -1317,6 +1513,22 @@ const docTemplate = `{
                 "message": {
                     "type": "string",
                     "example": "Error message"
+                }
+            }
+        },
+        "responses.MatchStatusDto": {
+            "type": "object",
+            "properties": {
+                "isInMatch": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "responses.QueueTeamsCountDto": {
+            "type": "object",
+            "properties": {
+                "teamsCount": {
+                    "type": "integer"
                 }
             }
         },

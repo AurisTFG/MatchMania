@@ -2,6 +2,7 @@ package responses
 
 import (
 	"MatchManiaAPI/models/dtos/responses/errors"
+	"MatchManiaAPI/models/dtos/responses/matchmaking"
 	"MatchManiaAPI/models/dtos/responses/results"
 	"MatchManiaAPI/models/dtos/responses/seasons"
 	"MatchManiaAPI/models/dtos/responses/teams"
@@ -14,3 +15,5 @@ type SeasonDto = seasons.SeasonDto
 type TeamDto = teams.TeamDto
 type UserDto = users.UserDto
 type UserMinimalDto = users.UserMinimalDto
+type QueueTeamsCountDto = matchmaking.QueueTeamsCountDto
+type MatchStatusDto = matchmaking.MatchStatusDto

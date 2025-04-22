@@ -11,6 +11,7 @@ import {
 } from '../../api/hooks/resultsHooks';
 import { useFetchSeason } from '../../api/hooks/seasonsHooks';
 import { useFetchTeam, useFetchTeams } from '../../api/hooks/teamsHooks';
+import { SELECT_OPTIONS } from '../../constants/selectOptions';
 import { useAppForm } from '../../hooks/form/useAppForm';
 import { useAuth } from '../../providers/AuthProvider';
 import { ResultDto } from '../../types/dtos/responses/results/resultDto';
@@ -48,7 +49,7 @@ export default function ResultsPage() {
       endDate: getStartOfDay(),
       score: '',
       opponentScore: '',
-      opponentTeamId: '',
+      opponentTeamId: SELECT_OPTIONS.NOT_SELECTED.key,
     },
     validators: {
       onSubmit: resultDtoValidator,
@@ -215,8 +216,8 @@ export default function ResultsPage() {
               options={(teams ?? [])
                 .filter((opponentTeam) => opponentTeam.id !== teamId)
                 .map((opponentTeam) => ({
-                  value: opponentTeam.id,
-                  label: opponentTeam.name,
+                  key: opponentTeam.id,
+                  value: opponentTeam.name,
                 }))}
             />
           )}

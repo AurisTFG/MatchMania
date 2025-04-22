@@ -50,4 +50,20 @@ export const QUERY_KEYS = {
       resultId,
     ],
   },
+
+  MATCHMAKING: {
+    ROOT: ['matchmaking'],
+    QUEUE_TEAMS_COUNT: (seasonId: string) => [
+      'matchmaking',
+      'queue',
+      'teamsCount',
+      seasonId,
+    ],
+    CHECK_MATCH_STATUS: (teamId: string) => [
+      'matchmaking',
+      'queue',
+      'status',
+      teamId,
+    ],
+  },
 };

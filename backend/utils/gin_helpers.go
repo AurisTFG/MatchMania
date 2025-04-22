@@ -10,9 +10,11 @@ import (
 func GetParamId(ctx *gin.Context, paramName string) (uuid.UUID, error) {
 	idStr := ctx.Param(paramName)
 	id, err := uuid.Parse(idStr)
+
 	if err != nil {
 		return uuid.Nil, err
 	}
+
 	return id, nil
 }
 

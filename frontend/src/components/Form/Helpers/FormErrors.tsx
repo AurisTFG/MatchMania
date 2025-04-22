@@ -1,12 +1,20 @@
 import styles from './FormErrors.module.css';
 
-export default function FormErrors({ messages }: { messages: string[] }) {
+export type FormErrorsProps = {
+  messages: string[];
+  marginTop?: string | number;
+};
+
+export default function FormErrors({ messages, marginTop }: FormErrorsProps) {
   if (messages.length === 0) {
     return null;
   }
 
   return (
-    <div className={styles.errorContainer}>
+    <div
+      className={styles.errorContainer}
+      style={marginTop ? { marginTop } : undefined}
+    >
       {messages.map((message, index) => (
         <div
           key={index}

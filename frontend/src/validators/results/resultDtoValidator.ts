@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { SELECT_OPTIONS } from '../../constants/selectOptions';
 import { CreateResultDto } from '../../types/dtos/requests/results/createResultDto';
 
 export const resultDtoValidator = z
@@ -31,9 +32,12 @@ export const resultDtoValidator = z
       message: 'Opponent score must be a non-negative integer',
     }),
 
-    opponentTeamId: z.string().uuid({
-      message: 'Opponent team ID must be a valid UUID',
-    }),
+    opponentTeamId: z
+      .string()
+      .min(1, 'Opponent team is required')
+      .refine((val) => val !== SELECT_OPTIONS.NOT_SELECTED.key, {
+        message: 'Opponent team is required',
+      }),
   })
   .refine((data) => data.endDate >= data.startDate, {
     message: 'End date must be after or equal to the start date',
