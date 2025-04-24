@@ -1,10 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { ENDPOINTS } from '../../constants/endpoints';
-import { QUERY_KEYS } from '../../constants/queryKeys';
-import { CreateSeasonDto } from '../../types/dtos/requests/seasons/createSeasonDto';
-import { UpdateSeasonDto } from '../../types/dtos/requests/seasons/updateSeasonDto';
-import { SeasonDto } from '../../types/dtos/responses/seasons/seasonDto';
+import { ENDPOINTS } from 'constants/endpoints';
+import { QUERY_KEYS } from 'constants/queryKeys';
+import { CreateSeasonDto } from 'types/dtos/requests/seasons/createSeasonDto';
+import { UpdateSeasonDto } from 'types/dtos/requests/seasons/updateSeasonDto';
+import { SeasonDto } from 'types/dtos/responses/seasons/seasonDto';
 import {
   deleteRequest,
   getRequest,

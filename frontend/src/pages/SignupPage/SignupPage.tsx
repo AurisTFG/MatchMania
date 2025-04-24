@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
-import { useSignUp } from '../../api/hooks/authHooks';
-import { useAppForm } from '../../hooks/form/useAppForm';
-import { signupDtoValidator } from '../../validators/auth/signupDtoValidator';
+import { useSignUp } from 'api/hooks/authHooks';
+import { useAppForm } from 'hooks/form/useAppForm';
+import { signupDtoValidator } from 'validators/auth/signupDtoValidator';
 
 export default function SignupPage() {
   const { mutateAsync: signupAsync } = useSignUp();

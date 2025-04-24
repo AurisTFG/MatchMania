@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios';
-import { ErrorDto } from '../types/dtos/responses/errors/errorDto';
+import { ErrorDto } from 'types/dtos/responses/errors/errorDto';
 
 export const getErrorMessageFromAxiosError = (error: AxiosError): string => {
   const errorDto = error.response?.data as ErrorDto;

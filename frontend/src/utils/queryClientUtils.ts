@@ -1,9 +1,9 @@
 import { Mutation, Query } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { toast } from 'sonner';
-import axiosClient from '../configs/axiosClient';
-import { ENDPOINTS } from '../constants/endpoints';
-import { ROUTES } from '../constants/routes';
+import axiosClient from 'configs/axiosClient';
+import { ENDPOINTS } from 'constants/endpoints';
+import { ROUTES } from 'constants/routes';
 import { getErrorMessageFromAxiosError } from './errorUtils';
 
 async function handleError(

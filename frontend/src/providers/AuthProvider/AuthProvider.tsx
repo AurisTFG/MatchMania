@@ -1,6 +1,6 @@
 import { ReactNode, createContext, useContext } from 'react';
-import { useFetchMe } from '../../api/hooks/authHooks';
-import { UserDto } from '../../types/dtos/responses/users/userDto';
+import { useFetchMe } from 'api/hooks/authHooks';
+import { UserDto } from 'types/dtos/responses/users/userDto';
 
 type AuthContextType = {
   user: UserDto | null;

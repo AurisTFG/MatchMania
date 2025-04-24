@@ -21,7 +21,23 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
-    "types": ["vitest/globals"]
+    "types": ["vitest/globals"],
+
+    "baseUrl": "./src",
+    "paths": {
+      "api/*": ["api/*"],
+      "components/*": ["components/*"],
+      "configs/*": ["configs/*"],
+      "constants/*": ["constants/*"],
+      "hocs/*": ["hocs/*"],
+      "hooks/*": ["hooks/*"],
+      "pages/*": ["pages/*"],
+      "providers/*": ["providers/*"],
+      "styles/*": ["styles/*"],
+      "types/*": ["types/*"],
+      "utils/*": ["utils/*"],
+      "validators/*": ["validators/*"]
+    }
   },
   "include": ["src"]
 }

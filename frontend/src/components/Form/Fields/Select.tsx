@@ -4,8 +4,8 @@ import {
   MenuItem,
   Select as MuiSelect,
 } from '@mui/material';
-import { SELECT_OPTIONS } from '../../../constants/selectOptions';
-import { useFieldContext } from '../../../hooks/form/useAppForm';
+import { SELECT_OPTIONS } from 'constants/selectOptions';
+import { useFieldContext } from 'hooks/form/useAppForm';
 import FormErrors from '../Helpers/FormErrors';
 
 type SelectFieldProps = {

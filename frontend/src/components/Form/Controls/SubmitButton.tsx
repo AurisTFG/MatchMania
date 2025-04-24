@@ -1,5 +1,5 @@
 import { Button } from '@mui/material';
-import { useFormContext } from '../../../hooks/form/useAppForm';
+import { useFormContext } from 'hooks/form/useAppForm';
 
 export default function SubmitButton({ label }: { label: string }) {
   const form = useFormContext();

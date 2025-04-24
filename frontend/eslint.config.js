@@ -1,32 +1,36 @@
 import ts from "typescript-eslint";
 import react from "eslint-plugin-react";
-import imports from "eslint-plugin-import";
 import reactHooks from "eslint-plugin-react-hooks";
 import tanstackQuery from "@tanstack/eslint-plugin-query";
 import prettier from "eslint-plugin-prettier/recommended";
 import unusedImports from "eslint-plugin-unused-imports";
+import * as pluginImportX from "eslint-plugin-import-x";
+import tsParser from "@typescript-eslint/parser";
 
 export default ts.config(
   {
-    ignores: ["**/dist", "**/vite.config.ts", "**/eslint.config.js"],
+    ignores: ["dist", "vite.config.ts", "eslint.config.js"],
   },
-  ...ts.configs.recommended,
+  ts.configs.strictTypeChecked,
   ...ts.configs.stylisticTypeChecked,
-  ...ts.configs.strictTypeChecked,
   react.configs.flat.recommended,
   react.configs.flat["jsx-runtime"],
-  imports.flatConfigs.recommended,
-  imports.flatConfigs.typescript,
+  pluginImportX.flatConfigs.recommended,
+  pluginImportX.flatConfigs.typescript,
   {
+    files: ["**/*.{js,ts,tsx}"],
     settings: {
       react: {
         version: "detect",
       },
     },
     languageOptions: {
+      parser: tsParser,
       parserOptions: {
         project: ["./tsconfig.app.json"],
         tsconfigRootDir: import.meta.dirname,
+        ecmaVersion: "latest",
+        sourceType: "module",
       },
     },
     plugins: {
@@ -43,8 +47,28 @@ export default ts.config(
       "@typescript-eslint/consistent-type-definitions": ["error", "type"], // prefer type over interface
       "react/self-closing-comp": ["error", { component: true, html: true }], // force self closing tags for components and html elements
       "spaced-comment": ["error", "always", { markers: ["/"] }], // force space after comment markers
-      "import/extensions": ["error", "never"], // do not require file extensions on imports
-      "import/order": [
+      "no-restricted-imports": [
+        // restrict relative imports from parent directories
+        "error",
+        {
+          patterns: [
+            "**/../api/*",
+            "**/../components/*",
+            "**/../configs/*",
+            "**/../constants/*",
+            "**/../hocs/*",
+            "**/../hooks/*",
+            "**/../pages/*",
+            "**/../providers/*",
+            "**/../styles/*",
+            "**/../types/*",
+            "**/../utils/*",
+            "**/../validators/*",
+          ],
+        },
+      ],
+      "import-x/extensions": ["error", "never"], // do not require file extensions on imports
+      "import-x/order": [
         "error",
         {
           named: true,

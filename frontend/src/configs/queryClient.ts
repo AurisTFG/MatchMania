@@ -1,5 +1,5 @@
 import { MutationCache, QueryCache, QueryClient } from '@tanstack/react-query';
-import { onMutationError, onQueryError } from '../utils/queryClientUtils';
+import { onMutationError, onQueryError } from 'utils/queryClientUtils';
 
 export const queryClient = new QueryClient({
   defaultOptions: {

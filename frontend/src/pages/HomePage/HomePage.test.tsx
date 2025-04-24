@@ -1,9 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { useAuth } from '../../providers/AuthProvider';
+import { useAuth } from 'providers/AuthProvider';
 import HomePage from './HomePage';
 
-vi.mock('../../providers/AuthProvider', () => ({
+vi.mock('providers/AuthProvider', () => ({
   useAuth: vi.fn(),
 }));
 

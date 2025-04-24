@@ -1,6 +1,6 @@
 import { DatePicker as MuiDatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
-import { useFieldContext } from '../../../hooks/form/useAppForm';
+import { useFieldContext } from 'hooks/form/useAppForm';
 import FormErrors from '../Helpers/FormErrors';
 
 export default function DatePicker({ label }: { label: string }) {

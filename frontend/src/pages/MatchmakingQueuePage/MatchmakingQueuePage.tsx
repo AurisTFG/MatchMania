@@ -11,11 +11,11 @@ import {
   useGetQueueTeamsCount,
   useJoinQueue,
   useLeaveQueue,
-} from '../../api/hooks/matchmakingHooks';
-import { useFetchSeasons } from '../../api/hooks/seasonsHooks';
-import { useFetchTeams } from '../../api/hooks/teamsHooks';
-import { useAppForm } from '../../hooks/form/useAppForm';
-import { queueDtoValidator } from '../../validators/matchmaking/queueDtoValidator';
+} from 'api/hooks/matchmakingHooks';
+import { useFetchSeasons } from 'api/hooks/seasonsHooks';
+import { useFetchTeams } from 'api/hooks/teamsHooks';
+import { useAppForm } from 'hooks/form/useAppForm';
+import { queueDtoValidator } from 'validators/matchmaking/queueDtoValidator';
 
 export default function MatchmakingQueuePage() {
   const form = useAppForm({

@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { SELECT_OPTIONS } from '../../constants/selectOptions';
-import { CreateResultDto } from '../../types/dtos/requests/results/createResultDto';
+import { SELECT_OPTIONS } from 'constants/selectOptions';
+import { CreateResultDto } from 'types/dtos/requests/results/createResultDto';
 
 export const resultDtoValidator = z
   .object({

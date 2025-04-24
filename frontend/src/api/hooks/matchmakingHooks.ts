@@ -1,11 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { ENDPOINTS } from '../../constants/endpoints';
-import { QUERY_KEYS } from '../../constants/queryKeys';
-import { JoinQueueDto } from '../../types/dtos/requests/matchmaking/joinQueueDto';
-import { LeaveQueueDto } from '../../types/dtos/requests/matchmaking/leaveQueueDto';
-import { MatchStatusDto } from '../../types/dtos/responses/matchmaking/matchStatusDto';
-import { QueueTeamsCountDto } from '../../types/dtos/responses/matchmaking/queueTeamsCountDto';
+import { ENDPOINTS } from 'constants/endpoints';
+import { QUERY_KEYS } from 'constants/queryKeys';
+import { JoinQueueDto } from 'types/dtos/requests/matchmaking/joinQueueDto';
+import { LeaveQueueDto } from 'types/dtos/requests/matchmaking/leaveQueueDto';
+import { MatchStatusDto } from 'types/dtos/responses/matchmaking/matchStatusDto';
+import { QueueTeamsCountDto } from 'types/dtos/responses/matchmaking/queueTeamsCountDto';
 import { getRequest, postRequest } from '../httpRequests';
 
 export const useJoinQueue = () => {

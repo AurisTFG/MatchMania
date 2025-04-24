@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { SignupDto } from '../../types/dtos/requests/auth/signupDto';
+import { SignupDto } from 'types/dtos/requests/auth/signupDto';
 
 export const signupDtoValidator = z
   .object({

@@ -1,10 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { ENDPOINTS } from '../../constants/endpoints';
-import { QUERY_KEYS } from '../../constants/queryKeys';
-import { CreateTeamDto } from '../../types/dtos/requests/teams/createTeamDto';
-import { UpdateTeamDto } from '../../types/dtos/requests/teams/updateTeamDto';
-import { TeamDto } from '../../types/dtos/responses/teams/teamDto';
+import { ENDPOINTS } from 'constants/endpoints';
+import { QUERY_KEYS } from 'constants/queryKeys';
+import { CreateTeamDto } from 'types/dtos/requests/teams/createTeamDto';
+import { UpdateTeamDto } from 'types/dtos/requests/teams/updateTeamDto';
+import { TeamDto } from 'types/dtos/responses/teams/teamDto';
 import {
   deleteRequest,
   getRequest,
