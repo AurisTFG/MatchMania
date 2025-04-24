@@ -11,16 +11,14 @@ export default ts.config(
   {
     ignores: ["dist", "vite.config.ts", "eslint.config.js"],
   },
-  ...ts.configs.recommended,
+  ts.configs.strictTypeChecked,
   ...ts.configs.stylisticTypeChecked,
-  ...ts.configs.strictTypeChecked,
   react.configs.flat.recommended,
   react.configs.flat["jsx-runtime"],
   pluginImportX.flatConfigs.recommended,
   pluginImportX.flatConfigs.typescript,
   {
-    // files: ["**/*.{js,ts,tsx}"],
-
+    files: ["**/*.{js,ts,tsx}"],
     settings: {
       react: {
         version: "detect",
@@ -49,6 +47,26 @@ export default ts.config(
       "@typescript-eslint/consistent-type-definitions": ["error", "type"], // prefer type over interface
       "react/self-closing-comp": ["error", { component: true, html: true }], // force self closing tags for components and html elements
       "spaced-comment": ["error", "always", { markers: ["/"] }], // force space after comment markers
+      "no-restricted-imports": [
+        // restrict relative imports from parent directories
+        "error",
+        {
+          patterns: [
+            "**/../api/*",
+            "**/../components/*",
+            "**/../configs/*",
+            "**/../constants/*",
+            "**/../hocs/*",
+            "**/../hooks/*",
+            "**/../pages/*",
+            "**/../providers/*",
+            "**/../styles/*",
+            "**/../types/*",
+            "**/../utils/*",
+            "**/../validators/*",
+          ],
+        },
+      ],
       "import-x/extensions": ["error", "never"], // do not require file extensions on imports
       "import-x/order": [
         "error",
