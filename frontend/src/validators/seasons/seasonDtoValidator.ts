@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { CreateSeasonDto } from '../../types/dtos/requests/seasons/createSeasonDto';
+import { CreateSeasonDto } from 'types/dtos/requests/seasons/createSeasonDto';
 
 export const seasonDtoValidator = z
   .object({

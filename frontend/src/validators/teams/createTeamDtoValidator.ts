@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { CreateTeamDto } from '../../types/dtos/requests/teams/createTeamDto';
+import { CreateTeamDto } from 'types/dtos/requests/teams/createTeamDto';
 
 export const createTeamDtoValidator = z.object({
   name: z

@@ -1,12 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { ENDPOINTS } from '../../constants/endpoints';
-import { QUERY_KEYS } from '../../constants/queryKeys';
-import { ROUTES } from '../../constants/routes';
-import { LoginDto } from '../../types/dtos/requests/auth/loginDto';
-import { SignupDto } from '../../types/dtos/requests/auth/signupDto';
-import { UserDto } from '../../types/dtos/responses/users/userDto';
+import { ENDPOINTS } from 'constants/endpoints';
+import { QUERY_KEYS } from 'constants/queryKeys';
+import { ROUTES } from 'constants/routes';
+import { LoginDto } from 'types/dtos/requests/auth/loginDto';
+import { SignupDto } from 'types/dtos/requests/auth/signupDto';
+import { UserDto } from 'types/dtos/responses/users/userDto';
 import { getRequest, postRequest } from '../httpRequests';
 
 export const useFetchMe = () =>

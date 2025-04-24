@@ -2,9 +2,9 @@ import { Box, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
-import { useLogIn } from '../../api/hooks/authHooks';
-import { useAppForm } from '../../hooks/form/useAppForm';
-import { loginDtoValidator } from '../../validators/auth/loginDtoValidator';
+import { useLogIn } from 'api/hooks/authHooks';
+import { useAppForm } from 'hooks/form/useAppForm';
+import { loginDtoValidator } from 'validators/auth/loginDtoValidator';
 
 export default function LoginPage() {
   const [searchParams] = useSearchParams();

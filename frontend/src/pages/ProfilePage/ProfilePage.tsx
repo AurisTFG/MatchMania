@@ -17,8 +17,8 @@ import {
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
-import { useFetchMe } from '../../api/hooks/authHooks';
-import { useGetTrackmaniaOAuthUrl } from '../../api/hooks/trackmaniaOauthHooks';
+import { useFetchMe } from 'api/hooks/authHooks';
+import { useGetTrackmaniaOAuthUrl } from 'api/hooks/trackmaniaOauthHooks';
 
 export default function ProfilePage() {
   const { data: user, isLoading, error, refetch } = useFetchMe();

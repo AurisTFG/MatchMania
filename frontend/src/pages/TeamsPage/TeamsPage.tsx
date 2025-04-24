@@ -2,17 +2,17 @@ import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, List, Modal, Space, Typography } from 'antd';
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { useFetchSeason } from '../../api/hooks/seasonsHooks';
+import { useFetchSeason } from 'api/hooks/seasonsHooks';
 import {
   useCreateTeam,
   useDeleteTeam,
   useFetchTeams,
   useUpdateTeam,
-} from '../../api/hooks/teamsHooks';
-import { useAppForm } from '../../hooks/form/useAppForm';
-import { useAuth } from '../../providers/AuthProvider/AuthProvider';
-import { TeamDto } from '../../types/dtos/responses/teams/teamDto';
-import { createTeamDtoValidator } from '../../validators/teams/createTeamDtoValidator';
+} from 'api/hooks/teamsHooks';
+import { useAppForm } from 'hooks/form/useAppForm';
+import { useAuth } from 'providers/AuthProvider/AuthProvider';
+import { TeamDto } from 'types/dtos/responses/teams/teamDto';
+import { createTeamDtoValidator } from 'validators/teams/createTeamDtoValidator';
 
 export default function TeamsPage() {
   const { seasonId = '' } = useParams<{ seasonId: string }>();

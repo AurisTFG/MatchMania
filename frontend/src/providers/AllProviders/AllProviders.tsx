@@ -7,8 +7,8 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ReactNode } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { Toaster } from 'sonner';
-import { queryClient } from '../../configs/queryClient';
-import theme from '../../styles/theme';
+import { queryClient } from 'configs/queryClient';
+import theme from 'styles/theme';
 import { AuthProvider } from '../AuthProvider';
 
 export default function AllProviders({ children }: { children: ReactNode }) {

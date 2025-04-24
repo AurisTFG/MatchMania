@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { LoginDto } from '../../types/dtos/requests/auth/loginDto';
+import { LoginDto } from 'types/dtos/requests/auth/loginDto';
 
 export const loginDtoValidator = z.object({
   email: z.string().email({ message: 'Email must be a valid email address.' }),

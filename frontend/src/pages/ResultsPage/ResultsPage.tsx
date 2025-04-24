@@ -8,15 +8,15 @@ import {
   useDeleteResult,
   useFetchResults,
   useUpdateResult,
-} from '../../api/hooks/resultsHooks';
-import { useFetchSeason } from '../../api/hooks/seasonsHooks';
-import { useFetchTeam, useFetchTeams } from '../../api/hooks/teamsHooks';
-import { SELECT_OPTIONS } from '../../constants/selectOptions';
-import { useAppForm } from '../../hooks/form/useAppForm';
-import { useAuth } from '../../providers/AuthProvider';
-import { ResultDto } from '../../types/dtos/responses/results/resultDto';
-import { getStartOfDay } from '../../utils/dateUtils';
-import { resultDtoValidator } from '../../validators/results/resultDtoValidator';
+} from 'api/hooks/resultsHooks';
+import { useFetchSeason } from 'api/hooks/seasonsHooks';
+import { useFetchTeam, useFetchTeams } from 'api/hooks/teamsHooks';
+import { SELECT_OPTIONS } from 'constants/selectOptions';
+import { useAppForm } from 'hooks/form/useAppForm';
+import { useAuth } from 'providers/AuthProvider';
+import { ResultDto } from 'types/dtos/responses/results/resultDto';
+import { getStartOfDay } from 'utils/dateUtils';
+import { resultDtoValidator } from 'validators/results/resultDtoValidator';
 
 export default function ResultsPage() {
   const { seasonId = '', teamId = '' } = useParams<{

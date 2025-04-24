@@ -12,9 +12,9 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useLogOut } from '../../../api/hooks/authHooks';
-import { ROUTES } from '../../../constants/routes';
-import { useAuth } from '../../../providers/AuthProvider';
+import { useLogOut } from 'api/hooks/authHooks';
+import { ROUTES } from 'constants/routes';
+import { useAuth } from 'providers/AuthProvider';
 
 export default function Header() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);

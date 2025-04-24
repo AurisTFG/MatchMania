@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
-import { Footer } from 'components/Layout/Footer';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { Content } from './components/Layout/Content';
+import { Footer } from './components/Layout/Footer';
 import { Header } from './components/Layout/Header';
 import { ROUTES } from './constants/routes';
 import { HomePage } from './pages/HomePage';

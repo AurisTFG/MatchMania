@@ -1,10 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { ENDPOINTS } from '../../constants/endpoints';
-import { QUERY_KEYS } from '../../constants/queryKeys';
-import { CreateResultDto } from '../../types/dtos/requests/results/createResultDto';
-import { UpdateResultDto } from '../../types/dtos/requests/results/updateResultDto';
-import { ResultDto } from '../../types/dtos/responses/results/resultDto';
+import { ENDPOINTS } from 'constants/endpoints';
+import { QUERY_KEYS } from 'constants/queryKeys';
+import { CreateResultDto } from 'types/dtos/requests/results/createResultDto';
+import { UpdateResultDto } from 'types/dtos/requests/results/updateResultDto';
+import { ResultDto } from 'types/dtos/responses/results/resultDto';
 import {
   deleteRequest,
   getRequest,
