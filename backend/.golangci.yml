@@ -105,7 +105,7 @@ linters:
     - prealloc # [premature optimization, but can be used in some cases] finds slice declarations that could potentially be preallocated
     - tagalign # checks that struct tags are well aligned
     - zerologlint # detects the wrong usage of zerolog that a user forgets to dispatch zerolog.Event
-    - tagliatelle # checks the struct tags
+    # - tagliatelle # checks the struct tags. Had to turn off because trackmania api uses underscores in json field names
     - dupword # [useless without config] checks for duplicate words in the source code
     - containedctx # detects struct contained context.Context field
     - contextcheck # [too many false positives] checks the function whether use a non-inherited context
@@ -124,7 +124,7 @@ linters:
       rules:
         - name: var-naming
           arguments:
-            - ["ID"] # AllowList
+            - ["ID", "URL", "UID"] # AllowList
             - ["VM"] # DenyList
     cyclop:
       # The maximal code complexity to report.

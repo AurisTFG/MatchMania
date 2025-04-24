@@ -81,6 +81,8 @@ func main() {
 
 	fmt.Println("(6/6) Starting server on " + env.ServerURL + " . . . ")
 
+	services.MatchmakingService.StartMatchmakingWorker()
+
 	err = server.Run(env.ServerURL)
 	if err != nil {
 		log.Fatal("Failed to start Gin server.")

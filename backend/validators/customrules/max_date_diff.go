@@ -1,7 +1,6 @@
 package customrules
 
 import (
-	"fmt"
 	"strconv"
 	"time"
 
@@ -25,6 +24,5 @@ func MaxDateDiffValidator(fl validator.FieldLevel) bool {
 	}
 
 	diff := endDate.Sub(startDate)
-	fmt.Println("MaxDateDiffValidator", startDate, endDate, diff, maxDays)
 	return diff <= time.Duration(maxDays)*24*time.Hour
 }

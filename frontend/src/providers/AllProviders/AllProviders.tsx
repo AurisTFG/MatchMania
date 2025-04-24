@@ -11,7 +11,6 @@ import { queryClient } from '../../configs/queryClient';
 import theme from '../../styles/theme';
 import { AuthProvider } from '../AuthProvider';
 
-/* eslint-disable prettier/prettier */
 export default function AllProviders({ children }: { children: ReactNode }) {
   return (
     <ThemeProvider theme={theme}>
@@ -19,14 +18,12 @@ export default function AllProviders({ children }: { children: ReactNode }) {
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <Toaster
-            richColors
-            visibleToasts={4}
-            position="bottom-right"
-          />
-          <BrowserRouter>
-            {children}
-          </BrowserRouter>
+            <Toaster
+              richColors
+              visibleToasts={4}
+              position="bottom-right"
+            />
+            <BrowserRouter>{children}</BrowserRouter>
           </LocalizationProvider>
         </AuthProvider>
         <ReactQueryDevtools initialIsOpen={false} />

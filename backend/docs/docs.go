@@ -167,6 +167,172 @@ const docTemplate = `{
                 }
             }
         },
+        "/matchmaking/queue/join": {
+            "post": {
+                "description": "Join matchmaking queue",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "matchmaking"
+                ],
+                "summary": "Join matchmaking queue",
+                "parameters": [
+                    {
+                        "description": "Join Queue DTO",
+                        "name": "result",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/requests.JoinQueueDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    }
+                }
+            }
+        },
+        "/matchmaking/queue/leave": {
+            "post": {
+                "description": "Leave matchmaking queue",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "matchmaking"
+                ],
+                "summary": "Leave matchmaking queue",
+                "parameters": [
+                    {
+                        "description": "Leave Queue DTO",
+                        "name": "result",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/requests.LeaveQueueDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    }
+                }
+            }
+        },
+        "/matchmaking/queue/status/{teamId}": {
+            "get": {
+                "description": "Check match status",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "matchmaking"
+                ],
+                "summary": "Check match status",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "0deecf6a-289b-49a0-8f1b-9bc4185f99df",
+                        "description": "Team ID",
+                        "name": "teamId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.MatchStatusDto"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    }
+                }
+            }
+        },
+        "/matchmaking/queue/teams-count/{seasonId}": {
+            "get": {
+                "description": "Get matchmaking queue",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "matchmaking"
+                ],
+                "summary": "Get matchmaking queue",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.QueueTeamsCountDto"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    }
+                }
+            }
+        },
         "/seasons": {
             "get": {
                 "description": "Get all seasons",
@@ -1059,6 +1225,65 @@ const docTemplate = `{
                 }
             }
         },
+        "/trackmania/oauth/callback": {
+            "get": {
+                "description": "Handle Trackmania OAuth callback",
+                "tags": [
+                    "trackmania"
+                ],
+                "summary": "Handle Trackmania OAuth callback",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization code",
+                        "name": "code",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "State parameter",
+                        "name": "state",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "302": {
+                        "description": "Found"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    }
+                }
+            }
+        },
+        "/trackmania/oauth/url": {
+            "get": {
+                "description": "Start Trackmania OAuth flow",
+                "tags": [
+                    "trackmania"
+                ],
+                "summary": "Start Trackmania OAuth flow",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TrackmaniaOAuthUrlDto"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    }
+                }
+            }
+        },
         "/users": {
             "get": {
                 "description": "Get all users",
@@ -1200,6 +1425,36 @@ const docTemplate = `{
                 }
             }
         },
+        "requests.JoinQueueDto": {
+            "type": "object",
+            "required": [
+                "seasonId",
+                "teamId"
+            ],
+            "properties": {
+                "seasonId": {
+                    "type": "string"
+                },
+                "teamId": {
+                    "type": "string"
+                }
+            }
+        },
+        "requests.LeaveQueueDto": {
+            "type": "object",
+            "required": [
+                "seasonId",
+                "teamId"
+            ],
+            "properties": {
+                "seasonId": {
+                    "type": "string"
+                },
+                "teamId": {
+                    "type": "string"
+                }
+            }
+        },
         "requests.LoginDto": {
             "type": "object",
             "required": [
@@ -1320,6 +1575,22 @@ const docTemplate = `{
                 }
             }
         },
+        "responses.MatchStatusDto": {
+            "type": "object",
+            "properties": {
+                "isInMatch": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "responses.QueueTeamsCountDto": {
+            "type": "object",
+            "properties": {
+                "teamsCount": {
+                    "type": "integer"
+                }
+            }
+        },
         "responses.ResultDto": {
             "type": "object",
             "properties": {
@@ -1398,9 +1669,21 @@ const docTemplate = `{
                 }
             }
         },
+        "responses.TrackmaniaOAuthUrlDto": {
+            "type": "object",
+            "properties": {
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
         "responses.UserDto": {
             "type": "object",
             "properties": {
+                "country": {
+                    "type": "string",
+                    "example": "FR"
+                },
                 "email": {
                     "type": "string",
                     "example": "email@example.com"
@@ -1416,6 +1699,20 @@ const docTemplate = `{
                         }
                     ],
                     "example": "admin"
+                },
+                "trackmaniaId": {
+                    "type": "string",
+                    "example": "526432ea-822b-4b5b-b1b3-34e8ab453e03"
+                },
+                "trackmaniaName": {
+                    "type": "string",
+                    "example": "JohnDoe"
+                },
+                "tracks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/trackmanioauth.TrackmaniaOAuthTracksDto"
+                    }
                 },
                 "username": {
                     "type": "string",
@@ -1446,6 +1743,23 @@ const docTemplate = `{
                 "name": {
                     "type": "string",
                     "example": "BIG Clan"
+                }
+            }
+        },
+        "trackmanioauth.TrackmaniaOAuthTracksDto": {
+            "type": "object",
+            "properties": {
+                "author": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "thumbnailUrl": {
+                    "type": "string"
+                },
+                "uid": {
+                    "type": "string"
                 }
             }
         },

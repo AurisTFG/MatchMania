@@ -25,4 +25,16 @@ export const ENDPOINTS = {
     BY_ID: (seasonId: string, teamId: string, resultId: string) =>
       `seasons/${seasonId}/teams/${teamId}/results/${resultId}`,
   },
+  TRACKMANIA: {
+    OAUTH: {
+      URL: `trackmania/oauth/url`,
+    },
+  },
+  MATCHMAKING: {
+    JOIN_QUEUE: `matchmaking/queue/join`,
+    LEAVE_QUEUE: `matchmaking/queue/leave`,
+    GET_QUEUED_TEAMS_COUNT: (seasonId: string) =>
+      `matchmaking/queue/teams-count/${seasonId}`,
+    GET_QUEUE_STATUS: (teamId: string) => `matchmaking/queue/status/${teamId}`,
+  },
 };

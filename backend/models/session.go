@@ -19,6 +19,7 @@ type Session struct {
 	IsRevoked        bool      `gorm:"not null"`
 
 	UserId uuid.UUID `gorm:"not null"`
+	User   User
 }
 
 func (s *Session) HashToken() error {

@@ -23,6 +23,11 @@ type Env struct {
 	JWTAccessTokenDuration  time.Duration `mapstructure:"JWT_ACCESS_TOKEN_DURATION"`
 	JWTRefreshTokenDuration time.Duration `mapstructure:"JWT_REFRESH_TOKEN_DURATION"`
 
+	TrackmaniaOAuthClientID     string `mapstructure:"TRACKMANIA_OAUTH_CLIENT_ID"`
+	TrackmaniaOAuthClientSecret string `mapstructure:"TRACKMANIA_OAUTH_CLIENT_SECRET"`
+	TrackmaniaOAuthScopes       string `mapstructure:"TRACKMANIA_OAUTH_SCOPES"`
+	TrackmaniaOAuthRedirectURL  string `mapstructure:"TRACKMANIA_OAUTH_REDIRECT_URL"`
+
 	UserEmail         string `mapstructure:"USER_EMAIL"`
 	UserPassword      string `mapstructure:"USER_PASSWORD"`
 	ModeratorEmail    string `mapstructure:"MODERATOR_EMAIL"`
@@ -92,6 +97,11 @@ func setDefaults() {
 	viper.SetDefault("JWT_ACCESS_TOKEN_DURATION", invalidDuration)
 	viper.SetDefault("JWT_REFRESH_TOKEN_DURATION", invalidDuration)
 
+	viper.SetDefault("TRACKMANIA_OAUTH_CLIENT_ID", invalidString)
+	viper.SetDefault("TRACKMANIA_OAUTH_CLIENT_SECRET", invalidString)
+	viper.SetDefault("TRACKMANIA_OAUTH_SCOPES", invalidString)
+	viper.SetDefault("TRACKMANIA_OAUTH_REDIRECT_URL", invalidString)
+
 	viper.SetDefault("USER_EMAIL", invalidString)
 	viper.SetDefault("USER_PASSWORD", invalidString)
 	viper.SetDefault("MODERATOR_EMAIL", invalidString)
@@ -120,6 +130,13 @@ func (e *Env) Validate() error {
 		e.JWTAccessTokenDuration == invalidDuration ||
 		e.JWTRefreshTokenDuration == invalidDuration {
 		return errors.New("missing JWT configuration values")
+	}
+
+	if e.TrackmaniaOAuthClientID == invalidString ||
+		e.TrackmaniaOAuthClientSecret == invalidString ||
+		e.TrackmaniaOAuthScopes == invalidString ||
+		e.TrackmaniaOAuthRedirectURL == invalidString {
+		return errors.New("missing Trackmania OAuth configuration values")
 	}
 
 	if e.IsDev {
