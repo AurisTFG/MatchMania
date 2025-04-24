@@ -25,12 +25,18 @@
 
     "baseUrl": "./src",
     "paths": {
-      "components/*": ["components/*"],
-      "pages/*": ["pages/*"],
       "api/*": ["api/*"],
+      "components/*": ["components/*"],
+      "configs/*": ["configs/*"],
+      "constants/*": ["constants/*"],
+      "hocs/*": ["hocs/*"],
       "hooks/*": ["hooks/*"],
+      "pages/*": ["pages/*"],
+      "providers/*": ["providers/*"],
+      "styles/*": ["styles/*"],
+      "types/*": ["types/*"],
       "utils/*": ["utils/*"],
-      "assets/*": ["assets/*"]
+      "validators/*": ["validators/*"]
     }
   },
   "include": ["src"]
