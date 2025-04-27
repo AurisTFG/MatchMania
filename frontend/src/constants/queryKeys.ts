@@ -53,10 +53,6 @@ export const QUERY_KEYS = {
 
   TRACKMANIA: {
     ROOT: ['trackmania'],
-    OAUTH: {
-      ROOT: ['trackmania', 'oauth'],
-      URL: ['trackmania', 'oauth', 'url'],
-    },
   },
 
   MATCHMAKING: {

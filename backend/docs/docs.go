@@ -382,8 +382,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "204": {
-                        "description": "No Content"
+                    "201": {
+                        "description": "Created"
                     },
                     "400": {
                         "description": "Bad Request",
@@ -1344,19 +1344,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "enums.Role": {
-            "type": "string",
-            "enum": [
-                "admin",
-                "moderator",
-                "user"
-            ],
-            "x-enum-varnames": [
-                "AdminRole",
-                "ModeratorRole",
-                "UserRole"
-            ]
-        },
         "requests.CreateResultDto": {
             "type": "object",
             "required": [
@@ -1692,13 +1679,15 @@ const docTemplate = `{
                     "type": "string",
                     "example": "526432ea-822b-4b5b-b1b3-34e8ab453e03"
                 },
-                "role": {
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/enums.Role"
-                        }
-                    ],
-                    "example": "admin"
+                "permissions": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "[\"ManageSeasons\"",
+                        " \"ManageTeams\"]"
+                    ]
                 },
                 "trackmaniaId": {
                     "type": "string",

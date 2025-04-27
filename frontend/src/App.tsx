@@ -1,4 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
+import { ForbiddenPage } from 'pages/ForbiddenPage';
+import { UnauthorizedPage } from 'pages/UnauthorizedPage';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { Content } from './components/Layout/Content';
 import { Footer } from './components/Layout/Footer';
@@ -54,6 +56,14 @@ export default function App() {
             <Route
               path={ROUTES.MATCHMAKING.QUEUE}
               element={<MatchmakingQueuePage />}
+            />
+            <Route
+              path={ROUTES.UNAUTHORIZED}
+              element={<UnauthorizedPage />}
+            />
+            <Route
+              path={ROUTES.FORBIDDEN}
+              element={<ForbiddenPage />}
             />
             <Route
               path={ROUTES.NOT_FOUND}

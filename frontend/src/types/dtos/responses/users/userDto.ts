@@ -6,6 +6,7 @@ export type UserDto = {
   email: string;
   role: string;
   country: string | null;
+  permissions: string[];
   trackmaniaId: string | null;
   trackmaniaName: string | null;
   tracks: TrackmaniaOAuthTracksDto[];

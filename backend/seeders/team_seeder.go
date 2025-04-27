@@ -36,10 +36,8 @@ func SeedTeams(db *config.DB, env *config.Env) error {
 		{UserId: user.Id, Name: "Fnatic", SeasonId: season.Id, Elo: 789},
 	}
 
-	for _, team := range teams {
-		if err := db.Create(&team).Error; err != nil {
-			return err
-		}
+	if err := db.Create(&teams).Error; err != nil {
+		return err
 	}
 
 	return nil

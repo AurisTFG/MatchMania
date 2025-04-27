@@ -4,7 +4,10 @@ import (
 	"MatchManiaAPI/config"
 	"MatchManiaAPI/models"
 	"errors"
+	"fmt"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 func SeedSeasons(db *config.DB, env *config.Env) error {
@@ -17,60 +20,63 @@ func SeedSeasons(db *config.DB, env *config.Env) error {
 		return nil
 	}
 
-	var user models.User
-	if err := db.First(&user).Error; err != nil {
+	var userId string
+	if err := db.Model(&models.User{}).Select("id").Limit(1).Scan(&userId).Error; err != nil {
 		return errors.New("no users found in the database")
+	}
+
+	parsedUserId, err := uuid.Parse(userId)
+	if err != nil {
+		return fmt.Errorf("failed to parse user ID: %w", err)
 	}
 
 	seasons := []models.Season{
 		{
-			UserId:    user.Id,
+			UserId:    parsedUserId,
 			Name:      "Fall 2024",
 			StartDate: time.Date(2024, 9, 1, 0, 0, 0, 0, time.UTC),
 			EndDate:   time.Date(2024, 12, 31, 0, 0, 0, 0, time.UTC),
 		},
 		{
-			UserId:    user.Id,
+			UserId:    parsedUserId,
 			Name:      "Winter 2025",
 			StartDate: time.Date(2025, 1, 1, 0, 0, 0, 0, time.UTC),
 			EndDate:   time.Date(2025, 3, 31, 0, 0, 0, 0, time.UTC),
 		},
 		{
-			UserId:    user.Id,
+			UserId:    parsedUserId,
 			Name:      "Spring 2025",
 			StartDate: time.Date(2025, 4, 1, 0, 0, 0, 0, time.UTC),
 			EndDate:   time.Date(2025, 6, 30, 0, 0, 0, 0, time.UTC),
 		},
 		{
-			UserId:    user.Id,
+			UserId:    parsedUserId,
 			Name:      "Summer 2025",
 			StartDate: time.Date(2025, 7, 1, 0, 0, 0, 0, time.UTC),
 			EndDate:   time.Date(2025, 8, 31, 0, 0, 0, 0, time.UTC),
 		},
 		{
-			UserId:    user.Id,
+			UserId:    parsedUserId,
 			Name:      "Fall 2025",
 			StartDate: time.Date(2025, 9, 1, 0, 0, 0, 0, time.UTC),
 			EndDate:   time.Date(2025, 12, 31, 0, 0, 0, 0, time.UTC),
 		},
 		{
-			UserId:    user.Id,
+			UserId:    parsedUserId,
 			Name:      "Winter 2026",
 			StartDate: time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
 			EndDate:   time.Date(2026, 3, 31, 0, 0, 0, 0, time.UTC),
 		},
 		{
-			UserId:    user.Id,
+			UserId:    parsedUserId,
 			Name:      "Spring 2026",
 			StartDate: time.Date(2026, 4, 1, 0, 0, 0, 0, time.UTC),
 			EndDate:   time.Date(2026, 6, 30, 0, 0, 0, 0, time.UTC),
 		},
 	}
 
-	for _, season := range seasons {
-		if err := db.Create(&season).Error; err != nil {
-			return err
-		}
+	if err = db.Create(&seasons).Error; err != nil {
+		return err
 	}
 
 	return nil

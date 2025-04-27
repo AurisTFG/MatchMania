@@ -15,6 +15,6 @@ type Team struct {
 	SeasonId uuid.UUID `gorm:"not null"`
 	Season   Season
 
-	HomeResults []Result `gorm:"foreignKey:TeamId;constraint:OnDelete:CASCADE"`
-	AwayResults []Result `gorm:"foreignKey:OpponentTeamId;constraint:OnDelete:CASCADE"`
+	HomeResults []Result `gorm:"foreignKey:TeamId"`
+	AwayResults []Result `gorm:"foreignKey:OpponentTeamId"`
 }

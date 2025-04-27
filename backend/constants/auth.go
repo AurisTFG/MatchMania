@@ -4,5 +4,6 @@ const (
 	AccessTokenName  = "accessToken"
 	RefreshTokenName = "refreshToken"
 
-	RequestingUserIdKey = "requestingUserId"
+	RequestingUserIdKey          = "requestingUserId"
+	RequestingUserPermissionsKey = "requestingUserPermissions"
 )

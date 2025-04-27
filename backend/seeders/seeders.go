@@ -5,6 +5,14 @@ import (
 )
 
 func SeedDatabase(db *config.DB, env *config.Env) error {
+	if err := SeedPermissions(db, env); err != nil {
+		return err
+	}
+
+	if err := SeedRoles(db, env); err != nil {
+		return err
+	}
+
 	if env.IsProd {
 		return nil
 	}

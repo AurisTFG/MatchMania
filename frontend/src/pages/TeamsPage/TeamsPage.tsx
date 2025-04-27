@@ -9,12 +9,14 @@ import {
   useFetchTeams,
   useUpdateTeam,
 } from 'api/hooks/teamsHooks';
+import withAuth from 'hocs/withAuth';
+import withErrorBoundary from 'hocs/withErrorBoundary';
 import { useAppForm } from 'hooks/form/useAppForm';
 import { useAuth } from 'providers/AuthProvider/AuthProvider';
 import { TeamDto } from 'types/dtos/responses/teams/teamDto';
 import { createTeamDtoValidator } from 'validators/teams/createTeamDtoValidator';
 
-export default function TeamsPage() {
+function TeamsPage() {
   const { seasonId = '' } = useParams<{ seasonId: string }>();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -167,3 +169,7 @@ export default function TeamsPage() {
     </div>
   );
 }
+
+export default withAuth(withErrorBoundary(TeamsPage), {
+  isLoggedInOnly: true,
+});

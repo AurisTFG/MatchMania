@@ -32,6 +32,24 @@ func MustGetRequestingUserId(ctx *gin.Context) uuid.UUID {
 	return userId
 }
 
+func GetRequestingUserPermissions(ctx *gin.Context) []string {
+	permissionsObj, exists := ctx.Get(constants.RequestingUserPermissionsKey)
+	if !exists {
+		return nil
+	}
+
+	permissions, ok := permissionsObj.([]string)
+	if !ok {
+		return nil
+	}
+
+	return permissions
+}
+
 func SetRequestingUserId(ctx *gin.Context, userId uuid.UUID) {
 	ctx.Set(constants.RequestingUserIdKey, userId)
+}
+
+func SetRequestingUserPermissions(ctx *gin.Context, permissions []string) {
+	ctx.Set(constants.RequestingUserPermissionsKey, permissions)
 }

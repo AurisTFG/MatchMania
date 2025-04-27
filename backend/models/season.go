@@ -17,7 +17,7 @@ type Season struct {
 	UserId uuid.UUID `gorm:"not null"`
 	User   User
 
-	Teams []Team `gorm:"constraint:OnDelete:CASCADE;"`
+	Teams []Team
 }
 
 func (s *Season) BeforeDelete(tx *gorm.DB) error {

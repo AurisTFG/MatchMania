@@ -4,7 +4,6 @@ import (
 	"MatchManiaAPI/config"
 	"MatchManiaAPI/constants"
 	"MatchManiaAPI/models"
-	"MatchManiaAPI/models/enums"
 	"MatchManiaAPI/repositories"
 	"errors"
 	"net/http"
@@ -48,13 +47,12 @@ func NewAuthService(
 
 func (s *authService) CreateAccessToken(user *models.User) (string, error) {
 	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"sub":  user.Id,
-		"role": user.Role,
-		"iss":  s.env.JWTIssuer,
-		"aud":  s.env.JWTAudience,
-		"iat":  time.Now().Unix(),
-		"nbf":  time.Now().Unix(),
-		"exp":  time.Now().Add(s.env.JWTAccessTokenDuration).Unix(),
+		"sub": user.Id,
+		"iss": s.env.JWTIssuer,
+		"aud": s.env.JWTAudience,
+		"iat": time.Now().Unix(),
+		"nbf": time.Now().Unix(),
+		"exp": time.Now().Add(s.env.JWTAccessTokenDuration).Unix(),
 	})
 
 	accessTokenString, err := accessToken.SignedString([]byte(s.env.JWTAccessTokenSecret))
@@ -66,7 +64,6 @@ func (s *authService) CreateRefreshToken(sessionId uuid.UUID, user *models.User)
 	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sessionId": sessionId,
 		"sub":       user.Id,
-		"role":      user.Role,
 		"iss":       s.env.JWTIssuer,
 		"aud":       s.env.JWTAudience,
 		"iat":       time.Now().Unix(),
@@ -130,11 +127,6 @@ func (s *authService) VerifyAccessToken(accessToken string) (*models.User, error
 		return nil, errors.New("invalid user")
 	}
 
-	roleClaim := enums.Role(claims["role"].(string))
-	if user.Role != roleClaim {
-		return nil, errors.New("user role mismatch")
-	}
-
 	return user, nil
 }
 
@@ -191,11 +183,6 @@ func (s *authService) VerifyRefreshToken(refreshToken string) (*models.User, uui
 	user, err := s.userRepo.FindById(userId)
 	if err != nil {
 		return nil, uuid.Nil, errors.New("invalid user")
-	}
-
-	roleClaim := enums.Role(claims["role"].(string))
-	if user.Role != roleClaim {
-		return nil, uuid.Nil, errors.New("user role mismatch")
 	}
 
 	sessionIdStr, ok := claims["sessionId"].(string)

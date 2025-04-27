@@ -105,10 +105,8 @@ func SeedResults(db *config.DB, env *config.Env) error {
 		},
 	}
 
-	for _, result := range results {
-		if err := db.Create(&result).Error; err != nil {
-			return err
-		}
+	if err := db.Create(&results).Error; err != nil {
+		return err
 	}
 
 	return nil
