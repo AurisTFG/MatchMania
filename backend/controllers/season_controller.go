@@ -72,7 +72,7 @@ func (c *SeasonController) GetSeason(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param season body requests.CreateSeasonDto true "Season object that needs to be created"
-// @Success 204
+// @Success 201
 // @Failure 400 {object} responses.ErrorDto
 // @Failure 401 {object} responses.ErrorDto
 // @Failure 422 {object} responses.ErrorDto
@@ -96,7 +96,7 @@ func (c *SeasonController) CreateSeason(ctx *gin.Context) {
 		return
 	}
 
-	r.NoContent(ctx)
+	r.Created(ctx)
 }
 
 // @Summary Update a season

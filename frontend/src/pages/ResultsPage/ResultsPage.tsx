@@ -12,13 +12,15 @@ import {
 import { useFetchSeason } from 'api/hooks/seasonsHooks';
 import { useFetchTeam, useFetchTeams } from 'api/hooks/teamsHooks';
 import { SELECT_OPTIONS } from 'constants/selectOptions';
+import withAuth from 'hocs/withAuth';
+import withErrorBoundary from 'hocs/withErrorBoundary';
 import { useAppForm } from 'hooks/form/useAppForm';
 import { useAuth } from 'providers/AuthProvider';
 import { ResultDto } from 'types/dtos/responses/results/resultDto';
 import { getStartOfDay } from 'utils/dateUtils';
 import { resultDtoValidator } from 'validators/results/resultDtoValidator';
 
-export default function ResultsPage() {
+function ResultsPage() {
   const { seasonId = '', teamId = '' } = useParams<{
     seasonId: string;
     teamId: string;
@@ -226,3 +228,7 @@ export default function ResultsPage() {
     </div>
   );
 }
+
+export default withAuth(withErrorBoundary(ResultsPage), {
+  isLoggedInOnly: true,
+});

@@ -4,33 +4,31 @@ import (
 	"MatchManiaAPI/constants"
 	"MatchManiaAPI/services"
 	"MatchManiaAPI/utils"
-	r "MatchManiaAPI/utils/httpresponses"
 
 	"github.com/gin-gonic/gin"
 )
 
-type AuthMiddleware struct {
-	authService services.AuthService
-}
-
-func NewAuthMiddleware(authService services.AuthService) AuthMiddleware {
-	return AuthMiddleware{authService: authService}
-}
-
-func (m *AuthMiddleware) RequireAuth(ctx *gin.Context) {
-	accessToken, err := ctx.Cookie(constants.AccessTokenName)
+func AuthMiddleware(c *gin.Context, authService services.AuthService) error {
+	accessToken, err := c.Cookie(constants.AccessTokenName)
 	if err != nil || accessToken == "" {
-		r.Unauthorized(ctx)
-		return
+		return err
 	}
 
-	user, err := m.authService.VerifyAccessToken(accessToken)
+	user, err := authService.VerifyAccessToken(accessToken)
 	if err != nil {
-		r.Unauthorized(ctx)
-		return
+		return err
 	}
 
-	utils.SetRequestingUserId(ctx, user.Id)
+	utils.SetRequestingUserId(c, user.Id)
 
-	ctx.Next()
+	var userPermissions []string
+	for _, role := range user.Roles {
+		for _, p := range role.Permissions {
+			userPermissions = append(userPermissions, p.Name)
+		}
+	}
+
+	utils.SetRequestingUserPermissions(c, userPermissions)
+
+	return nil
 }

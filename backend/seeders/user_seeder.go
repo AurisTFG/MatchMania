@@ -16,10 +16,42 @@ func SeedUsers(db *config.DB, env *config.Env) error {
 		return nil
 	}
 
+	var allRoles []models.Role
+	if err := db.Find(&allRoles).Error; err != nil {
+		return err
+	}
+
 	users := []models.User{
-		{Username: "Admin", Email: env.AdminEmail, Password: env.AdminPassword, Role: enums.AdminRole},
-		{Username: "Moderator", Email: env.ModeratorEmail, Password: env.ModeratorPassword, Role: enums.ModeratorRole},
-		{Username: "User", Email: env.UserEmail, Password: env.UserPassword, Role: enums.UserRole},
+		{
+			Username: "Admin",
+			Email:    env.AdminEmail,
+			Password: env.AdminPassword,
+			Roles:    getRolesByRole(allRoles, enums.AdminRole),
+		},
+		{
+			Username: "Moderator",
+			Email:    env.ModeratorEmail,
+			Password: env.ModeratorPassword,
+			Roles:    getRolesByRole(allRoles, enums.ModeratorRole),
+		},
+		{
+			Username: "TrackmaniaUser",
+			Email:    "TrackmaniaUser@example.com",
+			Password: env.UserPassword,
+			Roles:    getRolesByRole(allRoles, enums.TrackmaniaUserRole),
+		},
+		{
+			Username: "User",
+			Email:    env.UserEmail,
+			Password: env.UserPassword,
+			Roles:    getRolesByRole(allRoles, enums.UserRole),
+		},
+		{
+			Username: "Guest",
+			Email:    "Guest@example.com",
+			Password: env.UserPassword,
+			Roles:    getRolesByRole(allRoles, enums.GuestRole),
+		},
 	}
 
 	for _, user := range users {
@@ -33,4 +65,16 @@ func SeedUsers(db *config.DB, env *config.Env) error {
 	}
 
 	return nil
+}
+
+func getRolesByRole(allRoles []models.Role, role enums.Role) []models.Role {
+	var matchedRoles []models.Role
+
+	for _, r := range allRoles {
+		if r.Name == string(role) {
+			matchedRoles = append(matchedRoles, r)
+		}
+	}
+
+	return matchedRoles
 }

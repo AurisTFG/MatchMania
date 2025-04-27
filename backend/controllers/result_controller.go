@@ -105,7 +105,7 @@ func (c *ResultController) GetResult(ctx *gin.Context) {
 // @Param seasonId path string true "Season ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
 // @Param teamId path string true "Team ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
 // @Param result body requests.CreateResultDto true "Result object that needs to be created"
-// @Success 204
+// @Success 201
 // @Failure 400 {object} responses.ErrorDto
 // @Failure 401 {object} responses.ErrorDto
 // @Failure 404 {object} responses.ErrorDto
@@ -159,7 +159,7 @@ func (c *ResultController) CreateResult(ctx *gin.Context) {
 		return
 	}
 
-	r.NoContent(ctx)
+	r.Created(ctx)
 }
 
 // @Summary Update a result

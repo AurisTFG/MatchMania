@@ -1,11 +1,11 @@
-import { ReactNode, createContext, useContext } from 'react';
+import { ReactNode, createContext, useContext, useMemo } from 'react';
 import { useFetchMe } from 'api/hooks/authHooks';
 import { UserDto } from 'types/dtos/responses/users/userDto';
 
 type AuthContextType = {
   user: UserDto | null;
   isLoggedIn: boolean;
-  isLoading: boolean;
+  isAuthLoading: boolean;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -21,13 +21,18 @@ export function useAuth() {
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const { data: fetchMeQuery, isLoading } = useFetchMe();
+  const { data: fetchMeQuery, isLoading: isAuthLoading } = useFetchMe();
 
   const user = fetchMeQuery ?? null;
   const isLoggedIn = !!user?.id;
 
+  const authContextValue = useMemo(
+    () => ({ user, isLoggedIn, isAuthLoading }),
+    [user, isLoggedIn, isAuthLoading],
+  );
+
   return (
-    <AuthContext.Provider value={{ user, isLoggedIn, isLoading }}>
+    <AuthContext.Provider value={authContextValue}>
       {children}
     </AuthContext.Provider>
   );

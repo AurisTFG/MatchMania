@@ -11,13 +11,15 @@ import {
   useUpdateSeason,
 } from 'api/hooks/seasonsHooks';
 import { StatusHandler } from 'components/StatusHandler';
+import withAuth from 'hocs/withAuth';
+import withErrorBoundary from 'hocs/withErrorBoundary';
 import { useAppForm } from 'hooks/form/useAppForm';
 import { useAuth } from 'providers/AuthProvider';
 import { SeasonDto } from 'types/dtos/responses/seasons/seasonDto';
 import { getStartOfDay } from 'utils/dateUtils';
 import { seasonDtoValidator } from 'validators/seasons/seasonDtoValidator';
 
-export default function SeasonsPage() {
+function SeasonsPage() {
   const { user } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -191,3 +193,7 @@ export default function SeasonsPage() {
     </div>
   );
 }
+
+export default withAuth(withErrorBoundary(SeasonsPage), {
+  isLoggedInOnly: true,
+});

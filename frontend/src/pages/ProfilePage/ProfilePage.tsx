@@ -19,19 +19,23 @@ import {
 import { useState } from 'react';
 import { useFetchMe } from 'api/hooks/authHooks';
 import { useGetTrackmaniaOAuthUrl } from 'api/hooks/trackmaniaOauthHooks';
+import withAuth from 'hocs/withAuth';
+import withErrorBoundary from 'hocs/withErrorBoundary';
 
-export default function ProfilePage() {
+function ProfilePage() {
   const { data: user, isLoading, error, refetch } = useFetchMe();
   const [connecting, setConnecting] = useState(false);
-  const { data: urlDto, isLoading: isUrlLoading } = useGetTrackmaniaOAuthUrl();
+  const { mutateAsync: getTrackmaniaOAuthUrlAsync } =
+    useGetTrackmaniaOAuthUrl();
 
-  const handleConnectTrackmania = () => {
+  const handleConnectTrackmania = async () => {
     setConnecting(true);
-    window.location.href = urlDto?.url ?? '';
+    const urlDto = await getTrackmaniaOAuthUrlAsync();
+    window.location.href = urlDto.url;
     setConnecting(false);
   };
 
-  if (isLoading || isUrlLoading) {
+  if (isLoading) {
     return (
       <Box
         display="flex"
@@ -176,7 +180,7 @@ export default function ProfilePage() {
                 startIcon={<SportsEsportsIcon />}
                 size="large"
                 sx={{ borderRadius: 2, px: 2, minWidth: 240 }}
-                onClick={handleConnectTrackmania}
+                onClick={() => void handleConnectTrackmania()}
                 disabled={connecting}
               >
                 Sync Trackmania Account
@@ -244,3 +248,7 @@ export default function ProfilePage() {
     </Box>
   );
 }
+
+export default withAuth(withErrorBoundary(ProfilePage), {
+  isLoggedInOnly: true,
+});

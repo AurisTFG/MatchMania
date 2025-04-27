@@ -1,8 +1,6 @@
 package models
 
 import (
-	"MatchManiaAPI/models/enums"
-
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -10,19 +8,20 @@ import (
 type User struct {
 	BaseModel
 
-	Username       string    `gorm:"unique"`
-	Email          string    `gorm:"unique"`
-	TrackmaniaId   uuid.UUID `gorm:"unique"`
-	TrackmaniaName string    `gorm:"unique"`
+	Username       string `gorm:"unique"`
+	Email          string `gorm:"unique"`
+	TrackmaniaId   uuid.UUID
+	TrackmaniaName string
 	Country        string
-	Role           enums.Role `gorm:"type:role;default:'user'"`
 	Password       string
 
-	Sessions              []Session              `gorm:"constraint:OnDelete:CASCADE;"`
-	Seasons               []Season               `gorm:"constraint:OnDelete:CASCADE;"`
-	Teams                 []Team                 `gorm:"constraint:OnDelete:CASCADE;"`
-	Results               []Result               `gorm:"constraint:OnDelete:CASCADE;"`
-	TrackmaniaOauthTracks []TrackmaniaOauthTrack `gorm:"constraint:OnDelete:CASCADE;"`
+	Sessions              []Session
+	Seasons               []Season
+	Teams                 []Team
+	Results               []Result
+	TrackmaniaOauthTracks []TrackmaniaOauthTrack
+
+	Roles []Role `gorm:"many2many:user_roles"`
 }
 
 func (u *User) HashPassword() error {

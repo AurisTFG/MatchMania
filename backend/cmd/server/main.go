@@ -3,7 +3,6 @@ package main
 import (
 	"MatchManiaAPI/config"
 	"MatchManiaAPI/controllers"
-	"MatchManiaAPI/middlewares"
 	"MatchManiaAPI/repositories"
 	"MatchManiaAPI/routes"
 	"MatchManiaAPI/seeders"
@@ -76,12 +75,11 @@ func main() {
 	repositories := repositories.SetupRepositories(db)
 	services := services.SetupServices(repositories, env)
 	controllers := controllers.SetupControllers(services)
-	middlewares := middlewares.SetupMiddlewares(services)
-	routes.SetupRoutes(server, controllers, middlewares)
-
-	fmt.Println("(6/6) Starting server on " + env.ServerURL + " . . . ")
+	routes.SetupRoutes(server, controllers, services)
 
 	services.MatchmakingService.StartMatchmakingWorker()
+
+	fmt.Println("(6/6) Starting server on " + env.ServerURL + " . . . ")
 
 	err = server.Run(env.ServerURL)
 	if err != nil {

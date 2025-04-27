@@ -10,5 +10,8 @@ export const ROUTES = {
   MATCHMAKING: {
     QUEUE: '/matchmaking/queue',
   },
+
+  UNAUTHORIZED: '/unauthorized',
+  FORBIDDEN: '/forbidden',
   NOT_FOUND: '*',
 };

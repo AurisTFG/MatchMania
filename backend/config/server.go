@@ -1,7 +1,6 @@
 package config
 
 import (
-	middlewares "MatchManiaAPI/middlewares/gin"
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -16,8 +15,6 @@ func SetupServer(env *Env) (*gin.Engine, error) {
 	}
 
 	server := gin.Default()
-
-	server.Use(middlewares.ErrorMiddleware())
 
 	if err := server.SetTrustedProxies(nil); err != nil {
 		return nil, err
