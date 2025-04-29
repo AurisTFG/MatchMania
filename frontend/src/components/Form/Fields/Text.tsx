@@ -1,4 +1,4 @@
-import { SxProps, TextField as MuiTextField, Theme } from '@mui/material';
+import { TextField as MuiTextField } from '@mui/material';
 import { useFieldContext } from 'hooks/form/useAppForm';
 import FormErrors from '../Helpers/FormErrors';
 
@@ -6,14 +6,12 @@ type TextFieldProps = {
   label: string;
   type?: string;
   placeholder?: string;
-  sx?: SxProps<Theme>;
 };
 
 export default function Text({
   label,
   type = 'text',
   placeholder,
-  sx,
 }: TextFieldProps) {
   const field = useFieldContext<string>();
 
@@ -32,9 +30,16 @@ export default function Text({
           field.handleChange(e.target.value);
         }}
         error={errorMessages.length > 0}
-        sx={sx}
+        variant="outlined"
         margin="normal"
         fullWidth
+        sx={{
+          color: '#ffffff',
+          '&:-webkit-autofill': {
+            WebkitBoxShadow: '0 0 0 100px #307ECC inset',
+            WebkitTextFillColor: 'ffffff',
+          },
+        }}
       />
       <FormErrors messages={errorMessages} />
     </>
