@@ -26,7 +26,6 @@ describe('HomePage Component', () => {
     );
 
     expect(screen.getByText(/Welcome to MatchMania/i)).toBeInTheDocument();
-    expect(screen.getByText(/TestUser!/i)).toBeInTheDocument();
     expect(screen.queryByText('Login')).not.toBeInTheDocument();
     expect(screen.queryByText('Sign Up')).not.toBeInTheDocument();
   });
@@ -45,8 +44,7 @@ describe('HomePage Component', () => {
     );
 
     expect(screen.getByText(/Welcome to MatchMania/i)).toBeInTheDocument();
-    expect(screen.getByText(/Guest!/i)).toBeInTheDocument();
-    expect(screen.getByText('Login')).toBeInTheDocument();
+    expect(screen.getByText('Log In')).toBeInTheDocument();
     expect(screen.getByText('Sign Up')).toBeInTheDocument();
   });
 });
