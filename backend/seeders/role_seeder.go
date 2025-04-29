@@ -4,7 +4,6 @@ import (
 	"MatchManiaAPI/config"
 	"MatchManiaAPI/models"
 	"MatchManiaAPI/models/enums"
-	"fmt"
 )
 
 func SeedRoles(db *config.DB, env *config.Env) error {
@@ -32,7 +31,6 @@ func SeedRoles(db *config.DB, env *config.Env) error {
 		permissionNames := enums.GetPermissionsForRole(enums.Role(roleName))
 		permissions := getPermissionsByPermissionNames(allPermissions, permissionNames)
 
-		fmt.Printf("Role: %s, Permissions: %v\n", role.Name, permissions)
 		role.Permissions = permissions
 
 		roles = append(roles, role)
