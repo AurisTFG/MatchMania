@@ -11,6 +11,7 @@ import (
 )
 
 var authService services.AuthService
+var userService services.UserService
 
 func SetupRoutes(
 	server *gin.Engine,
@@ -18,6 +19,7 @@ func SetupRoutes(
 	s *services.Services,
 ) {
 	authService = s.AuthService
+	userService = s.UserService
 	server.Use(middlewares.ErrorMiddleware())
 
 	v1 := server.Group("/api/v1")
@@ -104,7 +106,7 @@ func SetupRoutes(
 
 func requirePerm(permission enums.Permission) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		err := middlewares.AuthMiddleware(c, authService)
+		err := middlewares.AuthMiddleware(c, authService, userService)
 		if err != nil {
 			r.Unauthorized(c)
 			return

@@ -45,7 +45,7 @@ func (c *AuthController) GetMe(ctx *gin.Context) {
 
 	dto := utils.MustCopy[responses.UserDto](user)
 
-	permissions, err := c.userService.GetDistincPermissionsByUserId(userId)
+	permissions, err := c.userService.GetDistinctPermissionsByUserId(userId)
 	if err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
