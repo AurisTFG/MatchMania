@@ -1,8 +1,22 @@
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
-import { Grid } from '@mui/material';
-import { Button, List, Modal, Space, Typography } from 'antd';
+import { Add, Delete, Edit } from '@mui/icons-material';
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  Grid,
+  IconButton,
+  List,
+  ListItem,
+  ListItemText,
+  Typography,
+} from '@mui/material';
+import dayjs from 'dayjs';
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import {
   useCreateResult,
   useDeleteResult,
@@ -11,6 +25,8 @@ import {
 } from 'api/hooks/resultsHooks';
 import { useFetchSeason } from 'api/hooks/seasonsHooks';
 import { useFetchTeam, useFetchTeams } from 'api/hooks/teamsHooks';
+import { StatusHandler } from 'components/StatusHandler';
+import { PARAMS } from 'constants/route_paths';
 import { SELECT_OPTIONS } from 'constants/selectOptions';
 import withAuth from 'hocs/withAuth';
 import withErrorBoundary from 'hocs/withErrorBoundary';
@@ -21,16 +37,15 @@ import { getStartOfDay } from 'utils/dateUtils';
 import { resultDtoValidator } from 'validators/results/resultDtoValidator';
 
 function ResultsPage() {
-  const { seasonId = '', teamId = '' } = useParams<{
-    seasonId: string;
-    teamId: string;
-  }>();
+  const [searchParams] = useSearchParams();
+  const seasonId = searchParams.get(PARAMS.SEASON_ID) ?? '';
+  const teamId = searchParams.get(PARAMS.TEAM_ID) ?? '';
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingResultId, setEditingResultId] = useState<string | null>(null);
 
   const { user } = useAuth();
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editingResult, setEditingResult] = useState<Partial<ResultDto>>({});
 
   const {
     data: results,
@@ -57,39 +72,36 @@ function ResultsPage() {
       onSubmit: resultDtoValidator,
     },
     onSubmit: async ({ value }) => {
-      if (isEditing && editingResult.id) {
-        await updateResult({
-          resultId: editingResult.id,
-          payload: value,
-        });
+      if (isEditing && editingResultId) {
+        await updateResult({ resultId: editingResultId, payload: value });
       } else {
         await createResult(value);
       }
-      closeModal();
+      closeDialog();
     },
   });
 
-  const openCreateModal = () => {
+  const openCreateDialog = () => {
     setIsEditing(false);
     form.reset();
-    setIsModalOpen(true);
+    setIsDialogOpen(true);
   };
 
-  const openEditModal = (result: ResultDto) => {
+  const openEditDialog = (result: ResultDto) => {
     setIsEditing(true);
-    setEditingResult(result);
-    form.setFieldValue('startDate', result.startDate);
-    form.setFieldValue('endDate', result.endDate);
+    setEditingResultId(result.id);
+    form.setFieldValue('startDate', new Date(result.startDate));
+    form.setFieldValue('endDate', new Date(result.endDate));
     form.setFieldValue('score', result.score);
     form.setFieldValue('opponentScore', result.opponentScore);
     form.setFieldValue('opponentTeamId', result.opponentTeam.id);
-    setIsModalOpen(true);
+    setIsDialogOpen(true);
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
+  const closeDialog = () => {
+    setIsDialogOpen(false);
     form.reset();
-    setEditingResult({});
+    setEditingResultId(null);
   };
 
   const handleDelete = async (resultId: string) => {
@@ -98,134 +110,195 @@ function ResultsPage() {
 
   if (isError) {
     return (
-      <div style={{ padding: 20 }}>
-        <Typography.Title level={4}>Results not found</Typography.Title>
-      </div>
+      <Box sx={{ p: 4 }}>
+        <Typography
+          variant="h4"
+          fontWeight={700}
+        >
+          Results not found
+        </Typography>
+      </Box>
     );
   }
 
   return (
-    <div style={{ padding: 20, width: '50%', margin: 'auto' }}>
-      <Space
-        style={{
-          marginBottom: 16,
-          display: 'flex',
-          justifyContent: 'space-between',
-        }}
-      >
-        <Typography.Title level={4}>
+    <Box sx={{ p: 4, maxWidth: 800, mx: 'auto' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
+        <Typography
+          variant="h4"
+          fontWeight={700}
+        >
           Results for Team &quot;{team?.name}&quot; in Season &quot;
           {season?.name}&quot;
-        </Typography.Title>
+        </Typography>
         <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={openCreateModal}
-          disabled={user === null}
-          style={{
-            filter: user === null ? 'blur(1px)' : 'none',
-            cursor: user === null ? 'not-allowed' : 'pointer',
+          variant="contained"
+          startIcon={<Add />}
+          onClick={openCreateDialog}
+          disabled={!user}
+          sx={{
+            filter: !user ? 'blur(1px)' : 'none',
+            cursor: !user ? 'not-allowed' : 'pointer',
           }}
         >
           Create Result
         </Button>
-      </Space>
+      </Box>
 
-      <List
-        loading={isLoading}
-        bordered
-        dataSource={results}
-        renderItem={(result) => (
-          <List.Item
-            actions={[
-              user &&
-              (user.role === 'moderator' ||
-                user.role === 'admin' ||
-                result.user.id === user.id) ? (
-                <EditOutlined
-                  key="edit"
-                  onClick={() => {
-                    openEditModal(result);
-                  }}
-                />
-              ) : null,
-
-              user && (user.role === 'admin' || result.user.id === user.id) ? (
-                <DeleteOutlined
-                  key="delete"
-                  onClick={() => void handleDelete(result.id)}
-                  style={{ color: 'red' }}
-                />
-              ) : null,
-            ]}
-          >
-            <List.Item.Meta
-              title={`${result.team.name} vs ${result.opponentTeam.name}`}
-              description={
-                <>
-                  <Typography.Text>
-                    {result.score} - {result.opponentScore}
-                  </Typography.Text>
-                  <br />
-                  <Typography.Text type="secondary">
-                    {new Date(result.startDate).toLocaleDateString()}
-                  </Typography.Text>
-                  <br />
-                  <Typography.Text type="secondary">
-                    {`By: ${result.user.username}`}
-                  </Typography.Text>
-                </>
-              }
-            />
-          </List.Item>
-        )}
-      />
-
-      <Modal
-        title={isEditing ? 'Edit Result' : 'Create Result'}
-        open={isModalOpen}
-        onCancel={closeModal}
-        onOk={() => void form.handleSubmit()}
+      <StatusHandler
+        isLoading={isLoading}
+        error={undefined}
+        isEmpty={!results || results.length === 0}
       >
-        <Grid
-          container
-          spacing={2}
-        >
-          <Grid size={6}>
-            <form.AppField name="startDate">
-              {(field) => <field.DatePicker label="Match Start Date" />}
-            </form.AppField>
-          </Grid>
-          <Grid size={6}>
-            <form.AppField name="endDate">
-              {(field) => <field.DatePicker label="Match End Date" />}
-            </form.AppField>
-          </Grid>
-        </Grid>
+        <List sx={{ borderRadius: 2, boxShadow: 2, overflow: 'hidden' }}>
+          {results?.map((result, index) => (
+            <Box key={result.id}>
+              <ListItem
+                secondaryAction={
+                  user && (
+                    <>
+                      {result.user.id === user.id && (
+                        <IconButton
+                          edge="end"
+                          onClick={() => {
+                            openEditDialog(result);
+                          }}
+                        >
+                          <Edit />
+                        </IconButton>
+                      )}
+                      {result.user.id === user.id && (
+                        <IconButton
+                          edge="end"
+                          onClick={() => void handleDelete(result.id)}
+                          sx={{ color: 'error.main' }}
+                        >
+                          <Delete />
+                        </IconButton>
+                      )}
+                    </>
+                  )
+                }
+                sx={{
+                  borderRadius: 2,
+                  px: 2,
+                  py: 1,
+                  my: 1,
+                  backgroundColor: 'background.paper',
+                  transition: 'background-color 0.2s ease',
+                  '&:hover': {
+                    backgroundColor: 'action.hover',
+                  },
+                }}
+              >
+                <ListItemText
+                  primary={
+                    <Typography
+                      variant="subtitle1"
+                      fontWeight={600}
+                    >
+                      {`${result.team.name} vs ${result.opponentTeam.name}`}
+                    </Typography>
+                  }
+                  secondary={
+                    <>
+                      <Typography variant="body2">
+                        {`${result.score} - ${result.opponentScore}`}
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                      >
+                        {dayjs(result.startDate).format('YYYY-MM-DD')}
+                      </Typography>
+                      <br />
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                      >
+                        {`By: ${result.user.username}`}
+                      </Typography>
+                    </>
+                  }
+                />
+              </ListItem>
 
-        <form.AppField name="score">
-          {(field) => <field.Text label="Score" />}
-        </form.AppField>
+              {index < results.length - 1 && <Divider />}
+            </Box>
+          ))}
+        </List>
+      </StatusHandler>
 
-        <form.AppField name="opponentScore">
-          {(field) => <field.Text label="Opponent Score" />}
-        </form.AppField>
+      <Dialog
+        open={isDialogOpen}
+        onClose={closeDialog}
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle>{isEditing ? 'Edit Result' : 'Create Result'}</DialogTitle>
+        <DialogContent dividers>
+          <Box
+            component="form"
+            noValidate
+            autoComplete="off"
+            sx={{ mt: 2 }}
+          >
+            <Grid
+              container
+              spacing={2}
+            >
+              <Grid size={6}>
+                <form.AppField name="startDate">
+                  {(field) => <field.DatePicker label="Match Start Date" />}
+                </form.AppField>
+              </Grid>
+              <Grid size={6}>
+                <form.AppField name="endDate">
+                  {(field) => <field.DatePicker label="Match End Date" />}
+                </form.AppField>
+              </Grid>
+            </Grid>
 
-        <form.AppField name="opponentTeamId">
-          {(field) => (
-            <field.Select
-              label="Select Opponent Team"
-              options={(teams ?? [])
-                .filter((opponentTeam) => opponentTeam.id !== teamId)
-                .map((opponentTeam) => ({
-                  key: opponentTeam.id,
-                  value: opponentTeam.name,
-                }))}
-            />
-          )}
-        </form.AppField>
-      </Modal>
-    </div>
+            <Box sx={{ mt: 2 }}>
+              <form.AppField name="score">
+                {(field) => <field.Text label="Score" />}
+              </form.AppField>
+            </Box>
+
+            <Box sx={{ mt: 2 }}>
+              <form.AppField name="opponentScore">
+                {(field) => <field.Text label="Opponent Score" />}
+              </form.AppField>
+            </Box>
+
+            <Box sx={{ mt: 2 }}>
+              <form.AppField name="opponentTeamId">
+                {(field) => (
+                  <field.Select
+                    label="Select Opponent Team"
+                    options={(teams ?? [])
+                      .filter((opponentTeam) => opponentTeam.id !== teamId)
+                      .map((opponentTeam) => ({
+                        key: opponentTeam.id,
+                        value: opponentTeam.name,
+                      }))}
+                  />
+                )}
+              </form.AppField>
+            </Box>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeDialog}>Cancel</Button>
+          <Button
+            onClick={() => void form.handleSubmit()}
+            variant="contained"
+          >
+            {isEditing ? 'Update' : 'Create'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
   );
 }
 

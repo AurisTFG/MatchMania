@@ -1,6 +1,7 @@
 import { Box, CircularProgress } from '@mui/material';
 import { Navigate } from 'react-router-dom';
 import { Permission } from 'constants/permissions';
+import { ROUTE_PATHS } from 'constants/route_paths';
 import { useAuth } from 'providers/AuthProvider/AuthProvider';
 
 type WithAuthProps = {
@@ -29,7 +30,7 @@ export default function withAuth<P extends object>(
     }
 
     if (!isLoggedIn) {
-      return <Navigate to="/unauthorized" />;
+      return <Navigate to={ROUTE_PATHS.UNAUTHORIZED} />;
     }
 
     if (isLoggedInOnly) {
@@ -40,7 +41,7 @@ export default function withAuth<P extends object>(
       !requiredPermission || user?.permissions.includes(requiredPermission);
 
     if (!hasPermission) {
-      return <Navigate to="/forbidden" />;
+      return <Navigate to={ROUTE_PATHS.FORBIDDEN} />;
     }
 
     return <WrappedComponent {...props} />;

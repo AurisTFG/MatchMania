@@ -8,12 +8,13 @@ import (
 type User struct {
 	BaseModel
 
-	Username       string `gorm:"unique"`
-	Email          string `gorm:"unique"`
-	TrackmaniaId   uuid.UUID
-	TrackmaniaName string
-	Country        string
-	Password       string
+	Username        string `gorm:"unique"`
+	Email           string `gorm:"unique"`
+	TrackmaniaId    uuid.UUID
+	TrackmaniaName  string
+	Country         string
+	Password        string
+	ProfilePhotoUrl string
 
 	Sessions              []Session
 	Seasons               []Season

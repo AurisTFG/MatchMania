@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box, Button, Paper, Typography } from '@mui/material';
 import { useSignUp } from 'api/hooks/authHooks';
 import { useAppForm } from 'hooks/form/useAppForm';
 import { signupDtoValidator } from 'validators/auth/signupDtoValidator';
@@ -22,45 +22,86 @@ export default function SignupPage() {
   });
 
   return (
-    <Box sx={{ maxWidth: 400, mx: 'auto', mt: 5 }}>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          void form.handleSubmit();
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 'calc(100vh - 112px)',
+      }}
+    >
+      <Paper
+        elevation={3}
+        sx={{
+          width: '100%',
+          maxWidth: 400,
+          p: 4,
+          borderRadius: 3,
+          backgroundColor: 'background.paper',
         }}
       >
-        <h1>Sign up</h1>
+        <Typography
+          variant="h4"
+          component="h1"
+          sx={{
+            mb: 4,
+            fontWeight: 'bold',
+            textAlign: 'center',
+            color: 'text.primary',
+          }}
+        >
+          Sign up
+        </Typography>
 
-        <form.AppField name="username">
-          {(field) => <field.Text label="Username" />}
-        </form.AppField>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            void form.handleSubmit();
+          }}
+        >
+          <form.AppField name="username">
+            {(field) => <field.Text label="Username" />}
+          </form.AppField>
 
-        <form.AppField name="email">
-          {(field) => <field.Text label="Email" />}
-        </form.AppField>
+          <form.AppField name="email">
+            {(field) => <field.Text label="Email" />}
+          </form.AppField>
 
-        <form.AppField name="password">
-          {(field) => (
-            <field.Text
-              label="Password"
-              type="password"
-            />
-          )}
-        </form.AppField>
+          <form.AppField name="password">
+            {(field) => (
+              <field.Text
+                label="Password"
+                type="password"
+              />
+            )}
+          </form.AppField>
 
-        <form.AppField name="confirmPassword">
-          {(field) => (
-            <field.Text
-              label="Confirm Password"
-              type="password"
-            />
-          )}
-        </form.AppField>
+          <form.AppField name="confirmPassword">
+            {(field) => (
+              <field.Text
+                label="Confirm Password"
+                type="password"
+              />
+            )}
+          </form.AppField>
 
-        <form.AppForm>
-          <form.SubmitButton label="Sign up" />
-        </form.AppForm>
-      </form>
+          <Box sx={{ mt: 3 }}>
+            <form.AppForm>
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                size="large"
+                sx={{ borderRadius: 2 }}
+              >
+                Sign up
+              </Button>
+            </form.AppForm>
+          </Box>
+        </form>
+      </Paper>
     </Box>
   );
 }

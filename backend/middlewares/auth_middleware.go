@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AuthMiddleware(c *gin.Context, authService services.AuthService) error {
+func AuthMiddleware(c *gin.Context, authService services.AuthService, userService services.UserService) error {
 	accessToken, err := c.Cookie(constants.AccessTokenName)
 	if err != nil || accessToken == "" {
 		return err
@@ -20,15 +20,12 @@ func AuthMiddleware(c *gin.Context, authService services.AuthService) error {
 	}
 
 	utils.SetRequestingUserId(c, user.Id)
-
-	var userPermissions []string
-	for _, role := range user.Roles {
-		for _, p := range role.Permissions {
-			userPermissions = append(userPermissions, p.Name)
-		}
+	permissions, err := userService.GetDistinctPermissionsByUserId(user.Id)
+	if err != nil {
+		return err
 	}
 
-	utils.SetRequestingUserPermissions(c, userPermissions)
+	utils.SetRequestingUserPermissions(c, permissions)
 
 	return nil
 }

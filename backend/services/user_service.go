@@ -14,7 +14,7 @@ type UserService interface {
 	GetAllUsers() ([]models.User, error)
 	GetUserById(uuid.UUID) (*models.User, error)
 	GetUserByEmail(string) (*models.User, error)
-	GetDistincPermissionsByUserId(uuid.UUID) ([]string, error)
+	GetDistinctPermissionsByUserId(uuid.UUID) ([]string, error)
 	CreateUser(signUpDto *requests.SignupDto) error
 	DeleteUser(*models.User) error
 	UpdateUserWithTrackmaniaUser(userId uuid.UUID, trackmaniaUser *responses.TrackmaniaOAuthUserDto) error
@@ -45,8 +45,8 @@ func (s *userService) GetUserByEmail(email string) (*models.User, error) {
 	return s.repo.FindByEmail(email)
 }
 
-func (s *userService) GetDistincPermissionsByUserId(userId uuid.UUID) ([]string, error) {
-	return s.repo.GetDistincPermissionsByUserId(userId)
+func (s *userService) GetDistinctPermissionsByUserId(userId uuid.UUID) ([]string, error) {
+	return s.repo.GetDistinctPermissionsByUserId(userId)
 }
 
 func (s *userService) CreateUser(signUpDto *requests.SignupDto) error {

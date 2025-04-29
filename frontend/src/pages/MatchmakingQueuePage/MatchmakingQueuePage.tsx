@@ -3,6 +3,7 @@ import {
   Button,
   CircularProgress,
   Container,
+  Paper,
   Typography,
 } from '@mui/material';
 import { useEffect } from 'react';
@@ -47,16 +48,10 @@ export default function MatchmakingQueuePage() {
   } = useFetchTeams(seasonId);
 
   useEffect(() => {
-    console.log('seasonId', seasonId);
-    const fetchTeams = async () => {
-      if (seasonId) {
-        await refetchTeams();
-      }
-    };
     if (seasonId) {
-      void fetchTeams();
+      void refetchTeams();
     }
-  }, [form, seasonId, refetchTeams]);
+  }, [seasonId, refetchTeams]);
 
   const { data: teamsCount, isLoading: isLoadingTeamsCount } =
     useGetQueueTeamsCount(seasonId);
@@ -77,7 +72,11 @@ export default function MatchmakingQueuePage() {
   };
 
   if (seasonsLoading || isTeamsLoading) {
-    return <CircularProgress />;
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 6 }}>
+        <CircularProgress />
+      </Box>
+    );
   }
 
   return (
@@ -85,86 +84,128 @@ export default function MatchmakingQueuePage() {
       <Box sx={{ mt: 4 }}>
         <Typography
           variant="h4"
+          fontWeight={700}
           gutterBottom
         >
-          Matchmaking Queue
+          Matchmaking
         </Typography>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            void form.handleSubmit();
+
+        <Paper
+          elevation={2}
+          sx={{
+            p: 3,
+            borderRadius: 2,
+            backgroundColor: 'background.paper',
+            boxShadow: 2,
           }}
         >
-          <form.AppField name="seasonId">
-            {(field) => (
-              <field.Select
-                label="Select Season"
-                options={(seasons ?? []).map((season) => ({
-                  key: season.id,
-                  value: season.name,
-                }))}
-              />
-            )}
-          </form.AppField>
-
-          <form.AppField name="teamId">
-            {(field) => (
-              <field.Select
-                label="Select Team"
-                options={(teams ?? []).map((team) => ({
-                  key: team.id,
-                  value: team.name,
-                }))}
-              />
-            )}
-          </form.AppField>
-        </form>
-
-        <Box sx={{ mt: 3, display: 'flex', gap: 2 }}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => void handleJoinQueue()}
-            disabled={isJoinPending}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              void form.handleSubmit();
+            }}
           >
-            {isJoinPending ? <CircularProgress size={24} /> : 'Join Queue'}
-          </Button>
-          <Button
-            variant="outlined"
-            color="secondary"
-            onClick={() => void handleLeaveQueue()}
-            disabled={isLeavePending}
-          >
-            {isLeavePending ? <CircularProgress size={24} /> : 'Leave Queue'}
-          </Button>
-        </Box>
+            <form.AppField name="seasonId">
+              {(field) => (
+                <field.Select
+                  label="Select Season"
+                  options={(seasons ?? []).map((season) => ({
+                    key: season.id,
+                    value: season.name,
+                  }))}
+                />
+              )}
+            </form.AppField>
 
-        <Box sx={{ mt: 4 }}>
-          <Typography variant="h6">Queue Status</Typography>
+            <Box sx={{ mt: 2 }}>
+              <form.AppField name="teamId">
+                {(field) => (
+                  <field.Select
+                    label="Select Team"
+                    options={(teams ?? []).map((team) => ({
+                      key: team.id,
+                      value: team.name,
+                    }))}
+                  />
+                )}
+              </form.AppField>
+            </Box>
+          </form>
+
+          <Box sx={{ mt: 3, display: 'flex', gap: 2 }}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => void handleJoinQueue()}
+              disabled={isJoinPending}
+            >
+              {isJoinPending ? <CircularProgress size={24} /> : 'Join Queue'}
+            </Button>
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={() => void handleLeaveQueue()}
+              disabled={isLeavePending}
+            >
+              {isLeavePending ? <CircularProgress size={24} /> : 'Leave Queue'}
+            </Button>
+          </Box>
+        </Paper>
+
+        <Paper
+          elevation={2}
+          sx={{
+            mt: 4,
+            p: 3,
+            borderRadius: 2,
+            backgroundColor: 'background.paper',
+            boxShadow: 2,
+          }}
+        >
+          <Typography
+            variant="h6"
+            fontWeight={600}
+          >
+            Queue Status
+          </Typography>
           {isLoadingTeamsCount ? (
             <CircularProgress />
           ) : (
-            <Typography>
+            <Typography sx={{ mt: 1 }}>
               Teams in Queue:{' '}
               {typeof teamsCount === 'number'
                 ? teamsCount
                 : (teamsCount?.teamsCount ?? 'N/A')}
             </Typography>
           )}
-        </Box>
+        </Paper>
 
-        <Box sx={{ mt: 4 }}>
-          <Typography variant="h6">Match Status</Typography>
+        <Paper
+          elevation={2}
+          sx={{
+            mt: 4,
+            p: 3,
+            borderRadius: 2,
+            backgroundColor: 'background.paper',
+            boxShadow: 2,
+          }}
+        >
+          <Typography
+            variant="h6"
+            fontWeight={600}
+          >
+            Match Status
+          </Typography>
           {isLoadingMatchStatus ? (
             <CircularProgress />
           ) : (
-            <Typography>
+            <Typography sx={{ mt: 1 }}>
               {isInMatch?.isInMatch
-                ? 'Your team is currently in a match!'
-                : 'Your team is not in a match.'}
+                ? '✅ Your team is currently in a match!'
+                : '❌ Your team is not in a match.'}
             </Typography>
           )}
-        </Box>
+        </Paper>
       </Box>
     </Container>
   );

@@ -1,15 +1,14 @@
 import {
-  AccountCircle as AccountCircleIcon,
   Edit as EditIcon,
   Mail as MailIcon,
   SportsEsports as SportsEsportsIcon,
 } from '@mui/icons-material';
 import {
-  Avatar,
   Box,
   Button,
   Card,
   CardActions,
+  Chip,
   CircularProgress,
   Divider,
   Grid,
@@ -19,8 +18,11 @@ import {
 import { useState } from 'react';
 import { useFetchMe } from 'api/hooks/authHooks';
 import { useGetTrackmaniaOAuthUrl } from 'api/hooks/trackmaniaOauthHooks';
+import { UserAvatar } from 'components/UserAvatar';
 import withAuth from 'hocs/withAuth';
 import withErrorBoundary from 'hocs/withErrorBoundary';
+import { getCountryIconUrl, getCountryName } from 'utils/countryUtils';
+import { isStringEmpty, isUuidEmpty } from 'utils/stringUtils';
 
 function ProfilePage() {
   const { data: user, isLoading, error, refetch } = useFetchMe();
@@ -51,7 +53,15 @@ function ProfilePage() {
   if (error) {
     return (
       <Card
-        sx={{ maxWidth: 400, mx: 'auto', mt: 8, textAlign: 'center', p: 3 }}
+        sx={(theme) => ({
+          maxWidth: 400,
+          mx: 'auto',
+          mt: theme.spacing(8),
+          textAlign: 'center',
+          p: theme.spacing(3),
+          borderRadius: theme.shape.borderRadius,
+          boxShadow: theme.shadows[2],
+        })}
       >
         <Typography
           color="error"
@@ -71,66 +81,68 @@ function ProfilePage() {
     );
   }
 
-  const html = MPStyle.Parser.toHTML('$o foo $i bar');
-  console.log(html);
   return (
     <Box
       display="flex"
       justifyContent="center"
-      alignItems="start"
-      py={8}
-      px={2}
-      bgcolor="#f5f7fa"
+      alignItems="flex-start"
+      py={(theme) => theme.spacing(8)}
+      px={(theme) => theme.spacing(2)}
+      bgcolor={(theme) => theme.palette.background.default}
     >
       <Card
-        sx={{
+        sx={(theme) => ({
           width: '100%',
           maxWidth: 1000,
           borderRadius: 4,
-          boxShadow: 6,
-          p: 4,
-          bgcolor: 'background.paper',
-        }}
+          boxShadow: theme.shadows[2],
+          p: theme.spacing(4),
+          bgcolor: theme.palette.background.paper,
+          backdropFilter: theme.palette.mode === 'dark' ? 'blur(6px)' : 'none',
+        })}
       >
         <Stack
           direction={{ xs: 'column', md: 'row' }}
           spacing={4}
         >
-          {/* Profile Section */}
-          <Box flex={1}>
+          <Box flex={2}>
             <Stack
               direction="column"
               alignItems="center"
               spacing={2}
             >
-              <Avatar sx={{ width: 80, height: 80, bgcolor: 'primary.main' }}>
-                <AccountCircleIcon sx={{ fontSize: 60 }} />
-              </Avatar>
+              <UserAvatar
+                profilePhotoUrl={user?.profilePhotoUrl}
+                username={user?.username}
+                size={80}
+              />
+
               <Typography
-                variant="h5"
-                fontWeight={600}
+                variant="h6"
+                fontWeight={700}
               >
                 {user?.username}
               </Typography>
-              {user?.role && (
-                <Typography
-                  variant="body2"
-                  sx={{
-                    color: 'primary.main',
-                    bgcolor: 'primary.50',
-                    px: 2,
-                    py: 0.5,
-                    borderRadius: 2,
-                    fontWeight: 500,
-                    letterSpacing: 0.8,
-                    textTransform: 'uppercase',
-                    mt: -0.5,
-                    mb: 1,
-                  }}
+
+              {user?.roles && user.roles.length > 0 && (
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  flexWrap="wrap"
+                  justifyContent="center"
+                  sx={{ mt: 2 }}
                 >
-                  {user.role}
-                </Typography>
+                  {user.roles.map((role) => (
+                    <Chip
+                      key={role.name}
+                      label={role.name}
+                      color="primary"
+                      variant="filled"
+                    />
+                  ))}
+                </Stack>
               )}
+
               <Stack
                 direction="row"
                 alignItems="center"
@@ -144,25 +156,47 @@ function ProfilePage() {
                   {user?.email}
                 </Typography>
               </Stack>
-              {user?.trackmaniaName && (
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                >
-                  <strong>Trackmania Name:</strong> {user.trackmaniaName}
-                </Typography>
-              )}
-              {user?.trackmaniaId && (
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                >
-                  <strong>Trackmania ID:</strong> {user.trackmaniaId}
-                </Typography>
-              )}
+
+              <Chip
+                icon={
+                  <Box sx={{ pl: 1, display: 'flex', alignItems: 'center' }}>
+                    <Box
+                      component="img"
+                      src={getCountryIconUrl(user?.country)}
+                      alt={user?.country ?? 'N/A'}
+                      sx={{
+                        width: 20,
+                        height: 15,
+                        borderRadius: '2px',
+                      }}
+                    />
+                  </Box>
+                }
+                label={getCountryName(user?.country)}
+                variant="outlined"
+                sx={{ mt: 1 }}
+              />
+
+              <Typography
+                variant="body2"
+                color="text.secondary"
+              >
+                <strong>Trackmania Name: </strong>
+                {isStringEmpty(user?.trackmaniaName)
+                  ? 'N/A'
+                  : user?.trackmaniaName}
+              </Typography>
+
+              <Typography
+                variant="body2"
+                color="text.secondary"
+              >
+                <strong>Trackmania ID: </strong>
+                {isUuidEmpty(user?.trackmaniaId) ? 'N/A' : user?.trackmaniaId}
+              </Typography>
             </Stack>
 
-            <Divider sx={{ my: 3 }} />
+            <Divider sx={{ my: (theme) => theme.spacing(3) }} />
 
             <CardActions
               sx={{ justifyContent: 'center', gap: 2, flexWrap: 'wrap' }}
@@ -171,7 +205,11 @@ function ProfilePage() {
                 variant="contained"
                 startIcon={<EditIcon />}
                 size="large"
-                sx={{ borderRadius: 2, px: 4, minWidth: 180 }}
+                sx={(theme) => ({
+                  borderRadius: 2,
+                  px: theme.spacing(4),
+                  minWidth: 180,
+                })}
               >
                 Edit Profile
               </Button>
@@ -179,20 +217,24 @@ function ProfilePage() {
                 variant="outlined"
                 startIcon={<SportsEsportsIcon />}
                 size="large"
-                sx={{ borderRadius: 2, px: 2, minWidth: 240 }}
                 onClick={() => void handleConnectTrackmania()}
                 disabled={connecting}
+                sx={(theme) => ({
+                  borderRadius: 2,
+                  px: theme.spacing(4),
+                  minWidth: 240,
+                })}
               >
                 Sync Trackmania Account
               </Button>
             </CardActions>
           </Box>
 
-          {/* Track List Section */}
-          <Box flex={2}>
+          <Box flex={2.5}>
             <Typography
               variant="h6"
               gutterBottom
+              fontWeight={700}
             >
               Your Favorite Tracks
             </Typography>
@@ -201,46 +243,58 @@ function ProfilePage() {
               spacing={2}
               sx={{ maxHeight: 500, overflowY: 'auto', pr: 1 }}
             >
-              {user?.tracks.map((track) => (
-                <Grid
-                  size={{ xs: 12, sm: 6, md: 4 }}
-                  key={track.uid}
-                >
-                  <Card
-                    sx={{
-                      p: 1,
-                      borderRadius: 2,
-                      boxShadow: 2,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                    }}
+              {user?.tracks.length ? (
+                user.tracks.map((track) => (
+                  <Grid
+                    key={track.uid}
+                    size={{ xs: 12, sm: 6, md: 4 }}
                   >
-                    <Box
-                      component="img"
-                      src={track.thumbnailUrl}
-                      alt={track.name}
-                      sx={{
-                        width: '100%',
-                        height: 100,
-                        objectFit: 'cover',
+                    <Card
+                      sx={(theme) => ({
+                        p: theme.spacing(1),
                         borderRadius: 2,
-                      }}
-                    />
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        mt: 1,
-                        textAlign: 'center',
-                        wordBreak: 'break-word',
-                      }}
-                      dangerouslySetInnerHTML={{
-                        __html: MPStyle.Parser.toHTML(track.name),
-                      }}
-                    />
-                  </Card>
+                        boxShadow: theme.shadows[2],
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                      })}
+                    >
+                      <Box
+                        component="img"
+                        src={track.thumbnailUrl}
+                        alt={track.name}
+                        sx={{
+                          width: '100%',
+                          height: 100,
+                          objectFit: 'cover',
+                          borderRadius: '10px',
+                        }}
+                      />
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          mt: 1,
+                          textAlign: 'center',
+                          wordBreak: 'break-word',
+                        }}
+                        dangerouslySetInnerHTML={{
+                          __html: MPStyle.Parser.toHTML(track.name),
+                        }}
+                      />
+                    </Card>
+                  </Grid>
+                ))
+              ) : (
+                <Grid size={12}>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    align="center"
+                  >
+                    No favorite tracks yet.
+                  </Typography>
                 </Grid>
-              ))}
+              )}
             </Grid>
           </Box>
         </Stack>

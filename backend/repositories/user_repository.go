@@ -12,7 +12,7 @@ type UserRepository interface {
 	FindAll() ([]models.User, error)
 	FindById(uuid.UUID) (*models.User, error)
 	FindByEmail(string) (*models.User, error)
-	GetDistincPermissionsByUserId(uuid.UUID) ([]string, error)
+	GetDistinctPermissionsByUserId(uuid.UUID) ([]string, error)
 	Create(*models.User) error
 	Update(*models.User, *models.User) error
 	Save(*models.User) error
@@ -38,7 +38,7 @@ func (r *userRepository) FindAll() ([]models.User, error) {
 func (r *userRepository) FindById(userId uuid.UUID) (*models.User, error) {
 	var user models.User
 
-	result := r.db.Preload("TrackmaniaOauthTracks").First(&user, "id = ?", userId)
+	result := r.db.Preload("TrackmaniaOauthTracks").Preload("Roles").First(&user, "id = ?", userId)
 
 	return &user, result.Error
 }
@@ -51,7 +51,7 @@ func (r *userRepository) FindByEmail(email string) (*models.User, error) {
 	return &user, result.Error
 }
 
-func (r *userRepository) GetDistincPermissionsByUserId(userId uuid.UUID) ([]string, error) {
+func (r *userRepository) GetDistinctPermissionsByUserId(userId uuid.UUID) ([]string, error) {
 	var user models.User
 
 	result := r.db.Preload("Roles.Permissions").First(&user, "id = ?", userId)
