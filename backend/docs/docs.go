@@ -1685,6 +1685,16 @@ const docTemplate = `{
                         "type": "string"
                     }
                 },
+                "profilePhotoUrl": {
+                    "type": "string",
+                    "example": "https://example.com/profile.jpg"
+                },
+                "roles": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/roles.RoleDto"
+                    }
+                },
                 "trackmaniaId": {
                     "type": "string",
                     "example": "526432ea-822b-4b5b-b1b3-34e8ab453e03"
@@ -1715,6 +1725,15 @@ const docTemplate = `{
                 "username": {
                     "type": "string",
                     "example": "john_doe_123"
+                }
+            }
+        },
+        "roles.RoleDto": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "admin"
                 }
             }
         },
