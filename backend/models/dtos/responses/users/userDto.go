@@ -13,7 +13,7 @@ type UserDto struct {
 	Email                 string                                    `example:"email@example.com"                    json:"email"`
 	ProfilePhotoUrl       string                                    `example:"https://example.com/profile.jpg"      json:"profilePhotoUrl"`
 	Country               string                                    `example:"FR"                                   json:"country"`
-	Roles                 []roles.RoleDto                           `json:"roles"`
+	Roles                 []roles.RoleDto                           `                                               json:"roles"`
 	Permissions           []string                                  `                                               json:"permissions"`
 	TrackmaniaId          uuid.UUID                                 `example:"526432ea-822b-4b5b-b1b3-34e8ab453e03" json:"trackmaniaId"`
 	TrackmaniaName        string                                    `example:"JohnDoe"                              json:"trackmaniaName"`
