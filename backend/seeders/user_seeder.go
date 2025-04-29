@@ -23,31 +23,31 @@ func SeedUsers(db *config.DB, env *config.Env) error {
 
 	users := []models.User{
 		{
-			Username: "Admin",
+			Username: "BigBoss",
 			Email:    env.AdminEmail,
 			Password: env.AdminPassword,
 			Roles:    getRolesByRole(allRoles, enums.AdminRole),
 		},
 		{
-			Username: "Moderator",
+			Username: "SmallBoss",
 			Email:    env.ModeratorEmail,
 			Password: env.ModeratorPassword,
 			Roles:    getRolesByRole(allRoles, enums.ModeratorRole),
 		},
 		{
-			Username: "TrackmaniaUser",
+			Username: "TrackmaniaPro",
 			Email:    "TrackmaniaUser@example.com",
 			Password: env.UserPassword,
 			Roles:    getRolesByRole(allRoles, enums.TrackmaniaUserRole),
 		},
 		{
-			Username: "User",
+			Username: "CasualGamer",
 			Email:    env.UserEmail,
 			Password: env.UserPassword,
 			Roles:    getRolesByRole(allRoles, enums.UserRole),
 		},
 		{
-			Username: "Guest",
+			Username: "RandomGuest",
 			Email:    "Guest@example.com",
 			Password: env.UserPassword,
 			Roles:    getRolesByRole(allRoles, enums.GuestRole),
