@@ -1,7 +1,20 @@
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, List, Modal, Space, Typography } from 'antd';
+import { Add, Delete, Edit } from '@mui/icons-material';
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  IconButton,
+  List,
+  ListItem,
+  ListItemText,
+  Typography,
+} from '@mui/material';
 import { useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useFetchSeason } from 'api/hooks/seasonsHooks';
 import {
   useCreateTeam,
@@ -9,22 +22,26 @@ import {
   useFetchTeams,
   useUpdateTeam,
 } from 'api/hooks/teamsHooks';
+import { StatusHandler } from 'components/StatusHandler';
+import { PARAMS, getResultsLink } from 'constants/route_paths';
 import withAuth from 'hocs/withAuth';
 import withErrorBoundary from 'hocs/withErrorBoundary';
 import { useAppForm } from 'hooks/form/useAppForm';
-import { useAuth } from 'providers/AuthProvider/AuthProvider';
+import { useAuth } from 'providers/AuthProvider';
 import { TeamDto } from 'types/dtos/responses/teams/teamDto';
 import { createTeamDtoValidator } from 'validators/teams/createTeamDtoValidator';
 
 function TeamsPage() {
-  const { seasonId = '' } = useParams<{ seasonId: string }>();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchParams] = useSearchParams();
+  const seasonId = searchParams.get(PARAMS.SEASON_ID) ?? '';
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [editingTeam, setEditingTeam] = useState<Partial<TeamDto>>({});
+
+  const [editingTeamId, setEditingTeamId] = useState<string | null>(null);
   const { user } = useAuth();
 
-  const { data: season, isLoading: isSeasonsLoading } =
-    useFetchSeason(seasonId);
+  const { data: season, isLoading: isSeasonLoading } = useFetchSeason(seasonId);
   const { data: teams, isLoading: isTeamsLoading } = useFetchTeams(seasonId);
   const { mutateAsync: createTeam } = useCreateTeam(seasonId);
   const { mutateAsync: updateTeam } = useUpdateTeam(seasonId);
@@ -38,135 +55,186 @@ function TeamsPage() {
       onSubmit: createTeamDtoValidator,
     },
     onSubmit: async ({ value }) => {
-      if (isEditing && editingTeam.id) {
-        await updateTeam({ teamId: editingTeam.id, payload: value });
+      if (isEditing && editingTeamId) {
+        await updateTeam({ teamId: editingTeamId, payload: value });
       } else {
         await createTeam(value);
       }
-
-      closeModal();
+      closeDialog();
     },
   });
 
-  if (isSeasonsLoading || isTeamsLoading) {
-    return (
-      <div style={{ padding: 20 }}>
-        <Typography.Title level={4}>Loading...</Typography.Title>
-      </div>
-    );
-  }
-
-  const openModal = (team?: TeamDto) => {
-    if (team) {
-      setIsEditing(true);
-      setEditingTeam(team);
-      form.setFieldValue('name', team.name);
-    } else {
-      setIsEditing(false);
-      form.reset();
-    }
-    setIsModalOpen(true);
+  const openCreateDialog = () => {
+    setIsEditing(false);
+    form.reset();
+    setIsDialogOpen(true);
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
+  const openEditDialog = (team: TeamDto) => {
+    setIsEditing(true);
+    setEditingTeamId(team.id);
+    form.setFieldValue('name', team.name);
+    setIsDialogOpen(true);
+  };
+
+  const closeDialog = () => {
+    setIsDialogOpen(false);
     form.reset();
-    setEditingTeam({});
+    setEditingTeamId(null);
   };
 
   const handleDelete = async (teamId: string) => {
     await deleteTeam(teamId);
   };
 
+  if (isSeasonLoading || isTeamsLoading) {
+    return (
+      <Box sx={{ p: 4 }}>
+        <Typography
+          variant="h4"
+          fontWeight={700}
+        >
+          Loading...
+        </Typography>
+      </Box>
+    );
+  }
+
   return (
-    <div style={{ padding: 20, width: '50%', margin: 'auto' }}>
-      <Space
-        style={{
-          marginBottom: 16,
-          display: 'flex',
-          justifyContent: 'space-between',
-        }}
-      >
-        <Typography.Title level={4}>
+    <Box sx={{ p: 4, maxWidth: 800, mx: 'auto' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
+        <Typography
+          variant="h4"
+          fontWeight={700}
+        >
           Teams for Season &quot;{season?.name}&quot;
-        </Typography.Title>
+        </Typography>
         <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={() => {
-            openModal();
-          }}
-          disabled={user === null}
-          style={{
-            filter: user === null ? 'blur(1px)' : 'none',
-            cursor: user === null ? 'not-allowed' : 'pointer',
+          variant="contained"
+          startIcon={<Add />}
+          onClick={openCreateDialog}
+          disabled={!user}
+          sx={{
+            filter: !user ? 'blur(1px)' : 'none',
+            cursor: !user ? 'not-allowed' : 'pointer',
           }}
         >
           Create Team
         </Button>
-      </Space>
+      </Box>
 
-      <List
-        loading={isTeamsLoading}
-        bordered
-        dataSource={teams}
-        renderItem={(team) => (
-          <List.Item
-            actions={[
-              user &&
-              (user.role === 'moderator' ||
-                user.role === 'admin' ||
-                team.user.id === user.id) ? (
-                <EditOutlined
-                  key="edit"
-                  onClick={() => {
-                    openModal(team);
-                  }}
-                />
-              ) : null,
-
-              user && (user.role === 'admin' || team.user.id === user.id) ? (
-                <DeleteOutlined
-                  key="delete"
-                  onClick={() => void handleDelete(team.id)}
-                  style={{ color: 'red' }}
-                />
-              ) : null,
-            ]}
-          >
-            <List.Item.Meta
-              title={
-                <Link to={`/seasons/${seasonId}/teams/${team.id}/results`}>
-                  {team.name}
-                </Link>
-              }
-              description={
-                <>
-                  <Typography.Text type="secondary">
-                    {`Elo: ${team.elo.toString()}`}
-                  </Typography.Text>
-                  <br />
-                  <Typography.Text type="secondary">
-                    {`By: ${team.user.username}`}
-                  </Typography.Text>
-                </>
-              }
-            />
-          </List.Item>
-        )}
-      />
-
-      <Modal
-        title={isEditing ? 'Edit Team' : 'Create Team'}
-        open={isModalOpen}
-        onCancel={closeModal}
-        onOk={() => void form.handleSubmit()}
+      <StatusHandler
+        isLoading={isTeamsLoading}
+        error={undefined}
+        isEmpty={!teams || teams.length === 0}
       >
-        <form.AppField name="name">
-          {(field) => <field.Text label="Team Name" />}
-        </form.AppField>
-      </Modal>
-    </div>
+        <List sx={{ borderRadius: 2, boxShadow: 2, overflow: 'hidden' }}>
+          {teams?.map((team, index) => (
+            <Box key={team.id}>
+              <ListItem
+                secondaryAction={
+                  user && (
+                    <>
+                      {team.user.id === user.id && (
+                        <IconButton
+                          edge="end"
+                          onClick={() => {
+                            openEditDialog(team);
+                          }}
+                        >
+                          <Edit />
+                        </IconButton>
+                      )}
+                      {team.user.id === user.id && (
+                        <IconButton
+                          edge="end"
+                          onClick={() => void handleDelete(team.id)}
+                          sx={{ color: 'error.main' }}
+                        >
+                          <Delete />
+                        </IconButton>
+                      )}
+                    </>
+                  )
+                }
+                sx={{
+                  borderRadius: 2,
+                  px: 2,
+                  py: 1,
+                  my: 1,
+                  backgroundColor: 'background.paper',
+                  transition: 'background-color 0.2s ease',
+                  '&:hover': {
+                    backgroundColor: 'action.hover',
+                  },
+                }}
+              >
+                <ListItemText
+                  primary={
+                    <Link
+                      to={getResultsLink(seasonId, team.id)}
+                      style={{ textDecoration: 'none', color: 'inherit' }}
+                    >
+                      <Typography
+                        variant="subtitle1"
+                        fontWeight={600}
+                      >
+                        {team.name}
+                      </Typography>
+                    </Link>
+                  }
+                  secondary={
+                    <>
+                      <Typography variant="body2">
+                        {`Elo: ${String(team.elo)}`}
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                      >
+                        {`Created By: ${team.user.username}`}
+                      </Typography>
+                    </>
+                  }
+                />
+              </ListItem>
+
+              {index < teams.length - 1 && <Divider />}
+            </Box>
+          ))}
+        </List>
+      </StatusHandler>
+
+      <Dialog
+        open={isDialogOpen}
+        onClose={closeDialog}
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle>{isEditing ? 'Edit Team' : 'Create Team'}</DialogTitle>
+        <DialogContent dividers>
+          <Box
+            component="form"
+            noValidate
+            autoComplete="off"
+            sx={{ mt: 2 }}
+          >
+            <form.AppField name="name">
+              {(field) => <field.Text label="Team Name" />}
+            </form.AppField>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeDialog}>Cancel</Button>
+          <Button
+            onClick={() => void form.handleSubmit()}
+            variant="contained"
+          >
+            {isEditing ? 'Update' : 'Create'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
   );
 }
 

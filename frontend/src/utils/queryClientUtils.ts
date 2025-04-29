@@ -3,7 +3,7 @@ import { AxiosError } from 'axios';
 import { toast } from 'sonner';
 import axiosClient from 'configs/axiosClient';
 import { ENDPOINTS } from 'constants/endpoints';
-import { ROUTES } from 'constants/routes';
+import { ROUTE_PATHS } from 'constants/route_paths';
 import { getErrorMessageFromAxiosError } from './errorUtils';
 
 async function handleError(
@@ -25,13 +25,13 @@ async function handleError(
       return;
     } catch {
       if (
-        !window.location.pathname.startsWith(ROUTES.LOGIN) &&
+        !window.location.pathname.startsWith(ROUTE_PATHS.LOGIN) &&
         !skipNavigation
       ) {
         const errorMessage = encodeURIComponent(
           'Session expired. Please log in again.',
         );
-        window.location.href = `${ROUTES.LOGIN}?error=${errorMessage}`;
+        window.location.href = `${ROUTE_PATHS.LOGIN}?error=${errorMessage}`;
       }
       return;
     }

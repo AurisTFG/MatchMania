@@ -4,17 +4,21 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { Toaster } from 'sonner';
+import { ErrorBoundary } from 'components/ErrorBoundary';
+import Layout from 'components/Layout/Layout';
 import { queryClient } from 'configs/queryClient';
-import theme from 'styles/theme';
+import { getTheme } from 'styles/theme';
 import { AuthProvider } from '../AuthProvider';
 
 export default function AllProviders({ children }: { children: ReactNode }) {
+  const [mode, setMode] = useState<'light' | 'dark'>('dark');
+
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
+    <ThemeProvider theme={getTheme(mode)}>
+      <CssBaseline enableColorScheme />
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -23,7 +27,16 @@ export default function AllProviders({ children }: { children: ReactNode }) {
               visibleToasts={4}
               position="bottom-right"
             />
-            <BrowserRouter>{children}</BrowserRouter>
+            <BrowserRouter>
+              <Layout
+                toggleTheme={() => {
+                  setMode(mode === 'light' ? 'dark' : 'light');
+                }}
+                mode={mode}
+              >
+                <ErrorBoundary>{children}</ErrorBoundary>
+              </Layout>
+            </BrowserRouter>
           </LocalizationProvider>
         </AuthProvider>
         <ReactQueryDevtools initialIsOpen={false} />

@@ -1,6 +1,19 @@
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
-import { Grid } from '@mui/material';
-import { Button, List, Modal, Space, Typography } from 'antd';
+import { Add, Delete, Edit } from '@mui/icons-material';
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  Grid,
+  IconButton,
+  List,
+  ListItem,
+  ListItemText,
+  Typography,
+} from '@mui/material';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -11,6 +24,7 @@ import {
   useUpdateSeason,
 } from 'api/hooks/seasonsHooks';
 import { StatusHandler } from 'components/StatusHandler';
+import { getTeamsLink } from 'constants/route_paths';
 import withAuth from 'hocs/withAuth';
 import withErrorBoundary from 'hocs/withErrorBoundary';
 import { useAppForm } from 'hooks/form/useAppForm';
@@ -21,7 +35,7 @@ import { seasonDtoValidator } from 'validators/seasons/seasonDtoValidator';
 
 function SeasonsPage() {
   const { user } = useAuth();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editingSeasonId, setEditingSeasonId] = useState<string | null>(null);
 
@@ -52,28 +66,27 @@ function SeasonsPage() {
       } else {
         await createSeasonMutation(value);
       }
-
-      closeModal();
+      closeDialog();
     },
   });
 
-  const openEditModal = (season: SeasonDto) => {
+  const openEditDialog = (season: SeasonDto) => {
     setIsEditing(true);
     setEditingSeasonId(season.id);
     form.setFieldValue('name', season.name);
-    form.setFieldValue('startDate', season.startDate);
-    form.setFieldValue('endDate', season.endDate);
-    setIsModalOpen(true);
+    form.setFieldValue('startDate', new Date(season.startDate));
+    form.setFieldValue('endDate', new Date(season.endDate));
+    setIsDialogOpen(true);
   };
 
-  const openCreateModal = () => {
+  const openCreateDialog = () => {
     setIsEditing(false);
     form.reset();
-    setIsModalOpen(true);
+    setIsDialogOpen(true);
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
+  const closeDialog = () => {
+    setIsDialogOpen(false);
     form.reset();
     setEditingSeasonId(null);
   };
@@ -83,114 +96,158 @@ function SeasonsPage() {
   };
 
   return (
-    <div style={{ padding: 20, width: '50%', margin: 'auto' }}>
-      <Space
-        style={{
-          marginBottom: 16,
-          display: 'flex',
-          justifyContent: 'space-between',
-        }}
-      >
-        <Typography.Title level={4}>Seasons</Typography.Title>
+    <Box sx={{ p: 4, maxWidth: 800, mx: 'auto' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
+        <Typography
+          variant="h4"
+          fontWeight={700}
+        >
+          Seasons
+        </Typography>
         <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={openCreateModal}
-          disabled={user === null}
-          style={{
-            filter: user === null ? 'blur(1px)' : 'none',
-            cursor: user === null ? 'not-allowed' : 'pointer',
+          variant="contained"
+          startIcon={<Add />}
+          onClick={openCreateDialog}
+          disabled={!user}
+          sx={{
+            filter: !user ? 'blur(1px)' : 'none',
+            cursor: !user ? 'not-allowed' : 'pointer',
           }}
         >
           Create Season
         </Button>
-      </Space>
+      </Box>
+
       <StatusHandler
         isLoading={seasonsLoading}
         error={seasonsError}
-        isEmpty={!seasons || (Array.isArray(seasons) && seasons.length === 0)}
+        isEmpty={!seasons || seasons.length === 0}
       >
-        <List
-          loading={seasonsLoading}
-          bordered
-          dataSource={seasons}
-          renderItem={(season) => (
-            <List.Item
-              actions={[
-                user &&
-                (user.role === 'moderator' ||
-                  user.role === 'admin' ||
-                  season.user.id === user.id) ? (
-                  <EditOutlined
-                    key="edit"
-                    onClick={() => {
-                      openEditModal(season);
-                    }}
-                  />
-                ) : null,
+        <List sx={{ borderRadius: 2, boxShadow: 2, overflow: 'hidden' }}>
+          {seasons?.map((season, index) => (
+            <>
+              <ListItem
+                key={season.id}
+                secondaryAction={
+                  user && (
+                    <>
+                      {season.user.id === user.id && (
+                        <IconButton
+                          edge="end"
+                          onClick={() => {
+                            openEditDialog(season);
+                          }}
+                        >
+                          <Edit />
+                        </IconButton>
+                      )}
+                      {season.user.id === user.id && (
+                        <IconButton
+                          edge="end"
+                          onClick={() => void handleDelete(season.id)}
+                          sx={{ color: 'error.main' }}
+                        >
+                          <Delete />
+                        </IconButton>
+                      )}
+                    </>
+                  )
+                }
+                sx={{
+                  borderRadius: 2,
+                  px: 2,
+                  py: 1,
+                  my: 1,
+                  backgroundColor: 'background.paper',
+                  transition: 'background-color 0.2s ease',
+                  '&:hover': {
+                    backgroundColor: 'action.hover',
+                  },
+                }}
+              >
+                <ListItemText
+                  primary={
+                    <Link
+                      to={getTeamsLink(season.id)}
+                      style={{ textDecoration: 'none', color: 'inherit' }}
+                    >
+                      <Typography
+                        variant="subtitle1"
+                        fontWeight={600}
+                      >
+                        {season.name}
+                      </Typography>
+                    </Link>
+                  }
+                  secondary={
+                    <>
+                      <Typography variant="body2">
+                        {`${dayjs(season.startDate).format('YYYY-MM-DD')} - ${dayjs(season.endDate).format('YYYY-MM-DD')}`}
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                      >
+                        {`Created By: ${season.user.username}`}
+                      </Typography>
+                    </>
+                  }
+                />
+              </ListItem>
 
-                user &&
-                (user.role === 'admin' || season.user.id === user.id) ? (
-                  <DeleteOutlined
-                    key="delete"
-                    onClick={() => void handleDelete(season.id)}
-                    style={{ color: 'red' }}
-                  />
-                ) : null,
-              ]}
-            >
-              <List.Item.Meta
-                title={
-                  <Link to={`/seasons/${season.id.toString()}/teams`}>
-                    {season.name}
-                  </Link>
-                }
-                description={
-                  <>
-                    <Typography.Text>
-                      {`${dayjs(season.startDate).format('YYYY-MM-DD')} - ${dayjs(
-                        season.endDate,
-                      ).format('YYYY-MM-DD')}`}
-                    </Typography.Text>
-                    <br />
-                    <Typography.Text type="secondary">
-                      {`By: ${season.user.username}`}
-                    </Typography.Text>
-                  </>
-                }
-              />
-            </List.Item>
-          )}
-        />
+              {index < seasons.length - 1 && <Divider />}
+            </>
+          ))}
+        </List>
       </StatusHandler>
 
-      <Modal
-        title={isEditing ? 'Edit Season' : 'Create Season'}
-        open={isModalOpen}
-        onCancel={closeModal}
-        onOk={() => void form.handleSubmit()}
+      <Dialog
+        open={isDialogOpen}
+        onClose={closeDialog}
+        fullWidth
+        maxWidth="sm"
       >
-        <form.AppField name="name">
-          {(field) => <field.Text label="Season Name" />}
-        </form.AppField>
+        <DialogTitle>{isEditing ? 'Edit Season' : 'Create Season'}</DialogTitle>
+        <DialogContent dividers>
+          <Box
+            component="form"
+            noValidate
+            autoComplete="off"
+            sx={{ mt: 2 }}
+          >
+            <form.AppField name="name">
+              {(field) => <field.Text label="Season Name" />}
+            </form.AppField>
 
-        <Grid
-          container
-          spacing={2}
-        >
-          <Grid size={6}>
-            <form.AppField name="startDate">
-              {(field) => <field.DatePicker label="Start Date" />}
-            </form.AppField>
-          </Grid>
-          <Grid size={6}>
-            <form.AppField name="endDate">
-              {(field) => <field.DatePicker label="End Date" />}
-            </form.AppField>
-          </Grid>
-        </Grid>
-      </Modal>
-    </div>
+            <Grid
+              container
+              spacing={2}
+              sx={{ mt: 2 }}
+            >
+              <Grid size={6}>
+                <form.AppField name="startDate">
+                  {(field) => <field.DatePicker label="Start Date" />}
+                </form.AppField>
+              </Grid>
+              <Grid size={6}>
+                <form.AppField name="endDate">
+                  {(field) => <field.DatePicker label="End Date" />}
+                </form.AppField>
+              </Grid>
+            </Grid>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeDialog}>Cancel</Button>
+          <Button
+            onClick={() => void form.handleSubmit()}
+            variant="contained"
+          >
+            {isEditing ? 'Update' : 'Create'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
   );
 }
 
