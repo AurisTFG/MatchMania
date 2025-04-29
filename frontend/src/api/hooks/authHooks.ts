@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { ENDPOINTS } from 'constants/endpoints';
 import { QUERY_KEYS } from 'constants/queryKeys';
-import { ROUTES } from 'constants/routes';
+import { ROUTE_PATHS } from 'constants/route_paths';
 import { LoginDto } from 'types/dtos/requests/auth/loginDto';
 import { SignupDto } from 'types/dtos/requests/auth/signupDto';
 import { UserDto } from 'types/dtos/responses/users/userDto';
@@ -27,8 +27,8 @@ export const useLogIn = () => {
     onSuccess: async () => {
       toast.success('Successfully logged in');
 
+      await navigation(ROUTE_PATHS.HOME);
       await queryClient.resetQueries();
-      await navigation(ROUTES.HOME);
     },
   });
 };
@@ -42,8 +42,8 @@ export const useLogOut = () => {
     onSuccess: async () => {
       toast.success('Successfully logged out');
 
+      await navigation(ROUTE_PATHS.LOGIN);
       await queryClient.resetQueries();
-      await navigation(ROUTES.HOME);
     },
   });
 };
@@ -58,8 +58,8 @@ export const useSignUp = () => {
     onSuccess: async () => {
       toast.success('Successfully signed up');
 
+      await navigation(ROUTE_PATHS.LOGIN);
       await queryClient.resetQueries();
-      await navigation(ROUTES.HOME);
     },
   });
 };
