@@ -54,6 +54,7 @@ export default ts.config(
         {
           patterns: [
             "**/../api/*",
+            "**/../assets/*",
             "**/../components/*",
             "**/../configs/*",
             "**/../constants/*",
