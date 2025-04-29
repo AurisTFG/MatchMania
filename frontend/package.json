@@ -16,7 +16,6 @@
     "depcheck": "depcheck --skip-missing=true --oneline"
   },
   "dependencies": {
-    "@ant-design/icons": "^6.0.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^7.0.1",
@@ -25,12 +24,10 @@
     "@tanstack/react-form": "^1.4.0",
     "@tanstack/react-query": "^5.72.0",
     "@tanstack/react-query-devtools": "^5.72.0",
-    "antd": "^5.24.5",
     "axios": "^1.8.4",
     "dayjs": "^1.11.13",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-icons": "^5.5.0",
     "react-router-dom": "^7.4.1",
     "sonner": "^2.0.3",
     "zod": "^3.24.2"
