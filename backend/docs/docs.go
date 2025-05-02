@@ -298,7 +298,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/matchmaking/queue/teams-count/{seasonId}": {
+        "/matchmaking/queue/teams-count/{leagueId}": {
             "get": {
                 "description": "Get matchmaking queue",
                 "consumes": [
@@ -333,9 +333,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/seasons": {
+        "/leagues": {
             "get": {
-                "description": "Get all seasons",
+                "description": "Get all leagues",
                 "consumes": [
                     "application/json"
                 ],
@@ -343,23 +343,23 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "seasons"
+                    "leagues"
                 ],
-                "summary": "Get all seasons",
+                "summary": "Get all leagues",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/responses.SeasonDto"
+                                "$ref": "#/definitions/responses.LeagueDto"
                             }
                         }
                     }
                 }
             },
             "post": {
-                "description": "Create a season",
+                "description": "Create a league",
                 "consumes": [
                     "application/json"
                 ],
@@ -367,17 +367,17 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "seasons"
+                    "leagues"
                 ],
-                "summary": "Create a season",
+                "summary": "Create a league",
                 "parameters": [
                     {
-                        "description": "Season object that needs to be created",
-                        "name": "season",
+                        "description": "League object that needs to be created",
+                        "name": "league",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/requests.CreateSeasonDto"
+                            "$ref": "#/definitions/requests.CreateLeagueDto"
                         }
                     }
                 ],
@@ -406,9 +406,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/seasons/{seasonId}": {
+        "/leagues/{leagueId}": {
             "get": {
-                "description": "Get a season",
+                "description": "Get a league",
                 "consumes": [
                     "application/json"
                 ],
@@ -416,15 +416,15 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "seasons"
+                    "leagues"
                 ],
-                "summary": "Get a season",
+                "summary": "Get a league",
                 "parameters": [
                     {
                         "type": "string",
                         "default": "0deecf6a-289b-49a0-8f1b-9bc4185f99df",
-                        "description": "Season ID",
-                        "name": "seasonId",
+                        "description": "League ID",
+                        "name": "leagueId",
                         "in": "path",
                         "required": true
                     }
@@ -433,7 +433,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/responses.SeasonDto"
+                            "$ref": "#/definitions/responses.LeagueDto"
                         }
                     },
                     "400": {
@@ -451,7 +451,7 @@ const docTemplate = `{
                 }
             },
             "delete": {
-                "description": "Delete a season",
+                "description": "Delete a league",
                 "consumes": [
                     "application/json"
                 ],
@@ -459,15 +459,15 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "seasons"
+                    "leagues"
                 ],
-                "summary": "Delete a season",
+                "summary": "Delete a league",
                 "parameters": [
                     {
                         "type": "string",
                         "default": "0deecf6a-289b-49a0-8f1b-9bc4185f99df",
-                        "description": "Season ID",
-                        "name": "seasonId",
+                        "description": "League ID",
+                        "name": "leagueId",
                         "in": "path",
                         "required": true
                     }
@@ -509,7 +509,7 @@ const docTemplate = `{
                 }
             },
             "patch": {
-                "description": "Update a season",
+                "description": "Update a league",
                 "consumes": [
                     "application/json"
                 ],
@@ -517,25 +517,25 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "seasons"
+                    "leagues"
                 ],
-                "summary": "Update a season",
+                "summary": "Update a league",
                 "parameters": [
                     {
                         "type": "string",
                         "default": "0deecf6a-289b-49a0-8f1b-9bc4185f99df",
-                        "description": "Season ID",
-                        "name": "seasonId",
+                        "description": "League ID",
+                        "name": "leagueId",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "description": "Season object that needs to be updated",
-                        "name": "season",
+                        "description": "League object that needs to be updated",
+                        "name": "league",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/requests.UpdateSeasonDto"
+                            "$ref": "#/definitions/requests.UpdateLeagueDto"
                         }
                     }
                 ],
@@ -576,7 +576,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/seasons/{seasonId}/teams": {
+        "/leagues/{leagueId}/teams": {
             "get": {
                 "description": "Get all teams",
                 "consumes": [
@@ -593,8 +593,8 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "default": "0deecf6a-289b-49a0-8f1b-9bc4185f99df",
-                        "description": "Season ID",
-                        "name": "seasonId",
+                        "description": "League ID",
+                        "name": "leagueId",
                         "in": "path",
                         "required": true
                     }
@@ -639,8 +639,8 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "default": "0deecf6a-289b-49a0-8f1b-9bc4185f99df",
-                        "description": "Season ID",
-                        "name": "seasonId",
+                        "description": "League ID",
+                        "name": "leagueId",
                         "in": "path",
                         "required": true
                     },
@@ -685,7 +685,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/seasons/{seasonId}/teams/{teamId}": {
+        "/leagues/{leagueId}/teams/{teamId}": {
             "get": {
                 "description": "Get a team",
                 "consumes": [
@@ -702,8 +702,8 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "default": "0deecf6a-289b-49a0-8f1b-9bc4185f99df",
-                        "description": "Season ID",
-                        "name": "seasonId",
+                        "description": "League ID",
+                        "name": "leagueId",
                         "in": "path",
                         "required": true
                     },
@@ -753,8 +753,8 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "default": "0deecf6a-289b-49a0-8f1b-9bc4185f99df",
-                        "description": "Season ID",
-                        "name": "seasonId",
+                        "description": "League ID",
+                        "name": "leagueId",
                         "in": "path",
                         "required": true
                     },
@@ -819,8 +819,8 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "default": "0deecf6a-289b-49a0-8f1b-9bc4185f99df",
-                        "description": "Season ID",
-                        "name": "seasonId",
+                        "description": "League ID",
+                        "name": "leagueId",
                         "in": "path",
                         "required": true
                     },
@@ -879,7 +879,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/seasons/{seasonId}/teams/{teamId}/results": {
+        "/leagues/{leagueId}/teams/{teamId}/results": {
             "get": {
                 "description": "Get all results",
                 "consumes": [
@@ -896,8 +896,8 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "default": "0deecf6a-289b-49a0-8f1b-9bc4185f99df",
-                        "description": "Season ID",
-                        "name": "seasonId",
+                        "description": "League ID",
+                        "name": "leagueId",
                         "in": "path",
                         "required": true
                     },
@@ -950,8 +950,8 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "default": "0deecf6a-289b-49a0-8f1b-9bc4185f99df",
-                        "description": "Season ID",
-                        "name": "seasonId",
+                        "description": "League ID",
+                        "name": "leagueId",
                         "in": "path",
                         "required": true
                     },
@@ -1004,7 +1004,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/seasons/{seasonId}/teams/{teamId}/results/{resultId}": {
+        "/leagues/{leagueId}/teams/{teamId}/results/{resultId}": {
             "get": {
                 "description": "Get a result",
                 "consumes": [
@@ -1021,8 +1021,8 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "default": "0deecf6a-289b-49a0-8f1b-9bc4185f99df",
-                        "description": "Season ID",
-                        "name": "seasonId",
+                        "description": "League ID",
+                        "name": "leagueId",
                         "in": "path",
                         "required": true
                     },
@@ -1083,8 +1083,8 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "default": "0deecf6a-289b-49a0-8f1b-9bc4185f99df",
-                        "description": "Season ID",
-                        "name": "seasonId",
+                        "description": "League ID",
+                        "name": "leagueId",
                         "in": "path",
                         "required": true
                     },
@@ -1157,8 +1157,8 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "default": "0deecf6a-289b-49a0-8f1b-9bc4185f99df",
-                        "description": "Season ID",
-                        "name": "seasonId",
+                        "description": "League ID",
+                        "name": "leagueId",
                         "in": "path",
                         "required": true
                     },
@@ -1374,7 +1374,7 @@ const docTemplate = `{
                 }
             }
         },
-        "requests.CreateSeasonDto": {
+        "requests.CreateLeagueDto": {
             "type": "object",
             "required": [
                 "endDate",
@@ -1415,11 +1415,11 @@ const docTemplate = `{
         "requests.JoinQueueDto": {
             "type": "object",
             "required": [
-                "seasonId",
+                "leagueId",
                 "teamId"
             ],
             "properties": {
-                "seasonId": {
+                "leagueId": {
                     "type": "string"
                 },
                 "teamId": {
@@ -1430,11 +1430,11 @@ const docTemplate = `{
         "requests.LeaveQueueDto": {
             "type": "object",
             "required": [
-                "seasonId",
+                "leagueId",
                 "teamId"
             ],
             "properties": {
-                "seasonId": {
+                "leagueId": {
                     "type": "string"
                 },
                 "teamId": {
@@ -1515,7 +1515,7 @@ const docTemplate = `{
                 }
             }
         },
-        "requests.UpdateSeasonDto": {
+        "requests.UpdateLeagueDto": {
             "type": "object",
             "required": [
                 "endDate",
@@ -1612,7 +1612,7 @@ const docTemplate = `{
                 }
             }
         },
-        "responses.SeasonDto": {
+        "responses.LeagueDto": {
             "type": "object",
             "properties": {
                 "endDate": {
@@ -1706,7 +1706,7 @@ const docTemplate = `{
                 "tracks": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/trackmanioauth.TrackmaniaOAuthTracksDto"
+                        "$ref": "#/definitions/trackmanioauth.TrackmaniaTracksDto"
                     }
                 },
                 "username": {
@@ -1750,7 +1750,7 @@ const docTemplate = `{
                 }
             }
         },
-        "trackmanioauth.TrackmaniaOAuthTracksDto": {
+        "trackmanioauth.TrackmaniaTracksDto": {
             "type": "object",
             "properties": {
                 "author": {

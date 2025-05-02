@@ -18,35 +18,35 @@ import dayjs from 'dayjs';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  useCreateSeason,
-  useDeleteSeason,
-  useFetchSeasons,
-  useUpdateSeason,
-} from 'api/hooks/seasonsHooks';
+  useCreateLeague,
+  useDeleteLeague,
+  useFetchLeagues,
+  useUpdateLeague,
+} from 'api/hooks/leaguesHooks';
 import { StatusHandler } from 'components/StatusHandler';
 import { getTeamsLink } from 'constants/route_paths';
 import withAuth from 'hocs/withAuth';
 import withErrorBoundary from 'hocs/withErrorBoundary';
 import { useAppForm } from 'hooks/form/useAppForm';
 import { useAuth } from 'providers/AuthProvider';
-import { SeasonDto } from 'types/dtos/responses/seasons/seasonDto';
+import { LeagueDto } from 'types/dtos/responses/leagues/leagueDto';
 import { getStartOfDay } from 'utils/dateUtils';
-import { seasonDtoValidator } from 'validators/seasons/seasonDtoValidator';
+import { leagueDtoValidator } from 'validators/leagues/leagueDtoValidator';
 
-function SeasonsPage() {
+function LeaguesPage() {
   const { user } = useAuth();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [editingSeasonId, setEditingSeasonId] = useState<string | null>(null);
+  const [editingLeagueId, setEditingLeagueId] = useState<string | null>(null);
 
   const {
-    data: seasons,
-    isLoading: seasonsLoading,
-    error: seasonsError,
-  } = useFetchSeasons();
-  const { mutateAsync: createSeasonMutation } = useCreateSeason();
-  const { mutateAsync: updateSeasonMutation } = useUpdateSeason();
-  const { mutateAsync: deleteSeasonMutation } = useDeleteSeason();
+    data: leagues,
+    isLoading: leaguesLoading,
+    error: leaguesError,
+  } = useFetchLeagues();
+  const { mutateAsync: createLeagueMutation } = useCreateLeague();
+  const { mutateAsync: updateLeagueMutation } = useUpdateLeague();
+  const { mutateAsync: deleteLeagueMutation } = useDeleteLeague();
 
   const form = useAppForm({
     defaultValues: {
@@ -55,27 +55,27 @@ function SeasonsPage() {
       endDate: getStartOfDay(7),
     },
     validators: {
-      onSubmit: seasonDtoValidator,
+      onSubmit: leagueDtoValidator,
     },
     onSubmit: async ({ value }) => {
-      if (isEditing && editingSeasonId) {
-        await updateSeasonMutation({
-          seasonId: editingSeasonId,
+      if (isEditing && editingLeagueId) {
+        await updateLeagueMutation({
+          leagueId: editingLeagueId,
           payload: value,
         });
       } else {
-        await createSeasonMutation(value);
+        await createLeagueMutation(value);
       }
       closeDialog();
     },
   });
 
-  const openEditDialog = (season: SeasonDto) => {
+  const openEditDialog = (league: LeagueDto) => {
     setIsEditing(true);
-    setEditingSeasonId(season.id);
-    form.setFieldValue('name', season.name);
-    form.setFieldValue('startDate', new Date(season.startDate));
-    form.setFieldValue('endDate', new Date(season.endDate));
+    setEditingLeagueId(league.id);
+    form.setFieldValue('name', league.name);
+    form.setFieldValue('startDate', new Date(league.startDate));
+    form.setFieldValue('endDate', new Date(league.endDate));
     setIsDialogOpen(true);
   };
 
@@ -88,11 +88,11 @@ function SeasonsPage() {
   const closeDialog = () => {
     setIsDialogOpen(false);
     form.reset();
-    setEditingSeasonId(null);
+    setEditingLeagueId(null);
   };
 
-  const handleDelete = async (seasonId: string) => {
-    await deleteSeasonMutation(seasonId);
+  const handleDelete = async (leagueId: string) => {
+    await deleteLeagueMutation(leagueId);
   };
 
   return (
@@ -102,7 +102,7 @@ function SeasonsPage() {
           variant="h4"
           fontWeight={700}
         >
-          Seasons
+          Leagues
         </Typography>
         <Button
           variant="contained"
@@ -114,37 +114,37 @@ function SeasonsPage() {
             cursor: !user ? 'not-allowed' : 'pointer',
           }}
         >
-          Create Season
+          Create League
         </Button>
       </Box>
 
       <StatusHandler
-        isLoading={seasonsLoading}
-        error={seasonsError}
-        isEmpty={!seasons || seasons.length === 0}
+        isLoading={leaguesLoading}
+        error={leaguesError}
+        isEmpty={!leagues || leagues.length === 0}
       >
         <List sx={{ borderRadius: 2, boxShadow: 2, overflow: 'hidden' }}>
-          {seasons?.map((season, index) => (
+          {leagues?.map((league, index) => (
             <>
               <ListItem
-                key={season.id}
+                key={league.id}
                 secondaryAction={
                   user && (
                     <>
-                      {season.user.id === user.id && (
+                      {league.user.id === user.id && (
                         <IconButton
                           edge="end"
                           onClick={() => {
-                            openEditDialog(season);
+                            openEditDialog(league);
                           }}
                         >
                           <Edit />
                         </IconButton>
                       )}
-                      {season.user.id === user.id && (
+                      {league.user.id === user.id && (
                         <IconButton
                           edge="end"
-                          onClick={() => void handleDelete(season.id)}
+                          onClick={() => void handleDelete(league.id)}
                           sx={{ color: 'error.main' }}
                         >
                           <Delete />
@@ -168,34 +168,34 @@ function SeasonsPage() {
                 <ListItemText
                   primary={
                     <Link
-                      to={getTeamsLink(season.id)}
+                      to={getTeamsLink(league.id)}
                       style={{ textDecoration: 'none', color: 'inherit' }}
                     >
                       <Typography
                         variant="subtitle1"
                         fontWeight={600}
                       >
-                        {season.name}
+                        {league.name}
                       </Typography>
                     </Link>
                   }
                   secondary={
                     <>
                       <Typography variant="body2">
-                        {`${dayjs(season.startDate).format('YYYY-MM-DD')} - ${dayjs(season.endDate).format('YYYY-MM-DD')}`}
+                        {`${dayjs(league.startDate).format('YYYY-MM-DD')} - ${dayjs(league.endDate).format('YYYY-MM-DD')}`}
                       </Typography>
                       <Typography
                         variant="caption"
                         color="text.secondary"
                       >
-                        {`Created By: ${season.user.username}`}
+                        {`Created By: ${league.user.username}`}
                       </Typography>
                     </>
                   }
                 />
               </ListItem>
 
-              {index < seasons.length - 1 && <Divider />}
+              {index < leagues.length - 1 && <Divider />}
             </>
           ))}
         </List>
@@ -207,7 +207,7 @@ function SeasonsPage() {
         fullWidth
         maxWidth="sm"
       >
-        <DialogTitle>{isEditing ? 'Edit Season' : 'Create Season'}</DialogTitle>
+        <DialogTitle>{isEditing ? 'Edit League' : 'Create League'}</DialogTitle>
         <DialogContent dividers>
           <Box
             component="form"
@@ -216,7 +216,7 @@ function SeasonsPage() {
             sx={{ mt: 2 }}
           >
             <form.AppField name="name">
-              {(field) => <field.Text label="Season Name" />}
+              {(field) => <field.Text label="League Name" />}
             </form.AppField>
 
             <Grid
@@ -251,6 +251,6 @@ function SeasonsPage() {
   );
 }
 
-export default withAuth(withErrorBoundary(SeasonsPage), {
+export default withAuth(withErrorBoundary(LeaguesPage), {
   isLoggedInOnly: true,
 });

@@ -3,7 +3,7 @@ export const ROUTE_PATHS = {
   LOGIN: '/login',
   SIGNUP: '/signup',
   PROFILE: '/profile',
-  SEASONS: '/seasons',
+  SEASONS: '/leagues',
   TEAMS: '/teams',
   RESULTS: '/results',
   MATCHMAKING: '/matchmaking',
@@ -14,16 +14,16 @@ export const ROUTE_PATHS = {
 };
 
 export const PARAMS = {
-  SEASON_ID: 'seasonId',
+  SEASON_ID: 'leagueId',
   TEAM_ID: 'teamId',
 };
 
-export const getTeamsLink = (seasonId: string) => ({
+export const getTeamsLink = (leagueId: string) => ({
   pathname: ROUTE_PATHS.TEAMS,
-  search: `?${PARAMS.SEASON_ID}=${seasonId}`,
+  search: `?${PARAMS.SEASON_ID}=${leagueId}`,
 });
 
-export const getResultsLink = (seasonId: string, teamId: string) => ({
+export const getResultsLink = (leagueId: string, teamId: string) => ({
   pathname: ROUTE_PATHS.RESULTS,
-  search: `?${PARAMS.SEASON_ID}=${seasonId}&${PARAMS.TEAM_ID}=${teamId}`,
+  search: `?${PARAMS.SEASON_ID}=${leagueId}&${PARAMS.TEAM_ID}=${teamId}`,
 });

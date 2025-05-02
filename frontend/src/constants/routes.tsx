@@ -6,12 +6,12 @@ import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import { Permission } from 'constants/permissions';
 import { ForbiddenPage } from 'pages/ForbiddenPage';
 import { HomePage } from 'pages/HomePage';
+import { LeaguesPage } from 'pages/LeaguesPage';
 import { LoginPage } from 'pages/LoginPage';
 import { MatchmakingQueuePage } from 'pages/MatchmakingQueuePage';
 import { NotFoundPage } from 'pages/NotFoundPage';
 import { ProfilePage } from 'pages/ProfilePage';
 import { ResultsPage } from 'pages/ResultsPage';
-import { SeasonsPage } from 'pages/SeasonsPage';
 import { SignupPage } from 'pages/SignupPage';
 import { TeamsPage } from 'pages/TeamsPage';
 import { UnauthorizedPage } from 'pages/UnauthorizedPage';
@@ -47,11 +47,11 @@ export const ROUTES = [
     permission: Permission.LoggedIn,
   },
   {
-    label: 'Seasons',
+    label: 'Leagues',
     path: ROUTE_PATHS.SEASONS,
-    element: <SeasonsPage />,
+    element: <LeaguesPage />,
     icon: <AccessAlarmIcon />,
-    permission: Permission.ManageSeason,
+    permission: Permission.ManageLeague,
   },
   {
     label: 'Teams',

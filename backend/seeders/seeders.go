@@ -21,7 +21,7 @@ func SeedDatabase(db *config.DB, env *config.Env) error {
 		return err
 	}
 
-	if err := SeedSeasons(db, env); err != nil {
+	if err := SeedLeagues(db, env); err != nil {
 		return err
 	}
 

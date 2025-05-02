@@ -22,9 +22,9 @@ func SeedResults(db *config.DB, env *config.Env) error {
 		return errors.New("no users found in the database")
 	}
 
-	var season models.Season
-	if err := db.First(&season).Error; err != nil {
-		return errors.New("no seasons found in the database")
+	var league models.League
+	if err := db.First(&league).Error; err != nil {
+		return errors.New("no leagues found in the database")
 	}
 
 	var teams []models.Team
@@ -41,7 +41,7 @@ func SeedResults(db *config.DB, env *config.Env) error {
 			OpponentScore:  "9",
 			TeamId:         teams[0].Id,
 			OpponentTeamId: teams[1].Id,
-			SeasonId:       season.Id,
+			LeagueId:       league.Id,
 		},
 		{
 			UserId:         user.Id,
@@ -51,7 +51,7 @@ func SeedResults(db *config.DB, env *config.Env) error {
 			OpponentScore:  "5",
 			TeamId:         teams[0].Id,
 			OpponentTeamId: teams[1].Id,
-			SeasonId:       season.Id,
+			LeagueId:       league.Id,
 		},
 		{
 			UserId:         user.Id,
@@ -61,7 +61,7 @@ func SeedResults(db *config.DB, env *config.Env) error {
 			OpponentScore:  "13",
 			TeamId:         teams[0].Id,
 			OpponentTeamId: teams[1].Id,
-			SeasonId:       season.Id,
+			LeagueId:       league.Id,
 		},
 		{
 			UserId:         user.Id,
@@ -71,7 +71,7 @@ func SeedResults(db *config.DB, env *config.Env) error {
 			OpponentScore:  "6",
 			TeamId:         teams[0].Id,
 			OpponentTeamId: teams[1].Id,
-			SeasonId:       season.Id,
+			LeagueId:       league.Id,
 		},
 		{
 			UserId:         user.Id,
@@ -81,7 +81,7 @@ func SeedResults(db *config.DB, env *config.Env) error {
 			OpponentScore:  "2",
 			TeamId:         teams[0].Id,
 			OpponentTeamId: teams[1].Id,
-			SeasonId:       season.Id,
+			LeagueId:       league.Id,
 		},
 		{
 			UserId:         user.Id,
@@ -91,7 +91,7 @@ func SeedResults(db *config.DB, env *config.Env) error {
 			OpponentScore:  "8",
 			TeamId:         teams[0].Id,
 			OpponentTeamId: teams[1].Id,
-			SeasonId:       season.Id,
+			LeagueId:       league.Id,
 		},
 		{
 			UserId:         user.Id,
@@ -101,7 +101,7 @@ func SeedResults(db *config.DB, env *config.Env) error {
 			OpponentScore:  "15",
 			TeamId:         teams[0].Id,
 			OpponentTeamId: teams[1].Id,
-			SeasonId:       season.Id,
+			LeagueId:       league.Id,
 		},
 	}
 

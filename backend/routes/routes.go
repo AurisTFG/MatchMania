@@ -55,7 +55,7 @@ func SetupRoutes(
 				queue.POST("/join", requirePerm(enums.ManageQueuePermission), c.MatchmakingController.JoinQueue)
 				queue.POST("/leave", requirePerm(enums.ManageQueuePermission), c.MatchmakingController.LeaveQueue)
 				queue.GET(
-					"/teams-count/:seasonId",
+					"/teams-count/:leagueId",
 					requirePerm(enums.LoggedInPermission),
 					c.MatchmakingController.GetQueueTeamsCount,
 				)
@@ -67,15 +67,15 @@ func SetupRoutes(
 			}
 		}
 
-		seasons := v1.Group("/seasons")
+		leagues := v1.Group("/leagues")
 		{
-			seasons.GET("", requirePerm(enums.LoggedInPermission), c.SeasonController.GetAllSeasons)
-			seasons.GET(":seasonId", requirePerm(enums.LoggedInPermission), c.SeasonController.GetSeason)
-			seasons.POST("", requirePerm(enums.ManageSeasonPermission), c.SeasonController.CreateSeason)
-			seasons.PATCH(":seasonId", requirePerm(enums.ManageSeasonPermission), c.SeasonController.UpdateSeason)
-			seasons.DELETE(":seasonId", requirePerm(enums.ManageSeasonPermission), c.SeasonController.DeleteSeason)
+			leagues.GET("", requirePerm(enums.LoggedInPermission), c.LeagueController.GetAllLeagues)
+			leagues.GET(":leagueId", requirePerm(enums.LoggedInPermission), c.LeagueController.GetLeague)
+			leagues.POST("", requirePerm(enums.ManageLeaguePermission), c.LeagueController.CreateLeague)
+			leagues.PATCH(":leagueId", requirePerm(enums.ManageLeaguePermission), c.LeagueController.UpdateLeague)
+			leagues.DELETE(":leagueId", requirePerm(enums.ManageLeaguePermission), c.LeagueController.DeleteLeague)
 
-			teams := seasons.Group("/:seasonId/teams")
+			teams := leagues.Group("/:leagueId/teams")
 			{
 				teams.GET("", requirePerm(enums.LoggedInPermission), c.TeamController.GetAllTeams)
 				teams.GET(":teamId", requirePerm(enums.LoggedInPermission), c.TeamController.GetTeam)

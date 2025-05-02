@@ -8,7 +8,7 @@ import (
 type Services struct {
 	UserService            UserService
 	AuthService            AuthService
-	SeasonService          SeasonService
+	LeagueService          LeagueService
 	TeamService            TeamService
 	ResultService          ResultService
 	TrackmaniaOAuthService TrackmaniaOAuthService
@@ -17,9 +17,9 @@ type Services struct {
 
 func SetupServices(repos *repositories.Repositories, env *config.Env) *Services {
 	return &Services{
-		UserService:            NewUserService(repos.UserRepository, repos.TrackmaniaOAuthTrackRepository),
+		UserService:            NewUserService(repos.UserRepository, repos.TrackmaniaTrackRepository),
 		AuthService:            NewAuthService(repos.SessionRepository, repos.UserRepository, env),
-		SeasonService:          NewSeasonService(repos.SeasonRepository),
+		LeagueService:          NewLeagueService(repos.LeagueRepository),
 		TeamService:            NewTeamService(repos.TeamRepository),
 		ResultService:          NewResultService(repos.ResultRepository),
 		TrackmaniaOAuthService: NewTrackmaniaOAuthService(repos.TrackmaniaOAuthStateRepository, env),

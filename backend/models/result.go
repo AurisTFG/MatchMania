@@ -18,8 +18,8 @@ type Result struct {
 	Team           Team
 	OpponentTeamId uuid.UUID `gorm:"not null"`
 	OpponentTeam   Team
-	SeasonId       uuid.UUID `gorm:"not null"`
-	Season         Season
+	LeagueId       uuid.UUID `gorm:"not null"`
+	League         League
 	UserId         uuid.UUID `gorm:"not null"`
 	User           User
 }

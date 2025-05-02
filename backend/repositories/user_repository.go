@@ -38,7 +38,7 @@ func (r *userRepository) FindAll() ([]models.User, error) {
 func (r *userRepository) FindById(userId uuid.UUID) (*models.User, error) {
 	var user models.User
 
-	result := r.db.Preload("TrackmaniaOauthTracks").Preload("Roles").First(&user, "id = ?", userId)
+	result := r.db.Preload("TrackmaniaTracks").Preload("Roles").First(&user, "id = ?", userId)
 
 	return &user, result.Error
 }

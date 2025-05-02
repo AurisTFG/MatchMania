@@ -7,21 +7,21 @@ import (
 	"github.com/google/uuid"
 )
 
-type TrackmaniaOAuthTrackRepository interface {
-	GetAllTracks() ([]models.TrackmaniaOauthTrack, error)
-	InsertAllTracksForUser(userId uuid.UUID, tracks []models.TrackmaniaOauthTrack) error
+type TrackmaniaTrackRepository interface {
+	GetAllTracks() ([]models.TrackmaniaTrack, error)
+	InsertAllTracksForUser(userId uuid.UUID, tracks []models.TrackmaniaTrack) error
 	DeleteAllTracksByUserId(userId uuid.UUID) error
 }
 type trackmaniaOAuthTrackRepository struct {
 	db *config.DB
 }
 
-func NewTrackmaniaOAuthTrackRepository(db *config.DB) TrackmaniaOAuthTrackRepository {
+func NewTrackmaniaTrackRepository(db *config.DB) TrackmaniaTrackRepository {
 	return &trackmaniaOAuthTrackRepository{db: db}
 }
 
-func (r *trackmaniaOAuthTrackRepository) GetAllTracks() ([]models.TrackmaniaOauthTrack, error) {
-	var tracks []models.TrackmaniaOauthTrack
+func (r *trackmaniaOAuthTrackRepository) GetAllTracks() ([]models.TrackmaniaTrack, error) {
+	var tracks []models.TrackmaniaTrack
 
 	result := r.db.Find(&tracks)
 
@@ -30,7 +30,7 @@ func (r *trackmaniaOAuthTrackRepository) GetAllTracks() ([]models.TrackmaniaOaut
 
 func (r *trackmaniaOAuthTrackRepository) InsertAllTracksForUser(
 	userId uuid.UUID,
-	tracks []models.TrackmaniaOauthTrack,
+	tracks []models.TrackmaniaTrack,
 ) error {
 	for i := range tracks {
 		tracks[i].UserId = userId
@@ -42,7 +42,7 @@ func (r *trackmaniaOAuthTrackRepository) InsertAllTracksForUser(
 }
 
 func (r *trackmaniaOAuthTrackRepository) DeleteAllTracksByUserId(userId uuid.UUID) error {
-	result := r.db.Where("user_id = ?", userId).Delete(&models.TrackmaniaOauthTrack{})
+	result := r.db.Where("user_id = ?", userId).Delete(&models.TrackmaniaTrack{})
 
 	return result.Error
 }

@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { useFetchSeason } from 'api/hooks/seasonsHooks';
+import { useFetchLeague } from 'api/hooks/leaguesHooks';
 import {
   useCreateTeam,
   useDeleteTeam,
@@ -33,7 +33,7 @@ import { createTeamDtoValidator } from 'validators/teams/createTeamDtoValidator'
 
 function TeamsPage() {
   const [searchParams] = useSearchParams();
-  const seasonId = searchParams.get(PARAMS.SEASON_ID) ?? '';
+  const leagueId = searchParams.get(PARAMS.SEASON_ID) ?? '';
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -41,11 +41,11 @@ function TeamsPage() {
   const [editingTeamId, setEditingTeamId] = useState<string | null>(null);
   const { user } = useAuth();
 
-  const { data: season, isLoading: isSeasonLoading } = useFetchSeason(seasonId);
-  const { data: teams, isLoading: isTeamsLoading } = useFetchTeams(seasonId);
-  const { mutateAsync: createTeam } = useCreateTeam(seasonId);
-  const { mutateAsync: updateTeam } = useUpdateTeam(seasonId);
-  const { mutateAsync: deleteTeam } = useDeleteTeam(seasonId);
+  const { data: league, isLoading: isLeagueLoading } = useFetchLeague(leagueId);
+  const { data: teams, isLoading: isTeamsLoading } = useFetchTeams(leagueId);
+  const { mutateAsync: createTeam } = useCreateTeam(leagueId);
+  const { mutateAsync: updateTeam } = useUpdateTeam(leagueId);
+  const { mutateAsync: deleteTeam } = useDeleteTeam(leagueId);
 
   const form = useAppForm({
     defaultValues: {
@@ -87,7 +87,7 @@ function TeamsPage() {
     await deleteTeam(teamId);
   };
 
-  if (isSeasonLoading || isTeamsLoading) {
+  if (isLeagueLoading || isTeamsLoading) {
     return (
       <Box sx={{ p: 4 }}>
         <Typography
@@ -107,7 +107,7 @@ function TeamsPage() {
           variant="h4"
           fontWeight={700}
         >
-          Teams for Season &quot;{season?.name}&quot;
+          Teams for League &quot;{league?.name}&quot;
         </Typography>
         <Button
           variant="contained"
@@ -172,7 +172,7 @@ function TeamsPage() {
                 <ListItemText
                   primary={
                     <Link
-                      to={getResultsLink(seasonId, team.id)}
+                      to={getResultsLink(leagueId, team.id)}
                       style={{ textDecoration: 'none', color: 'inherit' }}
                     >
                       <Typography

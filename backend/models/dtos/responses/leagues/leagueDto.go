@@ -1,4 +1,4 @@
-package seasons
+package leagues
 
 import (
 	"MatchManiaAPI/models/dtos/responses/users"
@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type SeasonDto struct {
+type LeagueDto struct {
 	Id        uuid.UUID `example:"550e8400-e29b-41d4-a716-446655440000" json:"id"`
 	Name      string    `example:"Summer 2025"                          json:"name"`
 	StartDate time.Time `example:"2025-06-01T00:00:00Z"                 json:"startDate"`

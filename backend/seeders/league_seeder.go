@@ -10,9 +10,9 @@ import (
 	"github.com/google/uuid"
 )
 
-func SeedSeasons(db *config.DB, env *config.Env) error {
+func SeedLeagues(db *config.DB, env *config.Env) error {
 	var count int64
-	if err := db.Model(&models.Season{}).Count(&count).Error; err != nil {
+	if err := db.Model(&models.League{}).Count(&count).Error; err != nil {
 		return err
 	}
 
@@ -30,7 +30,7 @@ func SeedSeasons(db *config.DB, env *config.Env) error {
 		return fmt.Errorf("failed to parse user ID: %w", err)
 	}
 
-	seasons := []models.Season{
+	leagues := []models.League{
 		{
 			UserId:    parsedUserId,
 			Name:      "Fall 2024",
@@ -75,7 +75,7 @@ func SeedSeasons(db *config.DB, env *config.Env) error {
 		},
 	}
 
-	if err = db.Create(&seasons).Error; err != nil {
+	if err = db.Create(&leagues).Error; err != nil {
 		return err
 	}
 

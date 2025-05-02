@@ -7,22 +7,24 @@ import (
 	"gorm.io/gorm"
 )
 
-type Season struct {
+type League struct {
 	BaseModel
 
 	Name      string    `gorm:"not null"`
+	LogoUrl   string    `gorm:"not null"`
 	StartDate time.Time `gorm:"not null"`
 	EndDate   time.Time `gorm:"not null"`
 
 	UserId uuid.UUID `gorm:"not null"`
 	User   User
 
-	Teams []Team
+	Teams  []Team            `gorm:"many2many:league_teams;"`
+	Tracks []TrackmaniaTrack `gorm:"many2many:league_tracks;"`
 }
 
-func (s *Season) BeforeDelete(tx *gorm.DB) error {
+func (s *League) BeforeDelete(tx *gorm.DB) error {
 	results := []Result{}
-	tx.Where("season_id = ?", s.Id).Find(&results)
+	tx.Where("league_id = ?", s.Id).Find(&results)
 
 	for _, result := range results {
 		if err := tx.Delete(&result).Error; err != nil {
@@ -31,7 +33,7 @@ func (s *Season) BeforeDelete(tx *gorm.DB) error {
 	}
 
 	teams := []Team{}
-	tx.Where("season_id = ?", s.Id).Find(&teams)
+	tx.Where("league_id = ?", s.Id).Find(&teams)
 
 	for _, team := range teams {
 		if err := tx.Delete(&team).Error; err != nil {

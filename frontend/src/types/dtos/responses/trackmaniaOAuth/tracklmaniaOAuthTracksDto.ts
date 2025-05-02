@@ -1,4 +1,4 @@
-export type TrackmaniaOAuthTracksDto = {
+export type TrackmaniaTracksDto = {
   uid: string;
   name: string;
   author: string;

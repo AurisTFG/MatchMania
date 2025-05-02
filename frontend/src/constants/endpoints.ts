@@ -11,19 +11,19 @@ export const ENDPOINTS = {
     BY_ID: (id: string) => `users/${id}`,
   },
   SEASONS: {
-    ROOT: `seasons`,
-    BY_ID: (id: string) => `seasons/${id}`,
+    ROOT: `leagues`,
+    BY_ID: (id: string) => `leagues/${id}`,
   },
   TEAMS: {
-    ROOT: (seasonId: string) => `seasons/${seasonId}/teams`,
-    BY_ID: (seasonId: string, teamId: string) =>
-      `seasons/${seasonId}/teams/${teamId}`,
+    ROOT: (leagueId: string) => `leagues/${leagueId}/teams`,
+    BY_ID: (leagueId: string, teamId: string) =>
+      `leagues/${leagueId}/teams/${teamId}`,
   },
   RESULTS: {
-    ROOT: (seasonId: string, teamId: string) =>
-      `seasons/${seasonId}/teams/${teamId}/results`,
-    BY_ID: (seasonId: string, teamId: string, resultId: string) =>
-      `seasons/${seasonId}/teams/${teamId}/results/${resultId}`,
+    ROOT: (leagueId: string, teamId: string) =>
+      `leagues/${leagueId}/teams/${teamId}/results`,
+    BY_ID: (leagueId: string, teamId: string, resultId: string) =>
+      `leagues/${leagueId}/teams/${teamId}/results/${resultId}`,
   },
   TRACKMANIA: {
     OAUTH: {
@@ -33,8 +33,8 @@ export const ENDPOINTS = {
   MATCHMAKING: {
     JOIN_QUEUE: `matchmaking/queue/join`,
     LEAVE_QUEUE: `matchmaking/queue/leave`,
-    GET_QUEUED_TEAMS_COUNT: (seasonId: string) =>
-      `matchmaking/queue/teams-count/${seasonId}`,
+    GET_QUEUED_TEAMS_COUNT: (leagueId: string) =>
+      `matchmaking/queue/teams-count/${leagueId}`,
     GET_QUEUE_STATUS: (teamId: string) => `matchmaking/queue/status/${teamId}`,
   },
 };

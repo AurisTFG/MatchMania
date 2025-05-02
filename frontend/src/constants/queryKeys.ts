@@ -11,19 +11,19 @@ export const QUERY_KEYS = {
   },
 
   SEASONS: {
-    ROOT: ['seasons'],
-    ALL: ['seasons', 'all'],
-    BY_ID: (id: string) => ['seasons', 'byId', id],
+    ROOT: ['leagues'],
+    ALL: ['leagues', 'all'],
+    BY_ID: (id: string) => ['leagues', 'byId', id],
   },
 
   TEAMS: {
     ROOT: ['teams'],
-    ALL: (seasonId: string) => ['teams', 'all', 'season', seasonId],
-    BY_ID: (seasonId: string, teamId: string) => [
+    ALL: (leagueId: string) => ['teams', 'all', 'league', leagueId],
+    BY_ID: (leagueId: string, teamId: string) => [
       'teams',
       'byId',
-      'season',
-      seasonId,
+      'league',
+      leagueId,
       'team',
       teamId,
     ],
@@ -31,19 +31,19 @@ export const QUERY_KEYS = {
 
   RESULTS: {
     ROOT: ['results'],
-    ALL: (seasonId: string, teamId: string) => [
+    ALL: (leagueId: string, teamId: string) => [
       'results',
       'all',
-      'season',
-      seasonId,
+      'league',
+      leagueId,
       'team',
       teamId,
     ],
-    BY_ID: (seasonId: string, teamId: string, resultId: string) => [
+    BY_ID: (leagueId: string, teamId: string, resultId: string) => [
       'results',
       'byId',
-      'season',
-      seasonId,
+      'league',
+      leagueId,
       'team',
       teamId,
       'result',
@@ -57,11 +57,11 @@ export const QUERY_KEYS = {
 
   MATCHMAKING: {
     ROOT: ['matchmaking'],
-    QUEUE_TEAMS_COUNT: (seasonId: string) => [
+    QUEUE_TEAMS_COUNT: (leagueId: string) => [
       'matchmaking',
       'queue',
       'teamsCount',
-      seasonId,
+      leagueId,
     ],
     CHECK_MATCH_STATUS: (teamId: string) => [
       'matchmaking',

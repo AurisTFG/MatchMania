@@ -7,7 +7,7 @@ import (
 type Controllers struct {
 	AuthController            AuthController
 	UserController            UserController
-	SeasonController          SeasonController
+	LeagueController          LeagueController
 	TeamController            TeamController
 	ResultController          ResultController
 	TrackmaniaOAuthController TrackmaniaOAuthController
@@ -19,8 +19,8 @@ func SetupControllers(
 ) *Controllers {
 	authController := NewAuthController(services.AuthService, services.UserService)
 	userController := NewUserController(services.UserService)
-	seasonController := NewSeasonController(services.SeasonService)
-	teamController := NewTeamController(services.SeasonService, services.TeamService)
+	leagueController := NewLeagueController(services.LeagueService)
+	teamController := NewTeamController(services.LeagueService, services.TeamService)
 	resultController := NewResultController(services.TeamService, services.ResultService)
 	trackmaniaOAuthController := NewTrackmaniaOAuthController(services.TrackmaniaOAuthService, services.UserService)
 	matchmakingController := NewMatchmakingController(
@@ -32,7 +32,7 @@ func SetupControllers(
 	return &Controllers{
 		AuthController:            authController,
 		UserController:            userController,
-		SeasonController:          seasonController,
+		LeagueController:          leagueController,
 		TeamController:            teamController,
 		ResultController:          resultController,
 		TrackmaniaOAuthController: trackmaniaOAuthController,

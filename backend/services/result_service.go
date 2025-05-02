@@ -10,8 +10,8 @@ import (
 )
 
 type ResultService interface {
-	GetAllResults(seasonId uuid.UUID, teamId uuid.UUID) ([]models.Result, error)
-	GetResultById(seasonId uuid.UUID, teamId uuid.UUID, resultId uuid.UUID) (*models.Result, error)
+	GetAllResults(leagueId uuid.UUID, teamId uuid.UUID) ([]models.Result, error)
+	GetResultById(leagueId uuid.UUID, teamId uuid.UUID, resultId uuid.UUID) (*models.Result, error)
 	CreateResult(*requests.CreateResultDto, uuid.UUID, uuid.UUID, uuid.UUID) error
 	UpdateResult(*models.Result, *requests.UpdateResultDto) error
 	DeleteResult(*models.Result) error
@@ -25,26 +25,26 @@ func NewResultService(repo repositories.ResultRepository) ResultService {
 	return &resultService{repo: repo}
 }
 
-func (s *resultService) GetAllResults(seasonId uuid.UUID, teamId uuid.UUID) ([]models.Result, error) {
-	return s.repo.FindAllBySeasonIDAndTeamID(seasonId, teamId)
+func (s *resultService) GetAllResults(leagueId uuid.UUID, teamId uuid.UUID) ([]models.Result, error) {
+	return s.repo.FindAllByLeagueIDAndTeamID(leagueId, teamId)
 }
 
 func (s *resultService) GetResultById(
-	seasonId uuid.UUID,
+	leagueId uuid.UUID,
 	teamId uuid.UUID,
 	resultId uuid.UUID,
 ) (*models.Result, error) {
-	return s.repo.FindByIdAndSeasonIDAndTeamID(seasonId, teamId, resultId)
+	return s.repo.FindByIdAndLeagueIDAndTeamID(leagueId, teamId, resultId)
 }
 
 func (s *resultService) CreateResult(
 	resultDto *requests.CreateResultDto,
-	seasonId uuid.UUID,
+	leagueId uuid.UUID,
 	teamId uuid.UUID,
 	userId uuid.UUID,
 ) error {
 	newResult := utils.MustCopy[models.Result](resultDto)
-	newResult.SeasonId = seasonId
+	newResult.LeagueId = leagueId
 	newResult.TeamId = teamId
 	newResult.UserId = userId
 

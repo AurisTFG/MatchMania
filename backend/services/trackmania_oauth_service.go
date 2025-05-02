@@ -27,7 +27,7 @@ type TrackmaniaOAuthService interface {
 	GetAccessToken(code string) (*responses.TrackmaniaOAuthAccessTokenDto, error)
 	GetProfilePageUrl() string
 	GetUserInfo(accessToken string) (*responses.TrackmaniaOAuthUserDto, error)
-	GetUserFavoriteMaps(accessToken string) ([]responses.TrackmaniaOAuthTracksDto, error)
+	GetUserFavoriteMaps(accessToken string) ([]responses.TrackmaniaTracksDto, error)
 }
 
 type trackmaniaOAuthService struct {
@@ -197,7 +197,7 @@ func (s *trackmaniaOAuthService) GetUserInfo(accessToken string) (*responses.Tra
 	return &user, nil
 }
 
-func (s *trackmaniaOAuthService) GetUserFavoriteMaps(accessToken string) ([]responses.TrackmaniaOAuthTracksDto, error) {
+func (s *trackmaniaOAuthService) GetUserFavoriteMaps(accessToken string) ([]responses.TrackmaniaTracksDto, error) {
 	req, err := http.NewRequestWithContext(
 		context.Background(),
 		http.MethodGet,
@@ -224,7 +224,7 @@ func (s *trackmaniaOAuthService) GetUserFavoriteMaps(accessToken string) ([]resp
 	}
 
 	var favoritesWrapper struct {
-		List []responses.TrackmaniaOAuthTracksDto `json:"list"`
+		List []responses.TrackmaniaTracksDto `json:"list"`
 	}
 	if err = json.NewDecoder(resp.Body).Decode(&favoritesWrapper); err != nil {
 		return nil, err

@@ -45,7 +45,7 @@ func (c *MatchmakingController) JoinQueue(ctx *gin.Context) {
 		return
 	}
 
-	err := c.matchmakingService.JoinQueue(bodyDto.SeasonId, bodyDto.TeamId)
+	err := c.matchmakingService.JoinQueue(bodyDto.LeagueId, bodyDto.TeamId)
 	if err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
@@ -71,7 +71,7 @@ func (c *MatchmakingController) LeaveQueue(ctx *gin.Context) {
 		return
 	}
 
-	err := c.matchmakingService.LeaveQueue(bodyDto.SeasonId, bodyDto.TeamId)
+	err := c.matchmakingService.LeaveQueue(bodyDto.LeagueId, bodyDto.TeamId)
 	if err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
@@ -88,15 +88,15 @@ func (c *MatchmakingController) LeaveQueue(ctx *gin.Context) {
 // @Success 200 {object} responses.QueueTeamsCountDto
 // @Failure 400 {object} responses.ErrorDto
 // @Failure 422 {object} responses.ErrorDto
-// @Router /matchmaking/queue/teams-count/{seasonId} [get]
+// @Router /matchmaking/queue/teams-count/{leagueId} [get]
 func (c *MatchmakingController) GetQueueTeamsCount(ctx *gin.Context) {
-	seasonId, err := utils.GetParamId(ctx, "seasonId")
+	leagueId, err := utils.GetParamId(ctx, "leagueId")
 	if err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
 	}
 
-	count, err := c.matchmakingService.GetQueueTeamsCount(seasonId)
+	count, err := c.matchmakingService.GetQueueTeamsCount(leagueId)
 	if err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return

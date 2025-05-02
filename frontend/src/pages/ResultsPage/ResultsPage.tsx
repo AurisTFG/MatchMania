@@ -17,13 +17,13 @@ import {
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { useFetchLeague } from 'api/hooks/leaguesHooks';
 import {
   useCreateResult,
   useDeleteResult,
   useFetchResults,
   useUpdateResult,
 } from 'api/hooks/resultsHooks';
-import { useFetchSeason } from 'api/hooks/seasonsHooks';
 import { useFetchTeam, useFetchTeams } from 'api/hooks/teamsHooks';
 import { StatusHandler } from 'components/StatusHandler';
 import { PARAMS } from 'constants/route_paths';
@@ -38,7 +38,7 @@ import { resultDtoValidator } from 'validators/results/resultDtoValidator';
 
 function ResultsPage() {
   const [searchParams] = useSearchParams();
-  const seasonId = searchParams.get(PARAMS.SEASON_ID) ?? '';
+  const leagueId = searchParams.get(PARAMS.SEASON_ID) ?? '';
   const teamId = searchParams.get(PARAMS.TEAM_ID) ?? '';
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -51,14 +51,14 @@ function ResultsPage() {
     data: results,
     isLoading,
     isError,
-  } = useFetchResults(seasonId, teamId);
-  const { data: season } = useFetchSeason(seasonId);
-  const { data: teams } = useFetchTeams(seasonId);
-  const { data: team } = useFetchTeam(seasonId, teamId);
+  } = useFetchResults(leagueId, teamId);
+  const { data: league } = useFetchLeague(leagueId);
+  const { data: teams } = useFetchTeams(leagueId);
+  const { data: team } = useFetchTeam(leagueId, teamId);
 
-  const { mutateAsync: createResult } = useCreateResult(seasonId, teamId);
-  const { mutateAsync: updateResult } = useUpdateResult(seasonId, teamId);
-  const { mutateAsync: deleteResult } = useDeleteResult(seasonId, teamId);
+  const { mutateAsync: createResult } = useCreateResult(leagueId, teamId);
+  const { mutateAsync: updateResult } = useUpdateResult(leagueId, teamId);
+  const { mutateAsync: deleteResult } = useDeleteResult(leagueId, teamId);
 
   const form = useAppForm({
     defaultValues: {
@@ -128,8 +128,8 @@ function ResultsPage() {
           variant="h4"
           fontWeight={700}
         >
-          Results for Team &quot;{team?.name}&quot; in Season &quot;
-          {season?.name}&quot;
+          Results for Team &quot;{team?.name}&quot; in League &quot;
+          {league?.name}&quot;
         </Typography>
         <Button
           variant="contained"

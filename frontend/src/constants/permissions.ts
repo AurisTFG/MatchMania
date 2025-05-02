@@ -1,5 +1,5 @@
 export enum Permission {
-  ManageSeason = 'SeasonsManage',
+  ManageLeague = 'LeaguesManage',
   ManageTeam = 'TeamsManage',
   ManageResult = 'ResultsManage',
   ManageUser = 'UsersManage',
@@ -10,7 +10,7 @@ export enum Permission {
 }
 
 export const AllPermissions: Permission[] = [
-  Permission.ManageSeason,
+  Permission.ManageLeague,
   Permission.ManageTeam,
   Permission.ManageResult,
   Permission.ManageUser,
@@ -19,7 +19,7 @@ export const AllPermissions: Permission[] = [
 ];
 
 export const AllPermissionsWithDesc: Record<Permission, string> = {
-  [Permission.ManageSeason]: 'Manage seasons',
+  [Permission.ManageLeague]: 'Manage leagues',
   [Permission.ManageTeam]: 'Manage teams',
   [Permission.ManageResult]: 'Manage results',
   [Permission.ManageUser]: 'Manage users',

@@ -25,22 +25,22 @@ func NewTeamService(repo repositories.TeamRepository) TeamService {
 	return &teamService{repo: repo}
 }
 
-func (s *teamService) GetAllTeams(seasonId uuid.UUID) ([]models.Team, error) {
-	return s.repo.FindAllBySeasonID(seasonId)
+func (s *teamService) GetAllTeams(leagueId uuid.UUID) ([]models.Team, error) {
+	return s.repo.FindAllByLeagueID(leagueId)
 }
 
-func (s *teamService) GetTeamById(seasonId uuid.UUID, teamId uuid.UUID) (*models.Team, error) {
-	return s.repo.FindByIdAndSeasonID(seasonId, teamId)
+func (s *teamService) GetTeamById(leagueId uuid.UUID, teamId uuid.UUID) (*models.Team, error) {
+	return s.repo.FindByIdAndLeagueID(leagueId, teamId)
 }
 
 func (s *teamService) CreateTeam(
 	teamDto *requests.CreateTeamDto,
-	seasonId uuid.UUID,
+	leagueId uuid.UUID,
 	userId uuid.UUID,
 ) error {
 	newTeam := utils.MustCopy[models.Team](teamDto)
 	newTeam.Elo = 1000
-	newTeam.SeasonId = seasonId
+	newTeam.LeagueId = leagueId
 	newTeam.UserId = userId
 
 	return s.repo.Create(newTeam)

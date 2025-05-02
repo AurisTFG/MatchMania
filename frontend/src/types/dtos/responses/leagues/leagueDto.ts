@@ -1,6 +1,6 @@
 import { UserMinimalDto } from '../users/userMinimalDto';
 
-export type SeasonDto = {
+export type LeagueDto = {
   id: string;
   name: string;
   startDate: Date;

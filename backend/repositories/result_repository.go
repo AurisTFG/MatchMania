@@ -9,11 +9,11 @@ import (
 
 type ResultRepository interface {
 	FindAll() ([]models.Result, error)
-	FindAllBySeasonID(uuid.UUID) ([]models.Result, error)
+	FindAllByLeagueID(uuid.UUID) ([]models.Result, error)
 	FindAllByTeamID(uuid.UUID) ([]models.Result, error)
-	FindAllBySeasonIDAndTeamID(uuid.UUID, uuid.UUID) ([]models.Result, error)
+	FindAllByLeagueIDAndTeamID(uuid.UUID, uuid.UUID) ([]models.Result, error)
 	FindById(uuid.UUID) (*models.Result, error)
-	FindByIdAndSeasonIDAndTeamID(seasonId uuid.UUID, teamId uuid.UUID, resultId uuid.UUID) (*models.Result, error)
+	FindByIdAndLeagueIDAndTeamID(leagueId uuid.UUID, teamId uuid.UUID, resultId uuid.UUID) (*models.Result, error)
 	Create(*models.Result) error
 	Update(*models.Result, *models.Result) error
 	Delete(*models.Result) error
@@ -35,10 +35,10 @@ func (r *resultRepository) FindAll() ([]models.Result, error) {
 	return results, result.Error
 }
 
-func (r *resultRepository) FindAllBySeasonID(seasonId uuid.UUID) ([]models.Result, error) {
+func (r *resultRepository) FindAllByLeagueID(leagueId uuid.UUID) ([]models.Result, error) {
 	var results []models.Result
 
-	result := r.db.Joins("User").Joins("Team").Joins("OponnentTeam").Where("season_id = ?", seasonId).Find(&results)
+	result := r.db.Joins("User").Joins("Team").Joins("OponnentTeam").Where("league_id = ?", leagueId).Find(&results)
 
 	return results, result.Error
 }
@@ -55,12 +55,12 @@ func (r *resultRepository) FindAllByTeamID(teamId uuid.UUID) ([]models.Result, e
 	return results, result.Error
 }
 
-func (r *resultRepository) FindAllBySeasonIDAndTeamID(seasonId uuid.UUID, teamId uuid.UUID) ([]models.Result, error) {
+func (r *resultRepository) FindAllByLeagueIDAndTeamID(leagueId uuid.UUID, teamId uuid.UUID) ([]models.Result, error) {
 	var results []models.Result
 
 	result := r.db.Joins("User").Joins("Team").Joins("OpponentTeam").Where(
-		"\"results\".\"season_id\" = ? AND (team_id = ? OR opponent_team_id = ?)",
-		seasonId, teamId, teamId,
+		"\"results\".\"league_id\" = ? AND (team_id = ? OR opponent_team_id = ?)",
+		leagueId, teamId, teamId,
 	).Find(&results)
 
 	return results, result.Error
@@ -74,16 +74,16 @@ func (r *resultRepository) FindById(resultId uuid.UUID) (*models.Result, error) 
 	return &resultModel, result.Error
 }
 
-func (r *resultRepository) FindByIdAndSeasonIDAndTeamID(
-	seasonId uuid.UUID,
+func (r *resultRepository) FindByIdAndLeagueIDAndTeamID(
+	leagueId uuid.UUID,
 	teamId uuid.UUID,
 	resultId uuid.UUID,
 ) (*models.Result, error) {
 	var resultModel models.Result
 
 	result := r.db.Joins("User").Joins("Team").Joins("OponnentTeam").Where(
-		"season_id = ? AND (team_id = ? OR opponent_team_id = ?) AND id = ?",
-		seasonId, teamId, teamId, resultId,
+		"league_id = ? AND (team_id = ? OR opponent_team_id = ?) AND id = ?",
+		leagueId, teamId, teamId, resultId,
 	).First(&resultModel)
 
 	return &resultModel, result.Error

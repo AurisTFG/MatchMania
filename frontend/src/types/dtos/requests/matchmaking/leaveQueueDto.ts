@@ -1,4 +1,4 @@
 export type LeaveQueueDto = {
-  seasonId: string;
+  leagueId: string;
   teamId: string;
 };

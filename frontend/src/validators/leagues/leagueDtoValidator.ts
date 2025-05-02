@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { CreateSeasonDto } from 'types/dtos/requests/seasons/createSeasonDto';
+import { CreateLeagueDto } from 'types/dtos/requests/leagues/createLeagueDto';
 
-export const seasonDtoValidator = z
+export const leagueDtoValidator = z
   .object({
     name: z
       .string()
@@ -43,4 +43,4 @@ export const seasonDtoValidator = z
       message: 'End date must be at least 7 days after the start date',
       path: ['endDate'],
     },
-  ) satisfies z.ZodType<CreateSeasonDto>;
+  ) satisfies z.ZodType<CreateLeagueDto>;

@@ -1,4 +1,4 @@
 export type JoinQueueDto = {
-  seasonId: string;
+  leagueId: string;
   teamId: string;
 };

@@ -3,7 +3,7 @@ package enums
 type Permission string
 
 const (
-	ManageSeasonPermission Permission = "SeasonsManage"
+	ManageLeaguePermission Permission = "LeaguesManage"
 	ManageTeamPermission   Permission = "TeamsManage"
 	ManageResultPermission Permission = "ResultsManage"
 	ManageUserPermission   Permission = "UsersManage"
@@ -24,7 +24,7 @@ func (p *Permission) Value() (any, error) {
 
 func AllPermissions() []string {
 	return []string{
-		string(ManageSeasonPermission),
+		string(ManageLeaguePermission),
 		string(ManageTeamPermission),
 		string(ManageResultPermission),
 		string(ManageUserPermission),
@@ -35,7 +35,7 @@ func AllPermissions() []string {
 
 func AllPermissionsWithDesc() map[string]string {
 	return map[string]string{
-		string(ManageSeasonPermission): "Manage seasons",
+		string(ManageLeaguePermission): "Manage leagues",
 		string(ManageTeamPermission):   "Manage teams",
 		string(ManageResultPermission): "Manage results",
 		string(ManageUserPermission):   "Manage users",

@@ -10,9 +10,9 @@ import (
 
 type TeamRepository interface {
 	FindAll() ([]models.Team, error)
-	FindAllBySeasonID(uuid.UUID) ([]models.Team, error)
+	FindAllByLeagueID(uuid.UUID) ([]models.Team, error)
 	FindById(uuid.UUID) (*models.Team, error)
-	FindByIdAndSeasonID(uuid.UUID, uuid.UUID) (*models.Team, error)
+	FindByIdAndLeagueID(uuid.UUID, uuid.UUID) (*models.Team, error)
 	Create(*models.Team) error
 	Update(*models.Team, *models.Team) error
 	Delete(*models.Team) error
@@ -34,10 +34,10 @@ func (r *teamRepository) FindAll() ([]models.Team, error) {
 	return teams, result.Error
 }
 
-func (r *teamRepository) FindAllBySeasonID(seasonId uuid.UUID) ([]models.Team, error) {
+func (r *teamRepository) FindAllByLeagueID(leagueId uuid.UUID) ([]models.Team, error) {
 	var teams []models.Team
 
-	result := r.db.Joins("User").Where("season_id = ?", seasonId).Find(&teams)
+	result := r.db.Joins("User").Where("league_id = ?", leagueId).Find(&teams)
 
 	return teams, result.Error
 }
@@ -50,10 +50,10 @@ func (r *teamRepository) FindById(teamId uuid.UUID) (*models.Team, error) {
 	return &team, result.Error
 }
 
-func (r *teamRepository) FindByIdAndSeasonID(seasonId uuid.UUID, teamId uuid.UUID) (*models.Team, error) {
+func (r *teamRepository) FindByIdAndLeagueID(leagueId uuid.UUID, teamId uuid.UUID) (*models.Team, error) {
 	var team models.Team
 
-	result := r.db.Joins("User").Where("season_id = ? AND \"teams\".\"id\" = ?", seasonId, teamId).First(&team)
+	result := r.db.Joins("User").Where("league_id = ? AND \"teams\".\"id\" = ?", leagueId, teamId).First(&team)
 
 	return &team, result.Error
 }
