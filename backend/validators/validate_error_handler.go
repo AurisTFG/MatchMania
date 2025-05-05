@@ -27,6 +27,8 @@ func ValidateErrorHandler(err error) error {
 		switch tag {
 		case "required":
 			errorMessage = field + " is required."
+		case "nefield":
+			errorMessage = field + " must not be equal to " + param + "."
 		case "min":
 			errorMessage = field + " must be at least " + param + " characters long. Received: " + strconv.Itoa(
 				len(value.(string)),
@@ -37,6 +39,8 @@ func ValidateErrorHandler(err error) error {
 			)
 		case "email":
 			errorMessage = field + " must be a valid email address."
+		case "uuid":
+			errorMessage = field + " must be a valid UUID. Received: " + value.(string)
 		case "score":
 			errorMessage = "Score must be between 0 and 100. Received: " + value.(string)
 		case "minDate":
