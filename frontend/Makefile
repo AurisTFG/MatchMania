@@ -31,6 +31,12 @@ lint: ## Runs the linter to check for code style and errors
 	@pnpm lint:fix
 	@echo "[✔] Linter completed"
 
+.PHONY: type-check
+type-check: ## Runs TypeScript type checking
+	@echo "[?] Running TypeScript type check..."
+	@pnpm type-check
+	@echo "[✔] Type check completed"
+
 .PHONY: test
 test: ## Runs the project tests
 	@echo "[?] Running tests..."
@@ -44,7 +50,7 @@ depcheck: ## Checks for unused dependencies
 	@echo "[✔] Dependency check completed"
 
 .PHONY: prepare
-prepare: install build lint depcheck test ## Prepares the code for pushing to the repository
+prepare: install depcheck type-check lint test build ## Prepares the code for pushing to the repository
 	@echo "[✔] Code prepared for pushing to the repository"
 
 .PHONY: clean

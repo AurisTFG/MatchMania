@@ -46,7 +46,9 @@ func (r *sessionRepository) Create(session *models.Session) error {
 }
 
 func (r *sessionRepository) Update(session *models.Session) error {
-	result := r.db.Model(&models.Session{}).Where("id = ?", session.Id).Updates(session)
+	result := r.db.
+		Model(&models.Session{}).
+		Where("id = ?", session.Id).Updates(session)
 
 	return result.Error
 }

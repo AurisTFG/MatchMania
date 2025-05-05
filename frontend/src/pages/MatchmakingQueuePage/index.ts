@@ -1,1 +1,1 @@
-export { default as MatchmakingQueuePage } from './MatchmakingQueuePage';
+export { default } from './MatchmakingQueuePage';

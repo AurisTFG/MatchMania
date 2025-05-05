@@ -1,1 +1,1 @@
-export { default as StatusHandler } from './StatusHandler';
+export { default } from './StatusHandler';

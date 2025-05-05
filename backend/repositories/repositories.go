@@ -5,21 +5,25 @@ import "MatchManiaAPI/config"
 type Repositories struct {
 	SessionRepository              SessionRepository
 	UserRepository                 UserRepository
-	SeasonRepository               SeasonRepository
+	PlayerRepository               PlayerRepository
+	LeagueRepository               LeagueRepository
 	TeamRepository                 TeamRepository
 	ResultRepository               ResultRepository
 	TrackmaniaOAuthStateRepository TrackmaniaOAuthStateRepository
-	TrackmaniaOAuthTrackRepository TrackmaniaOAuthTrackRepository
+	TrackmaniaTrackRepository      TrackmaniaTrackRepository
 }
 
-func SetupRepositories(db *config.DB) *Repositories {
+func SetupRepositories(
+	db *config.DB,
+) *Repositories {
 	return &Repositories{
 		SessionRepository:              NewSessionRepository(db),
 		UserRepository:                 NewUserRepository(db),
-		SeasonRepository:               NewSeasonRepository(db),
+		PlayerRepository:               NewPlayerRepository(db),
+		LeagueRepository:               NewLeagueRepository(db),
 		TeamRepository:                 NewTeamRepository(db),
 		ResultRepository:               NewResultRepository(db),
 		TrackmaniaOAuthStateRepository: NewTrackmaniaOAuthStateRepository(db),
-		TrackmaniaOAuthTrackRepository: NewTrackmaniaOAuthTrackRepository(db),
+		TrackmaniaTrackRepository:      NewTrackmaniaTrackRepository(db),
 	}
 }

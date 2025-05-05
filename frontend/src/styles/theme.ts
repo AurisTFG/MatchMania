@@ -101,9 +101,12 @@ export const getTheme = (mode: 'light' | 'dark') =>
               boxShadow: `0 0 0 2px ${theme.palette.primary.main}33`,
             },
           }),
-          notchedOutline: {
-            borderColor: 'rgba(0,0,0,0.23)',
-          },
+          notchedOutline: ({ theme }) => ({
+            borderColor:
+              theme.palette.mode === 'dark'
+                ? 'rgba(255,255,255,0.6)'
+                : 'rgba(0,0,0,0.23)',
+          }),
           input: {
             '&:-webkit-autofill': {
               WebkitBoxShadow: `0 0 0 100px rgba(38, 103, 152, 0.25) inset`,

@@ -3,10 +3,12 @@ import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useLogIn } from 'api/hooks/authHooks';
+import withAuth from 'hocs/withAuth';
 import { useAppForm } from 'hooks/form/useAppForm';
+import { Permission } from 'types/enums/permission';
 import { loginDtoValidator } from 'validators/auth/loginDtoValidator';
 
-export default function LoginPage() {
+function LoginPage() {
   const [searchParams] = useSearchParams();
   const errorMessage = searchParams.get('error');
 
@@ -102,3 +104,7 @@ export default function LoginPage() {
     </Box>
   );
 }
+
+export default withAuth(LoginPage, {
+  permission: Permission.LoggedOut,
+});

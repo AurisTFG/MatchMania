@@ -2,21 +2,23 @@ import { Avatar } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
 type UserAvatarProps = {
-  profilePhotoUrl?: string | null;
-  username?: string | null;
+  imageUrl?: string | null;
+  name?: string | null;
   size?: number;
+  marginLeft?: number;
 };
 
 export default function UserAvatar({
-  profilePhotoUrl,
-  username,
+  imageUrl,
+  name,
   size = 36,
+  marginLeft = 0,
 }: UserAvatarProps) {
   const theme = useTheme();
 
-  return profilePhotoUrl ? (
+  return imageUrl ? (
     <Avatar
-      src={profilePhotoUrl}
+      src={imageUrl}
       sx={{ width: size, height: size }}
     />
   ) : (
@@ -25,10 +27,11 @@ export default function UserAvatar({
         width: size,
         height: size,
         bgcolor: theme.palette.primary.main,
-        fontSize: size * 0.6,
+        fontSize: size * 0.7,
+        marginLeft: `${String(marginLeft)}px`,
       }}
     >
-      {username?.[0]?.toUpperCase() ?? 'G'}
+      {name?.[0]?.toUpperCase() ?? 'G'}
     </Avatar>
   );
 }

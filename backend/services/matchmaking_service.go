@@ -16,9 +16,9 @@ type Matchup struct {
 }
 
 type MatchmakingService interface {
-	JoinQueue(seasonId uuid.UUID, teamId uuid.UUID) error
-	LeaveQueue(seasonId uuid.UUID, teamId uuid.UUID) error
-	GetQueueTeamsCount(seasonId uuid.UUID) (uint, error)
+	JoinQueue(leagueId uuid.UUID, teamId uuid.UUID) error
+	LeaveQueue(leagueId uuid.UUID, teamId uuid.UUID) error
+	GetQueueTeamsCount(leagueId uuid.UUID) (uint, error)
 	GetOngoingMatches() []Matchup
 	IsInMatch(teamId uuid.UUID) bool
 	StartMatchmakingWorker()
@@ -36,48 +36,48 @@ func NewMatchmakingService() MatchmakingService {
 		ongoingMatches: make([]Matchup, 0),
 	}
 }
-func (ms *matchmakingService) JoinQueue(seasonId uuid.UUID, teamId uuid.UUID) error {
+func (ms *matchmakingService) JoinQueue(leagueId uuid.UUID, teamId uuid.UUID) error {
 	ms.mu.Lock()
 	defer ms.mu.Unlock()
 
-	if _, exists := ms.queues[seasonId]; !exists {
-		ms.queues[seasonId] = make([]uuid.UUID, 0)
+	if _, exists := ms.queues[leagueId]; !exists {
+		ms.queues[leagueId] = make([]uuid.UUID, 0)
 	}
 
-	if slices.ContainsFunc(ms.queues[seasonId], func(id uuid.UUID) bool { return id == teamId }) {
-		return errors.New("team already in queue for this season")
+	if slices.ContainsFunc(ms.queues[leagueId], func(id uuid.UUID) bool { return id == teamId }) {
+		return errors.New("team already in queue for this league")
 	}
 
-	ms.queues[seasonId] = append(ms.queues[seasonId], teamId)
+	ms.queues[leagueId] = append(ms.queues[leagueId], teamId)
 	return nil
 }
 
-func (ms *matchmakingService) LeaveQueue(seasonId uuid.UUID, teamId uuid.UUID) error {
+func (ms *matchmakingService) LeaveQueue(leagueId uuid.UUID, teamId uuid.UUID) error {
 	ms.mu.Lock()
 	defer ms.mu.Unlock()
 
-	queue, exists := ms.queues[seasonId]
+	queue, exists := ms.queues[leagueId]
 	if !exists {
-		return errors.New("no queue found for this season")
+		return errors.New("no queue found for this league")
 	}
 
 	for i, id := range queue {
 		if id == teamId {
-			ms.queues[seasonId] = slices.Delete(queue, i, i+1)
+			ms.queues[leagueId] = slices.Delete(queue, i, i+1)
 			return nil
 		}
 	}
 
-	return errors.New("team not found in the queue for this season")
+	return errors.New("team not found in the queue for this league")
 }
 
-func (ms *matchmakingService) GetQueueTeamsCount(seasonId uuid.UUID) (uint, error) {
+func (ms *matchmakingService) GetQueueTeamsCount(leagueId uuid.UUID) (uint, error) {
 	ms.mu.Lock()
 	defer ms.mu.Unlock()
 
-	queue, exists := ms.queues[seasonId]
+	queue, exists := ms.queues[leagueId]
 	if !exists {
-		return 0, errors.New("no queue found for this season")
+		return 0, errors.New("no queue found for this league")
 	}
 
 	return uint(len(queue)), nil
@@ -125,10 +125,10 @@ func (ms *matchmakingService) processQueues() {
 		return
 	}
 
-	for seasonId, queue := range ms.queues {
+	for leagueId, queue := range ms.queues {
 		for len(queue) >= 2 {
 			matchedTeams := queue[:2]
-			ms.queues[seasonId] = queue[2:]
+			ms.queues[leagueId] = queue[2:]
 
 			matchup := Matchup{
 				TeamA: matchedTeams[0],
@@ -136,9 +136,9 @@ func (ms *matchmakingService) processQueues() {
 			}
 			ms.ongoingMatches = append(ms.ongoingMatches, matchup)
 
-			fmt.Printf("Match created: %s vs %s in season %s\n", matchup.TeamA, matchup.TeamB, seasonId)
+			fmt.Printf("Match created: %s vs %s in league %s\n", matchup.TeamA, matchup.TeamB, leagueId)
 		}
 
-		fmt.Printf("Remaining teams in queue for season %s: %v\n", seasonId, queue)
+		fmt.Printf("Remaining teams in queue for league %s: %v\n", leagueId, queue)
 	}
 }

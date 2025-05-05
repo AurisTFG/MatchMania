@@ -12,12 +12,12 @@ import (
 )
 
 type TeamController struct {
-	seasonService services.SeasonService
+	leagueService services.LeagueService
 	teamService   services.TeamService
 }
 
-func NewTeamController(seasonService services.SeasonService, teamService services.TeamService) TeamController {
-	return TeamController{seasonService: seasonService, teamService: teamService}
+func NewTeamController(leagueService services.LeagueService, teamService services.TeamService) TeamController {
+	return TeamController{leagueService: leagueService, teamService: teamService}
 }
 
 // @Summary Get all teams
@@ -25,19 +25,12 @@ func NewTeamController(seasonService services.SeasonService, teamService service
 // @Tags teams
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
 // @Success 200 {object} []responses.TeamDto
 // @Failure 400 {object} responses.ErrorDto
 // @Failure 422 {object} responses.ErrorDto
-// @Router /seasons/{seasonId}/teams [get]
+// @Router /teams [get]
 func (c *TeamController) GetAllTeams(ctx *gin.Context) {
-	seasonId, err := utils.GetParamId(ctx, "seasonId")
-	if err != nil {
-		r.BadRequest(ctx, err.Error())
-		return
-	}
-
-	teams, err := c.teamService.GetAllTeams(seasonId)
+	teams, err := c.teamService.GetAllTeams()
 	if err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
@@ -53,28 +46,21 @@ func (c *TeamController) GetAllTeams(ctx *gin.Context) {
 // @Tags teams
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
 // @Param teamId path string true "Team ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
 // @Success 200 {object} responses.TeamDto
 // @Failure 400 {object} responses.ErrorDto
 // @Failure 404 {object} responses.ErrorDto
-// @Router /seasons/{seasonId}/teams/{teamId} [get]
+// @Router /teams/{teamId} [get]
 func (c *TeamController) GetTeam(ctx *gin.Context) {
-	seasonId, err := utils.GetParamId(ctx, "seasonId")
-	if err != nil {
-		r.BadRequest(ctx, err.Error())
-		return
-	}
-
 	teamId, err := utils.GetParamId(ctx, "teamId")
 	if err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
 	}
 
-	team, err := c.teamService.GetTeamById(seasonId, teamId)
+	team, err := c.teamService.GetTeamById(teamId)
 	if err != nil {
-		r.NotFound(ctx, "Team not found in season")
+		r.NotFound(ctx, "Team not found in league")
 		return
 	}
 
@@ -88,41 +74,28 @@ func (c *TeamController) GetTeam(ctx *gin.Context) {
 // @Tags teams
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
 // @Param team body requests.CreateTeamDto true "Team object that needs to be created"
 // @Success 201
 // @Failure 400 {object} responses.ErrorDto
 // @Failure 401 {object} responses.ErrorDto
 // @Failure 404 {object} responses.ErrorDto
 // @Failure 422 {object} responses.ErrorDto
-// @Router /seasons/{seasonId}/teams [post]
+// @Router /teams [post]
 func (c *TeamController) CreateTeam(ctx *gin.Context) {
-	seasonId, err := utils.GetParamId(ctx, "seasonId")
-	if err != nil {
-		r.BadRequest(ctx, err.Error())
-		return
-	}
-
 	var bodyDto requests.CreateTeamDto
-	if err = ctx.ShouldBindJSON(&bodyDto); err != nil {
+	if err := ctx.ShouldBindJSON(&bodyDto); err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
 	}
 
-	if err = validators.Validate(&bodyDto); err != nil {
+	if err := validators.Validate(&bodyDto); err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
-		return
-	}
-
-	season, err := c.seasonService.GetSeasonById(seasonId)
-	if err != nil {
-		r.NotFound(ctx, "Season not found")
 		return
 	}
 
 	userId := utils.MustGetRequestingUserId(ctx)
 
-	if err = c.teamService.CreateTeam(&bodyDto, season.Id, userId); err != nil {
+	if err := c.teamService.CreateTeam(&bodyDto, userId); err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
 	}
@@ -135,7 +108,6 @@ func (c *TeamController) CreateTeam(ctx *gin.Context) {
 // @Tags teams
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
 // @Param teamId path string true "Team ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
 // @Param team body requests.UpdateTeamDto true "Team object that needs to be updated"
 // @Success 204
@@ -144,14 +116,8 @@ func (c *TeamController) CreateTeam(ctx *gin.Context) {
 // @Failure 403 {object} responses.ErrorDto
 // @Failure 404 {object} responses.ErrorDto
 // @Failure 422 {object} responses.ErrorDto
-// @Router /seasons/{seasonId}/teams/{teamId} [patch]
+// @Router /teams/{teamId} [patch]
 func (c *TeamController) UpdateTeam(ctx *gin.Context) {
-	seasonId, err := utils.GetParamId(ctx, "seasonId")
-	if err != nil {
-		r.BadRequest(ctx, err.Error())
-		return
-	}
-
 	teamId, err := utils.GetParamId(ctx, "teamId")
 	if err != nil {
 		r.BadRequest(ctx, err.Error())
@@ -170,9 +136,9 @@ func (c *TeamController) UpdateTeam(ctx *gin.Context) {
 		return
 	}
 
-	currentTeam, err := c.teamService.GetTeamById(seasonId, teamId)
+	currentTeam, err := c.teamService.GetTeamById(teamId)
 	if err != nil {
-		r.NotFound(ctx, "Team not found in season")
+		r.NotFound(ctx, "Team not found in league")
 		return
 	}
 
@@ -189,7 +155,6 @@ func (c *TeamController) UpdateTeam(ctx *gin.Context) {
 // @Tags teams
 // @Accept json
 // @Produce json
-// @Param seasonId path string true "Season ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
 // @Param teamId path string true "Team ID" default(0deecf6a-289b-49a0-8f1b-9bc4185f99df)
 // @Success 204
 // @Failure 400 {object} responses.ErrorDto
@@ -197,23 +162,17 @@ func (c *TeamController) UpdateTeam(ctx *gin.Context) {
 // @Failure 403 {object} responses.ErrorDto
 // @Failure 404 {object} responses.ErrorDto
 // @Failure 422 {object} responses.ErrorDto
-// @Router /seasons/{seasonId}/teams/{teamId} [delete]
+// @Router /teams/{teamId} [delete]
 func (c *TeamController) DeleteTeam(ctx *gin.Context) {
-	seasonId, err := utils.GetParamId(ctx, "seasonId")
-	if err != nil {
-		r.BadRequest(ctx, err.Error())
-		return
-	}
-
 	teamId, err := utils.GetParamId(ctx, "teamId")
 	if err != nil {
 		r.BadRequest(ctx, err.Error())
 		return
 	}
 
-	team, err := c.teamService.GetTeamById(seasonId, teamId)
+	team, err := c.teamService.GetTeamById(teamId)
 	if err != nil {
-		r.NotFound(ctx, "Team not found in season")
+		r.NotFound(ctx, "Team not found in league")
 		return
 	}
 

@@ -2,9 +2,17 @@ import { Mutation, Query } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { toast } from 'sonner';
 import axiosClient from 'configs/axiosClient';
-import { ENDPOINTS } from 'constants/endpoints';
-import { ROUTE_PATHS } from 'constants/route_paths';
+import ENDPOINTS from 'constants/endpoints';
+import ROUTE_PATHS from 'constants/route_paths';
 import { getErrorMessageFromAxiosError } from './errorUtils';
+
+let setIsRefreshingToken: (isRefreshing: boolean) => void;
+
+export const initializeSetIsRefreshingToken = (
+  _setIsRefreshingToken: (isRefreshing: boolean) => void,
+) => {
+  setIsRefreshingToken = _setIsRefreshingToken;
+};
 
 async function handleError(
   error: unknown,
@@ -20,6 +28,7 @@ async function handleError(
 
   if (axiosError.response?.status === 401) {
     try {
+      setIsRefreshingToken(true);
       await axiosClient.post(ENDPOINTS.AUTH.REFRESH, null);
       await retryCallback();
       return;
@@ -34,6 +43,8 @@ async function handleError(
         window.location.href = `${ROUTE_PATHS.LOGIN}?error=${errorMessage}`;
       }
       return;
+    } finally {
+      setIsRefreshingToken(false);
     }
   }
 

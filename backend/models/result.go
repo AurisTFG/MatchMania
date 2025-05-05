@@ -9,17 +9,19 @@ import (
 type Result struct {
 	BaseModel
 
-	StartDate     time.Time `gorm:"not null"`
-	EndDate       time.Time `gorm:"not null"`
-	Score         string    `gorm:"not null"`
-	OpponentScore string    `gorm:"not null"`
+	LeagueId        uuid.UUID `gorm:"not null"`
+	StartDate       time.Time `gorm:"not null"`
+	EndDate         time.Time `gorm:"not null"`
+	Score           uint      `gorm:"not null"`
+	OpponentScore   uint      `gorm:"not null"`
+	EloDiff         int       `gorm:"not null"`
+	OpponentEloDiff int       `gorm:"not null"`
+	TeamId          uuid.UUID `gorm:"not null"`
+	OpponentTeamId  uuid.UUID `gorm:"not null"`
+	UserId          *uuid.UUID
 
-	TeamId         uuid.UUID `gorm:"not null"`
-	Team           Team
-	OpponentTeamId uuid.UUID `gorm:"not null"`
-	OpponentTeam   Team
-	SeasonId       uuid.UUID `gorm:"not null"`
-	Season         Season
-	UserId         uuid.UUID `gorm:"not null"`
-	User           User
+	League       League
+	Team         Team
+	OpponentTeam Team
+	User         User
 }

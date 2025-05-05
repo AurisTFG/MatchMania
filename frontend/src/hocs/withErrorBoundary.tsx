@@ -1,5 +1,5 @@
 import { ComponentType } from 'react';
-import { ErrorBoundary } from 'components/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 
 export default function withErrorBoundary<P extends object>(
   WrappedComponent: ComponentType<P>,

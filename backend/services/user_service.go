@@ -18,17 +18,17 @@ type UserService interface {
 	CreateUser(signUpDto *requests.SignupDto) error
 	DeleteUser(*models.User) error
 	UpdateUserWithTrackmaniaUser(userId uuid.UUID, trackmaniaUser *responses.TrackmaniaOAuthUserDto) error
-	UpdateUserWithTrackmaniaTracks(userId uuid.UUID, tracksDto []responses.TrackmaniaOAuthTracksDto) error
+	UpdateUserWithTrackmaniaTracks(userId uuid.UUID, tracksDto []responses.TrackmaniaOAuthFavoritesDto) error
 }
 
 type userService struct {
 	repo      repositories.UserRepository
-	trackRepo repositories.TrackmaniaOAuthTrackRepository
+	trackRepo repositories.TrackmaniaTrackRepository
 }
 
 func NewUserService(
 	repo repositories.UserRepository,
-	trackRepo repositories.TrackmaniaOAuthTrackRepository,
+	trackRepo repositories.TrackmaniaTrackRepository,
 ) UserService {
 	return &userService{repo: repo, trackRepo: trackRepo}
 }
@@ -80,9 +80,9 @@ func (s *userService) UpdateUserWithTrackmaniaUser(
 
 func (s *userService) UpdateUserWithTrackmaniaTracks(
 	userId uuid.UUID,
-	tracksDto []responses.TrackmaniaOAuthTracksDto,
+	tracksDto []responses.TrackmaniaOAuthFavoritesDto,
 ) error {
-	tracks := utils.MustCopy[[]models.TrackmaniaOauthTrack](tracksDto)
+	tracks := utils.MustCopy[[]models.TrackmaniaTrack](tracksDto)
 
 	if err := s.trackRepo.DeleteAllTracksByUserId(userId); err != nil {
 		return err

@@ -35,10 +35,12 @@ func GetPermissionsForRole(role Role) []string {
 		return AllPermissions()
 	case ModeratorRole:
 		return []string{
-			string(ManageSeasonPermission),
+			string(ManageLeaguePermission),
 			string(ManageTeamPermission),
 			string(ManageResultPermission),
 			string(ManageQueuePermission),
+
+			string(ModeratorPermission),
 		}
 	case TrackmaniaUserRole:
 		return []string{

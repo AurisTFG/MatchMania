@@ -16,11 +16,11 @@ type User struct {
 	Password        string
 	ProfilePhotoUrl string
 
-	Sessions              []Session
-	Seasons               []Season
-	Teams                 []Team
-	Results               []Result
-	TrackmaniaOauthTracks []TrackmaniaOauthTrack
+	Sessions         []Session
+	Leagues          []League
+	Results          []Result
+	TrackmaniaTracks []TrackmaniaTrack
+	Teams            []Team `gorm:"many2many:team_players;"`
 
 	Roles []Role `gorm:"many2many:user_roles"`
 }

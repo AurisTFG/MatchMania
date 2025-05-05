@@ -2,9 +2,10 @@ package responses
 
 import (
 	"MatchManiaAPI/models/dtos/responses/errors"
+	"MatchManiaAPI/models/dtos/responses/leagues"
 	"MatchManiaAPI/models/dtos/responses/matchmaking"
+	"MatchManiaAPI/models/dtos/responses/players"
 	"MatchManiaAPI/models/dtos/responses/results"
-	"MatchManiaAPI/models/dtos/responses/seasons"
 	"MatchManiaAPI/models/dtos/responses/teams"
 	"MatchManiaAPI/models/dtos/responses/trackmanioauth"
 	"MatchManiaAPI/models/dtos/responses/users"
@@ -12,13 +13,15 @@ import (
 
 type ErrorDto = errors.ErrorDto
 type ResultDto = results.ResultDto
-type SeasonDto = seasons.SeasonDto
+type LeagueDto = leagues.LeagueDto
+type LeagueMinimalDto = leagues.LeagueMinimalDto
 type TeamDto = teams.TeamDto
 type UserDto = users.UserDto
 type UserMinimalDto = users.UserMinimalDto
+type PlayerMinimalDto = players.PlayerMinimalDto
 type QueueTeamsCountDto = matchmaking.QueueTeamsCountDto
 type MatchStatusDto = matchmaking.MatchStatusDto
 type TrackmaniaOAuthAccessTokenDto = trackmanioauth.TrackmaniaOAuthAccessTokenDto
 type TrackmaniaOAuthUrlDto = trackmanioauth.TrackmaniaOAuthUrlDto
 type TrackmaniaOAuthUserDto = trackmanioauth.TrackmaniaOAuthUserDto
-type TrackmaniaOAuthTracksDto = trackmanioauth.TrackmaniaOAuthTracksDto
+type TrackmaniaOAuthFavoritesDto = trackmanioauth.TrackmaniaOAuthFavoritesDto

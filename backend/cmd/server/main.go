@@ -73,8 +73,9 @@ func main() {
 	config.SetupSwagger(server, env)
 
 	repositories := repositories.SetupRepositories(db)
-	services := services.SetupServices(repositories, env)
+	services := services.SetupServices(env, repositories)
 	controllers := controllers.SetupControllers(services)
+
 	routes.SetupRoutes(server, controllers, services)
 
 	services.MatchmakingService.StartMatchmakingWorker()

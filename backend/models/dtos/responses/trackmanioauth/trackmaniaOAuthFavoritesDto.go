@@ -1,6 +1,6 @@
 package trackmanioauth
 
-type TrackmaniaOAuthTracksDto struct {
+type TrackmaniaOAuthFavoritesDto struct {
 	Uid          string `json:"uid"`
 	Name         string `json:"name"`
 	Author       string `json:"author"`

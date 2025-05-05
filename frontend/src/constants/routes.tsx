@@ -3,19 +3,19 @@ import GroupIcon from '@mui/icons-material/Group';
 import HomeIcon from '@mui/icons-material/Home';
 import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
-import { Permission } from 'constants/permissions';
-import { ForbiddenPage } from 'pages/ForbiddenPage';
-import { HomePage } from 'pages/HomePage';
-import { LoginPage } from 'pages/LoginPage';
-import { MatchmakingQueuePage } from 'pages/MatchmakingQueuePage';
-import { NotFoundPage } from 'pages/NotFoundPage';
-import { ProfilePage } from 'pages/ProfilePage';
-import { ResultsPage } from 'pages/ResultsPage';
-import { SeasonsPage } from 'pages/SeasonsPage';
-import { SignupPage } from 'pages/SignupPage';
-import { TeamsPage } from 'pages/TeamsPage';
-import { UnauthorizedPage } from 'pages/UnauthorizedPage';
-import { ROUTE_PATHS } from './route_paths';
+import ForbiddenPage from 'pages/ForbiddenPage';
+import HomePage from 'pages/HomePage';
+import LeaguesPage from 'pages/LeaguesPage';
+import LoginPage from 'pages/LoginPage';
+import MatchmakingQueuePage from 'pages/MatchmakingQueuePage';
+import NotFoundPage from 'pages/NotFoundPage';
+import ProfilePage from 'pages/ProfilePage';
+import ResultsPage from 'pages/ResultsPage';
+import SignupPage from 'pages/SignupPage';
+import TeamsPage from 'pages/TeamsPage';
+import UnauthorizedPage from 'pages/UnauthorizedPage';
+import { Permission } from 'types/enums/permission';
+import ROUTE_PATHS from './route_paths';
 
 export const ROUTES = [
   {
@@ -26,14 +26,14 @@ export const ROUTES = [
     permission: null,
   },
   {
-    label: 'Login',
+    label: 'Log In',
     path: ROUTE_PATHS.LOGIN,
     element: <LoginPage />,
     icon: null,
     permission: null,
   },
   {
-    label: 'Signup',
+    label: 'Sign Up',
     path: ROUTE_PATHS.SIGNUP,
     element: <SignupPage />,
     icon: null,
@@ -47,11 +47,11 @@ export const ROUTES = [
     permission: Permission.LoggedIn,
   },
   {
-    label: 'Seasons',
-    path: ROUTE_PATHS.SEASONS,
-    element: <SeasonsPage />,
+    label: 'Leagues',
+    path: ROUTE_PATHS.LEAGUES,
+    element: <LeaguesPage />,
     icon: <AccessAlarmIcon />,
-    permission: Permission.ManageSeason,
+    permission: Permission.ManageLeague,
   },
   {
     label: 'Teams',

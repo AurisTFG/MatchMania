@@ -1,9 +1,9 @@
-export const ROUTE_PATHS = {
+const ROUTE_PATHS = {
   HOME: '/',
   LOGIN: '/login',
   SIGNUP: '/signup',
   PROFILE: '/profile',
-  SEASONS: '/seasons',
+  LEAGUES: '/leagues',
   TEAMS: '/teams',
   RESULTS: '/results',
   MATCHMAKING: '/matchmaking',
@@ -13,17 +13,4 @@ export const ROUTE_PATHS = {
   NOT_FOUND: '*',
 };
 
-export const PARAMS = {
-  SEASON_ID: 'seasonId',
-  TEAM_ID: 'teamId',
-};
-
-export const getTeamsLink = (seasonId: string) => ({
-  pathname: ROUTE_PATHS.TEAMS,
-  search: `?${PARAMS.SEASON_ID}=${seasonId}`,
-});
-
-export const getResultsLink = (seasonId: string, teamId: string) => ({
-  pathname: ROUTE_PATHS.RESULTS,
-  search: `?${PARAMS.SEASON_ID}=${seasonId}&${PARAMS.TEAM_ID}=${teamId}`,
-});
+export default ROUTE_PATHS;

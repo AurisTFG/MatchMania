@@ -7,13 +7,13 @@ import {
   Typography,
 } from '@mui/material';
 import { useEffect } from 'react';
+import { useFetchLeagues } from 'api/hooks/leaguesHooks';
 import {
   useCheckMatchStatus,
   useGetQueueTeamsCount,
   useJoinQueue,
   useLeaveQueue,
 } from 'api/hooks/matchmakingHooks';
-import { useFetchSeasons } from 'api/hooks/seasonsHooks';
 import { useFetchTeams } from 'api/hooks/teamsHooks';
 import { useAppForm } from 'hooks/form/useAppForm';
 import { queueDtoValidator } from 'validators/matchmaking/queueDtoValidator';
@@ -21,7 +21,7 @@ import { queueDtoValidator } from 'validators/matchmaking/queueDtoValidator';
 export default function MatchmakingQueuePage() {
   const form = useAppForm({
     defaultValues: {
-      seasonId: '',
+      leagueId: '',
       teamId: '',
     },
     validators: {
@@ -37,24 +37,24 @@ export default function MatchmakingQueuePage() {
     },
   });
 
-  const seasonId = form.getFieldValue('seasonId');
+  const leagueId = form.getFieldValue('leagueId');
   const teamId = form.getFieldValue('teamId');
 
-  const { data: seasons, isLoading: seasonsLoading } = useFetchSeasons();
+  const { data: leagues, isLoading: leaguesLoading } = useFetchLeagues();
   const {
     data: teams,
     isLoading: isTeamsLoading,
     refetch: refetchTeams,
-  } = useFetchTeams(seasonId);
+  } = useFetchTeams();
 
   useEffect(() => {
-    if (seasonId) {
+    if (leagueId) {
       void refetchTeams();
     }
-  }, [seasonId, refetchTeams]);
+  }, [leagueId, refetchTeams]);
 
   const { data: teamsCount, isLoading: isLoadingTeamsCount } =
-    useGetQueueTeamsCount(seasonId);
+    useGetQueueTeamsCount(leagueId);
   const { data: isInMatch, isLoading: isLoadingMatchStatus } =
     useCheckMatchStatus(teamId);
 
@@ -71,7 +71,7 @@ export default function MatchmakingQueuePage() {
     await form.handleSubmit({ isJoining: false });
   };
 
-  if (seasonsLoading || isTeamsLoading) {
+  if (leaguesLoading || isTeamsLoading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', mt: 6 }}>
         <CircularProgress />
@@ -105,13 +105,13 @@ export default function MatchmakingQueuePage() {
               void form.handleSubmit();
             }}
           >
-            <form.AppField name="seasonId">
+            <form.AppField name="leagueId">
               {(field) => (
                 <field.Select
-                  label="Select Season"
-                  options={(seasons ?? []).map((season) => ({
-                    key: season.id,
-                    value: season.name,
+                  label="Select League"
+                  options={(leagues ?? []).map((league) => ({
+                    key: league.id,
+                    value: league.name,
                   }))}
                 />
               )}

@@ -1,5 +1,5 @@
 import { RoleDto } from '../roles/roleDto';
-import type { TrackmaniaOAuthTracksDto } from '../trackmaniaOAuth/tracklmaniaOAuthTracksDto';
+import { TrackmaniaTrackDto } from '../trackmaniaTracks/trackmaniaTrackDto';
 
 export type UserDto = {
   id: string;
@@ -11,5 +11,5 @@ export type UserDto = {
   permissions: string[];
   trackmaniaId: string | null;
   trackmaniaName: string | null;
-  tracks: TrackmaniaOAuthTracksDto[];
+  tracks: TrackmaniaTrackDto[];
 };

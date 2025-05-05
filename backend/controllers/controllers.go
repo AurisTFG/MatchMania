@@ -7,7 +7,8 @@ import (
 type Controllers struct {
 	AuthController            AuthController
 	UserController            UserController
-	SeasonController          SeasonController
+	PlayerController          PlayerController
+	LeagueController          LeagueController
 	TeamController            TeamController
 	ResultController          ResultController
 	TrackmaniaOAuthController TrackmaniaOAuthController
@@ -17,25 +18,18 @@ type Controllers struct {
 func SetupControllers(
 	services *services.Services,
 ) *Controllers {
-	authController := NewAuthController(services.AuthService, services.UserService)
-	userController := NewUserController(services.UserService)
-	seasonController := NewSeasonController(services.SeasonService)
-	teamController := NewTeamController(services.SeasonService, services.TeamService)
-	resultController := NewResultController(services.TeamService, services.ResultService)
-	trackmaniaOAuthController := NewTrackmaniaOAuthController(services.TrackmaniaOAuthService, services.UserService)
-	matchmakingController := NewMatchmakingController(
-		services.MatchmakingService,
-		services.UserService,
-		services.TeamService,
-	)
-
 	return &Controllers{
-		AuthController:            authController,
-		UserController:            userController,
-		SeasonController:          seasonController,
-		TeamController:            teamController,
-		ResultController:          resultController,
-		TrackmaniaOAuthController: trackmaniaOAuthController,
-		MatchmakingController:     matchmakingController,
+		AuthController:            NewAuthController(services.AuthService, services.UserService),
+		UserController:            NewUserController(services.UserService),
+		PlayerController:          NewPlayerController(services.PlayerService),
+		LeagueController:          NewLeagueController(services.LeagueService),
+		TeamController:            NewTeamController(services.LeagueService, services.TeamService),
+		ResultController:          NewResultController(services.TeamService, services.ResultService),
+		TrackmaniaOAuthController: NewTrackmaniaOAuthController(services.TrackmaniaOAuthService, services.UserService),
+		MatchmakingController: NewMatchmakingController(
+			services.MatchmakingService,
+			services.UserService,
+			services.TeamService,
+		),
 	}
 }

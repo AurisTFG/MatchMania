@@ -14,8 +14,8 @@
 - **User Registration & Profiles**  
   Players can create an account, log in, and manage secure profiles displaying their statistics, match history, and overall rankings.
 
-- **Season Management**  
-  Supports the creation of multiple competitive seasons, each with its own ELO-based ranking system for a fresh start and renewed competition.
+- **League Management**  
+  Supports the creation of multiple competitive leagues, each with its own ELO-based ranking system for a fresh start and renewed competition.
 
 - **Team Registration & Matchmaking**  
   Allows players to form teams and participate in team-based or individual matchmaking, ensuring balanced pairings based on skill level.

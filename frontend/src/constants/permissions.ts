@@ -1,29 +1,26 @@
-export enum Permission {
-  ManageSeason = 'SeasonsManage',
-  ManageTeam = 'TeamsManage',
-  ManageResult = 'ResultsManage',
-  ManageUser = 'UsersManage',
-  ManageRole = 'RolesManage',
-  ManageQueue = 'QueueManage',
-
-  LoggedIn = 'LoggedIn',
-}
+import { Permission } from 'types/enums/permission';
 
 export const AllPermissions: Permission[] = [
-  Permission.ManageSeason,
+  Permission.ManageLeague,
   Permission.ManageTeam,
   Permission.ManageResult,
   Permission.ManageUser,
   Permission.ManageRole,
   Permission.ManageQueue,
+
+  Permission.Admin,
+  Permission.Moderator,
 ];
 
 export const AllPermissionsWithDesc: Record<Permission, string> = {
-  [Permission.ManageSeason]: 'Manage seasons',
+  [Permission.ManageLeague]: 'Manage leagues',
   [Permission.ManageTeam]: 'Manage teams',
   [Permission.ManageResult]: 'Manage results',
   [Permission.ManageUser]: 'Manage users',
   [Permission.ManageRole]: 'Manage roles',
   [Permission.ManageQueue]: 'Manage queue',
+
+  [Permission.Admin]: 'Full access to all features',
+  [Permission.Moderator]: 'Moderate content and manage users',
   [Permission.LoggedIn]: 'Logged in',
 };

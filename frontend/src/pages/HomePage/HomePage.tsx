@@ -1,12 +1,19 @@
-import { Box, Button, Stack, Typography, useTheme } from '@mui/material';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Stack,
+  Typography,
+  useTheme,
+} from '@mui/material';
 import { Link } from 'react-router-dom';
 import backgroundImage from 'assets/background.webp';
-import { ROUTE_PATHS } from 'constants/route_paths';
+import ROUTE_PATHS from 'constants/route_paths';
 import withErrorBoundary from 'hocs/withErrorBoundary';
 import { useAuth } from 'providers/AuthProvider';
 
 function HomePage() {
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, isAuthLoading } = useAuth();
   const theme = useTheme();
 
   return (
@@ -66,58 +73,67 @@ function HomePage() {
           Welcome to MatchMania!
         </Typography>
 
-        {!isLoggedIn && (
-          <Stack
-            direction="row"
-            spacing={2}
-            justifyContent="center"
-          >
-            <Button
-              component={Link}
-              to={ROUTE_PATHS.LOGIN}
-              variant="contained"
-              size="large"
-              sx={{
-                px: 4,
-                py: 1.5,
-                borderRadius: theme.shape.borderRadius,
-                textTransform: 'none',
-                fontWeight: 600,
-                fontSize: '1rem',
-                boxShadow:
-                  theme.palette.mode === 'dark'
-                    ? '0 2px 8px rgba(0,0,0,0.5)'
-                    : '0 2px 8px rgba(0,0,0,0.1)',
-              }}
+        {isAuthLoading ? (
+          <CircularProgress
+            sx={{
+              color: theme.palette.primary.main,
+              mt: 4,
+            }}
+          />
+        ) : (
+          !isLoggedIn && (
+            <Stack
+              direction="row"
+              spacing={2}
+              justifyContent="center"
             >
-              Log In
-            </Button>
-            <Button
-              component={Link}
-              to={ROUTE_PATHS.SIGNUP}
-              variant="outlined"
-              size="large"
-              sx={{
-                px: 4,
-                py: 1.5,
-                borderRadius: theme.shape.borderRadius,
-                textTransform: 'none',
-                fontWeight: 600,
-                fontSize: '1rem',
-                color: theme.palette.primary.main,
-                borderColor: theme.palette.primary.main,
-                '&:hover': {
-                  borderColor: theme.palette.primary.dark,
-                  backgroundColor:
+              <Button
+                component={Link}
+                to={ROUTE_PATHS.LOGIN}
+                variant="contained"
+                size="large"
+                sx={{
+                  px: 4,
+                  py: 1.5,
+                  borderRadius: theme.shape.borderRadius,
+                  textTransform: 'none',
+                  fontWeight: 600,
+                  fontSize: '1rem',
+                  boxShadow:
                     theme.palette.mode === 'dark'
-                      ? 'rgba(255,255,255,0.05)'
-                      : theme.palette.action.hover,
-                },
-              }}
-            >
-              Sign Up
-            </Button>
-          </Stack>
+                      ? '0 2px 8px rgba(0,0,0,0.5)'
+                      : '0 2px 8px rgba(0,0,0,0.1)',
+                }}
+              >
+                Log In
+              </Button>
+              <Button
+                component={Link}
+                to={ROUTE_PATHS.SIGNUP}
+                variant="outlined"
+                size="large"
+                sx={{
+                  px: 4,
+                  py: 1.5,
+                  borderRadius: theme.shape.borderRadius,
+                  textTransform: 'none',
+                  fontWeight: 600,
+                  fontSize: '1rem',
+                  color: theme.palette.primary.main,
+                  borderColor: theme.palette.primary.main,
+                  '&:hover': {
+                    borderColor: theme.palette.primary.dark,
+                    backgroundColor:
+                      theme.palette.mode === 'dark'
+                        ? 'rgba(255,255,255,0.05)'
+                        : theme.palette.action.hover,
+                  },
+                }}
+              >
+                Sign Up
+              </Button>
+            </Stack>
+          )
         )}
       </Box>
     </Box>

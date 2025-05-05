@@ -39,6 +39,11 @@ func SetupRoutes(
 			users.GET(":userId", requirePerm(enums.ManageUserPermission), c.UserController.GetUserById)
 		}
 
+		players := v1.Group("/players")
+		{
+			players.GET("", requirePerm(enums.LoggedInPermission), c.PlayerController.GetAllPlayers)
+		}
+
 		trackmania := v1.Group("/trackmania")
 		{
 			oauth := trackmania.Group("/oauth")
@@ -48,6 +53,15 @@ func SetupRoutes(
 			}
 		}
 
+		teams := v1.Group("/teams")
+		{
+			teams.GET("", requirePerm(enums.LoggedInPermission), c.TeamController.GetAllTeams)
+			teams.POST("", requirePerm(enums.ManageTeamPermission), c.TeamController.CreateTeam)
+			teams.GET(":teamId", requirePerm(enums.LoggedInPermission), c.TeamController.GetTeam)
+			teams.PATCH(":teamId", requirePerm(enums.ManageTeamPermission), c.TeamController.UpdateTeam)
+			teams.DELETE(":teamId", requirePerm(enums.ManageTeamPermission), c.TeamController.DeleteTeam)
+		}
+
 		matchmaking := v1.Group("/matchmaking")
 		{
 			queue := matchmaking.Group("/queue")
@@ -55,7 +69,7 @@ func SetupRoutes(
 				queue.POST("/join", requirePerm(enums.ManageQueuePermission), c.MatchmakingController.JoinQueue)
 				queue.POST("/leave", requirePerm(enums.ManageQueuePermission), c.MatchmakingController.LeaveQueue)
 				queue.GET(
-					"/teams-count/:seasonId",
+					"/teams-count/:leagueId",
 					requirePerm(enums.LoggedInPermission),
 					c.MatchmakingController.GetQueueTeamsCount,
 				)
@@ -67,39 +81,22 @@ func SetupRoutes(
 			}
 		}
 
-		seasons := v1.Group("/seasons")
+		leagues := v1.Group("/leagues")
 		{
-			seasons.GET("", requirePerm(enums.LoggedInPermission), c.SeasonController.GetAllSeasons)
-			seasons.GET(":seasonId", requirePerm(enums.LoggedInPermission), c.SeasonController.GetSeason)
-			seasons.POST("", requirePerm(enums.ManageSeasonPermission), c.SeasonController.CreateSeason)
-			seasons.PATCH(":seasonId", requirePerm(enums.ManageSeasonPermission), c.SeasonController.UpdateSeason)
-			seasons.DELETE(":seasonId", requirePerm(enums.ManageSeasonPermission), c.SeasonController.DeleteSeason)
+			leagues.GET("", requirePerm(enums.LoggedInPermission), c.LeagueController.GetAllLeagues)
+			leagues.GET(":leagueId", requirePerm(enums.LoggedInPermission), c.LeagueController.GetLeague)
+			leagues.POST("", requirePerm(enums.ManageLeaguePermission), c.LeagueController.CreateLeague)
+			leagues.PATCH(":leagueId", requirePerm(enums.ManageLeaguePermission), c.LeagueController.UpdateLeague)
+			leagues.DELETE(":leagueId", requirePerm(enums.ManageLeaguePermission), c.LeagueController.DeleteLeague)
+		}
 
-			teams := seasons.Group("/:seasonId/teams")
-			{
-				teams.GET("", requirePerm(enums.LoggedInPermission), c.TeamController.GetAllTeams)
-				teams.GET(":teamId", requirePerm(enums.LoggedInPermission), c.TeamController.GetTeam)
-				teams.POST("", requirePerm(enums.ManageTeamPermission), c.TeamController.CreateTeam)
-				teams.PATCH(":teamId", requirePerm(enums.ManageTeamPermission), c.TeamController.UpdateTeam)
-				teams.DELETE(":teamId", requirePerm(enums.ManageTeamPermission), c.TeamController.DeleteTeam)
-
-				results := teams.Group("/:teamId/results")
-				{
-					results.GET("", requirePerm(enums.LoggedInPermission), c.ResultController.GetAllResults)
-					results.GET(":resultId", requirePerm(enums.LoggedInPermission), c.ResultController.GetResult)
-					results.POST("", requirePerm(enums.ManageResultPermission), c.ResultController.CreateResult)
-					results.PATCH(
-						":resultId",
-						requirePerm(enums.ManageResultPermission),
-						c.ResultController.UpdateResult,
-					)
-					results.DELETE(
-						":resultId",
-						requirePerm(enums.ManageResultPermission),
-						c.ResultController.DeleteResult,
-					)
-				}
-			}
+		results := v1.Group("/results")
+		{
+			results.GET("", requirePerm(enums.LoggedInPermission), c.ResultController.GetAllResults)
+			results.GET(":resultId", requirePerm(enums.LoggedInPermission), c.ResultController.GetResult)
+			results.POST("", requirePerm(enums.ManageResultPermission), c.ResultController.CreateResult)
+			results.PATCH(":resultId", requirePerm(enums.ManageResultPermission), c.ResultController.UpdateResult)
+			results.DELETE(":resultId", requirePerm(enums.ManageResultPermission), c.ResultController.DeleteResult)
 		}
 	}
 }

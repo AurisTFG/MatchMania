@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { ENDPOINTS } from 'constants/endpoints';
-import { QUERY_KEYS } from 'constants/queryKeys';
+import ENDPOINTS from 'constants/endpoints';
+import QUERY_KEYS from 'constants/queryKeys';
 import { JoinQueueDto } from 'types/dtos/requests/matchmaking/joinQueueDto';
 import { LeaveQueueDto } from 'types/dtos/requests/matchmaking/leaveQueueDto';
 import { MatchStatusDto } from 'types/dtos/responses/matchmaking/matchStatusDto';
@@ -46,14 +46,14 @@ export const useLeaveQueue = () => {
   });
 };
 
-export const useGetQueueTeamsCount = (seasonId: string) =>
+export const useGetQueueTeamsCount = (leagueId: string) =>
   useQuery({
-    queryKey: QUERY_KEYS.MATCHMAKING.QUEUE_TEAMS_COUNT(seasonId),
+    queryKey: QUERY_KEYS.MATCHMAKING.QUEUE_TEAMS_COUNT(leagueId),
     queryFn: () =>
       getRequest<QueueTeamsCountDto>({
-        url: ENDPOINTS.MATCHMAKING.GET_QUEUED_TEAMS_COUNT(seasonId),
+        url: ENDPOINTS.MATCHMAKING.GET_QUEUED_TEAMS_COUNT(leagueId),
       }),
-    enabled: !!seasonId,
+    enabled: !!leagueId,
   });
 
 export const useCheckMatchStatus = (teamId: string) =>

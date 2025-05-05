@@ -1,9 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { ENDPOINTS } from 'constants/endpoints';
-import { QUERY_KEYS } from 'constants/queryKeys';
-import { ROUTE_PATHS } from 'constants/route_paths';
+import ENDPOINTS from 'constants/endpoints';
+import QUERY_KEYS from 'constants/queryKeys';
+import ROUTE_PATHS from 'constants/route_paths';
 import { LoginDto } from 'types/dtos/requests/auth/loginDto';
 import { SignupDto } from 'types/dtos/requests/auth/signupDto';
 import { UserDto } from 'types/dtos/responses/users/userDto';
