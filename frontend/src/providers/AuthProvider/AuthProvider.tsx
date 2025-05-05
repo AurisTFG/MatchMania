@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useContext, useMemo } from 'react';
+import { ReactNode, createContext, useContext, useMemo, useState } from 'react';
 import { useFetchMe } from 'api/hooks/authHooks';
 import { UserDto } from 'types/dtos/responses/users/userDto';
 
@@ -6,6 +6,8 @@ type AuthContextType = {
   user: UserDto | null;
   isLoggedIn: boolean;
   isAuthLoading: boolean;
+  isRefreshingToken: boolean;
+  setIsRefreshingToken: (isRefreshing: boolean) => void;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -21,14 +23,26 @@ export function useAuth() {
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const { data: fetchMeQuery, isLoading: isAuthLoading } = useFetchMe();
+  const [isRefreshingToken, setIsRefreshingToken] = useState(false);
+
+  const {
+    data: fetchMeQuery,
+    isLoading: isAuthLoading,
+    error: fetchMeError,
+  } = useFetchMe();
 
   const user = fetchMeQuery ?? null;
-  const isLoggedIn = !!user?.id;
+  const isLoggedIn = !!user?.id && !fetchMeError;
 
   const authContextValue = useMemo(
-    () => ({ user, isLoggedIn, isAuthLoading }),
-    [user, isLoggedIn, isAuthLoading],
+    () => ({
+      user,
+      isLoggedIn,
+      isAuthLoading,
+      isRefreshingToken,
+      setIsRefreshingToken,
+    }),
+    [user, isLoggedIn, isAuthLoading, isRefreshingToken, setIsRefreshingToken],
   );
 
   return (

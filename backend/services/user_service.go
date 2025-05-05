@@ -18,7 +18,7 @@ type UserService interface {
 	CreateUser(signUpDto *requests.SignupDto) error
 	DeleteUser(*models.User) error
 	UpdateUserWithTrackmaniaUser(userId uuid.UUID, trackmaniaUser *responses.TrackmaniaOAuthUserDto) error
-	UpdateUserWithTrackmaniaTracks(userId uuid.UUID, tracksDto []responses.TrackmaniaTracksDto) error
+	UpdateUserWithTrackmaniaTracks(userId uuid.UUID, tracksDto []responses.TrackmaniaOAuthFavoritesDto) error
 }
 
 type userService struct {
@@ -80,7 +80,7 @@ func (s *userService) UpdateUserWithTrackmaniaUser(
 
 func (s *userService) UpdateUserWithTrackmaniaTracks(
 	userId uuid.UUID,
-	tracksDto []responses.TrackmaniaTracksDto,
+	tracksDto []responses.TrackmaniaOAuthFavoritesDto,
 ) error {
 	tracks := utils.MustCopy[[]models.TrackmaniaTrack](tracksDto)
 

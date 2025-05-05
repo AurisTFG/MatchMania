@@ -42,7 +42,9 @@ func (r *trackmaniaOAuthTrackRepository) InsertAllTracksForUser(
 }
 
 func (r *trackmaniaOAuthTrackRepository) DeleteAllTracksByUserId(userId uuid.UUID) error {
-	result := r.db.Where("user_id = ?", userId).Delete(&models.TrackmaniaTrack{})
+	result := r.db.
+		Where("user_id = ?", userId).
+		Delete(&models.TrackmaniaTrack{})
 
 	return result.Error
 }

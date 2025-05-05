@@ -1,4 +1,4 @@
-export const QUERY_KEYS = {
+const QUERY_KEYS = {
   AUTH: {
     ROOT: ['auth'],
     ME: ['auth', 'me'],
@@ -10,45 +10,28 @@ export const QUERY_KEYS = {
     BY_ID: (id: string) => ['users', 'byId', id],
   },
 
-  SEASONS: {
+  PLAYERS: {
+    ROOT: ['players'],
+    ALL: ['players', 'all'],
+    BY_ID: (id: string) => ['players', 'byId', id],
+  },
+
+  LEAGUES: {
     ROOT: ['leagues'],
     ALL: ['leagues', 'all'],
     BY_ID: (id: string) => ['leagues', 'byId', id],
   },
 
-  TEAMS: {
-    ROOT: ['teams'],
-    ALL: (leagueId: string) => ['teams', 'all', 'league', leagueId],
-    BY_ID: (leagueId: string, teamId: string) => [
-      'teams',
-      'byId',
-      'league',
-      leagueId,
-      'team',
-      teamId,
-    ],
-  },
-
   RESULTS: {
     ROOT: ['results'],
-    ALL: (leagueId: string, teamId: string) => [
-      'results',
-      'all',
-      'league',
-      leagueId,
-      'team',
-      teamId,
-    ],
-    BY_ID: (leagueId: string, teamId: string, resultId: string) => [
-      'results',
-      'byId',
-      'league',
-      leagueId,
-      'team',
-      teamId,
-      'result',
-      resultId,
-    ],
+    ALL: ['results', 'all'],
+    BY_ID: (id: string) => ['results', 'byId', id],
+  },
+
+  TEAMS: {
+    ROOT: ['teams'],
+    ALL: ['teams', 'all'],
+    BY_ID: (teamId: string) => ['teams', 'byId', teamId],
   },
 
   TRACKMANIA: {
@@ -71,3 +54,5 @@ export const QUERY_KEYS = {
     ],
   },
 };
+
+export default QUERY_KEYS;

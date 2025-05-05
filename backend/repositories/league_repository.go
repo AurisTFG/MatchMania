@@ -13,6 +13,7 @@ type LeagueRepository interface {
 	Create(*models.League) error
 	Update(*models.League, *models.League) error
 	Delete(*models.League) error
+	ClearAssociations(*models.League, []string) error
 }
 
 type leagueRepository struct {
@@ -26,7 +27,11 @@ func NewLeagueRepository(db *config.DB) LeagueRepository {
 func (r *leagueRepository) FindAll() ([]models.League, error) {
 	var leagues []models.League
 
-	result := r.db.Joins("User").Find(&leagues)
+	result := r.db.
+		Joins("User").
+		Preload("Tracks").
+		Order("start_date DESC").
+		Find(&leagues)
 
 	return leagues, result.Error
 }
@@ -34,7 +39,11 @@ func (r *leagueRepository) FindAll() ([]models.League, error) {
 func (r *leagueRepository) FindById(leagueId uuid.UUID) (*models.League, error) {
 	var league models.League
 
-	result := r.db.Joins("User").First(&league, leagueId)
+	result := r.db.
+		Joins("User").
+		Preload("Tracks").
+		Order("start_date DESC").
+		First(&league, leagueId)
 
 	return &league, result.Error
 }
@@ -46,7 +55,9 @@ func (r *leagueRepository) Create(league *models.League) error {
 }
 
 func (r *leagueRepository) Update(currentLeague *models.League, updatedLeague *models.League) error {
-	result := r.db.Model(currentLeague).Updates(updatedLeague)
+	result := r.db.
+		Model(currentLeague).
+		Updates(updatedLeague)
 
 	return result.Error
 }
@@ -55,4 +66,19 @@ func (r *leagueRepository) Delete(league *models.League) error {
 	result := r.db.Delete(league)
 
 	return result.Error
+}
+
+func (r *leagueRepository) ClearAssociations(league *models.League, associations []string) error {
+	for _, association := range associations {
+		result := r.db.
+			Model(league).
+			Association(association).
+			Clear()
+
+		if result != nil {
+			return result
+		}
+	}
+
+	return nil
 }

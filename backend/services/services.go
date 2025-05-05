@@ -7,6 +7,7 @@ import (
 
 type Services struct {
 	UserService            UserService
+	PlayerService          PlayerService
 	AuthService            AuthService
 	LeagueService          LeagueService
 	TeamService            TeamService
@@ -15,9 +16,13 @@ type Services struct {
 	MatchmakingService     MatchmakingService
 }
 
-func SetupServices(repos *repositories.Repositories, env *config.Env) *Services {
+func SetupServices(
+	env *config.Env,
+	repos *repositories.Repositories,
+) *Services {
 	return &Services{
 		UserService:            NewUserService(repos.UserRepository, repos.TrackmaniaTrackRepository),
+		PlayerService:          NewPlayerService(repos.PlayerRepository),
 		AuthService:            NewAuthService(repos.SessionRepository, repos.UserRepository, env),
 		LeagueService:          NewLeagueService(repos.LeagueRepository),
 		TeamService:            NewTeamService(repos.TeamRepository),

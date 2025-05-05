@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { ENDPOINTS } from 'constants/endpoints';
-import { QUERY_KEYS } from 'constants/queryKeys';
+import ENDPOINTS from 'constants/endpoints';
+import QUERY_KEYS from 'constants/queryKeys';
 import { JoinQueueDto } from 'types/dtos/requests/matchmaking/joinQueueDto';
 import { LeaveQueueDto } from 'types/dtos/requests/matchmaking/leaveQueueDto';
 import { MatchStatusDto } from 'types/dtos/responses/matchmaking/matchStatusDto';

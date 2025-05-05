@@ -8,10 +8,11 @@ import (
 	"MatchManiaAPI/repositories"
 	"bytes"
 	"context"
+	"crypto/rand"
 	"encoding/json"
 	"fmt"
 	"io"
-	"math/rand/v2"
+	"math/big"
 	"net/http"
 	"net/url"
 
@@ -27,7 +28,7 @@ type TrackmaniaOAuthService interface {
 	GetAccessToken(code string) (*responses.TrackmaniaOAuthAccessTokenDto, error)
 	GetProfilePageUrl() string
 	GetUserInfo(accessToken string) (*responses.TrackmaniaOAuthUserDto, error)
-	GetUserFavoriteMaps(accessToken string) ([]responses.TrackmaniaTracksDto, error)
+	GetUserFavoriteMaps(accessToken string) ([]responses.TrackmaniaOAuthFavoritesDto, error)
 }
 
 type trackmaniaOAuthService struct {
@@ -50,7 +51,11 @@ func (s *trackmaniaOAuthService) GenerateRandomState() string {
 	b := make([]rune, 32)
 
 	for i := range b {
-		b[i] = letters[rand.IntN(len(letters))]
+		n, err := rand.Int(rand.Reader, big.NewInt(int64(len(letters))))
+		if err != nil {
+			panic(fmt.Sprintf("failed to generate random number: %v", err))
+		}
+		b[i] = letters[n.Int64()]
 	}
 
 	return string(b)
@@ -197,7 +202,9 @@ func (s *trackmaniaOAuthService) GetUserInfo(accessToken string) (*responses.Tra
 	return &user, nil
 }
 
-func (s *trackmaniaOAuthService) GetUserFavoriteMaps(accessToken string) ([]responses.TrackmaniaTracksDto, error) {
+func (s *trackmaniaOAuthService) GetUserFavoriteMaps(
+	accessToken string,
+) ([]responses.TrackmaniaOAuthFavoritesDto, error) {
 	req, err := http.NewRequestWithContext(
 		context.Background(),
 		http.MethodGet,
@@ -224,7 +231,7 @@ func (s *trackmaniaOAuthService) GetUserFavoriteMaps(accessToken string) ([]resp
 	}
 
 	var favoritesWrapper struct {
-		List []responses.TrackmaniaTracksDto `json:"list"`
+		List []responses.TrackmaniaOAuthFavoritesDto `json:"list"`
 	}
 	if err = json.NewDecoder(resp.Body).Decode(&favoritesWrapper); err != nil {
 		return nil, err

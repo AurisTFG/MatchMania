@@ -1,11 +1,14 @@
-import styles from './FormErrors.module.css';
+import styles from './FieldErrorText.module.css';
 
-export type FormErrorsProps = {
+export type FieldErrorTextProps = {
   messages: string[];
   marginTop?: string | number;
 };
 
-export default function FormErrors({ messages, marginTop }: FormErrorsProps) {
+export default function FieldErrorText({
+  messages,
+  marginTop,
+}: FieldErrorTextProps) {
   if (messages.length === 0) {
     return null;
   }

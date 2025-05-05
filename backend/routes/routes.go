@@ -39,6 +39,11 @@ func SetupRoutes(
 			users.GET(":userId", requirePerm(enums.ManageUserPermission), c.UserController.GetUserById)
 		}
 
+		players := v1.Group("/players")
+		{
+			players.GET("", requirePerm(enums.LoggedInPermission), c.PlayerController.GetAllPlayers)
+		}
+
 		trackmania := v1.Group("/trackmania")
 		{
 			oauth := trackmania.Group("/oauth")
@@ -46,6 +51,15 @@ func SetupRoutes(
 				oauth.GET("/url", requirePerm(enums.LoggedInPermission), c.TrackmaniaOAuthController.GetAuthUrl)
 				oauth.GET("/callback", c.TrackmaniaOAuthController.HandleCallback)
 			}
+		}
+
+		teams := v1.Group("/teams")
+		{
+			teams.GET("", requirePerm(enums.LoggedInPermission), c.TeamController.GetAllTeams)
+			teams.POST("", requirePerm(enums.ManageTeamPermission), c.TeamController.CreateTeam)
+			teams.GET(":teamId", requirePerm(enums.LoggedInPermission), c.TeamController.GetTeam)
+			teams.PATCH(":teamId", requirePerm(enums.ManageTeamPermission), c.TeamController.UpdateTeam)
+			teams.DELETE(":teamId", requirePerm(enums.ManageTeamPermission), c.TeamController.DeleteTeam)
 		}
 
 		matchmaking := v1.Group("/matchmaking")
@@ -74,32 +88,15 @@ func SetupRoutes(
 			leagues.POST("", requirePerm(enums.ManageLeaguePermission), c.LeagueController.CreateLeague)
 			leagues.PATCH(":leagueId", requirePerm(enums.ManageLeaguePermission), c.LeagueController.UpdateLeague)
 			leagues.DELETE(":leagueId", requirePerm(enums.ManageLeaguePermission), c.LeagueController.DeleteLeague)
+		}
 
-			teams := leagues.Group("/:leagueId/teams")
-			{
-				teams.GET("", requirePerm(enums.LoggedInPermission), c.TeamController.GetAllTeams)
-				teams.GET(":teamId", requirePerm(enums.LoggedInPermission), c.TeamController.GetTeam)
-				teams.POST("", requirePerm(enums.ManageTeamPermission), c.TeamController.CreateTeam)
-				teams.PATCH(":teamId", requirePerm(enums.ManageTeamPermission), c.TeamController.UpdateTeam)
-				teams.DELETE(":teamId", requirePerm(enums.ManageTeamPermission), c.TeamController.DeleteTeam)
-
-				results := teams.Group("/:teamId/results")
-				{
-					results.GET("", requirePerm(enums.LoggedInPermission), c.ResultController.GetAllResults)
-					results.GET(":resultId", requirePerm(enums.LoggedInPermission), c.ResultController.GetResult)
-					results.POST("", requirePerm(enums.ManageResultPermission), c.ResultController.CreateResult)
-					results.PATCH(
-						":resultId",
-						requirePerm(enums.ManageResultPermission),
-						c.ResultController.UpdateResult,
-					)
-					results.DELETE(
-						":resultId",
-						requirePerm(enums.ManageResultPermission),
-						c.ResultController.DeleteResult,
-					)
-				}
-			}
+		results := v1.Group("/results")
+		{
+			results.GET("", requirePerm(enums.LoggedInPermission), c.ResultController.GetAllResults)
+			results.GET(":resultId", requirePerm(enums.LoggedInPermission), c.ResultController.GetResult)
+			results.POST("", requirePerm(enums.ManageResultPermission), c.ResultController.CreateResult)
+			results.PATCH(":resultId", requirePerm(enums.ManageResultPermission), c.ResultController.UpdateResult)
+			results.DELETE(":resultId", requirePerm(enums.ManageResultPermission), c.ResultController.DeleteResult)
 		}
 	}
 }

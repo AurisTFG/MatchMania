@@ -1,1 +1,1 @@
-export { default as LeaguesPage } from './LeaguesPage';
+export { default } from './LeaguesPage';

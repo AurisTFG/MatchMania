@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { ENDPOINTS } from 'constants/endpoints';
+import ENDPOINTS from 'constants/endpoints';
 import { TrackmaniaOAuthUrlDto } from 'types/dtos/responses/trackmaniaOAuth/trackmaniaOAuthUrlDto';
 import { getRequest } from '../httpRequests';
 

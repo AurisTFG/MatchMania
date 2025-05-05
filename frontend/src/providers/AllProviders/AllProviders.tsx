@@ -7,8 +7,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ReactNode, useState } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { Toaster } from 'sonner';
-import { ErrorBoundary } from 'components/ErrorBoundary';
-import Layout from 'components/Layout/Layout';
+import Layout from 'components/Layout';
 import { queryClient } from 'configs/queryClient';
 import { getTheme } from 'styles/theme';
 import { AuthProvider } from '../AuthProvider';
@@ -34,7 +33,7 @@ export default function AllProviders({ children }: { children: ReactNode }) {
                 }}
                 mode={mode}
               >
-                <ErrorBoundary>{children}</ErrorBoundary>
+                {children}
               </Layout>
             </BrowserRouter>
           </LocalizationProvider>

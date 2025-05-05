@@ -45,7 +45,7 @@ export default function MatchmakingQueuePage() {
     data: teams,
     isLoading: isTeamsLoading,
     refetch: refetchTeams,
-  } = useFetchTeams(leagueId);
+  } = useFetchTeams();
 
   useEffect(() => {
     if (leagueId) {

@@ -12,7 +12,8 @@ import { styled } from '@mui/material/styles';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLogOut } from 'api/hooks/authHooks';
-import { ROUTE_PATHS } from 'constants/route_paths';
+import ROUTE_PATHS from 'constants/route_paths';
+import { useAuth } from 'providers/AuthProvider';
 
 const MenuItem = styled(MuiMenuItem)({
   margin: '2px 0',
@@ -22,6 +23,7 @@ export default function OptionsMenu() {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  const { isLoggedIn } = useAuth();
 
   const { mutateAsync: logoutAsync } = useLogOut();
 
@@ -35,6 +37,14 @@ export default function OptionsMenu() {
 
   const handleProfileClick = async () => {
     await navigate(ROUTE_PATHS.PROFILE);
+  };
+
+  const handleLoginClick = async () => {
+    await navigate(ROUTE_PATHS.LOGIN);
+  };
+
+  const handleSignupClick = async () => {
+    await navigate(ROUTE_PATHS.SIGNUP);
   };
 
   const handleLogout = async () => {
@@ -80,34 +90,55 @@ export default function OptionsMenu() {
           },
         }}
       >
-        <MenuItem
-          onClick={() => {
-            void handleProfileClick();
-          }}
-        >
-          Profile
-        </MenuItem>
-        <Divider />
-        <MenuItem
-          onClick={() => {
-            void handleLogout();
-          }}
-          sx={{
-            [`& .${listItemIconClasses.root}`]: {
-              ml: 'auto',
-              minWidth: 0,
-            },
-            minWidth: 120,
-            display: 'flex',
-            justifyContent: 'space-between',
-            paddingRight: 1,
-          }}
-        >
-          <ListItemText>Logout</ListItemText>
-          <ListItemIcon>
-            <LogoutRoundedIcon fontSize="small" />
-          </ListItemIcon>
-        </MenuItem>
+        {isLoggedIn ? (
+          <div>
+            <MenuItem
+              onClick={() => {
+                void handleProfileClick();
+              }}
+            >
+              Profile
+            </MenuItem>
+            <Divider />
+            <MenuItem
+              onClick={() => {
+                void handleLogout();
+              }}
+              sx={{
+                [`& .${listItemIconClasses.root}`]: {
+                  ml: 'auto',
+                  minWidth: 0,
+                },
+                minWidth: 120,
+                display: 'flex',
+                justifyContent: 'space-between',
+                paddingRight: 1,
+              }}
+            >
+              <ListItemText>Logout</ListItemText>
+              <ListItemIcon>
+                <LogoutRoundedIcon fontSize="small" />
+              </ListItemIcon>
+            </MenuItem>
+          </div>
+        ) : (
+          <div>
+            <MenuItem
+              onClick={() => {
+                void handleLoginClick();
+              }}
+            >
+              Log In
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                void handleSignupClick();
+              }}
+            >
+              Sign Up
+            </MenuItem>
+          </div>
+        )}
       </Menu>
     </>
   );

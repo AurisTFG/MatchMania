@@ -1,6 +1,6 @@
 import { TextField as MuiTextField } from '@mui/material';
 import { useFieldContext } from 'hooks/form/useAppForm';
-import FormErrors from '../Helpers/FormErrors';
+import FieldErrorText from './FieldErrorText';
 
 type TextFieldProps = {
   label: string;
@@ -41,7 +41,8 @@ export default function Text({
           },
         }}
       />
-      <FormErrors messages={errorMessages} />
+
+      <FieldErrorText messages={errorMessages} />
     </>
   );
 }

@@ -27,6 +27,11 @@ export const leagueDtoValidator = z
         (date) => date <= new Date(Date.now() + 3650 * 24 * 60 * 60 * 1000),
         { message: 'End date must not be more than 10 years in the future' },
       ),
+
+    trackIds: z
+      .array(z.string())
+      .nonempty({ message: 'At least one track is required.' })
+      .max(10, { message: 'You can select up to 100 tracks.' }),
   })
   .refine((data) => data.endDate > data.startDate, {
     message: 'End date must be after the start date',

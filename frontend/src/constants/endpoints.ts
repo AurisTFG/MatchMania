@@ -1,4 +1,4 @@
-export const ENDPOINTS = {
+const ENDPOINTS = {
   AUTH: {
     LOGIN: `auth/login`,
     LOGOUT: `auth/logout`,
@@ -6,30 +6,38 @@ export const ENDPOINTS = {
     REFRESH: `auth/refresh`,
     SIGNUP: `auth/signup`,
   },
+
   USERS: {
     ROOT: `users`,
     BY_ID: (id: string) => `users/${id}`,
   },
-  SEASONS: {
+
+  PLAYERS: {
+    ROOT: `players`,
+    BY_ID: (id: string) => `players/${id}`,
+  },
+
+  LEAGUES: {
     ROOT: `leagues`,
     BY_ID: (id: string) => `leagues/${id}`,
   },
-  TEAMS: {
-    ROOT: (leagueId: string) => `leagues/${leagueId}/teams`,
-    BY_ID: (leagueId: string, teamId: string) =>
-      `leagues/${leagueId}/teams/${teamId}`,
-  },
+
   RESULTS: {
-    ROOT: (leagueId: string, teamId: string) =>
-      `leagues/${leagueId}/teams/${teamId}/results`,
-    BY_ID: (leagueId: string, teamId: string, resultId: string) =>
-      `leagues/${leagueId}/teams/${teamId}/results/${resultId}`,
+    ROOT: `results`,
+    BY_ID: (id: string) => `results/${id}`,
   },
+
+  TEAMS: {
+    ROOT: `teams`,
+    BY_ID: (teamId: string) => `teams/${teamId}`,
+  },
+
   TRACKMANIA: {
     OAUTH: {
       URL: `trackmania/oauth/url`,
     },
   },
+
   MATCHMAKING: {
     JOIN_QUEUE: `matchmaking/queue/join`,
     LEAVE_QUEUE: `matchmaking/queue/leave`,
@@ -38,3 +46,5 @@ export const ENDPOINTS = {
     GET_QUEUE_STATUS: (teamId: string) => `matchmaking/queue/status/${teamId}`,
   },
 };
+
+export default ENDPOINTS;

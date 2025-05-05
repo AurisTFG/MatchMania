@@ -29,7 +29,10 @@ func (r *trackmaniaOAuthStateRepository) SaveState(state *models.TrackmaniaOauth
 func (r *trackmaniaOAuthStateRepository) DoesStateExist(state string) bool {
 	var oauthState models.TrackmaniaOauthState
 
-	err := r.db.Where("state = ?", state).First(&oauthState).Error
+	err := r.db.
+		Where("state = ?", state).
+		First(&oauthState).
+		Error
 
 	return err == nil
 }
@@ -37,7 +40,11 @@ func (r *trackmaniaOAuthStateRepository) DoesStateExist(state string) bool {
 func (r *trackmaniaOAuthStateRepository) GetUserIdByState(state string) (uuid.UUID, error) {
 	var oauthState models.TrackmaniaOauthState
 
-	err := r.db.Where("state = ?", state).First(&oauthState).Error
+	err := r.db.
+		Where("state = ?", state).
+		First(&oauthState).
+		Error
+
 	if err != nil {
 		return uuid.Nil, err
 	}
@@ -48,7 +55,11 @@ func (r *trackmaniaOAuthStateRepository) GetUserIdByState(state string) (uuid.UU
 func (r *trackmaniaOAuthStateRepository) DeleteStateByUserId(userId uuid.UUID) error {
 	var oauthState models.TrackmaniaOauthState
 
-	err := r.db.Where("user_id = ?", userId).Delete(&oauthState).Error
+	err := r.db.
+		Where("user_id = ?", userId).
+		Delete(&oauthState).
+		Error
+
 	if err != nil {
 		return err
 	}

@@ -38,7 +38,10 @@ func (r *userRepository) FindAll() ([]models.User, error) {
 func (r *userRepository) FindById(userId uuid.UUID) (*models.User, error) {
 	var user models.User
 
-	result := r.db.Preload("TrackmaniaTracks").Preload("Roles").First(&user, "id = ?", userId)
+	result := r.db.
+		Preload("TrackmaniaTracks").
+		Preload("Roles").
+		First(&user, "id = ?", userId)
 
 	return &user, result.Error
 }
@@ -46,7 +49,9 @@ func (r *userRepository) FindById(userId uuid.UUID) (*models.User, error) {
 func (r *userRepository) FindByEmail(email string) (*models.User, error) {
 	var user models.User
 
-	result := r.db.Where("email = ?", email).First(&user)
+	result := r.db.
+		Where("email = ?", email).
+		First(&user)
 
 	return &user, result.Error
 }
@@ -54,7 +59,9 @@ func (r *userRepository) FindByEmail(email string) (*models.User, error) {
 func (r *userRepository) GetDistinctPermissionsByUserId(userId uuid.UUID) ([]string, error) {
 	var user models.User
 
-	result := r.db.Preload("Roles.Permissions").First(&user, "id = ?", userId)
+	result := r.db.
+		Preload("Roles.Permissions").
+		First(&user, "id = ?", userId)
 
 	if result.Error != nil {
 		return nil, result.Error
@@ -87,7 +94,9 @@ func (r *userRepository) Update(currentUser *models.User, updatedUser *models.Us
 		return err
 	}
 
-	result := r.db.Model(currentUser).Updates(updatedUser)
+	result := r.db.
+		Model(currentUser).
+		Updates(updatedUser)
 
 	return result.Error
 }

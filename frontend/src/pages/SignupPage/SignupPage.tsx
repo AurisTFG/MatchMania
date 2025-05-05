@@ -1,9 +1,11 @@
 import { Box, Button, Paper, Typography } from '@mui/material';
 import { useSignUp } from 'api/hooks/authHooks';
+import withAuth from 'hocs/withAuth';
 import { useAppForm } from 'hooks/form/useAppForm';
+import { Permission } from 'types/enums/permission';
 import { signupDtoValidator } from 'validators/auth/signupDtoValidator';
 
-export default function SignupPage() {
+function SignupPage() {
   const { mutateAsync: signupAsync } = useSignUp();
 
   const form = useAppForm({
@@ -105,3 +107,7 @@ export default function SignupPage() {
     </Box>
   );
 }
+
+export default withAuth(SignupPage, {
+  permission: Permission.LoggedOut,
+});

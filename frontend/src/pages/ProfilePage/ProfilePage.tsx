@@ -18,9 +18,9 @@ import {
 import { useState } from 'react';
 import { useFetchMe } from 'api/hooks/authHooks';
 import { useGetTrackmaniaOAuthUrl } from 'api/hooks/trackmaniaOauthHooks';
-import { UserAvatar } from 'components/UserAvatar';
+import UserAvatar from 'components/UserAvatar';
 import withAuth from 'hocs/withAuth';
-import withErrorBoundary from 'hocs/withErrorBoundary';
+import { Permission } from 'types/enums/permission';
 import { getCountryIconUrl, getCountryName } from 'utils/countryUtils';
 import { isStringEmpty, isUuidEmpty } from 'utils/stringUtils';
 
@@ -112,8 +112,8 @@ function ProfilePage() {
               spacing={2}
             >
               <UserAvatar
-                profilePhotoUrl={user?.profilePhotoUrl}
-                username={user?.username}
+                imageUrl={user?.profilePhotoUrl}
+                name={user?.username}
                 size={80}
               />
 
@@ -246,7 +246,7 @@ function ProfilePage() {
               {user?.tracks.length ? (
                 user.tracks.map((track) => (
                   <Grid
-                    key={track.uid}
+                    key={track.id}
                     size={{ xs: 12, sm: 6, md: 4 }}
                   >
                     <Card
@@ -303,6 +303,6 @@ function ProfilePage() {
   );
 }
 
-export default withAuth(withErrorBoundary(ProfilePage), {
-  isLoggedInOnly: true,
+export default withAuth(ProfilePage, {
+  permission: Permission.LoggedIn,
 });

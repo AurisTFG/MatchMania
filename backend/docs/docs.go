@@ -167,172 +167,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/matchmaking/queue/join": {
-            "post": {
-                "description": "Join matchmaking queue",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "matchmaking"
-                ],
-                "summary": "Join matchmaking queue",
-                "parameters": [
-                    {
-                        "description": "Join Queue DTO",
-                        "name": "result",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/requests.JoinQueueDto"
-                        }
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content"
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorDto"
-                        }
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorDto"
-                        }
-                    }
-                }
-            }
-        },
-        "/matchmaking/queue/leave": {
-            "post": {
-                "description": "Leave matchmaking queue",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "matchmaking"
-                ],
-                "summary": "Leave matchmaking queue",
-                "parameters": [
-                    {
-                        "description": "Leave Queue DTO",
-                        "name": "result",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/requests.LeaveQueueDto"
-                        }
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content"
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorDto"
-                        }
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorDto"
-                        }
-                    }
-                }
-            }
-        },
-        "/matchmaking/queue/status/{teamId}": {
-            "get": {
-                "description": "Check match status",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "matchmaking"
-                ],
-                "summary": "Check match status",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "default": "0deecf6a-289b-49a0-8f1b-9bc4185f99df",
-                        "description": "Team ID",
-                        "name": "teamId",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/responses.MatchStatusDto"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorDto"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorDto"
-                        }
-                    }
-                }
-            }
-        },
-        "/matchmaking/queue/teams-count/{leagueId}": {
-            "get": {
-                "description": "Get matchmaking queue",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "matchmaking"
-                ],
-                "summary": "Get matchmaking queue",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/responses.QueueTeamsCountDto"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorDto"
-                        }
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorDto"
-                        }
-                    }
-                }
-            }
-        },
         "/leagues": {
             "get": {
                 "description": "Get all leagues",
@@ -576,9 +410,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/leagues/{leagueId}/teams": {
-            "get": {
-                "description": "Get all teams",
+        "/matchmaking/queue/join": {
+            "post": {
+                "description": "Join matchmaking queue",
                 "consumes": [
                     "application/json"
                 ],
@@ -586,96 +420,185 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "teams"
+                    "matchmaking"
                 ],
-                "summary": "Get all teams",
+                "summary": "Join matchmaking queue",
+                "parameters": [
+                    {
+                        "description": "Join Queue DTO",
+                        "name": "result",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/requests.JoinQueueDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    }
+                }
+            }
+        },
+        "/matchmaking/queue/leave": {
+            "post": {
+                "description": "Leave matchmaking queue",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "matchmaking"
+                ],
+                "summary": "Leave matchmaking queue",
+                "parameters": [
+                    {
+                        "description": "Leave Queue DTO",
+                        "name": "result",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/requests.LeaveQueueDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    }
+                }
+            }
+        },
+        "/matchmaking/queue/status/{teamId}": {
+            "get": {
+                "description": "Check match status",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "matchmaking"
+                ],
+                "summary": "Check match status",
                 "parameters": [
                     {
                         "type": "string",
                         "default": "0deecf6a-289b-49a0-8f1b-9bc4185f99df",
-                        "description": "League ID",
-                        "name": "leagueId",
+                        "description": "Team ID",
+                        "name": "teamId",
                         "in": "path",
                         "required": true
                     }
                 ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.MatchStatusDto"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    }
+                }
+            }
+        },
+        "/matchmaking/queue/teams-count/{leagueId}": {
+            "get": {
+                "description": "Get matchmaking queue",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "matchmaking"
+                ],
+                "summary": "Get matchmaking queue",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.QueueTeamsCountDto"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    }
+                }
+            }
+        },
+        "/players": {
+            "get": {
+                "description": "Get all players",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "players"
+                ],
+                "summary": "Get all players",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/responses.TeamDto"
+                                "$ref": "#/definitions/responses.PlayerMinimalDto"
                             }
                         }
                     },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorDto"
-                        }
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorDto"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "description": "Create a team",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "teams"
-                ],
-                "summary": "Create a team",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "default": "0deecf6a-289b-49a0-8f1b-9bc4185f99df",
-                        "description": "League ID",
-                        "name": "leagueId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Team object that needs to be created",
-                        "name": "team",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/requests.CreateTeamDto"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created"
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorDto"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorDto"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorDto"
-                        }
-                    },
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
@@ -685,201 +608,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/leagues/{leagueId}/teams/{teamId}": {
-            "get": {
-                "description": "Get a team",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "teams"
-                ],
-                "summary": "Get a team",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "default": "0deecf6a-289b-49a0-8f1b-9bc4185f99df",
-                        "description": "League ID",
-                        "name": "leagueId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "default": "0deecf6a-289b-49a0-8f1b-9bc4185f99df",
-                        "description": "Team ID",
-                        "name": "teamId",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/responses.TeamDto"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorDto"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorDto"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "description": "Delete a team",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "teams"
-                ],
-                "summary": "Delete a team",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "default": "0deecf6a-289b-49a0-8f1b-9bc4185f99df",
-                        "description": "League ID",
-                        "name": "leagueId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "default": "0deecf6a-289b-49a0-8f1b-9bc4185f99df",
-                        "description": "Team ID",
-                        "name": "teamId",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content"
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorDto"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorDto"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorDto"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorDto"
-                        }
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorDto"
-                        }
-                    }
-                }
-            },
-            "patch": {
-                "description": "Update a team",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "teams"
-                ],
-                "summary": "Update a team",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "default": "0deecf6a-289b-49a0-8f1b-9bc4185f99df",
-                        "description": "League ID",
-                        "name": "leagueId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "default": "0deecf6a-289b-49a0-8f1b-9bc4185f99df",
-                        "description": "Team ID",
-                        "name": "teamId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Team object that needs to be updated",
-                        "name": "team",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/requests.UpdateTeamDto"
-                        }
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content"
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorDto"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorDto"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorDto"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorDto"
-                        }
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorDto"
-                        }
-                    }
-                }
-            }
-        },
-        "/leagues/{leagueId}/teams/{teamId}/results": {
+        "/results": {
             "get": {
                 "description": "Get all results",
                 "consumes": [
@@ -892,24 +621,6 @@ const docTemplate = `{
                     "results"
                 ],
                 "summary": "Get all results",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "default": "0deecf6a-289b-49a0-8f1b-9bc4185f99df",
-                        "description": "League ID",
-                        "name": "leagueId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "default": "0deecf6a-289b-49a0-8f1b-9bc4185f99df",
-                        "description": "Team ID",
-                        "name": "teamId",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -947,22 +658,6 @@ const docTemplate = `{
                 ],
                 "summary": "Create a result",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "default": "0deecf6a-289b-49a0-8f1b-9bc4185f99df",
-                        "description": "League ID",
-                        "name": "leagueId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "default": "0deecf6a-289b-49a0-8f1b-9bc4185f99df",
-                        "description": "Team ID",
-                        "name": "teamId",
-                        "in": "path",
-                        "required": true
-                    },
                     {
                         "description": "Result object that needs to be created",
                         "name": "result",
@@ -1004,7 +699,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/leagues/{leagueId}/teams/{teamId}/results/{resultId}": {
+        "/results/{resultId}": {
             "get": {
                 "description": "Get a result",
                 "consumes": [
@@ -1018,22 +713,6 @@ const docTemplate = `{
                 ],
                 "summary": "Get a result",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "default": "0deecf6a-289b-49a0-8f1b-9bc4185f99df",
-                        "description": "League ID",
-                        "name": "leagueId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "default": "0deecf6a-289b-49a0-8f1b-9bc4185f99df",
-                        "description": "Team ID",
-                        "name": "teamId",
-                        "in": "path",
-                        "required": true
-                    },
                     {
                         "type": "string",
                         "default": "0deecf6a-289b-49a0-8f1b-9bc4185f99df",
@@ -1080,22 +759,6 @@ const docTemplate = `{
                 ],
                 "summary": "Delete a result",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "default": "0deecf6a-289b-49a0-8f1b-9bc4185f99df",
-                        "description": "League ID",
-                        "name": "leagueId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "default": "0deecf6a-289b-49a0-8f1b-9bc4185f99df",
-                        "description": "Team ID",
-                        "name": "teamId",
-                        "in": "path",
-                        "required": true
-                    },
                     {
                         "type": "string",
                         "default": "0deecf6a-289b-49a0-8f1b-9bc4185f99df",
@@ -1157,22 +820,6 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "default": "0deecf6a-289b-49a0-8f1b-9bc4185f99df",
-                        "description": "League ID",
-                        "name": "leagueId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "default": "0deecf6a-289b-49a0-8f1b-9bc4185f99df",
-                        "description": "Team ID",
-                        "name": "teamId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "default": "0deecf6a-289b-49a0-8f1b-9bc4185f99df",
                         "description": "Result ID",
                         "name": "resultId",
                         "in": "path",
@@ -1185,6 +832,267 @@ const docTemplate = `{
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/requests.UpdateResultDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    }
+                }
+            }
+        },
+        "/teams": {
+            "get": {
+                "description": "Get all teams",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "teams"
+                ],
+                "summary": "Get all teams",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/responses.TeamDto"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a team",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "teams"
+                ],
+                "summary": "Create a team",
+                "parameters": [
+                    {
+                        "description": "Team object that needs to be created",
+                        "name": "team",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/requests.CreateTeamDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    }
+                }
+            }
+        },
+        "/teams/{teamId}": {
+            "get": {
+                "description": "Get a team",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "teams"
+                ],
+                "summary": "Get a team",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "0deecf6a-289b-49a0-8f1b-9bc4185f99df",
+                        "description": "Team ID",
+                        "name": "teamId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TeamDto"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a team",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "teams"
+                ],
+                "summary": "Delete a team",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "0deecf6a-289b-49a0-8f1b-9bc4185f99df",
+                        "description": "Team ID",
+                        "name": "teamId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Update a team",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "teams"
+                ],
+                "summary": "Update a team",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "0deecf6a-289b-49a0-8f1b-9bc4185f99df",
+                        "description": "Team ID",
+                        "name": "teamId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Team object that needs to be updated",
+                        "name": "team",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/requests.UpdateTeamDto"
                         }
                     }
                 ],
@@ -1344,17 +1252,93 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "requests.CreateResultDto": {
+        "leagues.LeagueMinimalDto": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                },
+                "logoUrl": {
+                    "type": "string",
+                    "example": "https://example.com/logo.png"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Summer 2025"
+                }
+            }
+        },
+        "players.PlayerMinimalDto": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "example": "526432ea-822b-4b5b-b1b3-34e8ab453e03"
+                },
+                "profilePhotoUrl": {
+                    "type": "string",
+                    "example": "https://example.com/profile.jpg"
+                },
+                "trackmaniaName": {
+                    "type": "string",
+                    "example": "JohnDoe"
+                }
+            }
+        },
+        "requests.CreateLeagueDto": {
             "type": "object",
             "required": [
                 "endDate",
-                "opponentTeamId",
-                "startDate"
+                "name",
+                "startDate",
+                "trackIds"
             ],
             "properties": {
                 "endDate": {
                     "type": "string",
                     "example": "2025-08-31T00:00:000Z"
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 3,
+                    "example": "Summer 2025"
+                },
+                "startDate": {
+                    "type": "string",
+                    "example": "2025-06-01T00:00:000Z"
+                },
+                "trackIds": {
+                    "type": "array",
+                    "maxItems": 100,
+                    "minItems": 1,
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "550e8400-e29b-41d4-a716-446655440000"
+                    ]
+                }
+            }
+        },
+        "requests.CreateResultDto": {
+            "type": "object",
+            "required": [
+                "endDate",
+                "leagueId",
+                "opponentTeamId",
+                "startDate",
+                "teamId"
+            ],
+            "properties": {
+                "endDate": {
+                    "type": "string",
+                    "example": "2025-08-31T00:00:000Z"
+                },
+                "leagueId": {
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
                 },
                 "opponentScore": {
                     "type": "string",
@@ -1371,44 +1355,54 @@ const docTemplate = `{
                 "startDate": {
                     "type": "string",
                     "example": "2025-06-01T00:00:000Z"
-                }
-            }
-        },
-        "requests.CreateLeagueDto": {
-            "type": "object",
-            "required": [
-                "endDate",
-                "name",
-                "startDate"
-            ],
-            "properties": {
-                "endDate": {
-                    "type": "string",
-                    "example": "2025-08-31T00:00:000Z"
                 },
-                "name": {
+                "teamId": {
                     "type": "string",
-                    "maxLength": 100,
-                    "minLength": 3,
-                    "example": "Summer 2025"
-                },
-                "startDate": {
-                    "type": "string",
-                    "example": "2025-06-01T00:00:000Z"
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
                 }
             }
         },
         "requests.CreateTeamDto": {
             "type": "object",
             "required": [
-                "name"
+                "leagueIds",
+                "logoUrl",
+                "name",
+                "playerIds"
             ],
             "properties": {
+                "leagueIds": {
+                    "type": "array",
+                    "maxItems": 10,
+                    "minItems": 1,
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "550e8400-e29b-41d4-a716-446655440000"
+                    ]
+                },
+                "logoUrl": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "example": "https://example.com/logo.png"
+                },
                 "name": {
                     "type": "string",
                     "maxLength": 100,
                     "minLength": 3,
                     "example": "BIG Clan"
+                },
+                "playerIds": {
+                    "type": "array",
+                    "maxItems": 10,
+                    "minItems": 1,
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "550e8400-e29b-41d4-a716-446655440000"
+                    ]
                 }
             }
         },
@@ -1485,17 +1479,59 @@ const docTemplate = `{
                 }
             }
         },
-        "requests.UpdateResultDto": {
+        "requests.UpdateLeagueDto": {
             "type": "object",
             "required": [
                 "endDate",
-                "opponentTeamId",
-                "startDate"
+                "name",
+                "startDate",
+                "trackIds"
             ],
             "properties": {
                 "endDate": {
                     "type": "string",
                     "example": "2025-08-31T00:00:000Z"
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 3,
+                    "example": "Summer 2025"
+                },
+                "startDate": {
+                    "type": "string",
+                    "example": "2025-06-01T00:00:000Z"
+                },
+                "trackIds": {
+                    "type": "array",
+                    "maxItems": 100,
+                    "minItems": 1,
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "550e8400-e29b-41d4-a716-446655440000"
+                    ]
+                }
+            }
+        },
+        "requests.UpdateResultDto": {
+            "type": "object",
+            "required": [
+                "endDate",
+                "leagueId",
+                "opponentTeamId",
+                "startDate",
+                "teamId"
+            ],
+            "properties": {
+                "endDate": {
+                    "type": "string",
+                    "example": "2025-08-31T00:00:000Z"
+                },
+                "leagueId": {
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
                 },
                 "opponentScore": {
                     "type": "string",
@@ -1512,44 +1548,54 @@ const docTemplate = `{
                 "startDate": {
                     "type": "string",
                     "example": "2025-06-01T00:00:000Z"
-                }
-            }
-        },
-        "requests.UpdateLeagueDto": {
-            "type": "object",
-            "required": [
-                "endDate",
-                "name",
-                "startDate"
-            ],
-            "properties": {
-                "endDate": {
-                    "type": "string",
-                    "example": "2025-08-31T00:00:000Z"
                 },
-                "name": {
+                "teamId": {
                     "type": "string",
-                    "maxLength": 100,
-                    "minLength": 3,
-                    "example": "Summer 2025"
-                },
-                "startDate": {
-                    "type": "string",
-                    "example": "2025-06-01T00:00:000Z"
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
                 }
             }
         },
         "requests.UpdateTeamDto": {
             "type": "object",
             "required": [
-                "name"
+                "leagueIds",
+                "logoUrl",
+                "name",
+                "playerIds"
             ],
             "properties": {
+                "leagueIds": {
+                    "type": "array",
+                    "maxItems": 10,
+                    "minItems": 1,
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "550e8400-e29b-41d4-a716-446655440000"
+                    ]
+                },
+                "logoUrl": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "example": "https://example.com/logo.png"
+                },
                 "name": {
                     "type": "string",
                     "maxLength": 100,
                     "minLength": 3,
                     "example": "BIG Clan"
+                },
+                "playerIds": {
+                    "type": "array",
+                    "maxItems": 10,
+                    "minItems": 1,
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "550e8400-e29b-41d4-a716-446655440000"
+                    ]
                 }
             }
         },
@@ -1559,56 +1605,6 @@ const docTemplate = `{
                 "message": {
                     "type": "string",
                     "example": "Error message"
-                }
-            }
-        },
-        "responses.MatchStatusDto": {
-            "type": "object",
-            "properties": {
-                "isInMatch": {
-                    "type": "boolean"
-                }
-            }
-        },
-        "responses.QueueTeamsCountDto": {
-            "type": "object",
-            "properties": {
-                "teamsCount": {
-                    "type": "integer"
-                }
-            }
-        },
-        "responses.ResultDto": {
-            "type": "object",
-            "properties": {
-                "endDate": {
-                    "type": "string",
-                    "example": "2025-06-01T00:40:00Z"
-                },
-                "id": {
-                    "type": "string",
-                    "example": "550e8400-e29b-41d4-a716-446655440000"
-                },
-                "opponentScore": {
-                    "type": "string",
-                    "example": "14"
-                },
-                "opponentTeam": {
-                    "$ref": "#/definitions/teams.TeamMinimalDto"
-                },
-                "score": {
-                    "type": "string",
-                    "example": "16"
-                },
-                "startDate": {
-                    "type": "string",
-                    "example": "2025-06-01T00:00:00Z"
-                },
-                "team": {
-                    "$ref": "#/definitions/teams.TeamMinimalDto"
-                },
-                "user": {
-                    "$ref": "#/definitions/users.UserMinimalDto"
                 }
             }
         },
@@ -1623,6 +1619,10 @@ const docTemplate = `{
                     "type": "string",
                     "example": "550e8400-e29b-41d4-a716-446655440000"
                 },
+                "logoUrl": {
+                    "type": "string",
+                    "example": "https://example.com/logo.png"
+                },
                 "name": {
                     "type": "string",
                     "example": "Summer 2025"
@@ -1630,6 +1630,90 @@ const docTemplate = `{
                 "startDate": {
                     "type": "string",
                     "example": "2025-06-01T00:00:00Z"
+                },
+                "tracks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/trackmaniatracks.TrackmaniaTrackDto"
+                    }
+                },
+                "user": {
+                    "$ref": "#/definitions/users.UserMinimalDto"
+                }
+            }
+        },
+        "responses.MatchStatusDto": {
+            "type": "object",
+            "properties": {
+                "isInMatch": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "responses.PlayerMinimalDto": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "example": "526432ea-822b-4b5b-b1b3-34e8ab453e03"
+                },
+                "profilePhotoUrl": {
+                    "type": "string",
+                    "example": "https://example.com/profile.jpg"
+                },
+                "trackmaniaName": {
+                    "type": "string",
+                    "example": "JohnDoe"
+                }
+            }
+        },
+        "responses.QueueTeamsCountDto": {
+            "type": "object",
+            "properties": {
+                "teamsCount": {
+                    "type": "integer"
+                }
+            }
+        },
+        "responses.ResultDto": {
+            "type": "object",
+            "properties": {
+                "eloDiff": {
+                    "type": "integer",
+                    "example": 15
+                },
+                "endDate": {
+                    "type": "string",
+                    "example": "2025-06-01T00:40:00Z"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                },
+                "league": {
+                    "$ref": "#/definitions/leagues.LeagueMinimalDto"
+                },
+                "opponentEloDiff": {
+                    "type": "integer",
+                    "example": -8
+                },
+                "opponentScore": {
+                    "type": "integer",
+                    "example": 0
+                },
+                "opponentTeam": {
+                    "$ref": "#/definitions/teams.TeamMinimalDto"
+                },
+                "score": {
+                    "type": "integer",
+                    "example": 4
+                },
+                "startDate": {
+                    "type": "string",
+                    "example": "2025-06-01T00:00:00Z"
+                },
+                "team": {
+                    "$ref": "#/definitions/teams.TeamMinimalDto"
                 },
                 "user": {
                     "$ref": "#/definitions/users.UserMinimalDto"
@@ -1647,9 +1731,25 @@ const docTemplate = `{
                     "type": "string",
                     "example": "550e8400-e29b-41d4-a716-446655440000"
                 },
+                "leagues": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/leagues.LeagueMinimalDto"
+                    }
+                },
+                "logoUrl": {
+                    "type": "string",
+                    "example": "https://example.com/logo.png"
+                },
                 "name": {
                     "type": "string",
                     "example": "BIG Clan"
+                },
+                "players": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/players.PlayerMinimalDto"
+                    }
                 },
                 "user": {
                     "$ref": "#/definitions/users.UserMinimalDto"
@@ -1706,7 +1806,7 @@ const docTemplate = `{
                 "tracks": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/trackmanioauth.TrackmaniaTracksDto"
+                        "$ref": "#/definitions/trackmaniatracks.TrackmaniaTrackDto"
                     }
                 },
                 "username": {
@@ -1750,19 +1850,16 @@ const docTemplate = `{
                 }
             }
         },
-        "trackmanioauth.TrackmaniaTracksDto": {
+        "trackmaniatracks.TrackmaniaTrackDto": {
             "type": "object",
             "properties": {
-                "author": {
+                "id": {
                     "type": "string"
                 },
                 "name": {
                     "type": "string"
                 },
                 "thumbnailUrl": {
-                    "type": "string"
-                },
-                "uid": {
                     "type": "string"
                 }
             }
