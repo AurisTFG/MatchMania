@@ -7,8 +7,8 @@ import (
 type Team struct {
 	BaseModel
 
-	Name    string    `gorm:"not null"`
-	LogoUrl string    `gorm:"not null"`
+	Name    string `gorm:"not null"`
+	LogoUrl string
 	Elo     uint      `gorm:"not null"`
 	UserId  uuid.UUID `gorm:"not null"`
 
