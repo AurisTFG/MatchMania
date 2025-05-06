@@ -240,5 +240,5 @@ function TeamsPage() {
 }
 
 export default withAuth(TeamsPage, {
-  permission: Permission.LoggedIn,
+  permission: Permission.ManageTeam,
 });
