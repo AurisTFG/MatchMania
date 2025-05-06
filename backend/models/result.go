@@ -16,6 +16,8 @@ type Result struct {
 	OpponentScore   uint      `gorm:"not null"`
 	EloDiff         int       `gorm:"not null"`
 	OpponentEloDiff int       `gorm:"not null"`
+	NewElo          uint      `gorm:"not null"`
+	NewOpponentElo  uint      `gorm:"not null"`
 	TeamId          uuid.UUID `gorm:"not null"`
 	OpponentTeamId  uuid.UUID `gorm:"not null"`
 	UserId          *uuid.UUID

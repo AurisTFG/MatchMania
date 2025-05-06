@@ -17,6 +17,8 @@ type ResultDto struct {
 	OpponentScore   uint      `example:"0"                                    json:"opponentScore"`
 	EloDiff         int       `example:"15"                                   json:"eloDiff"`
 	OpponentEloDiff int       `example:"-8"                                   json:"opponentEloDiff"`
+	NewElo          uint      `example:"1500"                                 json:"newElo"`
+	NewOpponentElo  uint      `example:"1492"                                 json:"newOpponentElo"`
 
 	League       leagues.LeagueMinimalDto `json:"league"`
 	Team         teams.TeamMinimalDto     `json:"team"`
