@@ -24,7 +24,7 @@ func SetupServices(
 	eloService := NewEloService()
 
 	return &Services{
-		UserService:            NewUserService(repos.UserRepository, repos.TrackmaniaTrackRepository),
+		UserService:            NewUserService(repos.UserRepository, repos.RoleRepository, repos.TrackmaniaTrackRepository),
 		PlayerService:          NewPlayerService(repos.PlayerRepository),
 		AuthService:            NewAuthService(repos.SessionRepository, repos.UserRepository, env),
 		LeagueService:          NewLeagueService(repos.LeagueRepository),

@@ -5,6 +5,7 @@ import "MatchManiaAPI/config"
 type Repositories struct {
 	SessionRepository              SessionRepository
 	UserRepository                 UserRepository
+	RoleRepository                 RoleRepository
 	PlayerRepository               PlayerRepository
 	LeagueRepository               LeagueRepository
 	TeamRepository                 TeamRepository
@@ -19,6 +20,7 @@ func SetupRepositories(
 	return &Repositories{
 		SessionRepository:              NewSessionRepository(db),
 		UserRepository:                 NewUserRepository(db),
+		RoleRepository:                 NewRoleRepository(db),
 		PlayerRepository:               NewPlayerRepository(db),
 		LeagueRepository:               NewLeagueRepository(db),
 		TeamRepository:                 NewTeamRepository(db),
