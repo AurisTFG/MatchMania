@@ -5,6 +5,7 @@ type Permission string
 const (
 	ManageLeaguePermission Permission = "LeaguesManage"
 	ManageTeamPermission   Permission = "TeamsManage"
+	ViewResultPermission   Permission = "ResultsView"
 	ManageResultPermission Permission = "ResultsManage"
 	ManageUserPermission   Permission = "UsersManage"
 	ManageRolePermission   Permission = "RolesManage"
@@ -29,6 +30,7 @@ func AllPermissions() []string {
 	return []string{
 		string(ManageLeaguePermission),
 		string(ManageTeamPermission),
+		string(ViewResultPermission),
 		string(ManageResultPermission),
 		string(ManageUserPermission),
 		string(ManageRolePermission),
@@ -46,6 +48,7 @@ func AllPermissionsWithDesc() map[string]string {
 
 		string(ManageLeaguePermission): "Manage leagues",
 		string(ManageTeamPermission):   "Manage teams",
+		string(ViewResultPermission):   "View results",
 		string(ManageResultPermission): "Manage results",
 		string(ManageUserPermission):   "Manage users",
 		string(ManageRolePermission):   "Manage roles",

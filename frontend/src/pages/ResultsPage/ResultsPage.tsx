@@ -294,5 +294,5 @@ function ResultsPage() {
 }
 
 export default withAuth(ResultsPage, {
-  permission: Permission.LoggedIn,
+  permission: Permission.ViewResult,
 });

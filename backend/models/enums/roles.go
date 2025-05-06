@@ -35,6 +35,7 @@ func GetPermissionsForRole(role Role) []string {
 		return []string{
 			string(ManageLeaguePermission),
 			string(ManageTeamPermission),
+			string(ViewResultPermission),
 			string(ManageResultPermission),
 			string(ManageQueuePermission),
 
@@ -44,6 +45,7 @@ func GetPermissionsForRole(role Role) []string {
 		return []string{
 			string(ManageLeaguePermission),
 			string(ManageTeamPermission),
+			string(ViewResultPermission),
 			string(ManageQueuePermission),
 		}
 	case UserRole:

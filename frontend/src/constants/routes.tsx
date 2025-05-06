@@ -65,14 +65,14 @@ export const ROUTES = [
     path: ROUTE_PATHS.RESULTS,
     element: <ResultsPage />,
     icon: <HourglassBottomIcon />,
-    permission: Permission.ManageResult,
+    permission: Permission.ViewResult,
   },
   {
     label: 'Matchmaking',
     path: ROUTE_PATHS.MATCHMAKING,
     element: <MatchmakingQueuePage />,
     icon: <SportsEsportsIcon />,
-    permission: Permission.LoggedIn,
+    permission: Permission.ManageQueue,
   },
   {
     label: 'Unauthorized',
