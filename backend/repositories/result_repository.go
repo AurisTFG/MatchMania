@@ -31,6 +31,7 @@ func (r *resultRepository) GetAll() ([]models.Result, error) {
 		Joins("Team").
 		Joins("OpponentTeam").
 		Joins("League").
+		Order("end_date DESC").
 		Find(&results)
 
 	return results, result.Error

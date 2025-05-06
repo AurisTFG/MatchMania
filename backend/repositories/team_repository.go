@@ -15,6 +15,7 @@ type TeamRepository interface {
 	FindByIdAndLeagueID(uuid.UUID, uuid.UUID) (*models.Team, error)
 	Create(*models.Team) error
 	Update(*models.Team, *models.Team) error
+	Save(*models.Team) error
 	Delete(*models.Team) error
 	ClearAssociations(*models.Team, []string) error
 }
@@ -83,6 +84,12 @@ func (r *teamRepository) Update(currentTeam *models.Team, updatedTeam *models.Te
 	result := r.db.
 		Model(currentTeam).
 		Updates(updatedTeam)
+
+	return result.Error
+}
+
+func (r *teamRepository) Save(team *models.Team) error {
+	result := r.db.Save(team)
 
 	return result.Error
 }
