@@ -7,13 +7,6 @@ import { Permission } from 'types/enums/permission';
 import { getStartOfDay } from 'utils/dateUtils';
 import BaseLeagueMutateDialog from './BaseLeagueMutateDialog';
 
-const initialLeague: CreateLeagueDto = {
-  name: '',
-  startDate: getStartOfDay(),
-  endDate: getStartOfDay(7),
-  trackIds: [],
-};
-
 function CreateLeagueButton() {
   const [open, setOpen] = useState(false);
 
@@ -21,6 +14,13 @@ function CreateLeagueButton() {
 
   const handleSubmitAsync = async (payload: CreateLeagueDto) => {
     await createLeagueAsync(payload);
+  };
+
+  const initialLeague: CreateLeagueDto = {
+    name: '',
+    startDate: getStartOfDay(),
+    endDate: getStartOfDay(7),
+    trackIds: [],
   };
 
   return (
