@@ -21,7 +21,12 @@ func SeedLeagues(db *config.DB, env *config.Env) error {
 	}
 
 	var userId string
-	if err := db.Model(&models.User{}).Select("id").Limit(1).Scan(&userId).Error; err != nil {
+	if err := db.
+		Model(&models.User{}).
+		Order("username ASC").
+		Select("id").
+		Limit(1).
+		Scan(&userId).Error; err != nil {
 		return errors.New("no users found in the database")
 	}
 
