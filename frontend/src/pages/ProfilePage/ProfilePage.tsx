@@ -1,6 +1,7 @@
 import {
   Edit as EditIcon,
   Mail as MailIcon,
+  ShieldOutlined,
   SportsEsports as SportsEsportsIcon,
 } from '@mui/icons-material';
 import {
@@ -13,6 +14,7 @@ import {
   Divider,
   Grid,
   Stack,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
@@ -133,16 +135,20 @@ function ProfilePage() {
                   sx={{ mt: 2 }}
                 >
                   {user.roles.map((role) => (
-                    <Chip
+                    <Tooltip
                       key={role.name}
-                      label={role.name}
-                      color="primary"
-                      variant="filled"
-                    />
+                      title="User Role"
+                    >
+                      <Chip
+                        icon={<ShieldOutlined fontSize="small" />}
+                        label={role.name}
+                        color="primary"
+                        variant="filled"
+                      />
+                    </Tooltip>
                   ))}
                 </Stack>
               )}
-
               <Stack
                 direction="row"
                 alignItems="center"
