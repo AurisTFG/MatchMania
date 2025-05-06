@@ -6,8 +6,6 @@ import {
   Paper,
   Typography,
 } from '@mui/material';
-import { useEffect } from 'react';
-import { useFetchLeagues } from 'api/hooks/leaguesHooks';
 import {
   useCheckMatchStatus,
   useGetQueueTeamsCount,
@@ -15,10 +13,13 @@ import {
   useLeaveQueue,
 } from 'api/hooks/matchmakingHooks';
 import { useFetchTeams } from 'api/hooks/teamsHooks';
+import withAuth from 'hocs/withAuth';
 import { useAppForm } from 'hooks/form/useAppForm';
+import { useAuth } from 'providers/AuthProvider';
+import { Permission } from 'types/enums/permission';
 import { queueDtoValidator } from 'validators/matchmaking/queueDtoValidator';
 
-export default function MatchmakingQueuePage() {
+function MatchmakingQueuePage() {
   const form = useAppForm({
     defaultValues: {
       leagueId: '',
@@ -40,18 +41,24 @@ export default function MatchmakingQueuePage() {
   const leagueId = form.getFieldValue('leagueId');
   const teamId = form.getFieldValue('teamId');
 
-  const { data: leagues, isLoading: leaguesLoading } = useFetchLeagues();
-  const {
-    data: teams,
-    isLoading: isTeamsLoading,
-    refetch: refetchTeams,
-  } = useFetchTeams();
+  const { user } = useAuth();
 
-  useEffect(() => {
-    if (leagueId) {
-      void refetchTeams();
-    }
-  }, [leagueId, refetchTeams]);
+  const { data: teams, isLoading: isTeamsLoading } = useFetchTeams();
+
+  const myTeams =
+    teams?.filter((team) =>
+      team.players.some((player) => player.id === user?.id),
+    ) ?? [];
+  const myTeamOptions = myTeams.map((team) => ({
+    key: team.id,
+    value: team.name,
+  }));
+
+  const myTeamLeagues = myTeams.flatMap((team) => team.leagues);
+  const myTeamLeaguesOptions = myTeamLeagues.map((league) => ({
+    key: league.id,
+    value: league.name,
+  }));
 
   const { data: teamsCount, isLoading: isLoadingTeamsCount } =
     useGetQueueTeamsCount(leagueId);
@@ -71,7 +78,7 @@ export default function MatchmakingQueuePage() {
     await form.handleSubmit({ isJoining: false });
   };
 
-  if (leaguesLoading || isTeamsLoading) {
+  if (isTeamsLoading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', mt: 6 }}>
         <CircularProgress />
@@ -105,31 +112,23 @@ export default function MatchmakingQueuePage() {
               void form.handleSubmit();
             }}
           >
-            <form.AppField name="leagueId">
+            <form.AppField name="teamId">
               {(field) => (
                 <field.Select
-                  label="Select League"
-                  options={(leagues ?? []).map((league) => ({
-                    key: league.id,
-                    value: league.name,
-                  }))}
+                  label="Select Team"
+                  options={myTeamOptions}
                 />
               )}
             </form.AppField>
 
-            <Box sx={{ mt: 2 }}>
-              <form.AppField name="teamId">
-                {(field) => (
-                  <field.Select
-                    label="Select Team"
-                    options={(teams ?? []).map((team) => ({
-                      key: team.id,
-                      value: team.name,
-                    }))}
-                  />
-                )}
-              </form.AppField>
-            </Box>
+            <form.AppField name="leagueId">
+              {(field) => (
+                <field.Select
+                  label="Select League"
+                  options={myTeamLeaguesOptions}
+                />
+              )}
+            </form.AppField>
           </form>
 
           <Box sx={{ mt: 3, display: 'flex', gap: 2 }}>
@@ -210,3 +209,7 @@ export default function MatchmakingQueuePage() {
     </Container>
   );
 }
+
+export default withAuth(MatchmakingQueuePage, {
+  permission: Permission.ManageQueue,
+});
