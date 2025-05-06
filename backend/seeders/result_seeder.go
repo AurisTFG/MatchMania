@@ -35,12 +35,19 @@ func SeedResults(db *config.DB, env *config.Env) error {
 	}
 
 	var league models.League
-	if err := db.First(&league).Error; err != nil {
+	if err := db.
+		Order("end_date DESC").
+		Find(&league).
+		Error; err != nil {
 		return errors.New("no leagues found in the database")
 	}
 
 	var teams []models.Team
-	if err := db.Limit(2).Find(&teams).Error; err != nil {
+	if err := db.
+		Order("elo DESC").
+		Limit(2).
+		Find(&teams).
+		Error; err != nil {
 		return errors.New("no teams found in the database")
 	}
 

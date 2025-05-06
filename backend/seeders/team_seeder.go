@@ -25,7 +25,8 @@ func SeedTeams(db *config.DB, env *config.Env) error {
 		Order("username ASC").
 		Select("id").
 		Limit(1).
-		Scan(&userId).Error; err != nil {
+		Scan(&userId).
+		Error; err != nil {
 		return errors.New("no users found in the database")
 	}
 	parsedUserId, err := uuid.Parse(userId)
@@ -34,14 +35,17 @@ func SeedTeams(db *config.DB, env *config.Env) error {
 	}
 
 	var leagues []models.League
-	if err := db.First(&leagues).Error; err != nil {
+	if err := db.
+		Order("end_date DESC").
+		First(&leagues).
+		Error; err != nil {
 		return errors.New("no leagues found in the database")
 	}
 
 	teams := []models.Team{
-		{UserId: parsedUserId, Name: "BIG CLAN", Leagues: leagues, Elo: 1123},
-		{UserId: parsedUserId, Name: "Astralis", Leagues: leagues, Elo: 1245},
-		{UserId: parsedUserId, Name: "Natus Vincere", Leagues: leagues, Elo: 182},
+		{UserId: parsedUserId, Name: "BIG CLAN", Leagues: leagues, Elo: 999},
+		{UserId: parsedUserId, Name: "Astralis", Leagues: leagues, Elo: 967},
+		{UserId: parsedUserId, Name: "Natus Vincere", Leagues: leagues, Elo: 1245},
 		{UserId: parsedUserId, Name: "G2 Esports", Leagues: leagues, Elo: 945},
 		{UserId: parsedUserId, Name: "Team Liquid", Leagues: leagues, Elo: 885},
 		{UserId: parsedUserId, Name: "FaZe Clan", Leagues: leagues, Elo: 812},
