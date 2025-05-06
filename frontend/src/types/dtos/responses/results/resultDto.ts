@@ -10,6 +10,8 @@ export type ResultDto = {
   opponentScore: number;
   eloDiff: number;
   opponentEloDiff: number;
+  newElo: number;
+  newOpponentElo: number;
 
   league: LeagueMinimalDto;
   team: TeamMinimalDto;
