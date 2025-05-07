@@ -28,6 +28,8 @@ function UpdateResultButton({ result }: UpdateResultButtonProps) {
     leagueId: result.league.id,
     teamId: result.team.id,
     opponentTeamId: result.opponentTeam.id,
+    score: result.score.toString(),
+    opponentScore: result.opponentScore.toString(),
   } as UpdateResultDto;
 
   return (
