@@ -2,7 +2,6 @@ package services
 
 import (
 	"MatchManiaAPI/constants"
-	"fmt"
 	"math"
 )
 
@@ -17,7 +16,10 @@ func NewEloService() EloService {
 }
 
 func (s *eloService) CalculateElo(eloA, eloB, scoreA, scoreB uint) (uint, uint) {
-	fmt.Printf("eloA: %d, eloB: %d, scoreA: %d, scoreB: %d\n", eloA, eloB, scoreA, scoreB)
+	if eloA == 0 && eloB == 0 {
+		return eloA, eloB
+	}
+
 	expectedScoreA := expectedScore(eloA, eloB)
 	expectedScoreB := expectedScore(eloB, eloA)
 
