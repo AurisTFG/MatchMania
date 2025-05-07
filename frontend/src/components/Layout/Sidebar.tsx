@@ -8,6 +8,7 @@ import {
   ListItemText,
   Stack,
   Toolbar,
+  Tooltip,
   Typography,
   useTheme,
 } from '@mui/material';
@@ -104,10 +105,10 @@ function Sidebar() {
       </Box>
       <Stack
         direction="row"
+        alignItems="center"
         sx={{
           p: 2,
           gap: 1,
-          alignItems: 'center',
           borderTop: '1px solid',
           borderColor: 'divider',
         }}
@@ -117,21 +118,39 @@ function Sidebar() {
           name={user?.username}
           size={36}
         />
-        <Box sx={{ mr: 'auto' }}>
+
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            flexGrow: 1,
+            minWidth: 0,
+          }}
+        >
           <Typography
             variant="body2"
             sx={{ fontWeight: 500, lineHeight: '16px' }}
           >
             {user?.username ?? 'Guest'}
           </Typography>
-          <Typography
-            variant="caption"
-            sx={{ color: 'text.secondary' }}
-          >
-            {user?.email ?? 'Not logged in'}
-          </Typography>
+          <Tooltip title={user?.email ?? 'Not logged in'}>
+            <Typography
+              variant="caption"
+              noWrap
+              sx={{
+                color: 'text.secondary',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
+              {user?.email ?? 'Not logged in'}
+            </Typography>
+          </Tooltip>
         </Box>
-        <OptionsMenu />
+
+        <Box sx={{ flexShrink: 0 }}>
+          <OptionsMenu />
+        </Box>
       </Stack>
     </Drawer>
   );
