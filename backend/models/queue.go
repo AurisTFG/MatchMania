@@ -8,6 +8,6 @@ type Queue struct {
 	GameMode string    `gorm:"not null"`
 	LeagueId uuid.UUID `gorm:"not null"`
 
-	League     League
-	QueueTeams []QueueTeam
+	League League
+	Teams  []Team
 }

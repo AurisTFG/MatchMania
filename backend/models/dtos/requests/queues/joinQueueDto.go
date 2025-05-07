@@ -1,4 +1,4 @@
-package matchmaking
+package queues
 
 import "github.com/google/uuid"
 
