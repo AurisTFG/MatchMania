@@ -71,6 +71,7 @@ func (w *matchmakingWorker) tick() error {
 
 			match := &models.Match{
 				LeagueId: queue.League.Id,
+				GameMode: queue.GameMode,
 				Teams:    []models.Team{teamA, teamB},
 			}
 
