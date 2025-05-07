@@ -1,10 +1,10 @@
 package constants
 
 const (
-	TrackmaniaAPIBaseURL = "https://api.trackmania.com"
+	TrackmaniaOAuthBaseURL = "https://api.trackmania.com/"
 
-	TrackmaniaOAuthURL          = TrackmaniaAPIBaseURL + "/oauth/authorize"
-	TrackmaniaOAuthTokenURL     = TrackmaniaAPIBaseURL + "/api/access_token"
-	TrackmaniaOAuthUserURL      = TrackmaniaAPIBaseURL + "/api/user"
-	TrackmaniaOAuthFavoritesURL = TrackmaniaAPIBaseURL + "/api/user/maps/favorite"
+	TrackmaniaOAuthURL          = TrackmaniaOAuthBaseURL + "oauth/authorize"
+	TrackmaniaOAuthTokenURL     = TrackmaniaOAuthBaseURL + "api/access_token"
+	TrackmaniaOAuthUserURL      = TrackmaniaOAuthBaseURL + "api/user"
+	TrackmaniaOAuthFavoritesURL = TrackmaniaOAuthBaseURL + "api/user/maps/favorite"
 )
