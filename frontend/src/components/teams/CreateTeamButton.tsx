@@ -17,7 +17,7 @@ function CreateTeamButton() {
 
   const initialTeam: CreateTeamDto = {
     name: '',
-    logoUrl: '',
+    logoUrl: null,
     leagueIds: [],
     playerIds: [],
   };
