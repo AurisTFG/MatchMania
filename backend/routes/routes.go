@@ -64,20 +64,17 @@ func SetupRoutes(
 
 		matchmaking := v1.Group("/matchmaking")
 		{
-			queue := matchmaking.Group("/queue")
+			queues := matchmaking.Group("/queues")
 			{
-				queue.POST("/join", requirePerm(enums.ManageQueuePermission), c.MatchmakingController.JoinQueue)
-				queue.POST("/leave", requirePerm(enums.ManageQueuePermission), c.MatchmakingController.LeaveQueue)
-				queue.GET(
-					"/teams-count/:leagueId",
-					requirePerm(enums.LoggedInPermission),
-					c.MatchmakingController.GetQueueTeamsCount,
-				)
-				queue.GET(
-					"/status/:teamId",
-					requirePerm(enums.ManageQueuePermission),
-					c.MatchmakingController.CheckMatchStatus,
-				)
+				queues.GET("", requirePerm(enums.LoggedInPermission), c.QueueController.GetAllQueues)
+				queues.POST("/join", requirePerm(enums.ManageQueuePermission), c.QueueController.JoinQueue)
+				queues.POST("/leave", requirePerm(enums.ManageQueuePermission), c.QueueController.LeaveQueue)
+			}
+
+			matches := matchmaking.Group("/matches")
+			{
+				matches.GET("", requirePerm(enums.LoggedInPermission), c.MatchController.GetAllMatches)
+				matches.POST("/end", requirePerm(enums.ManageQueuePermission), c.MatchController.EndMatch)
 			}
 		}
 

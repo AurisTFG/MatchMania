@@ -2,11 +2,23 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import ENDPOINTS from 'constants/endpoints';
 import QUERY_KEYS from 'constants/queryKeys';
-import { JoinQueueDto } from 'types/dtos/requests/matchmaking/joinQueueDto';
-import { LeaveQueueDto } from 'types/dtos/requests/matchmaking/leaveQueueDto';
-import { MatchStatusDto } from 'types/dtos/responses/matchmaking/matchStatusDto';
-import { QueueTeamsCountDto } from 'types/dtos/responses/matchmaking/queueTeamsCountDto';
+import { JoinQueueDto } from 'types/dtos/requests/queues/joinQueueDto';
+import { LeaveQueueDto } from 'types/dtos/requests/queues/leaveQueueDto';
+import { QueueDto } from 'types/dtos/responses/queues/queueDto';
 import { getRequest, postRequest } from '../httpRequests';
+
+export function useFetchQueues() {
+  return useQuery({
+    queryKey: QUERY_KEYS.MATCHMAKING.QUEUES.ALL,
+    queryFn: () =>
+      getRequest<QueueDto[]>({
+        url: ENDPOINTS.MATCHMAKING.QUEUES.ROOT,
+      }),
+    staleTime: 0,
+    gcTime: 0,
+    refetchInterval: 5000, // 5 seconds
+  });
+}
 
 export const useJoinQueue = () => {
   const queryClient = useQueryClient();
@@ -14,7 +26,7 @@ export const useJoinQueue = () => {
   return useMutation({
     mutationFn: (payload: JoinQueueDto) =>
       postRequest({
-        url: ENDPOINTS.MATCHMAKING.JOIN_QUEUE,
+        url: ENDPOINTS.MATCHMAKING.QUEUES.JOIN,
         body: payload,
       }),
     onSuccess: async () => {
@@ -33,7 +45,7 @@ export const useLeaveQueue = () => {
   return useMutation({
     mutationFn: (payload: LeaveQueueDto) =>
       postRequest({
-        url: ENDPOINTS.MATCHMAKING.LEAVE_QUEUE,
+        url: ENDPOINTS.MATCHMAKING.QUEUES.LEAVE,
         body: payload,
       }),
     onSuccess: async () => {
@@ -45,23 +57,3 @@ export const useLeaveQueue = () => {
     },
   });
 };
-
-export const useGetQueueTeamsCount = (leagueId: string) =>
-  useQuery({
-    queryKey: QUERY_KEYS.MATCHMAKING.QUEUE_TEAMS_COUNT(leagueId),
-    queryFn: () =>
-      getRequest<QueueTeamsCountDto>({
-        url: ENDPOINTS.MATCHMAKING.GET_QUEUED_TEAMS_COUNT(leagueId),
-      }),
-    enabled: !!leagueId,
-  });
-
-export const useCheckMatchStatus = (teamId: string) =>
-  useQuery({
-    queryKey: QUERY_KEYS.MATCHMAKING.CHECK_MATCH_STATUS(teamId),
-    queryFn: () =>
-      getRequest<MatchStatusDto>({
-        url: ENDPOINTS.MATCHMAKING.GET_QUEUE_STATUS(teamId),
-      }),
-    enabled: !!teamId,
-  });

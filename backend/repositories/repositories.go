@@ -12,9 +12,11 @@ type Repositories struct {
 	ResultRepository               ResultRepository
 	TrackmaniaOAuthStateRepository TrackmaniaOAuthStateRepository
 	TrackmaniaTrackRepository      TrackmaniaTrackRepository
+	QueueRepository                QueueRepository
+	MatchRepository                MatchRepository
 }
 
-func SetupRepositories(
+func NewRepositories(
 	db *config.DB,
 ) *Repositories {
 	return &Repositories{
@@ -27,5 +29,7 @@ func SetupRepositories(
 		ResultRepository:               NewResultRepository(db),
 		TrackmaniaOAuthStateRepository: NewTrackmaniaOAuthStateRepository(db),
 		TrackmaniaTrackRepository:      NewTrackmaniaTrackRepository(db),
+		QueueRepository:                NewQueueRepository(db),
+		MatchRepository:                NewMatchRepository(db),
 	}
 }

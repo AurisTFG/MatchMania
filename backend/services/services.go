@@ -14,24 +14,35 @@ type Services struct {
 	ResultService          ResultService
 	TrackmaniaOAuthService TrackmaniaOAuthService
 	EloService             EloService
-	MatchmakingService     MatchmakingService
+	QueueService           QueueService
+	MatchService           MatchService
 }
 
-func SetupServices(
+func NewServices(
 	env *config.Env,
 	repos *repositories.Repositories,
 ) *Services {
 	eloService := NewEloService()
+	resultService := NewResultService(
+		repos.ResultRepository,
+		repos.TeamRepository,
+		eloService,
+	)
 
 	return &Services{
-		UserService:            NewUserService(repos.UserRepository, repos.RoleRepository, repos.TrackmaniaTrackRepository),
+		UserService: NewUserService(
+			repos.UserRepository,
+			repos.RoleRepository,
+			repos.TrackmaniaTrackRepository,
+		),
 		PlayerService:          NewPlayerService(repos.PlayerRepository),
 		AuthService:            NewAuthService(repos.SessionRepository, repos.UserRepository, env),
 		LeagueService:          NewLeagueService(repos.LeagueRepository),
 		TeamService:            NewTeamService(repos.TeamRepository),
-		ResultService:          NewResultService(repos.ResultRepository, repos.TeamRepository, eloService),
+		ResultService:          resultService,
 		TrackmaniaOAuthService: NewTrackmaniaOAuthService(repos.TrackmaniaOAuthStateRepository, env),
 		EloService:             eloService,
-		MatchmakingService:     NewMatchmakingService(),
+		QueueService:           NewQueueService(repos.QueueRepository, repos.TeamRepository),
+		MatchService:           NewMatchService(repos.MatchRepository, resultService),
 	}
 }

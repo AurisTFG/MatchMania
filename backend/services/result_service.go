@@ -1,3 +1,4 @@
+//nolint:gosec // G115: suppress uint to int conversion warning for this file
 package services
 
 import (
@@ -13,7 +14,7 @@ import (
 type ResultService interface {
 	GetAllResults() ([]models.Result, error)
 	GetResultById(uuid.UUID) (*models.Result, error)
-	CreateResult(*requests.CreateResultDto, uuid.UUID) error
+	CreateResult(*requests.CreateResultDto, *uuid.UUID) error
 	UpdateResult(*models.Result, *requests.UpdateResultDto) error
 	DeleteResult(*models.Result) error
 }
@@ -46,7 +47,7 @@ func (s *resultService) GetResultById(resultId uuid.UUID) (*models.Result, error
 
 func (s *resultService) CreateResult(
 	resultDto *requests.CreateResultDto,
-	userId uuid.UUID,
+	userId *uuid.UUID,
 ) error {
 	newResult := utils.MustCopy[models.Result](resultDto)
 
@@ -70,7 +71,7 @@ func (s *resultService) CreateResult(
 		return err
 	}
 
-	newElo, newOpperrentElo := s.eloService.CalculateElo(
+	newElo, newOpponentElo := s.eloService.CalculateElo(
 		team.Elo,
 		opponentTeam.Elo,
 		uint(scoreUint),
@@ -78,16 +79,16 @@ func (s *resultService) CreateResult(
 	)
 
 	eloDiff := int(newElo) - int(team.Elo)
-	opponentEloDiff := int(newOpperrentElo) - int(opponentTeam.Elo)
+	opponentEloDiff := int(newOpponentElo) - int(opponentTeam.Elo)
 
 	team.Elo = newElo
-	opponentTeam.Elo = newOpperrentElo
+	opponentTeam.Elo = newOpponentElo
 
-	if err := s.teamRepository.Save(team); err != nil {
+	if err = s.teamRepository.Save(team); err != nil {
 		return err
 	}
 
-	if err := s.teamRepository.Save(opponentTeam); err != nil {
+	if err = s.teamRepository.Save(opponentTeam); err != nil {
 		return err
 	}
 
@@ -95,7 +96,9 @@ func (s *resultService) CreateResult(
 	newResult.OpponentScore = uint(opponentScoreUint)
 	newResult.EloDiff = eloDiff
 	newResult.OpponentEloDiff = opponentEloDiff
-	newResult.UserId = &userId
+	newResult.NewElo = newElo
+	newResult.NewOpponentElo = newOpponentElo
+	newResult.UserId = userId
 
 	return s.resultRepository.Create(newResult)
 }

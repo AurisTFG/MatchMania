@@ -12,10 +12,11 @@ type Controllers struct {
 	TeamController            TeamController
 	ResultController          ResultController
 	TrackmaniaOAuthController TrackmaniaOAuthController
-	MatchmakingController     MatchmakingController
+	QueueController           QueueController
+	MatchController           MatchController
 }
 
-func SetupControllers(
+func NewControllers(
 	services *services.Services,
 ) *Controllers {
 	return &Controllers{
@@ -26,10 +27,7 @@ func SetupControllers(
 		TeamController:            NewTeamController(services.LeagueService, services.TeamService),
 		ResultController:          NewResultController(services.TeamService, services.ResultService),
 		TrackmaniaOAuthController: NewTrackmaniaOAuthController(services.TrackmaniaOAuthService, services.UserService),
-		MatchmakingController: NewMatchmakingController(
-			services.MatchmakingService,
-			services.UserService,
-			services.TeamService,
-		),
+		QueueController:           NewQueueController(services.QueueService),
+		MatchController:           NewMatchController(services.MatchService),
 	}
 }

@@ -40,18 +40,16 @@ const QUERY_KEYS = {
 
   MATCHMAKING: {
     ROOT: ['matchmaking'],
-    QUEUE_TEAMS_COUNT: (leagueId: string) => [
-      'matchmaking',
-      'queue',
-      'teamsCount',
-      leagueId,
-    ],
-    CHECK_MATCH_STATUS: (teamId: string) => [
-      'matchmaking',
-      'queue',
-      'status',
-      teamId,
-    ],
+    QUEUES: {
+      ROOT: ['matchmaking', 'queues'],
+      ALL: ['matchmaking', 'queues', 'all'],
+      BY_ID: (id: string) => ['matchmaking', 'queues', 'byId', id],
+    },
+    MATCHES: {
+      ROOT: ['matchmaking', 'matches'],
+      ALL: ['matchmaking', 'matches', 'all'],
+      BY_ID: (id: string) => ['matchmaking', 'matches', 'byId', id],
+    },
   },
 };
 
