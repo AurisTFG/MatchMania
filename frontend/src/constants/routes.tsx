@@ -7,7 +7,7 @@ import ForbiddenPage from 'pages/ForbiddenPage';
 import HomePage from 'pages/HomePage';
 import LeaguesPage from 'pages/LeaguesPage';
 import LoginPage from 'pages/LoginPage';
-import MatchmakingQueuePage from 'pages/MatchmakingQueuePage';
+import MatchmakingQueuePage from 'pages/MatchmakingPage';
 import NotFoundPage from 'pages/NotFoundPage';
 import ProfilePage from 'pages/ProfilePage';
 import ResultsPage from 'pages/ResultsPage';
