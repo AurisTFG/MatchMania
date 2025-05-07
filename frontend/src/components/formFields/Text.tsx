@@ -13,7 +13,7 @@ export default function Text({
   type = 'text',
   placeholder,
 }: TextFieldProps) {
-  const field = useFieldContext<string>();
+  const field = useFieldContext<string | null>();
 
   const errorMessages = field.state.meta.errors.map(
     (error: { message: string }) => error.message,
@@ -25,7 +25,7 @@ export default function Text({
         label={label}
         placeholder={placeholder ?? label}
         type={type}
-        value={field.state.value}
+        value={field.state.value ?? ''}
         onChange={(e) => {
           field.handleChange(e.target.value);
         }}
