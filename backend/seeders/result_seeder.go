@@ -35,7 +35,7 @@ func SeedResults(db *config.DB, env *config.Env) error {
 	}
 
 	var league models.League
-	if err := db.
+	if err = db.
 		Order("end_date DESC").
 		Find(&league).
 		Error; err != nil {
@@ -43,7 +43,7 @@ func SeedResults(db *config.DB, env *config.Env) error {
 	}
 
 	var teams []models.Team
-	if err := db.
+	if err = db.
 		Order("elo DESC").
 		Limit(2).
 		Find(&teams).
@@ -152,7 +152,7 @@ func SeedResults(db *config.DB, env *config.Env) error {
 		},
 	}
 
-	if err := db.Create(&results).Error; err != nil {
+	if err = db.Create(&results).Error; err != nil {
 		return err
 	}
 

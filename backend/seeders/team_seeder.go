@@ -35,7 +35,7 @@ func SeedTeams(db *config.DB, env *config.Env) error {
 	}
 
 	var leagues []models.League
-	if err := db.
+	if err = db.
 		Order("end_date DESC").
 		First(&leagues).
 		Error; err != nil {
@@ -52,7 +52,7 @@ func SeedTeams(db *config.DB, env *config.Env) error {
 		{UserId: parsedUserId, Name: "Fnatic", Leagues: leagues, Elo: 789},
 	}
 
-	if err := db.Create(&teams).Error; err != nil {
+	if err = db.Create(&teams).Error; err != nil {
 		return err
 	}
 
