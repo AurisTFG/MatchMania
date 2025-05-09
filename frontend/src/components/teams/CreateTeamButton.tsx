@@ -6,13 +6,6 @@ import { CreateTeamDto } from 'types/dtos/requests/teams/createTeamDto';
 import { Permission } from 'types/enums/permission';
 import BaseTeamMutateDialog from './BaseTeamMutateDialog';
 
-const initialTeam: CreateTeamDto = {
-  name: '',
-  logoUrl: '',
-  leagueIds: [],
-  playerIds: [],
-};
-
 function CreateTeamButton() {
   const [open, setOpen] = useState(false);
 
@@ -20,6 +13,13 @@ function CreateTeamButton() {
 
   const handleSubmitAsync = async (payload: CreateTeamDto) => {
     await createTeamAsync(payload);
+  };
+
+  const initialTeam: CreateTeamDto = {
+    name: '',
+    logoUrl: null,
+    leagueIds: [],
+    playerIds: [],
   };
 
   return (

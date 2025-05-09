@@ -1,6 +1,7 @@
 export enum Permission {
   ManageLeague = 'LeaguesManage',
   ManageTeam = 'TeamsManage',
+  ViewResult = 'ResultsView',
   ManageResult = 'ResultsManage',
   ManageUser = 'UsersManage',
   ManageRole = 'RolesManage',

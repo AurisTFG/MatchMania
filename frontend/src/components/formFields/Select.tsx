@@ -5,6 +5,7 @@ import FieldErrorText from './FieldErrorText';
 
 type SelectFieldProps = {
   label: string;
+  disable?: boolean;
   options: { key: string; value: string }[];
   notSelectedOption?: { key: string; value: string };
   renderOptionText?: (option: {
@@ -15,6 +16,7 @@ type SelectFieldProps = {
 
 export default function Select({
   label,
+  disable = false,
   options,
   notSelectedOption = SELECT_OPTIONS.NOT_SELECTED,
   renderOptionText,
@@ -37,6 +39,7 @@ export default function Select({
   return (
     <>
       <Autocomplete
+        disabled={disable}
         options={optionsWithEmpty}
         getOptionLabel={(option) => option.value}
         isOptionEqualToValue={(option, value) => option.key === value.key}
@@ -62,6 +65,24 @@ export default function Select({
             {renderOptionText ? renderOptionText(option) : option.value}
           </li>
         )}
+        sx={{
+          '& .MuiOutlinedInput-root.Mui-disabled': {
+            backgroundColor: (theme) =>
+              theme.palette.mode === 'dark'
+                ? 'rgba(255,255,255,0.05)'
+                : 'rgba(0,0,0,0.05)',
+            color: (theme) =>
+              theme.palette.mode === 'dark'
+                ? 'rgba(255,255,255,0.4)'
+                : 'rgba(0,0,0,0.4)',
+            '& .MuiOutlinedInput-notchedOutline': {
+              borderColor: (theme) =>
+                theme.palette.mode === 'dark'
+                  ? 'rgba(255,255,255,0.2)'
+                  : 'rgba(0,0,0,0.2)',
+            },
+          },
+        }}
       />
 
       <FieldErrorText

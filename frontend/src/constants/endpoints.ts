@@ -39,11 +39,18 @@ const ENDPOINTS = {
   },
 
   MATCHMAKING: {
-    JOIN_QUEUE: `matchmaking/queue/join`,
-    LEAVE_QUEUE: `matchmaking/queue/leave`,
-    GET_QUEUED_TEAMS_COUNT: (leagueId: string) =>
-      `matchmaking/queue/teams-count/${leagueId}`,
-    GET_QUEUE_STATUS: (teamId: string) => `matchmaking/queue/status/${teamId}`,
+    QUEUES: {
+      ROOT: `matchmaking/queues`,
+      BY_ID: (id: string) => `matchmaking/queues/${id}`,
+      JOIN: `matchmaking/queues/join`,
+      LEAVE: `matchmaking/queues/leave`,
+    },
+
+    MATCHES: {
+      ROOT: `matchmaking/matches`,
+      BY_ID: (id: string) => `matchmaking/matches/${id}`,
+      END: `matchmaking/matches/end`,
+    },
   },
 };
 

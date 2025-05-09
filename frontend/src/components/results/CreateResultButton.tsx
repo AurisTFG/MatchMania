@@ -7,16 +7,6 @@ import { Permission } from 'types/enums/permission';
 import { getToday } from 'utils/dateUtils';
 import BaseResultMutateDialog from './BaseResultMutateDialog';
 
-const initialResult: CreateResultDto = {
-  leagueId: '',
-  startDate: getToday(),
-  endDate: getToday(),
-  teamId: '',
-  opponentTeamId: '',
-  score: '',
-  opponentScore: '',
-};
-
 function CreateResultButton() {
   const [open, setOpen] = useState(false);
 
@@ -24,6 +14,16 @@ function CreateResultButton() {
 
   const handleSubmitAsync = async (payload: CreateResultDto) => {
     await createResultAsync(payload);
+  };
+
+  const initialResult: CreateResultDto = {
+    leagueId: '',
+    startDate: getToday(),
+    endDate: getToday(),
+    teamId: '',
+    opponentTeamId: '',
+    score: '',
+    opponentScore: '',
   };
 
   return (

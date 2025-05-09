@@ -47,6 +47,10 @@ export function useCreateResult() {
       await queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.RESULTS.ALL,
       });
+
+      await queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.TEAMS.ALL,
+      });
     },
   });
 }

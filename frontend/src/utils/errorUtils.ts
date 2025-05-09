@@ -2,9 +2,9 @@ import { AxiosError } from 'axios';
 import { ErrorDto } from 'types/dtos/responses/errors/errorDto';
 
 export const getErrorMessageFromAxiosError = (error: AxiosError): string => {
-  const errorDto = error.response?.data as ErrorDto;
+  const errorDto = error.response?.data as ErrorDto | undefined;
 
-  if (errorDto.message) {
+  if (errorDto?.message) {
     return errorDto.message;
   }
 
@@ -12,5 +12,5 @@ export const getErrorMessageFromAxiosError = (error: AxiosError): string => {
     return `Unhandled error. Status code: ${String(error.response.status)}`;
   }
 
-  return `Unexpected error format: ${JSON.stringify(error.response)}`;
+  return `Unexpected error: ${JSON.stringify(error.message)}`;
 };

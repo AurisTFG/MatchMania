@@ -42,6 +42,10 @@ export default function withAuth<P extends object>(
       return null;
     }
 
+    if (permission === Permission.LoggedOut && !isLoggedIn) {
+      return <ComponentWithErrorBoundary {...props} />;
+    }
+
     if (!isLoggedIn) {
       if (redirect) {
         return <Navigate to={ROUTE_PATHS.UNAUTHORIZED} />;

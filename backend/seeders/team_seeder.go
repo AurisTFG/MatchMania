@@ -4,6 +4,9 @@ import (
 	"MatchManiaAPI/config"
 	"MatchManiaAPI/models"
 	"errors"
+	"fmt"
+
+	"github.com/google/uuid"
 )
 
 func SeedTeams(db *config.DB, env *config.Env) error {
@@ -16,27 +19,40 @@ func SeedTeams(db *config.DB, env *config.Env) error {
 		return nil
 	}
 
-	var user models.User
-	if err := db.First(&user).Error; err != nil {
+	var userId string
+	if err := db.
+		Model(&models.User{}).
+		Order("username ASC").
+		Select("id").
+		Limit(1).
+		Scan(&userId).
+		Error; err != nil {
 		return errors.New("no users found in the database")
+	}
+	parsedUserId, err := uuid.Parse(userId)
+	if err != nil {
+		return fmt.Errorf("failed to parse user ID: %w", err)
 	}
 
 	var leagues []models.League
-	if err := db.First(&leagues).Error; err != nil {
+	if err = db.
+		Order("end_date DESC").
+		First(&leagues).
+		Error; err != nil {
 		return errors.New("no leagues found in the database")
 	}
 
 	teams := []models.Team{
-		{UserId: user.Id, Name: "BIG CLAN", Leagues: leagues, Elo: 1123},
-		{UserId: user.Id, Name: "Astralis", Leagues: leagues, Elo: 1245},
-		{UserId: user.Id, Name: "Natus Vincere", Leagues: leagues, Elo: 182},
-		{UserId: user.Id, Name: "G2 Esports", Leagues: leagues, Elo: 945},
-		{UserId: user.Id, Name: "Team Liquid", Leagues: leagues, Elo: 885},
-		{UserId: user.Id, Name: "FaZe Clan", Leagues: leagues, Elo: 812},
-		{UserId: user.Id, Name: "Fnatic", Leagues: leagues, Elo: 789},
+		{UserId: parsedUserId, Name: "BIG CLAN", Leagues: leagues, Elo: 999},
+		{UserId: parsedUserId, Name: "Astralis", Leagues: leagues, Elo: 967},
+		{UserId: parsedUserId, Name: "Natus Vincere", Leagues: leagues, Elo: 1245},
+		{UserId: parsedUserId, Name: "G2 Esports", Leagues: leagues, Elo: 945},
+		{UserId: parsedUserId, Name: "Team Liquid", Leagues: leagues, Elo: 885},
+		{UserId: parsedUserId, Name: "FaZe Clan", Leagues: leagues, Elo: 812},
+		{UserId: parsedUserId, Name: "Fnatic", Leagues: leagues, Elo: 789},
 	}
 
-	if err := db.Create(&teams).Error; err != nil {
+	if err = db.Create(&teams).Error; err != nil {
 		return err
 	}
 

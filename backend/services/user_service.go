@@ -4,6 +4,7 @@ import (
 	"MatchManiaAPI/models"
 	requests "MatchManiaAPI/models/dtos/requests/auth"
 	"MatchManiaAPI/models/dtos/responses"
+	"MatchManiaAPI/models/enums"
 	"MatchManiaAPI/repositories"
 	"MatchManiaAPI/utils"
 
@@ -22,56 +23,68 @@ type UserService interface {
 }
 
 type userService struct {
-	repo      repositories.UserRepository
-	trackRepo repositories.TrackmaniaTrackRepository
+	userRepository  repositories.UserRepository
+	roleRepository  repositories.RoleRepository
+	trackRepository repositories.TrackmaniaTrackRepository
 }
 
 func NewUserService(
-	repo repositories.UserRepository,
-	trackRepo repositories.TrackmaniaTrackRepository,
+	userRepository repositories.UserRepository,
+	roleRepository repositories.RoleRepository,
+	trackRepository repositories.TrackmaniaTrackRepository,
 ) UserService {
-	return &userService{repo: repo, trackRepo: trackRepo}
+	return &userService{
+		userRepository:  userRepository,
+		roleRepository:  roleRepository,
+		trackRepository: trackRepository,
+	}
 }
 
 func (s *userService) GetAllUsers() ([]models.User, error) {
-	return s.repo.FindAll()
+	return s.userRepository.FindAll()
 }
 
 func (s *userService) GetUserById(userId uuid.UUID) (*models.User, error) {
-	return s.repo.FindById(userId)
+	return s.userRepository.FindById(userId)
 }
 
 func (s *userService) GetUserByEmail(email string) (*models.User, error) {
-	return s.repo.FindByEmail(email)
+	return s.userRepository.FindByEmail(email)
 }
 
 func (s *userService) GetDistinctPermissionsByUserId(userId uuid.UUID) ([]string, error) {
-	return s.repo.GetDistinctPermissionsByUserId(userId)
+	return s.userRepository.GetDistinctPermissionsByUserId(userId)
 }
 
 func (s *userService) CreateUser(signUpDto *requests.SignupDto) error {
 	newUser := utils.MustCopy[models.User](signUpDto)
 
-	return s.repo.Create(newUser)
+	return s.userRepository.Create(newUser)
 }
 
 func (s *userService) DeleteUser(user *models.User) error {
-	return s.repo.Delete(user)
+	return s.userRepository.Delete(user)
 }
 
 func (s *userService) UpdateUserWithTrackmaniaUser(
 	userId uuid.UUID,
 	trackmaniaUser *responses.TrackmaniaOAuthUserDto,
 ) error {
-	user, err := s.repo.FindById(userId)
+	user, err := s.userRepository.FindById(userId)
+	if err != nil {
+		return err
+	}
+
+	trackmaniaPlayerRole, err := s.roleRepository.GetByName(string(enums.TrackmaniaPlayerRole))
 	if err != nil {
 		return err
 	}
 
 	user.TrackmaniaId = trackmaniaUser.AccountId
 	user.TrackmaniaName = trackmaniaUser.DisplayName
+	user.Roles = append(user.Roles, *trackmaniaPlayerRole)
 
-	if err = s.repo.Save(user); err != nil {
+	if err = s.userRepository.Save(user); err != nil {
 		return err
 	}
 
@@ -84,11 +97,11 @@ func (s *userService) UpdateUserWithTrackmaniaTracks(
 ) error {
 	tracks := utils.MustCopy[[]models.TrackmaniaTrack](tracksDto)
 
-	if err := s.trackRepo.DeleteAllTracksByUserId(userId); err != nil {
+	if err := s.trackRepository.DeleteAllTracksByUserId(userId); err != nil {
 		return err
 	}
 
-	if err := s.trackRepo.InsertAllTracksForUser(userId, *tracks); err != nil {
+	if err := s.trackRepository.InsertAllTracksForUser(userId, *tracks); err != nil {
 		return err
 	}
 

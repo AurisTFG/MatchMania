@@ -34,6 +34,7 @@ func MigrateDatabase(db *DB) error {
 	db.Exec(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`)
 
 	err := db.AutoMigrate(
+		&models.AppSetting{},
 		&models.User{},
 		&models.Role{},
 		&models.Permission{},
@@ -44,9 +45,7 @@ func MigrateDatabase(db *DB) error {
 		&models.TrackmaniaTrack{},
 		&models.TrackmaniaOauthState{},
 		&models.Match{},
-		&models.MatchTeam{},
 		&models.Queue{},
-		&models.QueueTeam{},
 	)
 	if err != nil {
 		return fmt.Errorf("failed to migrate database: %w", err)

@@ -28,6 +28,10 @@ type Env struct {
 	TrackmaniaOAuthScopes       string `mapstructure:"TRACKMANIA_OAUTH_SCOPES"`
 	TrackmaniaOAuthRedirectURL  string `mapstructure:"TRACKMANIA_OAUTH_REDIRECT_URL"`
 
+	TrackmaniaApiEmail    string `mapstructure:"TRACKMANIA_API_EMAIL"`
+	TrackmaniaApiPassword string `mapstructure:"TRACKMANIA_API_PASSWORD"`
+	TrackmaniaApiClubId   int    `mapstructure:"TRACKMANIA_API_CLUB_ID"`
+
 	UserEmail         string `mapstructure:"USER_EMAIL"`
 	UserPassword      string `mapstructure:"USER_PASSWORD"`
 	ModeratorEmail    string `mapstructure:"MODERATOR_EMAIL"`
@@ -37,7 +41,8 @@ type Env struct {
 }
 
 var (
-	invalidString   = "INVALID"
+	invalidInt      = -1
+	invalidString   = ""
 	invalidDuration = time.Duration(0)
 )
 
@@ -102,6 +107,10 @@ func setDefaults() {
 	viper.SetDefault("TRACKMANIA_OAUTH_SCOPES", invalidString)
 	viper.SetDefault("TRACKMANIA_OAUTH_REDIRECT_URL", invalidString)
 
+	viper.SetDefault("TRACKMANIA_API_EMAIL", invalidString)
+	viper.SetDefault("TRACKMANIA_API_PASSWORD", invalidString)
+	viper.SetDefault("TRACKMANIA_API_CLUB_ID", invalidInt)
+
 	viper.SetDefault("USER_EMAIL", invalidString)
 	viper.SetDefault("USER_PASSWORD", invalidString)
 	viper.SetDefault("MODERATOR_EMAIL", invalidString)
@@ -137,6 +146,12 @@ func (e *Env) Validate() error {
 		e.TrackmaniaOAuthScopes == invalidString ||
 		e.TrackmaniaOAuthRedirectURL == invalidString {
 		return errors.New("missing Trackmania OAuth configuration values")
+	}
+
+	if e.TrackmaniaApiEmail == invalidString ||
+		e.TrackmaniaApiPassword == invalidString ||
+		e.TrackmaniaApiClubId == invalidInt {
+		return errors.New("missing Trackmania API configuration values")
 	}
 
 	if e.IsDev {

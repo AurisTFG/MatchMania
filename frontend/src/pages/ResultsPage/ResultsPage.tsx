@@ -106,15 +106,6 @@ function ResultsPage() {
                   backgroundColor: 'action.hover',
                 },
               }}
-              secondaryAction={
-                <Stack
-                  direction="row"
-                  spacing={1}
-                >
-                  <UpdateResultButton result={result} />
-                  <DeleteResultButton result={result} />
-                </Stack>
-              }
             >
               <Stack
                 direction="row"
@@ -122,12 +113,35 @@ function ResultsPage() {
                 alignItems="center"
                 width="100%"
               >
-                <Typography
-                  variant="h6"
-                  fontWeight={700}
-                >
-                  {`${result.team.name} vs ${result.opponentTeam.name}`}
-                </Typography>
+                <Stack spacing={0.5}>
+                  <Typography
+                    variant="h6"
+                    fontWeight={700}
+                  >
+                    {`${result.team.name} vs ${result.opponentTeam.name}`}
+                  </Typography>
+
+                  <Stack
+                    direction="column"
+                    alignItems="flex-start"
+                  >
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                    >
+                      {dayjs(result.startDate).format('YYYY-MM-DD HH:mm')} -{' '}
+                      {dayjs(result.endDate).format('YYYY-MM-DD HH:mm')}
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                    >
+                      {isUuidEmpty(result.user.id)
+                        ? 'Matchmaking Result'
+                        : `Created by: ${result.user.username}`}
+                    </Typography>
+                  </Stack>
+                </Stack>
 
                 <Stack
                   direction="row"
@@ -142,35 +156,43 @@ function ResultsPage() {
                     >
                       {result.score}
                     </Typography>
-                    <Stack
-                      direction="row"
-                      alignItems="center"
-                      spacing={0.5}
-                    >
-                      {result.eloDiff > 0 ? (
-                        <ArrowUpward
-                          fontSize="small"
-                          sx={{ color: 'success.main' }}
-                        />
-                      ) : result.eloDiff < 0 ? (
-                        <ArrowDownward
-                          fontSize="small"
-                          sx={{ color: 'error.main' }}
-                        />
-                      ) : null}
-                      <Typography
-                        variant="body2"
-                        fontWeight={800}
-                        sx={{
-                          color:
-                            result.eloDiff > 0
-                              ? 'success.main'
-                              : result.eloDiff < 0
-                                ? 'error.main'
-                                : 'text.primary',
-                        }}
+                    <Stack alignItems="center">
+                      <Stack
+                        direction="row"
+                        alignItems="center"
+                        spacing={0.5}
                       >
-                        {Math.abs(result.eloDiff)}
+                        {result.eloDiff > 0 ? (
+                          <ArrowUpward
+                            fontSize="small"
+                            sx={{ color: 'success.main' }}
+                          />
+                        ) : result.eloDiff < 0 ? (
+                          <ArrowDownward
+                            fontSize="small"
+                            sx={{ color: 'error.main' }}
+                          />
+                        ) : null}
+                        <Typography
+                          variant="body2"
+                          fontWeight={800}
+                          sx={{
+                            color:
+                              result.eloDiff > 0
+                                ? 'success.main'
+                                : result.eloDiff < 0
+                                  ? 'error.main'
+                                  : 'text.primary',
+                          }}
+                        >
+                          {Math.abs(result.eloDiff)}
+                        </Typography>
+                      </Stack>
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                      >
+                        ({result.newElo})
                       </Typography>
                     </Stack>
                   </Stack>
@@ -191,59 +213,48 @@ function ResultsPage() {
                     >
                       {result.opponentScore}
                     </Typography>
-                    <Stack
-                      direction="row"
-                      alignItems="center"
-                      spacing={0.5}
-                    >
-                      {result.opponentEloDiff > 0 ? (
-                        <ArrowUpward
-                          fontSize="small"
-                          sx={{ color: 'success.main' }}
-                        />
-                      ) : result.opponentEloDiff < 0 ? (
-                        <ArrowDownward
-                          fontSize="small"
-                          sx={{ color: 'error.main' }}
-                        />
-                      ) : null}
-                      <Typography
-                        variant="body2"
-                        fontWeight={800}
-                        sx={{
-                          color:
-                            result.opponentEloDiff > 0
-                              ? 'success.main'
-                              : result.opponentEloDiff < 0
-                                ? 'error.main'
-                                : 'text.primary',
-                        }}
+                    <Stack alignItems="center">
+                      <Stack
+                        direction="row"
+                        alignItems="center"
+                        spacing={0.5}
                       >
-                        {Math.abs(result.opponentEloDiff)}
+                        {result.opponentEloDiff > 0 ? (
+                          <ArrowUpward
+                            fontSize="small"
+                            sx={{ color: 'success.main' }}
+                          />
+                        ) : result.opponentEloDiff < 0 ? (
+                          <ArrowDownward
+                            fontSize="small"
+                            sx={{ color: 'error.main' }}
+                          />
+                        ) : null}
+                        <Typography
+                          variant="body2"
+                          fontWeight={800}
+                          sx={{
+                            color:
+                              result.opponentEloDiff > 0
+                                ? 'success.main'
+                                : result.opponentEloDiff < 0
+                                  ? 'error.main'
+                                  : 'text.primary',
+                          }}
+                        >
+                          {Math.abs(result.opponentEloDiff)}
+                        </Typography>
+                      </Stack>
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                      >
+                        ({result.newOpponentElo})
                       </Typography>
                     </Stack>
                   </Stack>
                 </Stack>
               </Stack>
-
-              <Typography
-                variant="caption"
-                color="text.secondary"
-                mt={0.5}
-              >
-                {dayjs(result.startDate).format('YYYY-MM-DD HH:mm')} -{' '}
-                {dayjs(result.endDate).format('YYYY-MM-DD HH:mm')}
-              </Typography>
-
-              <Typography
-                variant="caption"
-                color="text.secondary"
-                mt={0.5}
-              >
-                {isUuidEmpty(result.user.id)
-                  ? 'Matchmaking Result'
-                  : `Created by: ${result.user.username}`}
-              </Typography>
 
               <Stack
                 direction="row"
@@ -264,6 +275,16 @@ function ResultsPage() {
                   size="small"
                 />
               </Stack>
+
+              <Stack
+                direction="row"
+                spacing={1}
+                mt={2}
+                justifyContent="flex-end"
+              >
+                <UpdateResultButton result={result} />
+                <DeleteResultButton result={result} />
+              </Stack>
             </ListItem>
           ))}
         </List>
@@ -273,5 +294,5 @@ function ResultsPage() {
 }
 
 export default withAuth(ResultsPage, {
-  permission: Permission.LoggedIn,
+  permission: Permission.ViewResult,
 });

@@ -10,7 +10,8 @@ export const createTeamDtoValidator = z.object({
   logoUrl: z
     .string()
     .url({ message: 'Logo URL must be a valid URL.' })
-    .max(255, { message: 'Logo URL can be up to 200 characters long.' }),
+    .max(255, { message: 'Logo URL can be up to 200 characters long.' })
+    .nullable(),
 
   leagueIds: z
     .array(z.string())

@@ -100,7 +100,7 @@ func (c *ResultController) CreateResult(ctx *gin.Context) {
 
 	userId := utils.MustGetRequestingUserId(ctx)
 
-	if err := c.resultService.CreateResult(&bodyDto, userId); err != nil {
+	if err := c.resultService.CreateResult(&bodyDto, &userId); err != nil {
 		r.UnprocessableEntity(ctx, err.Error())
 		return
 	}

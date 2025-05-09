@@ -4,6 +4,8 @@ import (
 	"MatchManiaAPI/config"
 	"MatchManiaAPI/models"
 	"MatchManiaAPI/models/enums"
+
+	"github.com/google/uuid"
 )
 
 func SeedUsers(db *config.DB, env *config.Env) error {
@@ -26,6 +28,7 @@ func SeedUsers(db *config.DB, env *config.Env) error {
 			Username: "BigBoss",
 			Email:    env.AdminEmail,
 			Password: env.AdminPassword,
+			Country:  "lt",
 			Roles:    getRolesByRole(allRoles, enums.AdminRole),
 		},
 		{
@@ -35,22 +38,37 @@ func SeedUsers(db *config.DB, env *config.Env) error {
 			Roles:    getRolesByRole(allRoles, enums.ModeratorRole),
 		},
 		{
-			Username: "TrackmaniaPro",
-			Email:    "TrackmaniaUser@example.com",
-			Password: env.UserPassword,
-			Roles:    getRolesByRole(allRoles, enums.TrackmaniaUserRole),
+			Username:       "Ziren",
+			Email:          "TrackmaniaPlayer1@example.com",
+			Password:       env.UserPassword,
+			Country:        "lt",
+			TrackmaniaId:   uuid.MustParse("99a9530f-63a3-4912-99d9-a770feedb989"),
+			TrackmaniaName: "Ziren-",
+			Roles:          getRolesByRole(allRoles, enums.TrackmaniaPlayerRole),
+		},
+		{
+			Username:       "Bits",
+			Email:          "TrackmaniaPlayer2@example.com",
+			Password:       env.UserPassword,
+			Country:        "lt",
+			TrackmaniaId:   uuid.MustParse("23ae2d9d-ae19-4060-9901-19e19a8f6690"),
+			TrackmaniaName: "B1tsy",
+			Roles:          getRolesByRole(allRoles, enums.TrackmaniaPlayerRole),
+		},
+		{
+			Username:       "Fain",
+			Email:          "TrackmaniaPlayer3@example.com",
+			Password:       env.UserPassword,
+			Country:        "lt",
+			TrackmaniaId:   uuid.MustParse("95fb5a24-532a-42cb-b6fb-0a60a857ff62"),
+			TrackmaniaName: "faiN91",
+			Roles:          getRolesByRole(allRoles, enums.TrackmaniaPlayerRole),
 		},
 		{
 			Username: "CasualGamer",
 			Email:    env.UserEmail,
 			Password: env.UserPassword,
 			Roles:    getRolesByRole(allRoles, enums.UserRole),
-		},
-		{
-			Username: "RandomGuest",
-			Email:    "Guest@example.com",
-			Password: env.UserPassword,
-			Roles:    getRolesByRole(allRoles, enums.GuestRole),
 		},
 	}
 

@@ -410,7 +410,97 @@ const docTemplate = `{
                 }
             }
         },
-        "/matchmaking/queue/join": {
+        "/matchmaking/matches": {
+            "get": {
+                "description": "Get all matches",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "matches"
+                ],
+                "summary": "Get all matches",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/responses.MatchDto"
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    }
+                }
+            }
+        },
+        "/matchmaking/matches/end": {
+            "post": {
+                "description": "End a match",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "matches"
+                ],
+                "summary": "End a match",
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    }
+                }
+            }
+        },
+        "/matchmaking/queues": {
+            "get": {
+                "description": "Get all queues",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "queues"
+                ],
+                "summary": "Get all queues",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/responses.QueueDto"
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorDto"
+                        }
+                    }
+                }
+            }
+        },
+        "/matchmaking/queues/join": {
             "post": {
                 "description": "Join matchmaking queue",
                 "consumes": [
@@ -453,7 +543,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/matchmaking/queue/leave": {
+        "/matchmaking/queues/leave": {
             "post": {
                 "description": "Leave matchmaking queue",
                 "consumes": [
@@ -480,86 +570,6 @@ const docTemplate = `{
                 "responses": {
                     "204": {
                         "description": "No Content"
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorDto"
-                        }
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorDto"
-                        }
-                    }
-                }
-            }
-        },
-        "/matchmaking/queue/status/{teamId}": {
-            "get": {
-                "description": "Check match status",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "matchmaking"
-                ],
-                "summary": "Check match status",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "default": "0deecf6a-289b-49a0-8f1b-9bc4185f99df",
-                        "description": "Team ID",
-                        "name": "teamId",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/responses.MatchStatusDto"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorDto"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorDto"
-                        }
-                    }
-                }
-            }
-        },
-        "/matchmaking/queue/teams-count/{leagueId}": {
-            "get": {
-                "description": "Get matchmaking queue",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "matchmaking"
-                ],
-                "summary": "Get matchmaking queue",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/responses.QueueTeamsCountDto"
-                        }
                     },
                     "400": {
                         "description": "Bad Request",
@@ -1366,7 +1376,6 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "leagueIds",
-                "logoUrl",
                 "name",
                 "playerIds"
             ],
@@ -1559,7 +1568,6 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "leagueIds",
-                "logoUrl",
                 "name",
                 "playerIds"
             ],
@@ -1642,11 +1650,25 @@ const docTemplate = `{
                 }
             }
         },
-        "responses.MatchStatusDto": {
+        "responses.MatchDto": {
             "type": "object",
             "properties": {
-                "isInMatch": {
-                    "type": "boolean"
+                "gameMode": {
+                    "type": "string",
+                    "example": "2v2"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "b2c4f3e0-5d8a-4c1b-9f3e-7a1d2f3e4b5c"
+                },
+                "league": {
+                    "$ref": "#/definitions/leagues.LeagueMinimalDto"
+                },
+                "teams": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/teams.TeamMinimalDto"
+                    }
                 }
             }
         },
@@ -1667,11 +1689,25 @@ const docTemplate = `{
                 }
             }
         },
-        "responses.QueueTeamsCountDto": {
+        "responses.QueueDto": {
             "type": "object",
             "properties": {
-                "teamsCount": {
-                    "type": "integer"
+                "gameMode": {
+                    "type": "string",
+                    "example": "2v2"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "b2c4f3e0-5d8a-4c1b-9f3e-7a1d2f3e4b5c"
+                },
+                "league": {
+                    "$ref": "#/definitions/leagues.LeagueMinimalDto"
+                },
+                "teams": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/teams.TeamMinimalDto"
+                    }
                 }
             }
         },
@@ -1692,6 +1728,14 @@ const docTemplate = `{
                 },
                 "league": {
                     "$ref": "#/definitions/leagues.LeagueMinimalDto"
+                },
+                "newElo": {
+                    "type": "integer",
+                    "example": 1500
+                },
+                "newOpponentElo": {
+                    "type": "integer",
+                    "example": 1492
                 },
                 "opponentEloDiff": {
                     "type": "integer",
@@ -1844,9 +1888,19 @@ const docTemplate = `{
                     "type": "string",
                     "example": "550e8400-e29b-41d4-a716-446655440000"
                 },
+                "logoUrl": {
+                    "type": "string",
+                    "example": "https://example.com/logo.png"
+                },
                 "name": {
                     "type": "string",
                     "example": "BIG Clan"
+                },
+                "players": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/players.PlayerMinimalDto"
+                    }
                 }
             }
         },

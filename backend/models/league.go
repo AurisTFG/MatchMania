@@ -16,6 +16,7 @@ type League struct {
 	UserId    uuid.UUID `gorm:"not null"`
 
 	User   User
+	Queue  *Queue
 	Teams  []Team            `gorm:"many2many:league_teams;"`
 	Tracks []TrackmaniaTrack `gorm:"many2many:league_tracks;"`
 }

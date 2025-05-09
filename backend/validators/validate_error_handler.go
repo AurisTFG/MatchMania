@@ -39,6 +39,8 @@ func ValidateErrorHandler(err error) error {
 			)
 		case "email":
 			errorMessage = field + " must be a valid email address."
+		case "url":
+			errorMessage = field + " must be a valid URL. Received: " + value.(string)
 		case "uuid":
 			errorMessage = field + " must be a valid UUID. Received: " + value.(string)
 		case "score":
