@@ -30,6 +30,7 @@ func (r *queueRepository) GetAll() ([]*models.Queue, error) {
 	result := r.db.
 		Joins("League").
 		Preload("Teams.Players").
+		Preload("League.Tracks").
 		Order("created_at DESC").
 		Find(&queues)
 

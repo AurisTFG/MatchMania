@@ -6,6 +6,7 @@ import (
 	"MatchManiaAPI/models/dtos/requests/queues"
 	"MatchManiaAPI/models/dtos/requests/results"
 	"MatchManiaAPI/models/dtos/requests/teams"
+	"MatchManiaAPI/models/dtos/requests/trackmaniaapi"
 )
 
 type LoginDto = auth.LoginDto
@@ -18,3 +19,6 @@ type CreateTeamDto = teams.CreateTeamDto
 type UpdateTeamDto = teams.UpdateTeamDto
 type JoinQueueDto = queues.JoinQueueDto
 type LeaveQueueDto = queues.LeaveQueueDto
+
+type CreateCompetitionDto = trackmaniaapi.CreateCompetitionDto
+type CreateCompetitionTeamDto = trackmaniaapi.CreateCompetitionTeamDto

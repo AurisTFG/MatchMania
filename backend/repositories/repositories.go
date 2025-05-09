@@ -3,6 +3,7 @@ package repositories
 import "MatchManiaAPI/config"
 
 type Repositories struct {
+	AppSettingRepository           AppSettingRepository
 	SessionRepository              SessionRepository
 	UserRepository                 UserRepository
 	RoleRepository                 RoleRepository
@@ -20,6 +21,7 @@ func NewRepositories(
 	db *config.DB,
 ) *Repositories {
 	return &Repositories{
+		AppSettingRepository:           NewAppSettingRepository(db),
 		SessionRepository:              NewSessionRepository(db),
 		UserRepository:                 NewUserRepository(db),
 		RoleRepository:                 NewRoleRepository(db),

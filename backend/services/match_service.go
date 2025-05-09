@@ -7,6 +7,7 @@ import (
 	"MatchManiaAPI/repositories"
 	"MatchManiaAPI/utils"
 	"errors"
+	"fmt"
 	"strconv"
 	"time"
 
@@ -23,17 +24,20 @@ type MatchService interface {
 }
 
 type matchService struct {
-	matchRepository repositories.MatchRepository
-	resultService   ResultService
+	matchRepository      repositories.MatchRepository
+	resultService        ResultService
+	trackmaniaApiService TrackmaniaApiService
 }
 
 func NewMatchService(
 	matchRepository repositories.MatchRepository,
 	resultService ResultService,
+	trackmaniaApiService TrackmaniaApiService,
 ) MatchService {
 	return &matchService{
-		matchRepository: matchRepository,
-		resultService:   resultService,
+		matchRepository:      matchRepository,
+		resultService:        resultService,
+		trackmaniaApiService: trackmaniaApiService,
 	}
 }
 
@@ -43,44 +47,41 @@ func (s *matchService) EndMatch(playerId uuid.UUID) error {
 		return err
 	}
 
-	var match *models.Match
-	for _, m := range matches {
-		for _, team := range m.Teams {
-			for _, player := range team.Players {
-				if player.Id == playerId {
-					match = m
-					break
-				}
-			}
-			if match != nil {
-				break
-			}
-		}
-		if match != nil {
-			break
-		}
-	}
-
-	if match == nil {
-		return errors.New("match not found")
+	match, err := findMatchByPlayerId(matches, playerId)
+	if err != nil {
+		return err
 	}
 
 	if len(match.Teams) != 2 {
 		return errors.New("wrong number of teams, expected 2, got " + strconv.Itoa(len(match.Teams)))
 	}
 
+	teamsResultDto, err := s.trackmaniaApiService.GetTeamsResults(match.TrackmaniaCompetitionId)
+	if err != nil {
+		return fmt.Errorf("getting teams results: %w", err)
+	}
+
+	if err := validateTeamsResultDto(teamsResultDto, match); err != nil {
+		return fmt.Errorf("validating teams results: %w", err)
+	}
+
 	createResultDto := &results.CreateResultDto{
 		LeagueId:       match.LeagueId,
 		StartDate:      match.CreatedAt,
 		EndDate:        time.Now(),
-		TeamId:         match.Teams[0].Id,
-		OpponentTeamId: match.Teams[1].Id,
-		Score:          "3",
-		OpponentScore:  "4",
+		TeamId:         uuid.MustParse(teamsResultDto.Teams[0].TeamId),
+		OpponentTeamId: uuid.MustParse(teamsResultDto.Teams[1].TeamId),
+		Score:          strconv.Itoa(teamsResultDto.Teams[0].Score),
+		OpponentScore:  strconv.Itoa(teamsResultDto.Teams[1].Score),
 	}
 
 	if err := s.resultService.CreateResult(createResultDto, nil); err != nil {
 		return err
+	}
+
+	err = s.trackmaniaApiService.DeleteCompetition(match.TrackmaniaCompetitionId)
+	if err != nil {
+		return fmt.Errorf("deleting competition: %w", err)
 	}
 
 	if err := s.matchRepository.Delete(match.Id); err != nil {
@@ -139,6 +140,46 @@ func (s *matchService) DeleteMatch(id uuid.UUID) error {
 	err = s.matchRepository.Delete(match.Id)
 	if err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func findMatchByPlayerId(matches []*models.Match, playerId uuid.UUID) (*models.Match, error) {
+	for _, match := range matches {
+		for _, team := range match.Teams {
+			for _, player := range team.Players {
+				if player.Id == playerId {
+					return match, nil
+				}
+			}
+		}
+	}
+
+	return nil, errors.New("match not found")
+}
+
+func validateTeamsResultDto(teamsResultDto *responses.TeamsResultsDto, match *models.Match) error {
+	if len(teamsResultDto.Teams) != 2 {
+		return errors.New("wrong number of teams results, expected 2, got " + strconv.Itoa(len(teamsResultDto.Teams)))
+	}
+
+	if match.Teams[0].Id.String() != teamsResultDto.Teams[0].TeamId &&
+		match.Teams[0].Id.String() != teamsResultDto.Teams[1].TeamId {
+		return errors.New("team " + match.Teams[0].Name + " not found in teams results")
+	}
+
+	if match.Teams[1].Id.String() != teamsResultDto.Teams[0].TeamId &&
+		match.Teams[1].Id.String() != teamsResultDto.Teams[1].TeamId {
+		return errors.New("team " + match.Teams[1].Name + " not found in teams results")
+	}
+
+	if teamsResultDto.Teams[0].Score == 0 && teamsResultDto.Teams[1].Score == 0 {
+		return errors.New("both teams have 0 score")
+	}
+
+	if teamsResultDto.Teams[0].Score == teamsResultDto.Teams[1].Score {
+		return errors.New("both teams have the same score")
 	}
 
 	return nil

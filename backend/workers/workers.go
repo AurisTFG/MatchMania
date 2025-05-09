@@ -2,6 +2,7 @@ package workers
 
 import (
 	"MatchManiaAPI/repositories"
+	"MatchManiaAPI/services"
 )
 
 type Workers struct {
@@ -10,9 +11,15 @@ type Workers struct {
 
 func NewWorkers(
 	repos *repositories.Repositories,
+	services *services.Services,
 ) *Workers {
 	return &Workers{
-		MatchmakingWorker: NewMatchmakingWorker(repos.QueueRepository, repos.MatchRepository, repos.TeamRepository),
+		MatchmakingWorker: NewMatchmakingWorker(
+			repos.QueueRepository,
+			repos.MatchRepository,
+			repos.TeamRepository,
+			services.TrackmaniaApiService,
+		),
 	}
 }
 

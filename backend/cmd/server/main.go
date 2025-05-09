@@ -79,7 +79,7 @@ func main() {
 
 	routes.SetupRoutes(server, controllers, services)
 
-	workers := workers.NewWorkers(repositories)
+	workers := workers.NewWorkers(repositories, services)
 	workers.Start()
 
 	fmt.Println("(6/6) Starting server on " + env.ServerURL + " . . . ")
