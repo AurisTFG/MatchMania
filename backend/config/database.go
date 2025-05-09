@@ -34,6 +34,7 @@ func MigrateDatabase(db *DB) error {
 	db.Exec(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`)
 
 	err := db.AutoMigrate(
+		&models.AppSetting{},
 		&models.User{},
 		&models.Role{},
 		&models.Permission{},
