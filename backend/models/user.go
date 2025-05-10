@@ -7,7 +7,6 @@ import (
 
 type User struct {
 	BaseModel
-
 	Username        string `gorm:"unique"`
 	Email           string `gorm:"unique"`
 	TrackmaniaId    uuid.UUID
@@ -16,13 +15,14 @@ type User struct {
 	Password        string
 	ProfilePhotoUrl string
 
-	Sessions         []Session
-	Leagues          []League
-	Results          []Result
-	TrackmaniaTracks []TrackmaniaTrack
-	Teams            []Team `gorm:"many2many:team_players;"`
-
-	Roles []Role `gorm:"many2many:user_roles"`
+	TrackmaniaOauthState *TrackmaniaOauthState
+	Sessions             []Session
+	Leagues              []League
+	Results              []Result
+	TrackmaniaTracks     []TrackmaniaTrack
+	CreatedTeams         []Team `gorm:"foreignKey:UserId"`
+	Teams                []Team `gorm:"many2many:team_players;"`
+	Roles                []Role `gorm:"many2many:user_roles"`
 }
 
 func (u *User) HashPassword() error {
