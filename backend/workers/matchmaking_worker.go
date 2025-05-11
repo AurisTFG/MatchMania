@@ -2,6 +2,7 @@ package workers
 
 import (
 	"MatchManiaAPI/models"
+	"MatchManiaAPI/models/dtos/responses"
 	"MatchManiaAPI/repositories"
 	"MatchManiaAPI/services"
 	"fmt"
@@ -60,7 +61,8 @@ func (w *matchmakingWorker) tick() error {
 			teamA := queue.Teams[0]
 			teamB := queue.Teams[1]
 
-			createResponseDto, err := w.trackmaniaApiService.CreateCompetition(
+			var createResponseDto *responses.CompetitionCreateResponseDto
+			createResponseDto, err = w.trackmaniaApiService.CreateCompetition(
 				getCompetitionLabel(&queue.League, &teamA, &teamB),
 				getTrackUids(&queue.League),
 			)
@@ -124,7 +126,7 @@ func getCompetitionLabel(league *models.League, teamA *models.Team, teamB *model
 }
 
 func getTrackUids(league *models.League) []string {
-	var trackUids []string
+	trackUids := make([]string, 0, len(league.Tracks))
 
 	for _, track := range league.Tracks {
 		trackUids = append(trackUids, track.Uid)

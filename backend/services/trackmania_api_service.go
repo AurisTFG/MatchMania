@@ -8,6 +8,7 @@ import (
 	"MatchManiaAPI/models/dtos/responses"
 	"MatchManiaAPI/models/enums"
 	"MatchManiaAPI/utils"
+	"context"
 	"fmt"
 	"net/http"
 )
@@ -59,11 +60,16 @@ func (s *trackmaniaApiService) CreateCompetition(
 		matchCount = *lastMatchCount + 1
 	}
 
-	if err := s.appSettingService.Set(enums.AppSettingMatchCount, matchCount); err != nil {
+	if err = s.appSettingService.Set(enums.AppSettingMatchCount, matchCount); err != nil {
 		return nil, fmt.Errorf("saving match count: %w", err)
 	}
 
-	req, err := http.NewRequest(http.MethodPost, constants.TrackmaniaApiCreateCompetitionURL, nil)
+	req, err := http.NewRequestWithContext(
+		context.Background(),
+		http.MethodPost,
+		constants.TrackmaniaApiCreateCompetitionURL,
+		nil,
+	)
 	if err != nil {
 		return nil, fmt.Errorf("creating request: %w", err)
 	}
@@ -91,7 +97,8 @@ func (s *trackmaniaApiService) DeleteCompetition(competitionId int) error {
 		return fmt.Errorf("authenticating: %w", err)
 	}
 
-	req, err := http.NewRequest(
+	req, err := http.NewRequestWithContext(
+		context.Background(),
 		http.MethodPost,
 		fmt.Sprintf(constants.TrackmaniaApiDeleteCompetitionURL, competitionId),
 		nil,
@@ -116,7 +123,12 @@ func (s *trackmaniaApiService) AddTeamsToCompetition(teamA *models.Team, teamB *
 		return fmt.Errorf("authenticating: %w", err)
 	}
 
-	req, err := http.NewRequest(http.MethodPost, fmt.Sprintf(constants.TrackmaniaApiAddTeamsURL, competitionId), nil)
+	req, err := http.NewRequestWithContext(
+		context.Background(),
+		http.MethodPost,
+		fmt.Sprintf(constants.TrackmaniaApiAddTeamsURL, competitionId),
+		nil,
+	)
 	if err != nil {
 		return fmt.Errorf("creating request: %w", err)
 	}
@@ -144,7 +156,8 @@ func (s *trackmaniaApiService) GetTeamsResults(competitionId int) (*responses.Te
 		return nil, fmt.Errorf("authenticating: %w", err)
 	}
 
-	req, err := http.NewRequest(
+	req, err := http.NewRequestWithContext(
+		context.Background(),
 		http.MethodGet,
 		fmt.Sprintf(constants.TrackmaniaApiGetTeamsLeaderboardURL, competitionId),
 		nil,

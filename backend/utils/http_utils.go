@@ -22,7 +22,11 @@ func HttpRequest[T any](client *http.Client, req *http.Request, body any) (*T, e
 	if err != nil {
 		return nil, fmt.Errorf("sending request: %w", err)
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if err = resp.Body.Close(); err != nil {
+			fmt.Printf("Error closing response body: %v\n", err)
+		}
+	}()
 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
 		respBytes, _ := io.ReadAll(resp.Body)
@@ -30,7 +34,7 @@ func HttpRequest[T any](client *http.Client, req *http.Request, body any) (*T, e
 	}
 
 	var decoded T
-	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+	if err = json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("decoding response: %w", err)
 	}
 

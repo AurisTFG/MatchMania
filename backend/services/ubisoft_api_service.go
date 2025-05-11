@@ -6,6 +6,7 @@ import (
 	"MatchManiaAPI/models/dtos/responses"
 	"MatchManiaAPI/models/enums"
 	"MatchManiaAPI/utils"
+	"context"
 	"fmt"
 	"net/http"
 	"time"
@@ -45,13 +46,19 @@ func (s *ubisoftApiService) GetSession() (*responses.UbisoftSessionDto, error) {
 
 		fmt.Println("Session from database:", s.session)
 		fmt.Print("Session expiration date from database:", s.sessionExpireDate)
+		fmt.Print("Time:", time.Now().UTC())
 	}
 
-	if s.session != nil && s.sessionExpireDate.After(time.Now().Add(10*time.Minute)) {
+	if s.session != nil && s.sessionExpireDate.After(time.Now().UTC().Add(10*time.Minute)) {
 		return s.session, nil
 	}
 
-	req, err := http.NewRequest(http.MethodPost, constants.UbisoftApiSessionURL, nil)
+	req, err := http.NewRequestWithContext(
+		context.Background(),
+		http.MethodPost,
+		constants.UbisoftApiSessionURL,
+		nil,
+	)
 	if err != nil {
 		return nil, fmt.Errorf("creating request: %w", err)
 	}
@@ -71,7 +78,7 @@ func (s *ubisoftApiService) GetSession() (*responses.UbisoftSessionDto, error) {
 		return nil, fmt.Errorf("getting session expiration date: %w", err)
 	}
 
-	if err := s.appSettingService.Set(enums.AppSettingUbisoftAuthResponse, ubisoftSessionDto); err != nil {
+	if err = s.appSettingService.Set(enums.AppSettingUbisoftAuthResponse, ubisoftSessionDto); err != nil {
 		return nil, fmt.Errorf("saving ubisoft auth response: %w", err)
 	}
 
@@ -87,17 +94,17 @@ func getUbisoftSessionExpirationDate(ubisoftSessionDto *responses.UbisoftSession
 		return nil, fmt.Errorf("parsing expiration time: %w", err)
 	}
 
-	expirationDate := expiration.Local()
+	expirationDate := expiration.UTC()
 
 	return &expirationDate, nil
 }
 
 func (s *ubisoftApiService) applyTokenFromDatabase() error {
-	ubisoftSessionDto, err := GetSettingValue[responses.UbisoftSessionDto](
+	ubisoftSessionDto, _ := GetSettingValue[responses.UbisoftSessionDto](
 		s.appSettingService,
 		enums.AppSettingUbisoftAuthResponse,
 	)
-	if err != nil || ubisoftSessionDto == nil {
+	if ubisoftSessionDto == nil {
 		return nil
 	}
 

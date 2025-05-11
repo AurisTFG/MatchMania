@@ -60,7 +60,7 @@ func GetSettingValue[T any](s AppSettingService, key enums.AppSettingKey) (*T, e
 	}
 
 	var value T
-	if err := json.Unmarshal([]byte(setting.Value), &value); err != nil {
+	if err = json.Unmarshal([]byte(setting.Value), &value); err != nil {
 		return nil, err
 	}
 
