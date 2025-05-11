@@ -122,7 +122,7 @@ linters:
       rules:
         - name: var-naming
           arguments:
-            - ["ID", "IDS", "URL", "UID"] # AllowList
+            - ["ID", "IDS", "URL", "UID", "API", "HTTP"] # AllowList
             - ["VM"] # DenyList
     cyclop:
       # The maximal code complexity to report.
