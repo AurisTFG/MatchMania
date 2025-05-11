@@ -151,5 +151,5 @@ function LeaguesPage() {
 }
 
 export default withAuth(LeaguesPage, {
-  permission: Permission.ManageLeague,
+  permission: Permission.ViewLeague,
 });

@@ -35,13 +35,13 @@ func SetupRoutes(
 
 		users := v1.Group("/users")
 		{
-			users.GET("", requirePerm(enums.ManageUserPermission), c.UserController.GetAllUsers)
+			users.GET("", requirePerm(enums.ViewUserPermission), c.UserController.GetAllUsers)
 			users.GET(":userId", requirePerm(enums.ManageUserPermission), c.UserController.GetUserById)
 		}
 
 		players := v1.Group("/players")
 		{
-			players.GET("", requirePerm(enums.LoggedInPermission), c.PlayerController.GetAllPlayers)
+			players.GET("", requirePerm(enums.ViewPlayerPermission), c.PlayerController.GetAllPlayers)
 		}
 
 		trackmania := v1.Group("/trackmania")
@@ -55,9 +55,9 @@ func SetupRoutes(
 
 		teams := v1.Group("/teams")
 		{
-			teams.GET("", requirePerm(enums.LoggedInPermission), c.TeamController.GetAllTeams)
+			teams.GET("", requirePerm(enums.ViewTeamPermission), c.TeamController.GetAllTeams)
+			teams.GET(":teamId", requirePerm(enums.ViewTeamPermission), c.TeamController.GetTeam)
 			teams.POST("", requirePerm(enums.ManageTeamPermission), c.TeamController.CreateTeam)
-			teams.GET(":teamId", requirePerm(enums.LoggedInPermission), c.TeamController.GetTeam)
 			teams.PATCH(":teamId", requirePerm(enums.ManageTeamPermission), c.TeamController.UpdateTeam)
 			teams.DELETE(":teamId", requirePerm(enums.ManageTeamPermission), c.TeamController.DeleteTeam)
 		}
@@ -66,22 +66,22 @@ func SetupRoutes(
 		{
 			queues := matchmaking.Group("/queues")
 			{
-				queues.GET("", requirePerm(enums.LoggedInPermission), c.QueueController.GetAllQueues)
+				queues.GET("", requirePerm(enums.ViewQueuePermission), c.QueueController.GetAllQueues)
 				queues.POST("/join", requirePerm(enums.ManageQueuePermission), c.QueueController.JoinQueue)
 				queues.POST("/leave", requirePerm(enums.ManageQueuePermission), c.QueueController.LeaveQueue)
 			}
 
 			matches := matchmaking.Group("/matches")
 			{
-				matches.GET("", requirePerm(enums.LoggedInPermission), c.MatchController.GetAllMatches)
-				matches.POST("/end", requirePerm(enums.ManageQueuePermission), c.MatchController.EndMatch)
+				matches.GET("", requirePerm(enums.ViewMatchPermission), c.MatchController.GetAllMatches)
+				matches.POST("/end", requirePerm(enums.ManageMatchPermission), c.MatchController.EndMatch)
 			}
 		}
 
 		leagues := v1.Group("/leagues")
 		{
-			leagues.GET("", requirePerm(enums.LoggedInPermission), c.LeagueController.GetAllLeagues)
-			leagues.GET(":leagueId", requirePerm(enums.LoggedInPermission), c.LeagueController.GetLeague)
+			leagues.GET("", requirePerm(enums.ViewLeaguePermission), c.LeagueController.GetAllLeagues)
+			leagues.GET(":leagueId", requirePerm(enums.ViewLeaguePermission), c.LeagueController.GetLeague)
 			leagues.POST("", requirePerm(enums.ManageLeaguePermission), c.LeagueController.CreateLeague)
 			leagues.PATCH(":leagueId", requirePerm(enums.ManageLeaguePermission), c.LeagueController.UpdateLeague)
 			leagues.DELETE(":leagueId", requirePerm(enums.ManageLeaguePermission), c.LeagueController.DeleteLeague)
@@ -89,8 +89,8 @@ func SetupRoutes(
 
 		results := v1.Group("/results")
 		{
-			results.GET("", requirePerm(enums.LoggedInPermission), c.ResultController.GetAllResults)
-			results.GET(":resultId", requirePerm(enums.LoggedInPermission), c.ResultController.GetResult)
+			results.GET("", requirePerm(enums.ViewResultPermission), c.ResultController.GetAllResults)
+			results.GET(":resultId", requirePerm(enums.ViewResultPermission), c.ResultController.GetResult)
 			results.POST("", requirePerm(enums.ManageResultPermission), c.ResultController.CreateResult)
 			results.PATCH(":resultId", requirePerm(enums.ManageResultPermission), c.ResultController.UpdateResult)
 			results.DELETE(":resultId", requirePerm(enums.ManageResultPermission), c.ResultController.DeleteResult)
