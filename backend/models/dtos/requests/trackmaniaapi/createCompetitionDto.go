@@ -131,7 +131,7 @@ type TMWTScriptSettings struct {
 	ForceRoadSpectatorsNb int     `json:"S_ForceRoadSpectatorsNb"`
 	EnableDossardColor    bool    `json:"S_EnableDossardColor"`
 	IsMatchmaking         bool    `json:"S_IsMatchmaking"`
-	// PickBanStyle           PickBanStyle `json:"S_PickAndBanStyle"`
+	// PickBanStyle           `json:"S_PickAndBanStyle"`
 	ApiURL                 string `json:"S_ApiUrl"`
 	ApiCompetitionUid      string `json:"S_ApiCompetitionUid"`
 	ApiAuthorizationHeader string `json:"S_ApiAuthorizationHeader"`

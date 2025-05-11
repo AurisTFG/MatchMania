@@ -91,7 +91,11 @@ func (s *trackmaniaApiService) DeleteCompetition(competitionId int) error {
 		return fmt.Errorf("authenticating: %w", err)
 	}
 
-	req, err := http.NewRequest(http.MethodPost, fmt.Sprintf(constants.TrackmaniaApiDeleteCompetitionURL, competitionId), nil)
+	req, err := http.NewRequest(
+		http.MethodPost,
+		fmt.Sprintf(constants.TrackmaniaApiDeleteCompetitionURL, competitionId),
+		nil,
+	)
 	if err != nil {
 		return fmt.Errorf("creating request: %w", err)
 	}
@@ -140,7 +144,11 @@ func (s *trackmaniaApiService) GetTeamsResults(competitionId int) (*responses.Te
 		return nil, fmt.Errorf("authenticating: %w", err)
 	}
 
-	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf(constants.TrackmaniaApiGetTeamsLeaderboardURL, competitionId), nil)
+	req, err := http.NewRequest(
+		http.MethodGet,
+		fmt.Sprintf(constants.TrackmaniaApiGetTeamsLeaderboardURL, competitionId),
+		nil,
+	)
 	if err != nil {
 		return nil, fmt.Errorf("creating request: %w", err)
 	}

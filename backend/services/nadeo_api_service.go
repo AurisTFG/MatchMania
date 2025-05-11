@@ -41,7 +41,6 @@ func (s *nadeoApiService) GetAccessToken(ubisoftTicket string) (*responses.Nadeo
 	}
 
 	if s.auth != nil && s.authExpireDate.After(time.Now().Add(10*time.Minute)) {
-
 		return s.auth, nil
 	}
 

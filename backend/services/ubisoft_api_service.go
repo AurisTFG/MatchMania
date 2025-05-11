@@ -57,7 +57,7 @@ func (s *ubisoftApiService) GetSession() (*responses.UbisoftSessionDto, error) {
 	}
 
 	req.Header.Set("Authorization", utils.GetBasicAuthHeader(s.env.TrackmaniaApiEmail, s.env.TrackmaniaApiPassword))
-	req.Header.Set("Ubi-AppId", constants.TrackmaniaAppId)
+	req.Header.Set("Ubi-Appid", constants.TrackmaniaAppId)
 	req.Header.Set("User-Agent", constants.UserAgent)
 	req.Header.Set("Content-Type", constants.ContentType)
 
@@ -93,7 +93,10 @@ func getUbisoftSessionExpirationDate(ubisoftSessionDto *responses.UbisoftSession
 }
 
 func (s *ubisoftApiService) applyTokenFromDatabase() error {
-	ubisoftSessionDto, err := GetSettingValue[responses.UbisoftSessionDto](s.appSettingService, enums.AppSettingUbisoftAuthResponse)
+	ubisoftSessionDto, err := GetSettingValue[responses.UbisoftSessionDto](
+		s.appSettingService,
+		enums.AppSettingUbisoftAuthResponse,
+	)
 	if err != nil || ubisoftSessionDto == nil {
 		return nil
 	}
