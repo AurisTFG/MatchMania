@@ -43,10 +43,6 @@ func (s *ubisoftApiService) GetSession() (*responses.UbisoftSessionDto, error) {
 		if err := s.applyTokenFromDatabase(); err != nil {
 			return nil, fmt.Errorf("applying token from database: %w", err)
 		}
-
-		fmt.Println("Session from database:", s.session)
-		fmt.Print("Session expiration date from database:", s.sessionExpireDate)
-		fmt.Print("Time:", time.Now().UTC())
 	}
 
 	if s.session != nil && s.sessionExpireDate.After(time.Now().UTC().Add(10*time.Minute)) {

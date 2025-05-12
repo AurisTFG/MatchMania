@@ -104,20 +104,6 @@ func (w *matchmakingWorker) tick() error {
 		}
 	}
 
-	matches, err := w.matchRepository.GetAll()
-	if err != nil {
-		return err
-	}
-
-	for _, match := range matches {
-		if len(match.Teams) == 0 {
-			err = w.matchRepository.Delete(match.Id)
-			if err != nil {
-				return err
-			}
-		}
-	}
-
 	return nil
 }
 
