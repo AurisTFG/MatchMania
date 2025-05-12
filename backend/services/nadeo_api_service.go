@@ -5,7 +5,9 @@ import (
 	"MatchManiaAPI/models/dtos/responses"
 	"MatchManiaAPI/models/enums"
 	"MatchManiaAPI/utils"
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"time"
@@ -45,11 +47,17 @@ func (s *nadeoApiService) GetAccessToken(ubisoftTicket string) (*responses.Nadeo
 		return s.auth, nil
 	}
 
+	body := map[string]string{"audience": constants.NadeoLiveServicesAudience}
+	jsonBody, err := json.Marshal(body)
+	if err != nil {
+		return nil, fmt.Errorf("encoding request body: %w", err)
+	}
+
 	req, err := http.NewRequestWithContext(
 		context.Background(),
 		http.MethodPost,
 		constants.NadeoApiAuthURL,
-		nil,
+		bytes.NewReader(jsonBody),
 	)
 	if err != nil {
 		return nil, fmt.Errorf("creating request: %w", err)
@@ -58,9 +66,7 @@ func (s *nadeoApiService) GetAccessToken(ubisoftTicket string) (*responses.Nadeo
 	req.Header.Set("Authorization", utils.GetUbisoftAuthHeader(ubisoftTicket))
 	req.Header.Set("Content-Type", constants.ContentType)
 
-	body := map[string]string{"audience": constants.NadeoLiveServicesAudience}
-
-	nadeoAuthDto, err := utils.HttpRequest[responses.NadeoAuthDto](s.client, req, body)
+	nadeoAuthDto, err := utils.HttpRequest[responses.NadeoAuthDto](s.client, req, nil)
 	if err != nil {
 		return nil, fmt.Errorf("getting access token: %w", err)
 	}
