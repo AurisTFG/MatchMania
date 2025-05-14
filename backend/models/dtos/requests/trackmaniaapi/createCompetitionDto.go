@@ -160,7 +160,7 @@ func MakeCompetition(clubId int, matchNumber int, label string, trackUids []stri
 		Rounds: []Round{
 			{
 				Name:                label,
-				StartDate:           time.Now().Add(1 * time.Second).UTC().Format(iso8601Format),
+				StartDate:           time.Now().Add(20 * time.Second).UTC().Format(iso8601Format),
 				EndDate:             time.Now().Add(2 * time.Hour).UTC().Format(iso8601Format),
 				LeaderboardType:     constants.LeaderboardTypeBracket,
 				TeamLeaderboardType: constants.TeamLeaderboardTypeScore,
@@ -208,7 +208,7 @@ func MakeCompetition(clubId int, matchNumber int, label string, trackUids []stri
 						AutoStartMode:            constants.AutoStartDelay,
 						AutoStartDelay:           600,
 						PickBanStartAuto:         true,
-						PickBanOrder:             "b:0,b:1,p:0,p:1,p:0,p:1,p:0,p:1,p:r",
+						PickBanOrder:             "p:0,p:1,p:0,p:1,p:0,p:1,p:r",
 						UseAutoReady:             true,
 						EnableReadyManager:       true,
 						PickBanUseGamepadVersion: true,
