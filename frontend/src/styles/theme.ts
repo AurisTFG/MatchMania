@@ -100,7 +100,6 @@ export const getTheme = (mode: 'light' | 'dark') =>
             borderRadius: theme.shape.borderRadius,
             '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
               borderColor: theme.palette.primary.main,
-              boxShadow: `0 0 0 2px ${theme.palette.primary.main}55`,
             },
           }),
           notchedOutline: ({ theme }) => ({
