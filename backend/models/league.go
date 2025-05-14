@@ -9,7 +9,7 @@ import (
 type League struct {
 	BaseModel
 	Name      string `gorm:"not null"`
-	LogoUrl   string
+	LogoUrl   *string
 	StartDate time.Time `gorm:"not null"`
 	EndDate   time.Time `gorm:"not null"`
 
