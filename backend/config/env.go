@@ -32,12 +32,10 @@ type Env struct {
 	TrackmaniaApiPassword string `mapstructure:"TRACKMANIA_API_PASSWORD"`
 	TrackmaniaApiClubId   int    `mapstructure:"TRACKMANIA_API_CLUB_ID"`
 
-	UserEmail         string `mapstructure:"USER_EMAIL"`
-	UserPassword      string `mapstructure:"USER_PASSWORD"`
-	ModeratorEmail    string `mapstructure:"MODERATOR_EMAIL"`
-	ModeratorPassword string `mapstructure:"MODERATOR_PASSWORD"`
-	AdminEmail        string `mapstructure:"ADMIN_EMAIL"`
-	AdminPassword     string `mapstructure:"ADMIN_PASSWORD"`
+	UserEmail     string `mapstructure:"USER_EMAIL"`
+	UserPassword  string `mapstructure:"USER_PASSWORD"`
+	AdminEmail    string `mapstructure:"ADMIN_EMAIL"`
+	AdminPassword string `mapstructure:"ADMIN_PASSWORD"`
 }
 
 var (
@@ -72,11 +70,7 @@ func LoadEnv(envName string) (*Env, error) {
 	setDefaults() // must set all defaults, otherwise viper will not read from env
 
 	if err := viper.ReadInConfig(); err != nil {
-		// Only return an error if it's not a "file not found" error
-		var configFileNotFoundErr viper.ConfigFileNotFoundError
-		if !errors.As(err, &configFileNotFoundErr) {
-			return nil, fmt.Errorf("error reading config file: %w", err)
-		}
+		// ignore error, we don't care if the file doesn't exist
 	}
 
 	if err := viper.Unmarshal(&env); err != nil {
@@ -113,8 +107,6 @@ func setDefaults() {
 
 	viper.SetDefault("USER_EMAIL", invalidString)
 	viper.SetDefault("USER_PASSWORD", invalidString)
-	viper.SetDefault("MODERATOR_EMAIL", invalidString)
-	viper.SetDefault("MODERATOR_PASSWORD", invalidString)
 	viper.SetDefault("ADMIN_EMAIL", invalidString)
 	viper.SetDefault("ADMIN_PASSWORD", invalidString)
 }
@@ -157,8 +149,6 @@ func (e *Env) Validate() error {
 	if e.IsDev {
 		if e.UserEmail == invalidString ||
 			e.UserPassword == invalidString ||
-			e.ModeratorEmail == invalidString ||
-			e.ModeratorPassword == invalidString ||
 			e.AdminEmail == invalidString ||
 			e.AdminPassword == invalidString {
 			return errors.New("missing default user credentials")
