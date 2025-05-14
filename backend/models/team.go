@@ -7,7 +7,7 @@ import (
 type Team struct {
 	BaseModel
 	Name    string `gorm:"not null"`
-	LogoUrl string
+	LogoUrl *string
 	Elo     uint `gorm:"not null"`
 
 	MatchId *uuid.UUID

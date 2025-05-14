@@ -5,7 +5,7 @@ import { UserMinimalDto } from '../users/userMinimalDto';
 export type TeamDto = {
   id: string;
   name: string;
-  logoUrl: string;
+  logoUrl: string | null;
   elo: number;
 
   user: UserMinimalDto;
