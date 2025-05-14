@@ -9,7 +9,7 @@ var Validator *validator.Validate = nil
 func init() {
 	validator := validator.New()
 
-	RegisterCustomRules(validator)
+	MustRegisterCustomRules(validator)
 
 	Validator = validator
 }

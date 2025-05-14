@@ -6,22 +6,18 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-func RegisterCustomRules(validate *validator.Validate) {
-	if err := validate.RegisterValidation("minDate", customrules.MinDateValidator); err != nil {
-		panic("Failed to register 'minDate' validation: " + err.Error())
+func MustRegisterCustomRule(validate *validator.Validate, tag string, fn validator.Func) {
+	if err := validate.RegisterValidation(tag, fn); err != nil {
+		panic("Failed to register custom validation rule: " + err.Error())
 	}
-	if err := validate.RegisterValidation("maxDate", customrules.MaxDateValidator); err != nil {
-		panic("Failed to register 'maxDate' validation: " + err.Error())
-	}
+}
 
-	if err := validate.RegisterValidation("minDateDiff", customrules.MinDateDiffValidator); err != nil {
-		panic("Failed to register 'dateDiff' validation: " + err.Error())
-	}
-	if err := validate.RegisterValidation("maxDateDiff", customrules.MaxDateDiffValidator); err != nil {
-		panic("Failed to register 'dateDiff' validation: " + err.Error())
-	}
+func MustRegisterCustomRules(validate *validator.Validate) {
+	MustRegisterCustomRule(validate, "minDate", customrules.MinDateValidator)
+	MustRegisterCustomRule(validate, "maxDate", customrules.MaxDateValidator)
 
-	if err := validate.RegisterValidation("score", customrules.ScoreValidator); err != nil {
-		panic("Failed to register 'score' validation: " + err.Error())
-	}
+	MustRegisterCustomRule(validate, "minDateDiff", customrules.MinDateDiffValidator)
+	MustRegisterCustomRule(validate, "maxDateDiff", customrules.MaxDateDiffValidator)
+
+	MustRegisterCustomRule(validate, "score", customrules.ScoreValidator)
 }
