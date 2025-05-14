@@ -53,3 +53,9 @@ func SetRequestingUserId(ctx *gin.Context, userId uuid.UUID) {
 func SetRequestingUserPermissions(ctx *gin.Context, permissions []string) {
 	ctx.Set(constants.RequestingUserPermissionsKey, permissions)
 }
+
+func MustSetTrustedProxies(server *gin.Engine, trustedProxies []string) {
+	if err := server.SetTrustedProxies(trustedProxies); err != nil {
+		panic(err)
+	}
+}

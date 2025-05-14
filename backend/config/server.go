@@ -1,6 +1,7 @@
 package config
 
 import (
+	"MatchManiaAPI/utils"
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -16,9 +17,7 @@ func SetupServer(env *Env) (*gin.Engine, error) {
 
 	server := gin.Default()
 
-	if err := server.SetTrustedProxies(nil); err != nil {
-		return nil, err
-	}
+	utils.MustSetTrustedProxies(server, nil)
 
 	server.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{env.ClientURL},
