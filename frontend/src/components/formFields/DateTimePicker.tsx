@@ -34,6 +34,7 @@ export default function DateTimePicker({ label }: DateTimePickerProps) {
         }}
         ampm={false}
         disablePast={false}
+        format="YYYY-MM-DD HH:mm"
         slotProps={{
           textField: {
             error: errorMessages.length > 0,
