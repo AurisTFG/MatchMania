@@ -20,7 +20,7 @@ type matchmakingWorker struct {
 	trackmaniaApiService services.TrackmaniaApiService
 }
 
-func NewMatchmakingWorker(
+var NewMatchmakingWorker = func(
 	queueRepository repositories.QueueRepository,
 	matchRepository repositories.MatchRepository,
 	teamRepository repositories.TeamRepository,

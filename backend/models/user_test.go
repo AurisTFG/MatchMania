@@ -1,3 +1,4 @@
+// nolint
 package models_test
 
 import (
@@ -21,6 +22,21 @@ func TestHashPassword(t *testing.T) {
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(correctPassword))
 	assert.NoError(t, err, "Hashed password should match the original password")
+}
+
+func TestHashPassword_EmptyPassword(t *testing.T) {
+	user := &models.User{
+		Password: "01234567890123456789012345678901234567890123456789012345678901234567890123456789012",
+	}
+
+	err := user.HashPassword()
+	require.Error(t, err, "bcrypt: password length exceeds 72 bytes")
+	assert.EqualError(
+		t,
+		err,
+		"bcrypt: password length exceeds 72 bytes",
+		"Error message should indicate the password is empty",
+	)
 }
 
 func TestComparePassword(t *testing.T) {
