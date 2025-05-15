@@ -29,15 +29,15 @@ clean: ## Cleans up temporary files in both frontend and backend
 
 .PHONY: cloc
 cloc: ## Counts lines of code in both frontend and backend
-	@cloc $(BACKEND_FOLDER) $(FRONTEND_FOLDER) --by-file-by-lang --exclude-lang=YAML,JSON,make,Dockerfile,SVG,HTML,CSS,JavaScript --exclude-dir=bin,dist,node_modules,docs
+	@cloc $(BACKEND_FOLDER) $(FRONTEND_FOLDER) --by-file-by-lang --exclude-lang=YAML,JSON,make,Dockerfile,SVG,HTML,XML,CSS,JavaScript --exclude-dir=bin,dist,node_modules,docs
 
 .PHONY: cloc-core
 cloc-core: ## Counts lines of code in both frontend and backend, excluding test files
-	@cloc $(BACKEND_FOLDER) $(FRONTEND_FOLDER) --by-file-by-lang --exclude-lang=YAML,JSON,make,Dockerfile,SVG,HTML,CSS,JavaScript --exclude-dir=bin,dist,node_modules,docs --not-match-f='.*test.*'
+	@cloc $(BACKEND_FOLDER) $(FRONTEND_FOLDER) --by-file-by-lang --exclude-lang=YAML,JSON,make,Dockerfile,SVG,HTML,XML,CSS,JavaScript --exclude-dir=bin,dist,node_modules,docs --not-match-f='.*test.*'
 
 .PHONY: cloc-test
 cloc-test: ## Counts lines of code in both frontend and backend, only counting test files
-	@cloc $(BACKEND_FOLDER) $(FRONTEND_FOLDER) --by-file-by-lang --exclude-lang=YAML,JSON,make,Dockerfile,SVG,HTML,CSS,JavaScript --exclude-dir=bin,dist,node_modules,docs --match-f='.*test.*'
+	@cloc $(BACKEND_FOLDER) $(FRONTEND_FOLDER) --by-file-by-lang --exclude-lang=YAML,JSON,make,Dockerfile,SVG,HTML,XML,CSS,JavaScript --exclude-dir=bin,dist,node_modules,docs --match-f='.*test.*'
 
 .PHONY: help
 help: ## Displays this help message
