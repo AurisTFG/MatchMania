@@ -69,9 +69,7 @@ func LoadEnv(envName string) (*Env, error) {
 
 	setDefaults() // must set all defaults, otherwise viper will not read from env
 
-	if err := viper.ReadInConfig(); err != nil {
-		// ignore error, we don't care if the file doesn't exist
-	}
+	_ = viper.ReadInConfig() // ignore error, we don't care if the file doesn't exist
 
 	if err := viper.Unmarshal(&env); err != nil {
 		return nil, fmt.Errorf("unable to decode config into struct: %w", err)
