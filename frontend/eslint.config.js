@@ -10,7 +10,7 @@ import { createTypeScriptImportResolver } from "eslint-import-resolver-typescrip
 
 export default ts.config(
   {
-    ignores: ["dist", "vite.config.ts", "eslint.config.js"],
+    ignores: ["dist", "coverage", "vite.config.ts", "eslint.config.js"],
   },
   ts.configs.strictTypeChecked,
   ...ts.configs.stylisticTypeChecked,
