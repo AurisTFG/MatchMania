@@ -12,14 +12,14 @@ import (
 
 type Session struct {
 	BaseModel
-
 	LastRefreshToken string    `gorm:"not null"`
 	InitiatedAt      time.Time `gorm:"not null"`
 	ExpiresAt        time.Time `gorm:"not null"`
 	IsRevoked        bool      `gorm:"not null"`
 
 	UserId uuid.UUID `gorm:"not null"`
-	User   User
+
+	User User
 }
 
 func (s *Session) HashToken() error {

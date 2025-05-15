@@ -36,49 +36,13 @@ func SeedLeagues(db *config.DB, env *config.Env) error {
 	}
 
 	leagues := []models.League{
-		{
-			UserId:    parsedUserId,
-			Name:      "Red Bull Faster",
-			StartDate: time.Date(2025, 1, 24, 0, 0, 0, 0, time.UTC),
-			EndDate:   time.Date(2025, 3, 1, 0, 0, 0, 0, time.UTC),
-		},
-
-		{
-			UserId:    parsedUserId,
-			Name:      "ComicCon Baltics 2024",
-			StartDate: time.Date(2024, 5, 1, 0, 0, 0, 0, time.UTC),
-			EndDate:   time.Date(2024, 5, 31, 0, 0, 0, 0, time.UTC),
-		},
-		{
-			UserId:    parsedUserId,
-			Name:      "Trackmania World Cup 2024",
-			StartDate: time.Date(2024, 9, 1, 0, 0, 0, 0, time.UTC),
-			EndDate:   time.Date(2024, 12, 31, 0, 0, 0, 0, time.UTC),
-		},
-		{
-			UserId:    parsedUserId,
-			Name:      "Winter 2024",
-			StartDate: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC),
-			EndDate:   time.Date(2024, 3, 31, 0, 0, 0, 0, time.UTC),
-		},
-		{
-			UserId:    parsedUserId,
-			Name:      "Spring 2024",
-			StartDate: time.Date(2024, 4, 1, 0, 0, 0, 0, time.UTC),
-			EndDate:   time.Date(2024, 6, 30, 0, 0, 0, 0, time.UTC),
-		},
-		{
-			UserId:    parsedUserId,
-			Name:      "Summer 2024",
-			StartDate: time.Date(2024, 6, 1, 0, 0, 0, 0, time.UTC),
-			EndDate:   time.Date(2024, 8, 31, 0, 0, 0, 0, time.UTC),
-		},
-		{
-			UserId:    parsedUserId,
-			Name:      "Fall 2024",
-			StartDate: time.Date(2024, 9, 1, 0, 0, 0, 0, time.UTC),
-			EndDate:   time.Date(2024, 12, 31, 0, 0, 0, 0, time.UTC),
-		},
+		createLeague(parsedUserId, "Winter 2024", 2024, 1),
+		createLeague(parsedUserId, "Spring 2024", 2024, 4),
+		createLeague(parsedUserId, "Summer 2024", 2024, 7),
+		createLeague(parsedUserId, "Fall 2024", 2024, 10),
+		createLeague(parsedUserId, "Red Bull Faster", 2025, 1),
+		createLeague(parsedUserId, "ComicCon Baltics 2024", 2024, 2),
+		createLeague(parsedUserId, "Trackmania World Cup 2024", 2024, 9),
 	}
 
 	if err = db.Create(&leagues).Error; err != nil {
@@ -86,4 +50,13 @@ func SeedLeagues(db *config.DB, env *config.Env) error {
 	}
 
 	return nil
+}
+
+func createLeague(userId uuid.UUID, name string, year int, month int) models.League {
+	return models.League{
+		UserId:    userId,
+		Name:      name,
+		StartDate: time.Date(year, time.Month(month), 1, 0, 0, 0, 0, time.UTC),
+		EndDate:   time.Date(year, time.Month(month+3), 30, 0, 0, 0, 0, time.UTC),
+	}
 }

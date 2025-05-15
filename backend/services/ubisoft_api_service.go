@@ -6,6 +6,7 @@ import (
 	"MatchManiaAPI/models/dtos/responses"
 	"MatchManiaAPI/models/enums"
 	"MatchManiaAPI/utils"
+	"context"
 	"fmt"
 	"net/http"
 	"time"
@@ -42,22 +43,24 @@ func (s *ubisoftApiService) GetSession() (*responses.UbisoftSessionDto, error) {
 		if err := s.applyTokenFromDatabase(); err != nil {
 			return nil, fmt.Errorf("applying token from database: %w", err)
 		}
-
-		fmt.Println("Session from database:", s.session)
-		fmt.Print("Session expiration date from database:", s.sessionExpireDate)
 	}
 
-	if s.session != nil && s.sessionExpireDate.After(time.Now().Add(10*time.Minute)) {
+	if s.session != nil && s.sessionExpireDate.After(time.Now().UTC().Add(10*time.Minute)) {
 		return s.session, nil
 	}
 
-	req, err := http.NewRequest(http.MethodPost, constants.UbisoftApiSessionURL, nil)
+	req, err := http.NewRequestWithContext(
+		context.Background(),
+		http.MethodPost,
+		constants.UbisoftApiSessionURL,
+		nil,
+	)
 	if err != nil {
 		return nil, fmt.Errorf("creating request: %w", err)
 	}
 
 	req.Header.Set("Authorization", utils.GetBasicAuthHeader(s.env.TrackmaniaApiEmail, s.env.TrackmaniaApiPassword))
-	req.Header.Set("Ubi-AppId", constants.TrackmaniaAppId)
+	req.Header.Set("Ubi-Appid", constants.TrackmaniaAppId)
 	req.Header.Set("User-Agent", constants.UserAgent)
 	req.Header.Set("Content-Type", constants.ContentType)
 
@@ -71,7 +74,7 @@ func (s *ubisoftApiService) GetSession() (*responses.UbisoftSessionDto, error) {
 		return nil, fmt.Errorf("getting session expiration date: %w", err)
 	}
 
-	if err := s.appSettingService.Set(enums.AppSettingUbisoftAuthResponse, ubisoftSessionDto); err != nil {
+	if err = s.appSettingService.Set(enums.AppSettingUbisoftAuthResponse, ubisoftSessionDto); err != nil {
 		return nil, fmt.Errorf("saving ubisoft auth response: %w", err)
 	}
 
@@ -87,14 +90,17 @@ func getUbisoftSessionExpirationDate(ubisoftSessionDto *responses.UbisoftSession
 		return nil, fmt.Errorf("parsing expiration time: %w", err)
 	}
 
-	expirationDate := expiration.Local()
+	expirationDate := expiration.UTC()
 
 	return &expirationDate, nil
 }
 
 func (s *ubisoftApiService) applyTokenFromDatabase() error {
-	ubisoftSessionDto, err := GetSettingValue[responses.UbisoftSessionDto](s.appSettingService, enums.AppSettingUbisoftAuthResponse)
-	if err != nil || ubisoftSessionDto == nil {
+	ubisoftSessionDto, _ := GetSettingValue[responses.UbisoftSessionDto](
+		s.appSettingService,
+		enums.AppSettingUbisoftAuthResponse,
+	)
+	if ubisoftSessionDto == nil {
 		return nil
 	}
 

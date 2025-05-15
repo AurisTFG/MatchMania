@@ -43,13 +43,13 @@ func SeedTeams(db *config.DB, env *config.Env) error {
 	}
 
 	teams := []models.Team{
-		{UserId: parsedUserId, Name: "BIG CLAN", Leagues: leagues, Elo: 999},
-		{UserId: parsedUserId, Name: "Astralis", Leagues: leagues, Elo: 967},
-		{UserId: parsedUserId, Name: "Natus Vincere", Leagues: leagues, Elo: 1245},
-		{UserId: parsedUserId, Name: "G2 Esports", Leagues: leagues, Elo: 945},
-		{UserId: parsedUserId, Name: "Team Liquid", Leagues: leagues, Elo: 885},
-		{UserId: parsedUserId, Name: "FaZe Clan", Leagues: leagues, Elo: 812},
-		{UserId: parsedUserId, Name: "Fnatic", Leagues: leagues, Elo: 789},
+		createTeam(parsedUserId, leagues, "BIG CLAN", 999),
+		createTeam(parsedUserId, leagues, "Astralis", 967),
+		createTeam(parsedUserId, leagues, "Natus Vincere", 1245),
+		createTeam(parsedUserId, leagues, "G2 Esports", 945),
+		createTeam(parsedUserId, leagues, "Team Liquid", 885),
+		createTeam(parsedUserId, leagues, "FaZe Clan", 812),
+		createTeam(parsedUserId, leagues, "Fnatic", 789),
 	}
 
 	if err = db.Create(&teams).Error; err != nil {
@@ -57,4 +57,14 @@ func SeedTeams(db *config.DB, env *config.Env) error {
 	}
 
 	return nil
+}
+
+func createTeam(userId uuid.UUID, leagues []models.League, name string, elo uint) models.Team {
+	return models.Team{
+		Name:    name,
+		LogoUrl: nil,
+		Elo:     elo,
+		UserId:  userId,
+		Leagues: leagues,
+	}
 }

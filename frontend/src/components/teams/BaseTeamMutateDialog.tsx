@@ -81,7 +81,7 @@ export default function BaseTeamMutateDialog({
           </form.AppField>
 
           <form.AppField name="logoUrl">
-            {(field) => <field.Text label="Logo URL" />}
+            {(field) => <field.Text label="Logo URL (Optional)" />}
           </form.AppField>
 
           <form.AppField name="playerIds">

@@ -9,9 +9,11 @@ import { useFetchMatches } from 'api/hooks/matchHooks';
 import { useFetchQueues } from 'api/hooks/queueHooks';
 import UserAvatar from 'components/UserAvatar';
 import QueueForm from 'components/queues/QueueForm';
+import withAuth from 'hocs/withAuth';
 import { useAuth } from 'providers/AuthProvider';
+import { Permission } from 'types/enums/permission';
 
-export default function MatchmakingPage() {
+function MatchmakingPage() {
   const { user } = useAuth();
   const { data: queues, isLoading: isQueuesLoading } = useFetchQueues();
   const { data: matches, isLoading: isMatchesLoading } = useFetchMatches();
@@ -68,8 +70,6 @@ export default function MatchmakingPage() {
           ),
         )?.league.id
       : undefined;
-
-  console.log('leagueId', selectedLeagueId);
 
   return (
     <Container maxWidth="md">
@@ -244,3 +244,7 @@ export default function MatchmakingPage() {
     </Container>
   );
 }
+
+export default withAuth(MatchmakingPage, {
+  permission: Permission.ViewQueue,
+});

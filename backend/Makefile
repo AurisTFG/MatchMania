@@ -47,6 +47,7 @@ coverage: ## Generates a coverage report
 	@echo "[?] Generating coverage report..."
 	@go test ./... -v -coverprofile=$(COVERAGE_PATH)
 	@go tool cover -html=$(COVERAGE_PATH)
+	@go tool cover -func $(COVERAGE_PATH)
 	@echo "[✔] Coverage report generated"
 
 .PHONY: docs

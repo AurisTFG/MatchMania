@@ -2,6 +2,7 @@ package workers
 
 import (
 	"MatchManiaAPI/models"
+	"MatchManiaAPI/models/dtos/responses"
 	"MatchManiaAPI/repositories"
 	"MatchManiaAPI/services"
 	"fmt"
@@ -19,7 +20,7 @@ type matchmakingWorker struct {
 	trackmaniaApiService services.TrackmaniaApiService
 }
 
-func NewMatchmakingWorker(
+var NewMatchmakingWorker = func(
 	queueRepository repositories.QueueRepository,
 	matchRepository repositories.MatchRepository,
 	teamRepository repositories.TeamRepository,
@@ -60,7 +61,8 @@ func (w *matchmakingWorker) tick() error {
 			teamA := queue.Teams[0]
 			teamB := queue.Teams[1]
 
-			createResponseDto, err := w.trackmaniaApiService.CreateCompetition(
+			var createResponseDto *responses.CompetitionCreateResponseDto
+			createResponseDto, err = w.trackmaniaApiService.CreateCompetition(
 				getCompetitionLabel(&queue.League, &teamA, &teamB),
 				getTrackUids(&queue.League),
 			)
@@ -102,20 +104,6 @@ func (w *matchmakingWorker) tick() error {
 		}
 	}
 
-	matches, err := w.matchRepository.GetAll()
-	if err != nil {
-		return err
-	}
-
-	for _, match := range matches {
-		if len(match.Teams) == 0 {
-			err = w.matchRepository.Delete(match.Id)
-			if err != nil {
-				return err
-			}
-		}
-	}
-
 	return nil
 }
 
@@ -124,7 +112,7 @@ func getCompetitionLabel(league *models.League, teamA *models.Team, teamB *model
 }
 
 func getTrackUids(league *models.League) []string {
-	var trackUids []string
+	trackUids := make([]string, 0, len(league.Tracks))
 
 	for _, track := range league.Tracks {
 		trackUids = append(trackUids, track.Uid)

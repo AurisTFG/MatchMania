@@ -18,6 +18,7 @@ function CreateLeagueButton() {
 
   const initialLeague: CreateLeagueDto = {
     name: '',
+    logoUrl: null,
     startDate: getStartOfDay(),
     endDate: getStartOfDay(7),
     trackIds: [],

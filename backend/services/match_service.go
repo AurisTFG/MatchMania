@@ -61,7 +61,7 @@ func (s *matchService) EndMatch(playerId uuid.UUID) error {
 		return fmt.Errorf("getting teams results: %w", err)
 	}
 
-	if err := validateTeamsResultDto(teamsResultDto, match); err != nil {
+	if err = validateTeamsResultDto(teamsResultDto, match); err != nil {
 		return fmt.Errorf("validating teams results: %w", err)
 	}
 
@@ -75,7 +75,7 @@ func (s *matchService) EndMatch(playerId uuid.UUID) error {
 		OpponentScore:  strconv.Itoa(teamsResultDto.Teams[1].Score),
 	}
 
-	if err := s.resultService.CreateResult(createResultDto, nil); err != nil {
+	if err = s.resultService.CreateResult(createResultDto, nil); err != nil {
 		return err
 	}
 
@@ -84,7 +84,7 @@ func (s *matchService) EndMatch(playerId uuid.UUID) error {
 		return fmt.Errorf("deleting competition: %w", err)
 	}
 
-	if err := s.matchRepository.Delete(match.Id); err != nil {
+	if err = s.matchRepository.Delete(match.Id); err != nil {
 		return err
 	}
 

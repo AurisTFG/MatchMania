@@ -1309,6 +1309,11 @@ const docTemplate = `{
                     "type": "string",
                     "example": "2025-08-31T00:00:000Z"
                 },
+                "logoUrl": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "example": "https://example.com/logo.png"
+                },
                 "name": {
                     "type": "string",
                     "maxLength": 100,
@@ -1500,6 +1505,11 @@ const docTemplate = `{
                 "endDate": {
                     "type": "string",
                     "example": "2025-08-31T00:00:000Z"
+                },
+                "logoUrl": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "example": "https://example.com/logo.png"
                 },
                 "name": {
                     "type": "string",

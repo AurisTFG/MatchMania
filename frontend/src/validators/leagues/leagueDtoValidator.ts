@@ -8,6 +8,12 @@ export const leagueDtoValidator = z
       .min(3, { message: 'Name must be at least 3 characters long' })
       .max(100, { message: 'Name must be at most 100 characters long' }),
 
+    logoUrl: z
+      .string()
+      .url({ message: 'Logo URL must be a valid URL.' })
+      .max(255, { message: 'Logo URL can be up to 255 characters long.' })
+      .nullable(),
+
     startDate: z
       .date()
       .refine(

@@ -51,14 +51,14 @@ export const ROUTES = [
     path: ROUTE_PATHS.LEAGUES,
     element: <LeaguesPage />,
     icon: <AccessAlarmIcon />,
-    permission: Permission.ManageLeague,
+    permission: Permission.ViewLeague,
   },
   {
     label: 'Teams',
     path: ROUTE_PATHS.TEAMS,
     element: <TeamsPage />,
     icon: <GroupIcon />,
-    permission: Permission.ManageTeam,
+    permission: Permission.ViewTeam,
   },
   {
     label: 'Results',
@@ -72,7 +72,7 @@ export const ROUTES = [
     path: ROUTE_PATHS.MATCHMAKING,
     element: <MatchmakingQueuePage />,
     icon: <SportsEsportsIcon />,
-    permission: Permission.ManageQueue,
+    permission: Permission.ViewQueue,
   },
   {
     label: 'Unauthorized',

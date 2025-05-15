@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -16,7 +17,7 @@ func GetJwtClaim[T any](tokenStr string, claimName string) (T, error) {
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
-		return zero, fmt.Errorf("invalid JWT claims")
+		return zero, errors.New("invalid JWT claims")
 	}
 
 	untypedClaim, exists := claims[claimName]

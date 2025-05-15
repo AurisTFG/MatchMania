@@ -5,6 +5,9 @@ import (
 	"MatchManiaAPI/models/dtos/responses"
 	"MatchManiaAPI/models/enums"
 	"MatchManiaAPI/utils"
+	"bytes"
+	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"time"
@@ -41,11 +44,21 @@ func (s *nadeoApiService) GetAccessToken(ubisoftTicket string) (*responses.Nadeo
 	}
 
 	if s.auth != nil && s.authExpireDate.After(time.Now().Add(10*time.Minute)) {
-
 		return s.auth, nil
 	}
 
-	req, err := http.NewRequest(http.MethodPost, constants.NadeoApiAuthURL, nil)
+	body := map[string]string{"audience": constants.NadeoLiveServicesAudience}
+	jsonBody, err := json.Marshal(body)
+	if err != nil {
+		return nil, fmt.Errorf("encoding request body: %w", err)
+	}
+
+	req, err := http.NewRequestWithContext(
+		context.Background(),
+		http.MethodPost,
+		constants.NadeoApiAuthURL,
+		bytes.NewReader(jsonBody),
+	)
 	if err != nil {
 		return nil, fmt.Errorf("creating request: %w", err)
 	}
@@ -53,9 +66,7 @@ func (s *nadeoApiService) GetAccessToken(ubisoftTicket string) (*responses.Nadeo
 	req.Header.Set("Authorization", utils.GetUbisoftAuthHeader(ubisoftTicket))
 	req.Header.Set("Content-Type", constants.ContentType)
 
-	body := map[string]string{"audience": constants.NadeoLiveServicesAudience}
-
-	nadeoAuthDto, err := utils.HttpRequest[responses.NadeoAuthDto](s.client, req, body)
+	nadeoAuthDto, err := utils.HttpRequest[responses.NadeoAuthDto](s.client, req, nil)
 	if err != nil {
 		return nil, fmt.Errorf("getting access token: %w", err)
 	}
@@ -65,7 +76,7 @@ func (s *nadeoApiService) GetAccessToken(ubisoftTicket string) (*responses.Nadeo
 		return nil, fmt.Errorf("getting expiration date: %w", err)
 	}
 
-	if err := s.appSettingService.Set(enums.AppSettingNadeoAuthResponse, nadeoAuthDto); err != nil {
+	if err = s.appSettingService.Set(enums.AppSettingNadeoAuthResponse, nadeoAuthDto); err != nil {
 		return nil, fmt.Errorf("saving nadeo auth response: %w", err)
 	}
 
@@ -87,8 +98,8 @@ func getNadeoSessionExpirationDate(nadeoAuthDto *responses.NadeoAuthDto) (*time.
 }
 
 func (s *nadeoApiService) applyTokenFromDatabase() error {
-	nadeoAuthDto, err := GetSettingValue[responses.NadeoAuthDto](s.appSettingService, enums.AppSettingNadeoAuthResponse)
-	if err != nil || nadeoAuthDto == nil {
+	nadeoAuthDto, _ := GetSettingValue[responses.NadeoAuthDto](s.appSettingService, enums.AppSettingNadeoAuthResponse)
+	if nadeoAuthDto == nil {
 		return nil
 	}
 

@@ -50,7 +50,7 @@ depcheck: ## Checks for unused dependencies
 	@echo "[✔] Dependency check completed"
 
 .PHONY: prepare
-prepare: install depcheck type-check lint test build ## Prepares the code for pushing to the repository
+prepare: install type-check lint test build ## Prepares the code for pushing to the repository
 	@echo "[✔] Code prepared for pushing to the repository"
 
 .PHONY: clean

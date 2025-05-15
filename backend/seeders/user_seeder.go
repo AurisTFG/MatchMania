@@ -32,12 +32,6 @@ func SeedUsers(db *config.DB, env *config.Env) error {
 			Roles:    getRolesByRole(allRoles, enums.AdminRole),
 		},
 		{
-			Username: "SmallBoss",
-			Email:    env.ModeratorEmail,
-			Password: env.ModeratorPassword,
-			Roles:    getRolesByRole(allRoles, enums.ModeratorRole),
-		},
-		{
 			Username:       "Ziren",
 			Email:          "TrackmaniaPlayer1@example.com",
 			Password:       env.UserPassword,

@@ -73,6 +73,10 @@ export default function BaseLeagueMutateDialog({
             {(field) => <field.Text label="League Name" />}
           </form.AppField>
 
+          <form.AppField name="logoUrl">
+            {(field) => <field.Text label="Logo URL (Optional)" />}
+          </form.AppField>
+
           <form.AppField name="trackIds">
             {(field) => (
               <field.MultiSelect

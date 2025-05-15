@@ -32,6 +32,7 @@ export default function DatePicker({ label }: DatePickerProps) {
         onChange={(date: dayjs.Dayjs | null) => {
           field.handleChange(date ? date.toDate() : null);
         }}
+        format="YYYY-MM-DD"
         slotProps={{
           textField: {
             error: errorMessages.length > 0,

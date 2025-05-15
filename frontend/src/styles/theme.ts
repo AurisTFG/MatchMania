@@ -4,30 +4,30 @@ export const getTheme = (mode: 'light' | 'dark') =>
   createTheme({
     palette: {
       mode,
-      primary: { main: '#6366f1' },
-      secondary: { main: '#4f46e5' },
-      error: { main: '#ef4444' },
-      warning: { main: '#f59e0b' },
-      info: { main: '#3b82f6' },
-      success: { main: '#22c55e' },
+      primary: { main: '#00C37A' },
+      secondary: { main: '#00A86B' },
+      error: { main: '#ff4d4f' },
+      warning: { main: '#ffc107' },
+      info: { main: '#00b0ff' },
+      success: { main: '#4caf50' },
       background: {
-        default: mode === 'dark' ? '#0e0e10' : '#f4f6fa',
-        paper: mode === 'dark' ? '#1e1e22' : '#ffffff',
+        default: mode === 'dark' ? '#0a0f0d' : '#e6f9f3',
+        paper: mode === 'dark' ? '#101918' : '#ffffff',
       },
       text: {
-        primary: mode === 'dark' ? '#ffffffde' : '#1e1e2f',
+        primary: mode === 'dark' ? '#ffffffde' : '#0a0f0d',
         secondary: mode === 'dark' ? '#bbbbbb' : '#4f4f5a',
       },
     },
-    shape: { borderRadius: 16 },
+    shape: { borderRadius: 12 },
     typography: {
       fontFamily: 'Inter, Roboto, sans-serif',
       button: {
-        fontWeight: 600,
-        letterSpacing: '0.5px',
+        fontWeight: 700,
+        letterSpacing: '0.75px',
       },
       h6: {
-        fontWeight: 700,
+        fontWeight: 800,
       },
       subtitle1: {
         fontWeight: 500,
@@ -38,7 +38,7 @@ export const getTheme = (mode: 'light' | 'dark') =>
       MuiDrawer: {
         styleOverrides: {
           paper: {
-            boxShadow: '2px 0 8px rgba(0,0,0,0.05)',
+            boxShadow: '2px 0 8px rgba(0,0,0,0.25)',
           },
         },
       },
@@ -46,15 +46,15 @@ export const getTheme = (mode: 'light' | 'dark') =>
         styleOverrides: {
           root: ({ theme }) => ({
             ...(theme.palette.mode === 'dark' && {
-              backgroundColor: 'rgba(30,30,34,0.8)',
-              backdropFilter: 'blur(6px)',
+              backgroundColor: 'rgba(16,25,24,0.85)',
+              backdropFilter: 'blur(8px)',
             }),
             backgroundImage: 'none',
             transition: 'box-shadow 0.3s ease, background-color 0.3s ease',
             boxShadow:
               theme.palette.mode === 'dark'
-                ? '0 2px 8px rgba(0,0,0,0.3)'
-                : '0 2px 8px rgba(0,0,0,0.05)',
+                ? '0 2px 8px rgba(0,0,0,0.5)'
+                : '0 2px 8px rgba(0,0,0,0.1)',
           }),
         },
       },
@@ -65,8 +65,8 @@ export const getTheme = (mode: 'light' | 'dark') =>
             '&:hover': {
               backgroundColor:
                 theme.palette.mode === 'dark'
-                  ? 'rgba(99,102,241,0.1)'
-                  : 'rgba(79,70,229,0.05)',
+                  ? 'rgba(0,195,122,0.1)'
+                  : 'rgba(0,168,107,0.05)',
             },
             margin: '2px 4px',
           }),
@@ -77,17 +77,19 @@ export const getTheme = (mode: 'light' | 'dark') =>
           root: ({ theme }) => ({
             borderRadius: theme.shape.borderRadius,
             textTransform: 'none',
-            fontWeight: 600,
+            fontWeight: 700,
             transition: 'all 0.2s ease',
             boxShadow:
               theme.palette.mode === 'dark'
-                ? '0 1px 3px rgba(0,0,0,0.4)'
-                : '0 1px 3px rgba(0,0,0,0.1)',
+                ? '0 1px 4px rgba(0,0,0,0.6)'
+                : '0 1px 3px rgba(0,0,0,0.2)',
             '&:hover': {
               boxShadow:
                 theme.palette.mode === 'dark'
-                  ? '0 4px 10px rgba(0,0,0,0.5)'
-                  : '0 4px 10px rgba(0,0,0,0.15)',
+                  ? '0 4px 12px rgba(0,0,0,0.7)'
+                  : '0 4px 10px rgba(0,0,0,0.2)',
+              backgroundColor: theme.palette.primary.main,
+              color: '#ffffff',
             },
           }),
         },
@@ -98,29 +100,25 @@ export const getTheme = (mode: 'light' | 'dark') =>
             borderRadius: theme.shape.borderRadius,
             '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
               borderColor: theme.palette.primary.main,
-              boxShadow: `0 0 0 2px ${theme.palette.primary.main}33`,
             },
           }),
           notchedOutline: ({ theme }) => ({
             borderColor:
               theme.palette.mode === 'dark'
-                ? 'rgba(255,255,255,0.6)'
+                ? 'rgba(255,255,255,0.5)'
                 : 'rgba(0,0,0,0.23)',
           }),
           input: {
             '&:-webkit-autofill': {
-              WebkitBoxShadow: `0 0 0 100px rgba(38, 103, 152, 0.25) inset`,
+              WebkitBoxShadow: `0 0 0 100px rgba(0, 195, 122, 0.1) inset`,
             },
           },
-
           inputAdornedStart: {
             paddingLeft: 0,
           },
-
           inputAdornedEnd: {
             paddingRight: 0,
           },
-
           adornedStart: {
             paddingLeft: 0,
           },

@@ -3,8 +3,10 @@ import { useEffect, useState } from 'react';
 import { useJoinQueue, useLeaveQueue } from 'api/hooks/queueHooks';
 import { useFetchTeams } from 'api/hooks/teamsHooks';
 import EndMatchDialog from 'components/matches/EndMatchDialog';
+import withAuth from 'hocs/withAuth';
 import { useAppForm } from 'hooks/form/useAppForm';
 import { useAuth } from 'providers/AuthProvider';
+import { Permission } from 'types/enums/permission';
 import { queueDtoValidator } from 'validators/matchmaking/queueDtoValidator';
 
 type QueueFormProps = {
@@ -13,7 +15,7 @@ type QueueFormProps = {
   selectedLeagueId?: string;
 };
 
-export default function QueueForm({
+function QueueForm({
   queueState,
   selectedTeamId,
   selectedLeagueId,
@@ -192,3 +194,8 @@ export default function QueueForm({
     </Paper>
   );
 }
+
+export default withAuth(QueueForm, {
+  permission: Permission.ManageQueue,
+  redirect: false,
+});
